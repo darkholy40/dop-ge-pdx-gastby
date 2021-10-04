@@ -1,8 +1,14 @@
 import { createStore as reduxCreateStore } from "redux"
 import { persistStore, persistReducer } from "redux-persist"
 import storage from "redux-persist/lib/storage"
+import {
+  green as primaryColor,
+  amber as secondaryColor,
+} from "@mui/material/colors"
 
 const initialState = {
+  primaryColor: primaryColor,
+  secondaryColor: secondaryColor,
   lang: "th",
   url: process.env.GEPDX_API_URL,
   backdropOpen: false,

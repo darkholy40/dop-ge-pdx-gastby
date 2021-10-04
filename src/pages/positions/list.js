@@ -11,7 +11,6 @@ import {
   TableRow,
   Paper,
 } from "@mui/material"
-import { green } from "@mui/material/colors"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons"
 import { ApolloClient, InMemoryCache, gql } from "@apollo/client"
@@ -22,7 +21,7 @@ import PageNotFound from "../../components/PageNotFound"
 import Warning from "../../components/Warning"
 
 const PositionsPage = () => {
-  const { token, url } = useSelector(state => state)
+  const { token, url, primaryColor } = useSelector(state => state)
   const dispatch = useDispatch()
   const [posData, setPosData] = useState([])
   const [isError, setIsError] = useState({
@@ -122,37 +121,37 @@ const PositionsPage = () => {
                     <TableRow>
                       <TableCell
                         align="center"
-                        sx={{ backgroundColor: green[200] }}
+                        sx={{ backgroundColor: primaryColor[200] }}
                       >
                         ลำดับ
                       </TableCell>
                       <TableCell
                         align="center"
-                        sx={{ backgroundColor: green[200] }}
+                        sx={{ backgroundColor: primaryColor[200] }}
                       >
                         ตำแหน่ง
                       </TableCell>
                       <TableCell
                         align="center"
-                        sx={{ backgroundColor: green[200] }}
+                        sx={{ backgroundColor: primaryColor[200] }}
                       >
                         กลุ่มงาน
                       </TableCell>
                       <TableCell
                         align="center"
-                        sx={{ backgroundColor: green[200] }}
+                        sx={{ backgroundColor: primaryColor[200] }}
                       >
                         เลขที่ตำแหน่ง
                       </TableCell>
                       <TableCell
                         align="center"
-                        sx={{ backgroundColor: green[200] }}
+                        sx={{ backgroundColor: primaryColor[200] }}
                       >
                         ชื่อ สกุล (ผู้ครองตำแหน่ง)
                       </TableCell>
                       <TableCell
                         align="center"
-                        sx={{ backgroundColor: green[200] }}
+                        sx={{ backgroundColor: primaryColor[200] }}
                       >
                         อัตรากำลังจังหวัดชายแดนภาคใต้
                       </TableCell>

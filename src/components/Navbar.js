@@ -4,7 +4,6 @@ import { useSelector, useDispatch } from "react-redux"
 import { AppBar, Toolbar, Button, IconButton, Typography } from "@mui/material"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faBars, faSignOutAlt } from "@fortawesome/free-solid-svg-icons"
-import { green } from "@mui/material/colors"
 import styled from "styled-components"
 
 const Flex = styled.div`
@@ -21,19 +20,19 @@ const Flex = styled.div`
     transition: background-color 0.2s, color 0.2s;
 
     &:hover {
-      background-color: ${green[800]};
+      background-color: ${({ primaryColor }) => primaryColor[800]};
     }
 
     &.active {
-      background-color: ${green[900]};
-      color: ${green[100]};
+      background-color: ${({ primaryColor }) => primaryColor[900]};
+      color: ${({ primaryColor }) => primaryColor[100]};
     }
   }
 `
 
 const Navbar = () => {
   const dispatch = useDispatch()
-  const { currentPage, token } = useSelector(state => state)
+  const { currentPage, token, primaryColor } = useSelector(state => state)
   const { site } = useStaticQuery(
     graphql`
       query {
@@ -78,7 +77,7 @@ const Navbar = () => {
           <FontAwesomeIcon icon={faBars} style={{ fontSize: 20 }} />
         </IconButton>
         <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-          <Flex>
+          <Flex primaryColor={primaryColor}>
             <div
               role="presentation"
               className={currentPage === "home" ? "active" : ""}

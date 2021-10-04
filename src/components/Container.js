@@ -4,10 +4,6 @@ import { useSelector } from "react-redux"
 import styled from "styled-components"
 import { Backdrop, CircularProgress } from "@mui/material"
 import { ThemeProvider, createTheme } from "@mui/material/styles"
-import {
-  green as primaryColor,
-  amber as secondaryColor,
-} from "@mui/material/colors"
 
 import Navbar from "./Navbar"
 import Footer from "./Footer"
@@ -26,15 +22,15 @@ const Row = styled.div`
 `
 
 const Container = ({ children }) => {
-  const { backdropOpen } = useSelector(state => state)
+  const { primaryColor, secondaryColor, backdropOpen } = useSelector(state => state)
   const muiTheme = createTheme({
     palette: {
       type: "light",
       primary: {
-        main: primaryColor[500], // green
+        main: primaryColor[500],
       },
       secondary: {
-        main: secondaryColor[500], // amber
+        main: secondaryColor[500],
       },
     },
   })
@@ -45,7 +41,7 @@ const Container = ({ children }) => {
       <MainContainer>
         <Row>{children}</Row>
         <Backdrop
-          sx={{ color: "#fff", zIndex: theme => theme.zIndex.drawer + 1 }}
+          sx={{ color: primaryColor[200], zIndex: theme => theme.zIndex.drawer + 1 }}
           open={backdropOpen}
         >
           <CircularProgress color="inherit" size="4rem" />
