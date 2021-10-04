@@ -1,7 +1,13 @@
 import React from "react"
 import PropTypes from "prop-types"
 import styled from "styled-components"
-import Header from "./Header"
+import { ThemeProvider, createTheme } from "@mui/material/styles"
+import {
+  green as primaryColor,
+  amber as secondaryColor,
+} from "@mui/material/colors"
+
+import Navbar from "./Navbar"
 import Footer from "./Footer"
 
 const MainContainer = styled.div`
@@ -14,18 +20,30 @@ const MainContainer = styled.div`
 `
 
 const Row = styled.div`
-  padding: 3rem 1rem 0 1rem;
+  padding: 4rem 1rem 0 1rem;
 `
 
 const Container = ({ children }) => {
+  const muiTheme = createTheme({
+    palette: {
+      type: "light",
+      primary: {
+        main: primaryColor[500], // green
+      },
+      secondary: {
+        main: secondaryColor[500], // amber
+      },
+    },
+  })
+
   return (
-    <>
-      <Header />
+    <ThemeProvider theme={muiTheme}>
+      <Navbar />
       <MainContainer>
         <Row>{children}</Row>
       </MainContainer>
       <Footer />
-    </>
+    </ThemeProvider>
   )
 }
 

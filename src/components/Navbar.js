@@ -4,8 +4,7 @@ import { useSelector, useDispatch } from "react-redux"
 import { AppBar, Toolbar, Button, IconButton, Typography } from "@mui/material"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faBars, faSignOutAlt } from "@fortawesome/free-solid-svg-icons"
-import { blue } from "@mui/material/colors"
-
+import { green } from "@mui/material/colors"
 import styled from "styled-components"
 
 const Flex = styled.div`
@@ -22,17 +21,17 @@ const Flex = styled.div`
     transition: background-color 0.2s, color 0.2s;
 
     &:hover {
-      background-color: ${blue[800]};
+      background-color: ${green[800]};
     }
 
     &.active {
-      background-color: ${blue[900]};
-      color: ${blue[100]};
+      background-color: ${green[900]};
+      color: ${green[100]};
     }
   }
 `
 
-const Header = () => {
+const Navbar = () => {
   const dispatch = useDispatch()
   const { currentPage, token } = useSelector(state => state)
   const { site } = useStaticQuery(
@@ -62,6 +61,8 @@ const Header = () => {
       type: `SET_TOKEN`,
       token: "",
     })
+
+    navigate(`/`)
   }
 
   return (
@@ -85,13 +86,24 @@ const Header = () => {
             >
               {site.siteMetadata.title}
             </div>
-            <div
-              role="presentation"
-              className={currentPage === "about" ? "active" : ""}
-              onClick={() => changePage("about")}
-            >
-              เกี่ยวกับ
-            </div>
+            {token !== "" && (
+              <>
+                <div
+                  role="presentation"
+                  className={currentPage === "positions" ? "active" : ""}
+                  onClick={() => changePage("positions")}
+                >
+                  คลังตำแหน่ง
+                </div>
+                <div
+                  role="presentation"
+                  className={currentPage === "about" ? "active" : ""}
+                  onClick={() => changePage("about")}
+                >
+                  เกี่ยวกับ
+                </div>
+              </>
+            )}
           </Flex>
         </Typography>
         {token !== "" && (
@@ -108,4 +120,4 @@ const Header = () => {
   )
 }
 
-export default Header
+export default Navbar

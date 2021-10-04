@@ -10,6 +10,12 @@ const FooterContainer = styled.footer`
   position: relative;
   opacity: 1;
   background-color: #eee;
+  padding: 1rem;
+
+  @media (max-width: 599px) {
+    padding-top: 0.75rem;
+    padding-bottom: 0.75rem;
+  }
 `
 
 const FooterRow = styled.div`
@@ -18,7 +24,6 @@ const FooterRow = styled.div`
   align-items: flex-start;
   width: 100%;
   max-width: 960px;
-  padding: 1rem 0;
   color: rgb(0, 0, 0);
   line-height: 28px;
   transition: 0.3s;
@@ -26,8 +31,6 @@ const FooterRow = styled.div`
   @media (max-width: 599px) {
     flex-direction: column;
     align-items: center;
-    padding-top: 0.75rem;
-    padding-bottom: 0.75rem;
   }
 `
 
