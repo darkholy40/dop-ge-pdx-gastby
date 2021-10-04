@@ -1,0 +1,51 @@
+{
+  "name": "ge-pdx",
+  "version": "1.0.0",
+  "private": true,
+  "description": "ge-pdx",
+  "author": "Apirak Suwanyotee",
+  "keywords": [
+    "gatsby"
+  ],
+  "scripts": {
+    "dev": "npm run clean && gatsby develop --port 3000 --host 0.0.0.0 --open",
+    "build": "gatsby build",
+    "serve": "npm run build && gatsby serve --port 5000 --host 0.0.0.0",
+    "clean": "gatsby clean",
+    "format": "prettier --write \"**/*.{js,jsx,ts,tsx,json,md,css}\""
+  },
+  "dependencies": {
+    "@apollo/client": "^3.4.15",
+    "@emotion/react": "^11.4.1",
+    "@emotion/styled": "^11.3.0",
+    "@fortawesome/fontawesome-svg-core": "^1.2.36",
+    "@fortawesome/free-brands-svg-icons": "^5.15.4",
+    "@fortawesome/free-regular-svg-icons": "^5.15.4",
+    "@fortawesome/free-solid-svg-icons": "^5.15.4",
+    "@fortawesome/react-fontawesome": "^0.1.15",
+    "@mui/lab": "^5.0.0-alpha.48",
+    "@mui/material": "^5.0.1",
+    "axios": "^0.21.4",
+    "babel-plugin-styled-components": "^1.13.2",
+    "gatsby": "^3.13.0",
+    "gatsby-plugin-image": "^1.13.0",
+    "gatsby-plugin-manifest": "^3.13.0",
+    "gatsby-plugin-react-helmet": "^4.13.0",
+    "gatsby-plugin-sharp": "^3.13.0",
+    "gatsby-plugin-styled-components": "^4.13.0",
+    "gatsby-source-filesystem": "^3.13.0",
+    "gatsby-transformer-sharp": "^3.13.0",
+    "graphql": "^15.6.0",
+    "prop-types": "^15.7.2",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "react-helmet": "^6.1.0",
+    "react-redux": "^7.2.5",
+    "redux": "^4.1.1",
+    "redux-persist": "^6.0.0",
+    "styled-components": "^5.3.1"
+  },
+  "devDependencies": {
+    "prettier": "^2.3.2"
+  }
+}

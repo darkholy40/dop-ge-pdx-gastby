@@ -1,0 +1,14 @@
+:root {
+  --main-font-family: "Kanit", sans-serif;
+}
+
+html {
+  font-family: var(--main-font-family);
+  -ms-text-size-adjust: 100%;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: var(--main-font-family);
+}
