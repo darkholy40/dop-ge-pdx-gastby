@@ -51,6 +51,10 @@ const IndexPage = () => {
       text: "",
     })
     setIsLoading(true)
+    dispatch({
+      type: `SET_BACKDROP_OPEN`,
+      backdropOpen: true,
+    })
 
     try {
       const res = await axios.post(`${url}/auth/local`, {
@@ -102,6 +106,10 @@ const IndexPage = () => {
     }
 
     setIsLoading(false)
+    dispatch({
+      type: `SET_BACKDROP_OPEN`,
+      backdropOpen: false,
+    })
   }
 
   return (

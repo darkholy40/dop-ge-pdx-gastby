@@ -14,7 +14,7 @@ const Main = styled.main`
   border-radius: 3px;
 
   @media (max-width: 599px) {
-    min-height: calc(100vh - 169px);
+    min-height: calc(100vh - 164px);
   }
 `
 

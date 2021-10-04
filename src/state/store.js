@@ -5,6 +5,7 @@ import storage from "redux-persist/lib/storage"
 const initialState = {
   lang: "th",
   url: process.env.GEPDX_API_URL,
+  backdropOpen: false,
   currentPage: "home",
   token: "",
   userInfo: {
@@ -41,6 +42,12 @@ const reducer = (state = initialState, action) => {
       return {
         ...state,
         lang: action.lang,
+      }
+
+    case "SET_BACKDROP_OPEN":
+      return {
+        ...state,
+        backdropOpen: action.backdropOpen,
       }
 
     case "SET_CURRENT_PAGE":

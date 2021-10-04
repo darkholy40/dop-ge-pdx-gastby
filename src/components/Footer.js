@@ -37,7 +37,7 @@ const FooterRow = styled.div`
 const Footer = () => (
   <FooterContainer>
     <FooterRow>
-      <div>Copyright © {new Date().getFullYear() + 543} Apirak Suwanyoteee</div>
+      <div>GE-PDX โดย กสท.สพบ.กพ.ทบ.</div>
     </FooterRow>
   </FooterContainer>
 )
