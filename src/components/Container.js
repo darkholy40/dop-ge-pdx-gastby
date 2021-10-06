@@ -22,10 +22,12 @@ const Row = styled.div`
 `
 
 const Container = ({ children }) => {
-  const { primaryColor, secondaryColor, backdropOpen } = useSelector(state => state)
+  const { primaryColor, secondaryColor, backdropOpen } = useSelector(
+    state => state
+  )
   const muiTheme = createTheme({
     palette: {
-      type: "light",
+      type: `light`,
       primary: {
         main: primaryColor[500],
       },
@@ -41,7 +43,10 @@ const Container = ({ children }) => {
       <MainContainer>
         <Row>{children}</Row>
         <Backdrop
-          sx={{ color: primaryColor[200], zIndex: theme => theme.zIndex.drawer + 1 }}
+          sx={{
+            color: primaryColor[200],
+            zIndex: theme => theme.zIndex.drawer + 1,
+          }}
           open={backdropOpen}
         >
           <CircularProgress color="inherit" size="4rem" />

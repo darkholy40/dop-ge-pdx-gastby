@@ -1,10 +1,7 @@
 import React, { useState } from "react"
 import styled from "styled-components"
 import { useSelector, useDispatch } from "react-redux"
-import TextField from "@mui/material/TextField"
-import InputAdornment from "@mui/material/InputAdornment"
-import Button from "@mui/material/Button"
-import { red } from "@mui/material/colors"
+import { TextField, InputAdornment, Button, Alert } from "@mui/material"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faUser, faLock } from "@fortawesome/free-solid-svg-icons"
 import axios from "axios"
@@ -29,26 +26,21 @@ const Row = styled.div`
   padding: 2.5rem;
 `
 
-const Error = styled.p`
-  font-size: 12px;
-  color: ${red[500]};
-`
-
 const IndexPage = () => {
   const dispatch = useDispatch()
   const { url, userInfo } = useSelector(state => state)
   const [usernameInput, setUsernameInput] = useState(userInfo.username)
-  const [passwordInput, setPasswordInput] = useState("")
+  const [passwordInput, setPasswordInput] = useState(``)
   const [isLoading, setIsLoading] = useState(false)
   const [isError, setIsError] = useState({
     status: false,
-    text: "",
+    text: ``,
   })
 
   const goLogin = async () => {
     setIsError({
       status: false,
-      text: "",
+      text: ``,
     })
     setIsLoading(true)
     dispatch({
@@ -81,6 +73,10 @@ const IndexPage = () => {
           break
 
         default:
+          setIsError({
+            status: true,
+            text: `Error - ${res.status}`,
+          })
           break
       }
     } catch (error) {
@@ -92,14 +88,14 @@ const IndexPage = () => {
         case 400:
           setIsError({
             status: true,
-            text: "ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง",
+            text: `ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง`,
           })
           break
 
         default:
           setIsError({
             status: true,
-            text: "ไม่สามารถเชื่อมต่อฐานข้อมูลได้",
+            text: `ไม่สามารถเชื่อมต่อฐานข้อมูลได้`,
           })
           break
       }
@@ -125,8 +121,8 @@ const IndexPage = () => {
           <Row>
             <TextField
               style={{
-                width: "100%",
-                marginBottom: "1rem",
+                width: `100%`,
+                marginBottom: `1rem`,
               }}
               id="uname"
               label="ชื่อผู้ใช้งาน"
@@ -145,8 +141,8 @@ const IndexPage = () => {
             />
             <TextField
               style={{
-                width: "100%",
-                marginBottom: "2rem",
+                width: `100%`,
+                marginBottom: `2rem`,
               }}
               id="pwd"
               label="รหัสผ่าน"
@@ -166,14 +162,14 @@ const IndexPage = () => {
             />
             <Button
               style={{
-                width: "100%",
+                width: `100%`,
               }}
               type="submit"
               color="primary"
               variant="contained"
               size="large"
               disabled={
-                usernameInput === "" || passwordInput === "" || isLoading
+                usernameInput === `` || passwordInput === `` || isLoading
               }
             >
               {!isLoading ? (
@@ -182,7 +178,11 @@ const IndexPage = () => {
                 <span>กำลังเข้าสู่ระบบ...</span>
               )}
             </Button>
-            {isError.status && <Error>* {isError.text}</Error>}
+            {isError.status && (
+              <Alert sx={{ marginTop: `1rem` }} severity="error">
+                {isError.text}
+              </Alert>
+            )}
           </Row>
         </Flex>
       </form>

@@ -18,7 +18,7 @@ const IndexPage = () => {
 
   return (
     <Layout>
-      {token === "" ? (
+      {token === `` ? (
         <>
           <Seo title="ลงชื่อเข้าใช้งานระบบ" />
 

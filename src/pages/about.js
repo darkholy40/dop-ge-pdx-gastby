@@ -31,19 +31,19 @@ const AboutPage = () => {
 
     let users = [
       {
-        title: "ชื่อ",
+        title: `ชื่อ`,
         desc: userInfo.name,
       },
       {
-        title: "สกุล",
+        title: `สกุล`,
         desc: userInfo.surname,
       },
       {
-        title: "ชื่อผู้ใช้",
+        title: `ชื่อผู้ใช้`,
         desc: userInfo.username,
       },
       {
-        title: "Token",
+        title: `Token`,
         desc: token,
       },
     ]
@@ -52,7 +52,7 @@ const AboutPage = () => {
 
   return (
     <Layout>
-      {token !== "" ? (
+      {token !== `` ? (
         <>
           <Seo title="เกี่ยวกับ" />
 
@@ -79,7 +79,7 @@ const AboutPage = () => {
                     >
                       {row.title}
                     </TableCell>
-                    <TableCell align="left" sx={{ wordBreak: "break-word" }}>
+                    <TableCell align="left" sx={{ wordBreak: `break-word` }}>
                       {row.desc}
                     </TableCell>
                   </TableRow>

@@ -44,7 +44,7 @@ const PageNotFound = () => {
       <Flex>
         <FontAwesomeIcon
           icon={faFile}
-          style={{ fontSize: 75, color: "rgba(0, 0, 0, 0.8)" }}
+          style={{ fontSize: 75, color: `rgba(0, 0, 0, 0.8)` }}
         />
         <Title>ไม่พบหน้านี้</Title>
         <Desc>
@@ -54,7 +54,7 @@ const PageNotFound = () => {
         <Button
           color="primary"
           variant="contained"
-          onClick={() => navigate("/")}
+          onClick={() => navigate(`/`)}
         >
           กลับหน้าแรก
         </Button>

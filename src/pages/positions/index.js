@@ -44,7 +44,7 @@ const PositionsPage = () => {
             <Button
               color="primary"
               variant="contained"
-              onClick={() => navigate("/positions/add")}
+              onClick={() => navigate(`/positions/add`)}
             >
               <FontAwesomeIcon icon={faPlusCircle} style={{ marginRight: 5 }} />
               เพิ่มคลังตำแหน่ง
@@ -52,19 +52,19 @@ const PositionsPage = () => {
           </Oparator>
           <Form>
             <TextField
-              sx={{ marginBottom: "1rem" }}
+              sx={{ marginBottom: `1rem` }}
               id="pos-name"
               label="ชื่อตำแหน่ง"
               variant="outlined"
             />
             <TextField
-              sx={{ marginBottom: "1rem" }}
+              sx={{ marginBottom: `1rem` }}
               id="pos-type"
               label="ชื่อประเภทกลุ่มงาน"
               variant="outlined"
             />
             <TextField
-              sx={{ marginBottom: "1rem" }}
+              sx={{ marginBottom: `1rem` }}
               id="pos-number"
               label="เลขที่ตำแหน่ง"
               variant="outlined"
@@ -72,7 +72,7 @@ const PositionsPage = () => {
             <Button
               color="primary"
               variant="contained"
-              onClick={() => navigate("/positions/list")}
+              onClick={() => navigate(`/positions/list`)}
             >
               <FontAwesomeIcon icon={faSearch} style={{ marginRight: 5 }} />
               ค้นหา

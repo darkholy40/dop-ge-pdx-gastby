@@ -9,66 +9,66 @@ import {
 const initialState = {
   primaryColor: primaryColor,
   secondaryColor: secondaryColor,
-  lang: "th",
+  lang: `th`,
   url: process.env.GEPDX_API_URL,
   backdropOpen: false,
-  currentPage: "home",
-  token: "",
+  currentPage: `home`,
+  token: ``,
   userInfo: {
-    _id: "",
+    _id: ``,
     confirmed: false,
     blocked: false,
-    name: "",
-    username: "",
-    surname: "",
-    email: "",
-    createdAt: "",
-    updatedAt: "",
+    name: ``,
+    username: ``,
+    surname: ``,
+    email: ``,
+    createdAt: ``,
+    updatedAt: ``,
     division: {
-      _id: "",
-      Organize: "",
-      OrganizeType: "",
-      ministry: "",
-      DivisionName: "",
-      published_at: "",
-      createdAt: "",
-      updatedAt: "",
+      _id: ``,
+      Organize: ``,
+      OrganizeType: ``,
+      ministry: ``,
+      DivisionName: ``,
+      published_at: ``,
+      createdAt: ``,
+      updatedAt: ``,
     },
     role: {
-      _id: "",
-      name: "",
-      type: "",
+      _id: ``,
+      name: ``,
+      type: ``,
     },
   },
 }
 
 const reducer = (state = initialState, action) => {
   switch (action.type) {
-    case "CHANGE_LANG":
+    case `CHANGE_LANG`:
       return {
         ...state,
         lang: action.lang,
       }
 
-    case "SET_BACKDROP_OPEN":
+    case `SET_BACKDROP_OPEN`:
       return {
         ...state,
         backdropOpen: action.backdropOpen,
       }
 
-    case "SET_CURRENT_PAGE":
+    case `SET_CURRENT_PAGE`:
       return {
         ...state,
         currentPage: action.currentPage,
       }
 
-    case "SET_TOKEN":
+    case `SET_TOKEN`:
       return {
         ...state,
         token: action.token,
       }
 
-    case "SET_USER_INFO":
+    case `SET_USER_INFO`:
       return {
         ...state,
         userInfo: action.userInfo,
@@ -82,9 +82,9 @@ const reducer = (state = initialState, action) => {
 }
 
 const persistConfig = {
-  key: "gepdx",
+  key: `gepdx`,
   storage: storage,
-  whitelist: ["lang", "token", "userInfo"],
+  whitelist: [`lang`, `token`, `userInfo`],
 }
 
 const persistedReducer = persistReducer(persistConfig, reducer)

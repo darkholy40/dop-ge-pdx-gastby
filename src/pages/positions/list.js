@@ -26,7 +26,7 @@ const PositionsPage = () => {
   const [posData, setPosData] = useState([])
   const [isError, setIsError] = useState({
     status: false,
-    text: "",
+    text: ``,
   })
 
   const getPosition = useCallback(async () => {
@@ -66,7 +66,7 @@ const PositionsPage = () => {
       } else {
         setIsError({
           status: true,
-          text: "ไม่พบข้อมูล",
+          text: `ไม่พบข้อมูล`,
         })
       }
     } catch (error) {
@@ -74,7 +74,7 @@ const PositionsPage = () => {
 
       setIsError({
         status: true,
-        text: "ไม่สามารถเชื่อมต่อฐานข้อมูล",
+        text: `ไม่สามารถเชื่อมต่อฐานข้อมูล`,
       })
     }
 
@@ -92,22 +92,22 @@ const PositionsPage = () => {
   }, [dispatch])
 
   useEffect(() => {
-    if (token !== "") {
+    if (token !== ``) {
       getPosition()
     }
   }, [getPosition, token])
 
   return (
     <Layout>
-      {token !== "" ? (
+      {token !== `` ? (
         <>
           <Seo title="ต้นหาคลังตำแหน่ง" />
 
           <Button
-            style={{ marginBottom: "1rem" }}
+            style={{ marginBottom: `1rem` }}
             color="primary"
             variant="contained"
-            onClick={() => navigate("/positions")}
+            onClick={() => navigate(`/positions`)}
           >
             <FontAwesomeIcon icon={faArrowLeft} style={{ marginRight: 5 }} />
             คลังตำแหน่ง

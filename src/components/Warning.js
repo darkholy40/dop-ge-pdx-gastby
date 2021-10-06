@@ -17,7 +17,7 @@ const Warning = ({ text }) => {
     <Flex>
       <FontAwesomeIcon
         icon={faExclamationTriangle}
-        style={{ fontSize: "5rem", color: red[500] }}
+        style={{ fontSize: `5rem`, color: red[500] }}
       />
       <p style={{ color: red[500] }}>{text}</p>
     </Flex>

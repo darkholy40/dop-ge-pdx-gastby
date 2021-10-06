@@ -47,7 +47,7 @@ const Navbar = () => {
 
   const changePage = getPage => {
     if (getPage !== currentPage) {
-      if (getPage === "home") {
+      if (getPage === `home`) {
         navigate(`/`)
       } else {
         navigate(`/${getPage}`)
@@ -58,7 +58,7 @@ const Navbar = () => {
   const goLogout = () => {
     dispatch({
       type: `SET_TOKEN`,
-      token: "",
+      token: ``,
     })
 
     navigate(`/`)
@@ -72,7 +72,7 @@ const Navbar = () => {
           edge="start"
           color="inherit"
           aria-label="menu"
-          sx={{ mr: 2, display: { sm: "none" } }}
+          sx={{ mr: 2, display: { sm: `none` } }}
         >
           <FontAwesomeIcon icon={faBars} style={{ fontSize: 20 }} />
         </IconButton>
@@ -80,24 +80,24 @@ const Navbar = () => {
           <Flex primaryColor={primaryColor}>
             <div
               role="presentation"
-              className={currentPage === "home" ? "active" : ""}
-              onClick={() => changePage("home")}
+              className={currentPage === `home` ? `active` : ``}
+              onClick={() => changePage(`home`)}
             >
               {site.siteMetadata.title}
             </div>
-            {token !== "" && (
+            {token !== `` && (
               <>
                 <div
                   role="presentation"
-                  className={currentPage === "positions" ? "active" : ""}
-                  onClick={() => changePage("positions")}
+                  className={currentPage === `positions` ? `active` : ``}
+                  onClick={() => changePage(`positions`)}
                 >
                   คลังตำแหน่ง
                 </div>
                 <div
                   role="presentation"
-                  className={currentPage === "about" ? "active" : ""}
-                  onClick={() => changePage("about")}
+                  className={currentPage === `about` ? `active` : ``}
+                  onClick={() => changePage(`about`)}
                 >
                   เกี่ยวกับ
                 </div>
@@ -105,7 +105,7 @@ const Navbar = () => {
             )}
           </Flex>
         </Typography>
-        {token !== "" && (
+        {token !== `` && (
           <Button color="inherit" onClick={() => goLogout()}>
             <FontAwesomeIcon
               icon={faSignOutAlt}

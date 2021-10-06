@@ -29,7 +29,7 @@ const AddPositionsPage = () => {
           <Button
             color="primary"
             variant="contained"
-            onClick={() => navigate("/positions")}
+            onClick={() => navigate(`/positions`)}
           >
             <FontAwesomeIcon icon={faArrowLeft} style={{ marginRight: 5 }} />
             คลังตำแหน่ง
