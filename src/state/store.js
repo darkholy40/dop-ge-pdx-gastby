@@ -45,6 +45,20 @@ const initialState = {
     posType: ``,
     posNumber: ``,
   },
+  addPositionFilter: {
+    posName: ``,
+    posType: ``,
+    posNumber: ``,
+    posOpen: false,
+    posSouth: false,
+  },
+  notificationDialog: {
+    open: false,
+    title: ``,
+    description: ``,
+    variant: ``,
+    callback: () => {},
+  },
 }
 
 const reducer = (state = initialState, action) => {
@@ -83,6 +97,18 @@ const reducer = (state = initialState, action) => {
       return {
         ...state,
         searchFilter: action.searchFilter,
+      }
+
+    case `SET_ADD_POSITION_FILTER`:
+      return {
+        ...state,
+        addPositionFilter: action.addPositionFilter,
+      }
+
+    case `SET_NOTIFICATION_DIALOG`:
+      return {
+        ...state,
+        notificationDialog: action.notificationDialog,
       }
 
     default:

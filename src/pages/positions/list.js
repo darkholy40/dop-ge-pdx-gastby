@@ -1,8 +1,6 @@
 import React, { useEffect, useCallback, useState } from "react"
-import { navigate } from "gatsby"
 import { useSelector, useDispatch } from "react-redux"
 import {
-  Button,
   Table,
   TableBody,
   TableCell,
@@ -11,12 +9,11 @@ import {
   TableRow,
   Paper,
 } from "@mui/material"
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { faArrowLeft } from "@fortawesome/free-solid-svg-icons"
 import { ApolloClient, InMemoryCache, gql } from "@apollo/client"
 
 import Layout from "../../components/Layout"
 import Seo from "../../components/Seo"
+import Breadcrumbs from "../../components/Breadcrumbs"
 import PageNotFound from "../../components/PageNotFound"
 import Warning from "../../components/Warning"
 
@@ -126,17 +123,16 @@ const PositionsPage = () => {
     <Layout>
       {token !== `` ? (
         <>
-          <Seo title="ต้นหาคลังตำแหน่ง" />
-
-          <Button
-            style={{ marginBottom: `1rem` }}
-            color="primary"
-            variant="contained"
-            onClick={() => navigate(`/positions`)}
-          >
-            <FontAwesomeIcon icon={faArrowLeft} style={{ marginRight: 5 }} />
-            คลังตำแหน่ง
-          </Button>
+          <Seo title="ค้นหาคลังตำแหน่ง" />
+          <Breadcrumbs
+            previous={[
+              {
+                name: `คลังตำแหน่ง`,
+                link: `/positions`,
+              },
+            ]}
+            current="ค้นหาคลังตำแหน่ง"
+          />
 
           {!isError.status ? (
             posData.length > 0 && (

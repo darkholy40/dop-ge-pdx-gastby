@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from "react-redux"
 
 import Layout from "../components/Layout"
 import Seo from "../components/Seo"
+import Breadcrumbs from "../components/Breadcrumbs"
 import Login from "../components/Login"
 
 const IndexPage = () => {
@@ -28,6 +29,7 @@ const IndexPage = () => {
         <>
           <Seo title="หน้าแรก" />
 
+          <Breadcrumbs current="หน้าแรก" />
           <p>Verified</p>
         </>
       )}

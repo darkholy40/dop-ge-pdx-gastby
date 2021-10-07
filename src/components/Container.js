@@ -6,6 +6,7 @@ import { Backdrop, CircularProgress } from "@mui/material"
 import { ThemeProvider, createTheme } from "@mui/material/styles"
 
 import Navbar from "./Navbar"
+import NotificationDialog from "./NotificationDialog"
 import Footer from "./Footer"
 
 const MainContainer = styled.div`
@@ -52,6 +53,7 @@ const Container = ({ children }) => {
           <CircularProgress color="inherit" size="4rem" />
         </Backdrop>
       </MainContainer>
+      <NotificationDialog />
       <Footer />
     </ThemeProvider>
   )

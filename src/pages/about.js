@@ -12,6 +12,7 @@ import {
 
 import Layout from "../components/Layout"
 import Seo from "../components/Seo"
+import Breadcrumbs from "../components/Breadcrumbs"
 import PageNotFound from "../components/PageNotFound"
 
 const AboutPage = () => {
@@ -55,8 +56,8 @@ const AboutPage = () => {
       {token !== `` ? (
         <>
           <Seo title="เกี่ยวกับ" />
+          <Breadcrumbs current="เกี่ยวกับผู้ใช้งาน" />
 
-          <p>เกี่ยวกับผู้ใช้งาน</p>
           <TableContainer component={Paper}>
             <Table sx={{ minWidth: 300 }} aria-label="about table">
               {/* <TableHead>

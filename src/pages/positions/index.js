@@ -8,6 +8,7 @@ import { faPlusCircle, faSearch } from "@fortawesome/free-solid-svg-icons"
 
 import Layout from "../../components/Layout"
 import Seo from "../../components/Seo"
+import Breadcrumbs from "../../components/Breadcrumbs"
 import PageNotFound from "../../components/PageNotFound"
 
 const Oparator = styled.div`
@@ -39,6 +40,7 @@ const PositionsPage = () => {
       {token !== "" ? (
         <>
           <Seo title="คลังตำแหน่ง" />
+          <Breadcrumbs current="คลังตำแหน่ง" />
 
           <Oparator>
             <Button
