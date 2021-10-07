@@ -24,7 +24,7 @@ const Form = styled.form`
 `
 
 const PositionsPage = () => {
-  const { token } = useSelector(state => state)
+  const { token, searchFilter } = useSelector(state => state)
   const dispatch = useDispatch()
 
   useEffect(() => {
@@ -56,18 +56,48 @@ const PositionsPage = () => {
               id="pos-name"
               label="ชื่อตำแหน่ง"
               variant="outlined"
+              onChange={e => {
+                dispatch({
+                  type: `SET_SEARCH_FILTER`,
+                  searchFilter: {
+                    ...searchFilter,
+                    posName: e.target.value,
+                  },
+                })
+              }}
+              value={searchFilter.posName}
             />
             <TextField
               sx={{ marginBottom: `1rem` }}
               id="pos-type"
               label="ชื่อประเภทกลุ่มงาน"
               variant="outlined"
+              onChange={e => {
+                dispatch({
+                  type: `SET_SEARCH_FILTER`,
+                  searchFilter: {
+                    ...searchFilter,
+                    posType: e.target.value,
+                  },
+                })
+              }}
+              value={searchFilter.posType}
             />
             <TextField
               sx={{ marginBottom: `1rem` }}
               id="pos-number"
               label="เลขที่ตำแหน่ง"
               variant="outlined"
+              onChange={e => {
+                dispatch({
+                  type: `SET_SEARCH_FILTER`,
+                  searchFilter: {
+                    ...searchFilter,
+                    posNumber: e.target.value,
+                  },
+                })
+              }}
+              value={searchFilter.posNumber}
             />
             <Button
               color="primary"

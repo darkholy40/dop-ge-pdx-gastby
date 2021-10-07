@@ -21,7 +21,7 @@ import PageNotFound from "../../components/PageNotFound"
 import Warning from "../../components/Warning"
 
 const PositionsPage = () => {
-  const { token, url, primaryColor } = useSelector(state => state)
+  const { token, url, primaryColor, searchFilter } = useSelector(state => state)
   const dispatch = useDispatch()
   const [posData, setPosData] = useState([])
   const [isError, setIsError] = useState({
@@ -34,6 +34,31 @@ const PositionsPage = () => {
       uri: `${url}/graphql`,
       cache: new InMemoryCache(),
     })
+    let filter = ``
+
+    if (
+      searchFilter.posName !== `` ||
+      searchFilter.posType !== `` ||
+      searchFilter.posNumber !== ``
+    ) {
+      filter = `(where: {
+        ${
+          searchFilter.posName !== ``
+            ? `Pos_Name: "${searchFilter.posName}"`
+            : ``
+        }
+        ${
+          searchFilter.posType !== ``
+            ? `Pos_type: "${searchFilter.posType}"`
+            : ``
+        }
+        ${
+          searchFilter.posNumber !== ``
+            ? `Pos_Number: "${searchFilter.posNumber}"`
+            : ``
+        }
+      })`
+    }
 
     dispatch({
       type: `SET_BACKDROP_OPEN`,
@@ -44,7 +69,7 @@ const PositionsPage = () => {
       const res = await client.query({
         query: gql`
           query Position {
-            positions {
+            positions${filter} {
               _id
               Pos_Name
               Pos_type
@@ -82,7 +107,7 @@ const PositionsPage = () => {
       type: `SET_BACKDROP_OPEN`,
       backdropOpen: false,
     })
-  }, [url, dispatch])
+  }, [url, searchFilter, dispatch])
 
   useEffect(() => {
     dispatch({

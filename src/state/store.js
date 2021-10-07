@@ -40,6 +40,11 @@ const initialState = {
       type: ``,
     },
   },
+  searchFilter: {
+    posName: ``,
+    posType: ``,
+    posNumber: ``,
+  },
 }
 
 const reducer = (state = initialState, action) => {
@@ -72,6 +77,12 @@ const reducer = (state = initialState, action) => {
       return {
         ...state,
         userInfo: action.userInfo,
+      }
+
+    case `SET_SEARCH_FILTER`:
+      return {
+        ...state,
+        searchFilter: action.searchFilter,
       }
 
     default:
