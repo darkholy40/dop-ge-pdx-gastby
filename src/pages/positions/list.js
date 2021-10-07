@@ -1,4 +1,5 @@
 import React, { useEffect, useCallback, useState } from "react"
+import { navigate } from "gatsby"
 import { useSelector, useDispatch } from "react-redux"
 import {
   Table,
@@ -8,8 +9,17 @@ import {
   TableHead,
   TableRow,
   Paper,
+  IconButton,
+  Menu,
+  MenuItem,
 } from "@mui/material"
 import { ApolloClient, InMemoryCache, gql } from "@apollo/client"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import {
+  faCheckCircle,
+  faEllipsisH,
+  faPen,
+} from "@fortawesome/free-solid-svg-icons"
 
 import Layout from "../../components/Layout"
 import Seo from "../../components/Seo"
@@ -25,6 +35,8 @@ const PositionsPage = () => {
     status: false,
     text: ``,
   })
+  const [anchorEl, setAnchorEl] = useState(null)
+  const [currentRow, setCurrentRow] = useState({})
 
   const getPosition = useCallback(async () => {
     const client = new ApolloClient({
@@ -136,71 +148,131 @@ const PositionsPage = () => {
 
           {!isError.status ? (
             posData.length > 0 && (
-              <TableContainer component={Paper}>
-                <Table sx={{ minWidth: 300 }} aria-label="pos table">
-                  <TableHead>
-                    <TableRow>
-                      <TableCell
-                        align="center"
-                        sx={{ backgroundColor: primaryColor[200] }}
-                      >
-                        ลำดับ
-                      </TableCell>
-                      <TableCell
-                        align="center"
-                        sx={{ backgroundColor: primaryColor[200] }}
-                      >
-                        ตำแหน่ง
-                      </TableCell>
-                      <TableCell
-                        align="center"
-                        sx={{ backgroundColor: primaryColor[200] }}
-                      >
-                        กลุ่มงาน
-                      </TableCell>
-                      <TableCell
-                        align="center"
-                        sx={{ backgroundColor: primaryColor[200] }}
-                      >
-                        เลขที่ตำแหน่ง
-                      </TableCell>
-                      <TableCell
-                        align="center"
-                        sx={{ backgroundColor: primaryColor[200] }}
-                      >
-                        ชื่อ สกุล (ผู้ครองตำแหน่ง)
-                      </TableCell>
-                      <TableCell
-                        align="center"
-                        sx={{ backgroundColor: primaryColor[200] }}
-                      >
-                        อัตรากำลังจังหวัดชายแดนภาคใต้
-                      </TableCell>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {posData.map((row, rowIndex) => (
-                      <TableRow
-                        key={`${rowIndex}_${row._id}`}
-                        sx={{
-                          "&:last-child td, &:last-child th": { border: 0 },
-                        }}
-                      >
-                        <TableCell component="th" scope="row" align="center">
-                          {rowIndex + 1}
+              <>
+                <TableContainer component={Paper}>
+                  <Table
+                    sx={{ minWidth: 300 }}
+                    aria-label="pos table"
+                    size="small"
+                  >
+                    <TableHead>
+                      <TableRow>
+                        <TableCell
+                          align="center"
+                          sx={{ backgroundColor: primaryColor[200] }}
+                        >
+                          ลำดับ
                         </TableCell>
-                        <TableCell align="left" sx={{ minWidth: 100 }}>
-                          {row.Pos_Name}
+                        <TableCell
+                          align="center"
+                          sx={{ backgroundColor: primaryColor[200] }}
+                        >
+                          ตำแหน่ง
                         </TableCell>
-                        <TableCell align="left">{row.Pos_type}</TableCell>
-                        <TableCell align="left">{row.Pos_Number}</TableCell>
-                        <TableCell align="left"></TableCell>
-                        <TableCell align="left">{row.Pos_South}</TableCell>
+                        <TableCell
+                          align="center"
+                          sx={{ backgroundColor: primaryColor[200] }}
+                        >
+                          กลุ่มงาน
+                        </TableCell>
+                        <TableCell
+                          align="center"
+                          sx={{ backgroundColor: primaryColor[200] }}
+                        >
+                          เลขที่ตำแหน่ง
+                        </TableCell>
+                        <TableCell
+                          align="center"
+                          sx={{ backgroundColor: primaryColor[200] }}
+                        >
+                          ชื่อ สกุล (ผู้ครองตำแหน่ง)
+                        </TableCell>
+                        <TableCell
+                          align="center"
+                          sx={{ backgroundColor: primaryColor[200] }}
+                        >
+                          อัตรากำลังจังหวัดชายแดนภาคใต้
+                        </TableCell>
+                        <TableCell
+                          align="center"
+                          sx={{ backgroundColor: primaryColor[200] }}
+                        >
+                          ตัวเลือก
+                        </TableCell>
                       </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </TableContainer>
+                    </TableHead>
+                    <TableBody>
+                      {posData.map((row, rowIndex) => (
+                        <TableRow
+                          key={`${rowIndex}_${row._id}`}
+                          sx={{
+                            "&:last-child td, &:last-child th": { border: 0 },
+                          }}
+                        >
+                          <TableCell component="th" scope="row" align="center">
+                            {rowIndex + 1}
+                          </TableCell>
+                          <TableCell align="left" sx={{ minWidth: 100 }}>
+                            {row.Pos_Name}
+                          </TableCell>
+                          <TableCell align="left">{row.Pos_type}</TableCell>
+                          <TableCell align="left">{row.Pos_Number}</TableCell>
+                          <TableCell align="left"></TableCell>
+                          <TableCell align="center">
+                            {row.Pos_South && (
+                              <FontAwesomeIcon
+                                icon={faCheckCircle}
+                                style={{
+                                  fontSize: 20,
+                                  color: primaryColor[500],
+                                }}
+                              />
+                            )}
+                          </TableCell>
+                          <TableCell align="center">
+                            <IconButton
+                              onClick={event => {
+                                setAnchorEl(event.currentTarget)
+                                setCurrentRow(row)
+                              }}
+                            >
+                              <FontAwesomeIcon
+                                icon={faEllipsisH}
+                                style={{ fontSize: 16 }}
+                              />
+                            </IconButton>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </TableContainer>
+
+                <Menu
+                  sx={{
+                    ".MuiList-root.MuiList-padding.MuiMenu-list": {
+                      minWidth: 180,
+                    },
+                  }}
+                  anchorEl={anchorEl}
+                  open={Boolean(anchorEl)}
+                  onClose={() => {
+                    setAnchorEl(null)
+                  }}
+                >
+                  <MenuItem
+                    onClick={() => {
+                      setAnchorEl(null)
+
+                      navigate(`/positions/edit?id=${currentRow._id}`)
+                    }}
+                    disableRipple
+                  >
+                    <FontAwesomeIcon icon={faPen} style={{ marginRight: 5 }} />
+                    แก้ไข
+                  </MenuItem>
+                </Menu>
+              </>
             )
           ) : (
             <Warning text={isError.text} />

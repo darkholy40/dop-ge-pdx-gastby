@@ -51,7 +51,20 @@ const PositionsPage = () => {
             <Button
               color="primary"
               variant="contained"
-              onClick={() => navigate(`/positions/add`)}
+              onClick={() => {
+                dispatch({
+                  type: `SET_ADD_POSITION_FILTER`,
+                  addPositionFilter: {
+                    posName: ``,
+                    posType: ``,
+                    posNumber: ``,
+                    posOpen: false,
+                    posSouth: false,
+                  },
+                })
+
+                navigate(`/positions/add`)
+              }}
             >
               <FontAwesomeIcon icon={faPlusCircle} style={{ marginRight: 5 }} />
               เพิ่มคลังตำแหน่ง

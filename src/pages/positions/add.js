@@ -112,9 +112,7 @@ const AddPositionsPage = () => {
       type: `SET_CURRENT_PAGE`,
       currentPage: `positions`,
     })
-
-    resetInput()
-  }, [dispatch, resetInput])
+  }, [dispatch])
 
   return (
     <Layout>
