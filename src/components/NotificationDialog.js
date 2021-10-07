@@ -103,6 +103,7 @@ const NotificationDialog = () => {
               notificationDialog: {
                 ...notificationDialog,
                 open: false,
+                callback: () => {},
               },
             })
           }}

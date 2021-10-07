@@ -16,12 +16,17 @@ const Oparator = styled.div`
   flex-direction: row;
   justify-content: end;
   align-items: center;
+  max-width: 400px;
+  margin-left: auto;
+  margin-right: auto;
   margin-bottom: 1rem;
 `
 
 const Form = styled.form`
   display: flex;
   flex-direction: column;
+  max-width: 400px;
+  margin: auto;
 `
 
 const PositionsPage = () => {
