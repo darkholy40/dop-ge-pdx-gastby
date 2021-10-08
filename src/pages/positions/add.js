@@ -149,7 +149,7 @@ const AddPositionsPage = () => {
                 link: `/positions`,
               },
             ]}
-            current="เพิ่มคลังตำแหน่ง"
+            current="เพิ่ม"
           />
 
           <Form>

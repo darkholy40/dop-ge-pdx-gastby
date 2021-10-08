@@ -12,6 +12,7 @@ import {
   IconButton,
   Menu,
   MenuItem,
+  Button,
 } from "@mui/material"
 import { ApolloClient, InMemoryCache, gql } from "@apollo/client"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
@@ -19,6 +20,7 @@ import {
   faCheckCircle,
   faEllipsisH,
   faPen,
+  faChevronLeft,
 } from "@fortawesome/free-solid-svg-icons"
 
 import Layout from "../../components/Layout"
@@ -28,7 +30,9 @@ import PageNotFound from "../../components/PageNotFound"
 import Warning from "../../components/Warning"
 
 const PositionsPage = () => {
-  const { token, url, primaryColor, searchFilter } = useSelector(state => state)
+  const { token, userInfo, url, primaryColor, searchFilter } = useSelector(
+    state => state
+  )
   const dispatch = useDispatch()
   const [posData, setPosData] = useState([])
   const [isError, setIsError] = useState({
@@ -50,12 +54,9 @@ const PositionsPage = () => {
       searchFilter.posType !== `` ||
       searchFilter.posNumber !== ``
     ) {
-      filter = `(where: {
-        ${
-          searchFilter.posName !== ``
-            ? `Pos_Name: "${searchFilter.posName}"`
-            : ``
-        }
+      filter = `${
+        searchFilter.posName !== `` ? `Pos_Name: "${searchFilter.posName}"` : ``
+      }
         ${
           searchFilter.posType !== ``
             ? `Pos_Type: "${searchFilter.posType}"`
@@ -65,9 +66,13 @@ const PositionsPage = () => {
           searchFilter.posNumber !== ``
             ? `Pos_Number: "${searchFilter.posNumber}"`
             : ``
-        }
-      })`
+        }`
     }
+
+    const whereCondition = `where: {
+      staff_created: "${userInfo._id}"
+      ${filter}
+    }`
 
     dispatch({
       type: `SET_BACKDROP_OPEN`,
@@ -78,13 +83,15 @@ const PositionsPage = () => {
       const res = await client.query({
         query: gql`
           query Position {
-            positions${filter} {
+            positions(${whereCondition}) {
               _id
               Pos_Name
               Pos_Type
               Pos_Number
               Pos_Open
               Pos_South
+              staff_created
+              staff_updated
               published_at
               createdAt
               updatedAt
@@ -116,7 +123,7 @@ const PositionsPage = () => {
       type: `SET_BACKDROP_OPEN`,
       backdropOpen: false,
     })
-  }, [url, searchFilter, dispatch])
+  }, [url, userInfo, searchFilter, dispatch])
 
   useEffect(() => {
     dispatch({
@@ -143,7 +150,7 @@ const PositionsPage = () => {
                 link: `/positions`,
               },
             ]}
-            current="ค้นหาคลังตำแหน่ง"
+            current="ค้นหา"
           />
 
           {!isError.status ? (
@@ -275,7 +282,24 @@ const PositionsPage = () => {
               </>
             )
           ) : (
-            <Warning text={isError.text} />
+            <>
+              <Warning
+                text={isError.text}
+                button={
+                  <Button
+                    color="primary"
+                    variant="outlined"
+                    onClick={() => navigate(`/positions`)}
+                  >
+                    <FontAwesomeIcon
+                      icon={faChevronLeft}
+                      style={{ marginRight: 5 }}
+                    />
+                    <span>กลับไปหน้าคลังตำแหน่ง</span>
+                  </Button>
+                }
+              />
+            </>
           )}
         </>
       ) : (

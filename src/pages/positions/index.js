@@ -11,7 +11,11 @@ import {
   MenuItem,
 } from "@mui/material"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { faPlusCircle, faSearch } from "@fortawesome/free-solid-svg-icons"
+import {
+  faPlusCircle,
+  faSearch,
+  faTimes,
+} from "@fortawesome/free-solid-svg-icons"
 
 import Layout from "../../components/Layout"
 import Seo from "../../components/Seo"
@@ -21,8 +25,8 @@ import positionType from "../../positionType"
 
 const Oparator = styled.div`
   display: flex;
-  flex-direction: row;
-  justify-content: end;
+  flex-direction: row-reverse;
+  justify-content: space-between;
   align-items: center;
   max-width: 400px;
   margin-left: auto;
@@ -77,6 +81,26 @@ const PositionsPage = () => {
               <FontAwesomeIcon icon={faPlusCircle} style={{ marginRight: 5 }} />
               เพิ่มคลังตำแหน่ง
             </Button>
+            {(searchFilter.posName !== `` ||
+              searchFilter.posType !== `` ||
+              searchFilter.posNumber !== ``) && (
+              <Button
+                color="error"
+                onClick={() => {
+                  dispatch({
+                    type: `SET_SEARCH_FILTER`,
+                    searchFilter: {
+                      posName: ``,
+                      posType: ``,
+                      posNumber: ``,
+                    },
+                  })
+                }}
+              >
+                <FontAwesomeIcon icon={faTimes} style={{ marginRight: 5 }} />
+                ล้างตัวกรอง
+              </Button>
+            )}
           </Oparator>
           <Form>
             <TextField

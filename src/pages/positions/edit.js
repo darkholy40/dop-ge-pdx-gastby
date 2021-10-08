@@ -153,6 +153,7 @@ const EditPositionsPage = ({ location }) => {
 
       console.log(res)
 
+      navigate(`/positions/list`)
       dispatch({
         type: `SET_NOTIFICATION_DIALOG`,
         notificationDialog: {
@@ -160,9 +161,7 @@ const EditPositionsPage = ({ location }) => {
           title: `แก้ไขรายการสำเร็จ`,
           description: `บันทึกรายการคลังตำแหน่งสำเร็จ`,
           variant: `success`,
-          callback: () => {
-            navigate(`/positions/list`)
-          },
+          callback: () => {},
         },
       })
     } catch (error) {
@@ -214,7 +213,7 @@ const EditPositionsPage = ({ location }) => {
     <Layout>
       {token !== "" ? (
         <>
-          <Seo title="เพิ่มคลังตำแหน่ง" />
+          <Seo title="แก้ไขคลังตำแหน่ง" />
           <Breadcrumbs
             previous={[
               {
@@ -222,11 +221,11 @@ const EditPositionsPage = ({ location }) => {
                 link: `/positions`,
               },
               {
-                name: `ค้นหาคลังตำแหน่ง`,
+                name: `ค้นหา`,
                 link: `/positions/list`,
               },
             ]}
-            current="เพิ่มคลังตำแหน่ง"
+            current="แก้ไข"
           />
 
           {count > 0 && (

@@ -4,7 +4,7 @@ import { useDispatch } from "react-redux"
 import { Button } from "@mui/material"
 import styled from "styled-components"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { faFile } from "@fortawesome/free-solid-svg-icons"
+import { faFile, faChevronLeft } from "@fortawesome/free-solid-svg-icons"
 
 import Seo from "../components/Seo"
 
@@ -53,10 +53,11 @@ const PageNotFound = () => {
         </Desc>
         <Button
           color="primary"
-          variant="contained"
+          variant="outlined"
           onClick={() => navigate(`/`)}
         >
-          กลับหน้าแรก
+          <FontAwesomeIcon icon={faChevronLeft} style={{ marginRight: 5 }} />
+          <span>กลับหน้าแรก</span>
         </Button>
       </Flex>
     </>
