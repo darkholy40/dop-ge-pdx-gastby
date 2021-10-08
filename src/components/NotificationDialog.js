@@ -20,7 +20,6 @@ const Flex = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
-
   padding: 16px 24px;
 `
 
@@ -122,8 +121,8 @@ NotificationDialog.propTypes = {
 }
 
 NotificationDialog.defaultProps = {
-  title: `Set backup account`,
-  description: `Description`,
+  title: `การแจ้งเตือน`,
+  description: ``,
   variant: ``,
 }
 
