@@ -58,7 +58,7 @@ const PositionsPage = () => {
         }
         ${
           searchFilter.posType !== ``
-            ? `Pos_type: "${searchFilter.posType}"`
+            ? `Pos_Type: "${searchFilter.posType}"`
             : ``
         }
         ${
@@ -81,7 +81,7 @@ const PositionsPage = () => {
             positions${filter} {
               _id
               Pos_Name
-              Pos_type
+              Pos_Type
               Pos_Number
               Pos_Open
               Pos_South
@@ -215,7 +215,7 @@ const PositionsPage = () => {
                           <TableCell align="left" sx={{ minWidth: 100 }}>
                             {row.Pos_Name}
                           </TableCell>
-                          <TableCell align="left">{row.Pos_type}</TableCell>
+                          <TableCell align="left">{row.Pos_Type}</TableCell>
                           <TableCell align="left">{row.Pos_Number}</TableCell>
                           <TableCell align="left"></TableCell>
                           <TableCell align="center">

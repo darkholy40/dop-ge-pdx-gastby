@@ -1,7 +1,15 @@
 import React, { useCallback, useEffect } from "react"
 import { useSelector, useDispatch } from "react-redux"
 import styled from "styled-components"
-import { Button, TextField, Checkbox } from "@mui/material"
+import {
+  Button,
+  TextField,
+  Checkbox,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+} from "@mui/material"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faPlus } from "@fortawesome/free-solid-svg-icons"
 import { ApolloClient, InMemoryCache, gql } from "@apollo/client"
@@ -10,6 +18,7 @@ import Layout from "../../components/Layout"
 import Seo from "../../components/Seo"
 import Breadcrumbs from "../../components/Breadcrumbs"
 import PageNotFound from "../../components/PageNotFound"
+import positionType from "../../positionType"
 
 const Form = styled.form`
   display: flex;
@@ -27,7 +36,9 @@ const Flex = styled.div`
 `
 
 const AddPositionsPage = () => {
-  const { token, url, addPositionFilter } = useSelector(state => state)
+  const { token, userInfo, url, addPositionFilter } = useSelector(
+    state => state
+  )
   const dispatch = useDispatch()
 
   const goAdd = async () => {
@@ -48,16 +59,17 @@ const AddPositionsPage = () => {
             createPosition(input: {
               data: {
                 Pos_Name: "${addPositionFilter.posName}",
-                Pos_type: "${addPositionFilter.posType}",
+                Pos_Type: "${addPositionFilter.posType}",
                 Pos_Number: "${addPositionFilter.posNumber}",
                 Pos_Open: ${addPositionFilter.posOpen},
                 Pos_South: ${addPositionFilter.posSouth},
+                staff_created: "${userInfo._id}",
               }
             }) {
               position {
                 _id
                 Pos_Name
-                Pos_type
+                Pos_Type
                 Pos_Number
                 Pos_Open
                 Pos_South
@@ -85,6 +97,17 @@ const AddPositionsPage = () => {
         },
       })
     } catch (error) {
+      dispatch({
+        type: `SET_NOTIFICATION_DIALOG`,
+        notificationDialog: {
+          open: true,
+          title: `เพิ่มรายการไม่สำเร็จ`,
+          description: `ไม่สามารถเพิ่มรายการคลังตำแหน่งได้`,
+          variant: `error`,
+          callback: () => {},
+        },
+      })
+
       console.log(error)
     }
 
@@ -146,22 +169,36 @@ const AddPositionsPage = () => {
               }}
               value={addPositionFilter.posName}
             />
-            <TextField
-              sx={{ marginBottom: `1rem` }}
-              id="pos-type"
-              label="ชื่อประเภทกลุ่มงาน"
-              variant="outlined"
-              onChange={e => {
-                dispatch({
-                  type: `SET_ADD_POSITION_FILTER`,
-                  addPositionFilter: {
-                    ...addPositionFilter,
-                    posType: e.target.value,
-                  },
-                })
-              }}
-              value={addPositionFilter.posType}
-            />
+            <FormControl fullWidth>
+              <InputLabel id="pos-type-label-id">ชื่อประเภทกลุ่มงาน</InputLabel>
+              <Select
+                sx={{ marginBottom: `1rem` }}
+                labelId="pos-type-label-id"
+                id="pos-type"
+                label="ชื่อประเภทกลุ่มงาน"
+                onChange={e => {
+                  dispatch({
+                    type: `SET_ADD_POSITION_FILTER`,
+                    addPositionFilter: {
+                      ...addPositionFilter,
+                      posType: e.target.value,
+                    },
+                  })
+                }}
+                value={addPositionFilter.posType}
+              >
+                <MenuItem value="" selected>
+                  ---
+                </MenuItem>
+                {positionType.map((item, index) => {
+                  return (
+                    <MenuItem key={`postype_${index}`} value={item}>
+                      {item}
+                    </MenuItem>
+                  )
+                })}
+              </Select>
+            </FormControl>
             <TextField
               sx={{ marginBottom: `1rem` }}
               id="pos-number"

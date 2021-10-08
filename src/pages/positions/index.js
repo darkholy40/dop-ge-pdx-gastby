@@ -2,7 +2,14 @@ import React, { useEffect } from "react"
 import { navigate } from "gatsby"
 import { useSelector, useDispatch } from "react-redux"
 import styled from "styled-components"
-import { Button, TextField } from "@mui/material"
+import {
+  Button,
+  TextField,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+} from "@mui/material"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faPlusCircle, faSearch } from "@fortawesome/free-solid-svg-icons"
 
@@ -10,6 +17,7 @@ import Layout from "../../components/Layout"
 import Seo from "../../components/Seo"
 import Breadcrumbs from "../../components/Breadcrumbs"
 import PageNotFound from "../../components/PageNotFound"
+import positionType from "../../positionType"
 
 const Oparator = styled.div`
   display: flex;
@@ -87,22 +95,36 @@ const PositionsPage = () => {
               }}
               value={searchFilter.posName}
             />
-            <TextField
-              sx={{ marginBottom: `1rem` }}
-              id="pos-type"
-              label="ชื่อประเภทกลุ่มงาน"
-              variant="outlined"
-              onChange={e => {
-                dispatch({
-                  type: `SET_SEARCH_FILTER`,
-                  searchFilter: {
-                    ...searchFilter,
-                    posType: e.target.value,
-                  },
-                })
-              }}
-              value={searchFilter.posType}
-            />
+            <FormControl fullWidth>
+              <InputLabel id="pos-type-label-id">ชื่อประเภทกลุ่มงาน</InputLabel>
+              <Select
+                sx={{ marginBottom: `1rem` }}
+                labelId="pos-type-label-id"
+                id="pos-type"
+                label="ชื่อประเภทกลุ่มงาน"
+                onChange={e => {
+                  dispatch({
+                    type: `SET_SEARCH_FILTER`,
+                    searchFilter: {
+                      ...searchFilter,
+                      posType: e.target.value,
+                    },
+                  })
+                }}
+                value={searchFilter.posType}
+              >
+                <MenuItem value="" selected>
+                  ---
+                </MenuItem>
+                {positionType.map((item, index) => {
+                  return (
+                    <MenuItem key={`postype_${index}`} value={item}>
+                      {item}
+                    </MenuItem>
+                  )
+                })}
+              </Select>
+            </FormControl>
             <TextField
               sx={{ marginBottom: `1rem` }}
               id="pos-number"

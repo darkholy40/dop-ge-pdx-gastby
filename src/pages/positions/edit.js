@@ -2,7 +2,16 @@ import React, { useCallback, useEffect, useState } from "react"
 import { navigate } from "gatsby"
 import { useSelector, useDispatch } from "react-redux"
 import styled from "styled-components"
-import { Button, TextField, Checkbox, Divider } from "@mui/material"
+import {
+  Button,
+  TextField,
+  Checkbox,
+  Divider,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+} from "@mui/material"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faSave, faTrash } from "@fortawesome/free-solid-svg-icons"
 import { ApolloClient, InMemoryCache, gql } from "@apollo/client"
@@ -11,6 +20,7 @@ import Layout from "../../components/Layout"
 import Seo from "../../components/Seo"
 import Breadcrumbs from "../../components/Breadcrumbs"
 import PageNotFound from "../../components/PageNotFound"
+import positionType from "../../positionType"
 
 const Form = styled.form`
   display: flex;
@@ -28,7 +38,9 @@ const Flex = styled.div`
 `
 
 const EditPositionsPage = ({ location }) => {
-  const { token, url, addPositionFilter } = useSelector(state => state)
+  const { token, userInfo, url, addPositionFilter } = useSelector(
+    state => state
+  )
   const dispatch = useDispatch()
   const [count, setCount] = useState(0)
   const search = location.search.split("id=")
@@ -61,7 +73,7 @@ const EditPositionsPage = ({ location }) => {
             position(id: "${id}") {
               _id
               Pos_Name
-              Pos_type
+              Pos_Type
               Pos_Number
               Pos_Open
               Pos_South
@@ -78,7 +90,7 @@ const EditPositionsPage = ({ location }) => {
         type: `SET_ADD_POSITION_FILTER`,
         addPositionFilter: {
           posName: thisPosition.Pos_Name,
-          posType: thisPosition.Pos_type,
+          posType: thisPosition.Pos_Type,
           posNumber: thisPosition.Pos_Number,
           posOpen: thisPosition.Pos_Open,
           posSouth: thisPosition.Pos_South,
@@ -116,16 +128,17 @@ const EditPositionsPage = ({ location }) => {
               }
               data: {
                 Pos_Name: "${addPositionFilter.posName}",
-                Pos_type: "${addPositionFilter.posType}",
+                Pos_Type: "${addPositionFilter.posType}",
                 Pos_Number: "${addPositionFilter.posNumber}",
                 Pos_Open: ${addPositionFilter.posOpen},
                 Pos_South: ${addPositionFilter.posSouth},
+                staff_updated: "${userInfo._id}",
               }
             }) {
               position {
                 _id
                 Pos_Name
-                Pos_type
+                Pos_Type
                 Pos_Number
                 Pos_Open
                 Pos_South
@@ -154,6 +167,17 @@ const EditPositionsPage = ({ location }) => {
       })
     } catch (error) {
       console.log(error)
+
+      dispatch({
+        type: `SET_NOTIFICATION_DIALOG`,
+        notificationDialog: {
+          open: true,
+          title: `แก้ไขรายการไม่สำเร็จ`,
+          description: `ไม่สามารถบันทึกรายการคลังตำแหน่งได้`,
+          variant: `error`,
+          callback: () => {},
+        },
+      })
     }
 
     dispatch({
@@ -224,7 +248,39 @@ const EditPositionsPage = ({ location }) => {
                   }}
                   value={addPositionFilter.posName}
                 />
-                <TextField
+                <FormControl fullWidth>
+                  <InputLabel id="pos-type-label-id">
+                    ชื่อประเภทกลุ่มงาน
+                  </InputLabel>
+                  <Select
+                    sx={{ marginBottom: `1rem` }}
+                    labelId="pos-type-label-id"
+                    id="pos-type"
+                    label="ชื่อประเภทกลุ่มงาน"
+                    onChange={e => {
+                      dispatch({
+                        type: `SET_ADD_POSITION_FILTER`,
+                        addPositionFilter: {
+                          ...addPositionFilter,
+                          posType: e.target.value,
+                        },
+                      })
+                    }}
+                    value={addPositionFilter.posType}
+                  >
+                    <MenuItem value="" selected>
+                      ---
+                    </MenuItem>
+                    {positionType.map((item, index) => {
+                      return (
+                        <MenuItem key={`postype_${index}`} value={item}>
+                          {item}
+                        </MenuItem>
+                      )
+                    })}
+                  </Select>
+                </FormControl>
+                {/* <TextField
                   sx={{ marginBottom: `1rem` }}
                   id="pos-type"
                   label="ชื่อประเภทกลุ่มงาน"
@@ -239,7 +295,7 @@ const EditPositionsPage = ({ location }) => {
                     })
                   }}
                   value={addPositionFilter.posType}
-                />
+                /> */}
                 <TextField
                   sx={{ marginBottom: `1rem` }}
                   id="pos-number"
