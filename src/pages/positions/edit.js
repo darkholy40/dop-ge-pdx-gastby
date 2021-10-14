@@ -51,7 +51,7 @@ const EditPositionsPage = ({ location }) => {
     text: ``,
   })
   const search = location.search.split("id=")
-  const id = search[1]
+  const id = search[1] || `0`
 
   // useEffect(() => {
   //   const search = location.search.split("id=")
@@ -67,6 +67,16 @@ const EditPositionsPage = ({ location }) => {
       uri: `${url}/graphql`,
       cache: new InMemoryCache(),
     })
+
+    if (id === `0`) {
+      setIsError({
+        status: true,
+        type: `notFound`,
+        text: `ไม่พบข้อมูลหน้านี้`,
+      })
+
+      return 0
+    }
 
     dispatch({
       type: `SET_BACKDROP_OPEN`,
@@ -94,20 +104,34 @@ const EditPositionsPage = ({ location }) => {
 
       const thisPosition = res.data.position
 
-      setCurrentPosNumber(thisPosition.Pos_Number)
-      dispatch({
-        type: `SET_ADD_POSITION_FILTER`,
-        addPositionFilter: {
-          posName: thisPosition.Pos_Name,
-          posType: thisPosition.Pos_Type,
-          posNumber: thisPosition.Pos_Number,
-          posOpen: thisPosition.Pos_Open,
-          posSouth: thisPosition.Pos_South,
-        },
-      })
-      setCount(prev => prev + 1)
+      if (thisPosition !== null) {
+        setCurrentPosNumber(thisPosition.Pos_Number)
+        dispatch({
+          type: `SET_ADD_POSITION_FILTER`,
+          addPositionFilter: {
+            posName: thisPosition.Pos_Name,
+            posType: thisPosition.Pos_Type,
+            posNumber: thisPosition.Pos_Number,
+            posOpen: thisPosition.Pos_Open,
+            posSouth: thisPosition.Pos_South,
+          },
+        })
+        setCount(prev => prev + 1)
+      } else {
+        setIsError({
+          status: true,
+          type: `notFound`,
+          text: `ไม่พบข้อมูลหน้านี้`,
+        })
+      }
     } catch (error) {
       console.log(error)
+
+      setIsError({
+        status: true,
+        type: `notFound`,
+        text: `ไม่พบข้อมูลหน้านี้`,
+      })
     }
 
     dispatch({
@@ -281,7 +305,7 @@ const EditPositionsPage = ({ location }) => {
 
   return (
     <Layout>
-      {token !== "" ? (
+      {token !== "" && !isError.status ? (
         <>
           <Seo title="แก้ไขคลังตำแหน่ง" />
           <Breadcrumbs
@@ -350,21 +374,21 @@ const EditPositionsPage = ({ location }) => {
                   </Select>
                 </FormControl>
                 {/* <TextField
-                  sx={{ marginBottom: `1rem` }}
-                  id="pos-type"
-                  label="ชื่อประเภทกลุ่มงาน"
-                  variant="outlined"
-                  onChange={e => {
-                    dispatch({
-                      type: `SET_ADD_POSITION_FILTER`,
-                      addPositionFilter: {
-                        ...addPositionFilter,
-                        posType: e.target.value,
-                      },
-                    })
-                  }}
-                  value={addPositionFilter.posType}
-                /> */}
+                sx={{ marginBottom: `1rem` }}
+                id="pos-type"
+                label="ชื่อประเภทกลุ่มงาน"
+                variant="outlined"
+                onChange={e => {
+                  dispatch({
+                    type: `SET_ADD_POSITION_FILTER`,
+                    addPositionFilter: {
+                      ...addPositionFilter,
+                      posType: e.target.value,
+                    },
+                  })
+                }}
+                value={addPositionFilter.posType}
+              /> */}
                 <TextField
                   sx={{ marginBottom: `1rem` }}
                   id="pos-number"
@@ -449,6 +473,12 @@ const EditPositionsPage = ({ location }) => {
             </>
           )}
         </>
+      ) : isError.type === `notFound` ? (
+        <PageNotFound
+          desc="ไม่พบ url ที่เรียกหรือเนื้อหาในส่วนนี้ได้ถูกลบออกจากระบบ"
+          link="/positions/list"
+          buttonText="กลับไปหน้าค้นหาคลังตำแหน่ง"
+        />
       ) : (
         <PageNotFound />
       )}

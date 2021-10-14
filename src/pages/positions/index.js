@@ -41,6 +41,11 @@ const Form = styled.form`
   margin: auto;
 `
 
+const SubmitButtonFlex = styled.div`
+  display: flex;
+  justify-content: space-between;
+`
+
 const PositionsPage = () => {
   const { token, searchFilter } = useSelector(state => state)
   const dispatch = useDispatch()
@@ -62,7 +67,7 @@ const PositionsPage = () => {
           <Oparator>
             <Button
               color="primary"
-              variant="contained"
+              // variant="contained"
               onClick={() => {
                 dispatch({
                   type: `SET_ADD_POSITION_FILTER`,
@@ -81,28 +86,8 @@ const PositionsPage = () => {
               <FontAwesomeIcon icon={faPlusCircle} style={{ marginRight: 5 }} />
               เพิ่มคลังตำแหน่ง
             </Button>
-            {(searchFilter.posName !== `` ||
-              searchFilter.posType !== `` ||
-              searchFilter.posNumber !== ``) && (
-              <Button
-                color="error"
-                onClick={() => {
-                  dispatch({
-                    type: `SET_SEARCH_FILTER`,
-                    searchFilter: {
-                      posName: ``,
-                      posType: ``,
-                      posNumber: ``,
-                    },
-                  })
-                }}
-              >
-                <FontAwesomeIcon icon={faTimes} style={{ marginRight: 5 }} />
-                ล้างตัวกรอง
-              </Button>
-            )}
           </Oparator>
-          <Form>
+          <Form onSubmit={e => e.preventDefault()}>
             <TextField
               sx={{ marginBottom: `1rem` }}
               id="pos-name"
@@ -165,14 +150,45 @@ const PositionsPage = () => {
               }}
               value={searchFilter.posNumber}
             />
-            <Button
-              color="primary"
-              variant="contained"
-              onClick={() => navigate(`/positions/list`)}
-            >
-              <FontAwesomeIcon icon={faSearch} style={{ marginRight: 5 }} />
-              ค้นหา
-            </Button>
+            <SubmitButtonFlex>
+              <Button
+                style={{
+                  width: `100%`,
+                  marginRight: 10,
+                }}
+                color="primary"
+                variant="contained"
+                onClick={() => navigate(`/positions/list`)}
+              >
+                <FontAwesomeIcon icon={faSearch} style={{ marginRight: 5 }} />
+                ค้นหา
+              </Button>
+              <Button
+                style={{
+                  width: `100%`,
+                }}
+                color="error"
+                type="reset"
+                onClick={() => {
+                  dispatch({
+                    type: `SET_SEARCH_FILTER`,
+                    searchFilter: {
+                      posName: ``,
+                      posType: ``,
+                      posNumber: ``,
+                    },
+                  })
+                }}
+                disabled={
+                  searchFilter.posName === `` &&
+                  searchFilter.posType === `` &&
+                  searchFilter.posNumber === ``
+                }
+              >
+                <FontAwesomeIcon icon={faTimes} style={{ marginRight: 5 }} />
+                ล้าง
+              </Button>
+            </SubmitButtonFlex>
           </Form>
         </>
       ) : (
