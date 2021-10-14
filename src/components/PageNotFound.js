@@ -1,5 +1,6 @@
 import React, { useEffect } from "react"
 import { navigate } from "gatsby"
+import PropTypes from "prop-types"
 import { useDispatch } from "react-redux"
 import { Button } from "@mui/material"
 import styled from "styled-components"
@@ -27,7 +28,7 @@ const Desc = styled.p`
   margin-bottom: 1rem;
 `
 
-const PageNotFound = () => {
+const PageNotFound = ({ title, desc, link, buttonText }) => {
   const dispatch = useDispatch()
 
   useEffect(() => {
@@ -39,29 +40,40 @@ const PageNotFound = () => {
 
   return (
     <>
-      <Seo title="ไม่พบหน้านี้" />
+      <Seo title={title} />
 
       <Flex>
         <FontAwesomeIcon
           icon={faFile}
           style={{ fontSize: 75, color: `rgba(0, 0, 0, 0.8)` }}
         />
-        <Title>ไม่พบหน้านี้</Title>
-        <Desc>
-          ไม่พบ url
-          ที่เรียกหรือต้องทำการลงชื่อเข้าใช้งานระบบก่อนใช้งานเนื้อหาในส่วนนี้
-        </Desc>
+        <Title>{title}</Title>
+        <Desc>{desc}</Desc>
         <Button
           color="primary"
           variant="outlined"
-          onClick={() => navigate(`/`)}
+          onClick={() => navigate(link)}
         >
           <FontAwesomeIcon icon={faChevronLeft} style={{ marginRight: 5 }} />
-          <span>กลับหน้าแรก</span>
+          <span>{buttonText}</span>
         </Button>
       </Flex>
     </>
   )
+}
+
+PageNotFound.propTypes = {
+  title: PropTypes.string,
+  desc: PropTypes.string,
+  link: PropTypes.string,
+  buttonText: PropTypes.string,
+}
+
+PageNotFound.defaultProps = {
+  title: `ไม่พบหน้านี้`,
+  desc: `ไม่พบ url ที่เรียกหรือต้องทำการลงชื่อเข้าใช้งานระบบก่อนใช้งานเนื้อหาในส่วนนี้`,
+  link: `/`,
+  buttonText: `กลับหน้าแรก`,
 }
 
 export default PageNotFound
