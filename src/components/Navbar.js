@@ -97,6 +97,13 @@ const Navbar = () => {
                 </div>
                 <div
                   role="presentation"
+                  className={currentPage === `people` ? `active` : ``}
+                  onClick={() => changePage(`people`)}
+                >
+                  ประวัติกำลังพล
+                </div>
+                <div
+                  role="presentation"
                   className={currentPage === `about` ? `active` : ``}
                   onClick={() => changePage(`about`)}
                 >
