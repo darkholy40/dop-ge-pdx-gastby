@@ -100,7 +100,7 @@ const PositionsPage = () => {
         `,
       })
 
-      console.log(res.data)
+      // console.log(res.data)
 
       if (res.data.positions.length > 0) {
         setPosData(res.data.positions)

@@ -14,6 +14,7 @@ const Flex = styled.div`
 
   div {
     padding: 4px 16px;
+    margin-right: 4px;
     border-radius: 8px;
     cursor: pointer;
     user-select: none;

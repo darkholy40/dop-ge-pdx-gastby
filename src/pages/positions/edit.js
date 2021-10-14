@@ -11,6 +11,7 @@ import {
   InputLabel,
   Select,
   MenuItem,
+  Alert,
 } from "@mui/material"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faSave, faTrash } from "@fortawesome/free-solid-svg-icons"
@@ -43,17 +44,23 @@ const EditPositionsPage = ({ location }) => {
   )
   const dispatch = useDispatch()
   const [count, setCount] = useState(0)
+  const [currentPosNumber, setCurrentPosNumber] = useState(``)
+  const [isError, setIsError] = useState({
+    status: false,
+    type: ``,
+    text: ``,
+  })
   const search = location.search.split("id=")
   const id = search[1]
 
-  useEffect(() => {
-    const search = location.search.split("id=")
-    console.log(search[1])
-  }, [location])
+  // useEffect(() => {
+  //   const search = location.search.split("id=")
+  //   console.log(search[1])
+  // }, [location])
 
-  useEffect(() => {
-    console.log(addPositionFilter)
-  }, [addPositionFilter])
+  // useEffect(() => {
+  //   console.log(addPositionFilter)
+  // }, [addPositionFilter])
 
   const getPosition = useCallback(async () => {
     const client = new ApolloClient({
@@ -86,6 +93,8 @@ const EditPositionsPage = ({ location }) => {
       })
 
       const thisPosition = res.data.position
+
+      setCurrentPosNumber(thisPosition.Pos_Number)
       dispatch({
         type: `SET_ADD_POSITION_FILTER`,
         addPositionFilter: {
@@ -112,71 +121,132 @@ const EditPositionsPage = ({ location }) => {
       uri: `${url}/graphql`,
       cache: new InMemoryCache(),
     })
+    let posNumberIsExisted = false
 
+    setIsError({
+      status: false,
+      type: ``,
+      text: ``,
+    })
     dispatch({
       type: `SET_BACKDROP_OPEN`,
       backdropOpen: true,
     })
 
-    try {
-      const res = await client.mutate({
-        mutation: gql`
-          mutation UpdatePosition {
-            updatePosition(input: {
-              where: {
-                id: "${id}"
-              }
-              data: {
-                Pos_Name: "${addPositionFilter.posName}",
-                Pos_Type: "${addPositionFilter.posType}",
-                Pos_Number: "${addPositionFilter.posNumber}",
-                Pos_Open: ${addPositionFilter.posOpen},
-                Pos_South: ${addPositionFilter.posSouth},
-                staff_updated: "${userInfo._id}",
-              }
-            }) {
-              position {
+    if (currentPosNumber !== addPositionFilter.posNumber) {
+      try {
+        const res = await client.query({
+          query: gql`
+            query Positions {
+              positions(where: {
+                Pos_Number: "${addPositionFilter.posNumber}"
+              }) {
                 _id
                 Pos_Name
                 Pos_Type
                 Pos_Number
                 Pos_Open
                 Pos_South
+                staff_created
+                staff_updated
                 published_at
                 createdAt
                 updatedAt
               }
             }
-          }
-        `,
-      })
+          `,
+        })
 
-      console.log(res)
+        if (res.data.positions.length > 0) {
+          posNumberIsExisted = true
 
-      navigate(`/positions/list`)
-      dispatch({
-        type: `SET_NOTIFICATION_DIALOG`,
-        notificationDialog: {
-          open: true,
-          title: `แก้ไขรายการสำเร็จ`,
-          description: `บันทึกรายการคลังตำแหน่งสำเร็จ`,
-          variant: `success`,
-          callback: () => {},
-        },
-      })
-    } catch (error) {
-      console.log(error)
+          setIsError({
+            status: true,
+            type: `posNumberIsExisted`,
+            text: `มีเลขที่ตำแหน่งนี้ในฐานข้อมูลแล้ว`,
+          })
+        }
+      } catch {
+        dispatch({
+          type: `SET_NOTIFICATION_DIALOG`,
+          notificationDialog: {
+            open: true,
+            title: `เพิ่มรายการไม่สำเร็จ`,
+            description: `ไม่สามารถเพิ่มรายการคลังตำแหน่งได้`,
+            variant: `error`,
+            callback: () => {},
+          },
+        })
 
-      dispatch({
-        type: `SET_NOTIFICATION_DIALOG`,
-        notificationDialog: {
-          open: true,
-          title: `แก้ไขรายการไม่สำเร็จ`,
-          description: `ไม่สามารถบันทึกรายการคลังตำแหน่งได้`,
-          variant: `error`,
-          callback: () => {},
-        },
-      })
+        dispatch({
+          type: `SET_BACKDROP_OPEN`,
+          backdropOpen: false,
+        })
+
+        return 0
+      }
+    }
+
+    if (!posNumberIsExisted) {
+      try {
+        await client.mutate({
+          mutation: gql`
+            mutation UpdatePosition {
+              updatePosition(input: {
+                where: {
+                  id: "${id}"
+                }
+                data: {
+                  Pos_Name: "${addPositionFilter.posName}",
+                  Pos_Type: "${addPositionFilter.posType}",
+                  Pos_Number: "${addPositionFilter.posNumber}",
+                  Pos_Open: ${addPositionFilter.posOpen},
+                  Pos_South: ${addPositionFilter.posSouth},
+                  staff_updated: "${userInfo._id}",
+                }
+              }) {
+                position {
+                  _id
+                  Pos_Name
+                  Pos_Type
+                  Pos_Number
+                  Pos_Open
+                  Pos_South
+                  published_at
+                  createdAt
+                  updatedAt
+                }
+              }
+            }
+          `,
+        })
+        // console.log(res)
+
+        navigate(`/positions/list`)
+        dispatch({
+          type: `SET_NOTIFICATION_DIALOG`,
+          notificationDialog: {
+            open: true,
+            title: `แก้ไขรายการสำเร็จ`,
+            description: `บันทึกรายการคลังตำแหน่งสำเร็จ`,
+            variant: `success`,
+            callback: () => {},
+          },
+        })
+      } catch (error) {
+        console.log(error)
+
+        dispatch({
+          type: `SET_NOTIFICATION_DIALOG`,
+          notificationDialog: {
+            open: true,
+            title: `แก้ไขรายการไม่สำเร็จ`,
+            description: `ไม่สามารถบันทึกรายการคลังตำแหน่งได้`,
+            variant: `error`,
+            callback: () => {},
+          },
+        })
+      }
     }
 
     dispatch({
@@ -310,7 +380,15 @@ const EditPositionsPage = ({ location }) => {
                     })
                   }}
                   value={addPositionFilter.posNumber}
+                  error={
+                    isError.status && isError.type === `posNumberIsExisted`
+                  }
                 />
+                {isError.status && isError.type === `posNumberIsExisted` && (
+                  <Alert sx={{ marginBottom: `1rem` }} severity="error">
+                    {isError.text}
+                  </Alert>
+                )}
                 <Flex>
                   <Checkbox
                     onChange={(_, newValue) => {

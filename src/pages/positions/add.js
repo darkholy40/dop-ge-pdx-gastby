@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from "react"
+import React, { useCallback, useEffect, useState } from "react"
 import { useSelector, useDispatch } from "react-redux"
 import styled from "styled-components"
 import {
@@ -9,6 +9,7 @@ import {
   InputLabel,
   Select,
   MenuItem,
+  Alert,
 } from "@mui/material"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faPlus } from "@fortawesome/free-solid-svg-icons"
@@ -40,63 +41,62 @@ const AddPositionsPage = () => {
     state => state
   )
   const dispatch = useDispatch()
+  const [isError, setIsError] = useState({
+    status: false,
+    type: ``,
+    text: ``,
+  })
 
   const goAdd = async () => {
     const client = new ApolloClient({
       uri: `${url}/graphql`,
       cache: new InMemoryCache(),
     })
+    let posNumberIsExisted = false
 
+    setIsError({
+      status: false,
+      type: ``,
+      text: ``,
+    })
     dispatch({
       type: `SET_BACKDROP_OPEN`,
       backdropOpen: true,
     })
 
     try {
-      const res = await client.mutate({
-        mutation: gql`
-          mutation CreatePosition {
-            createPosition(input: {
-              data: {
-                Pos_Name: "${addPositionFilter.posName}",
-                Pos_Type: "${addPositionFilter.posType}",
-                Pos_Number: "${addPositionFilter.posNumber}",
-                Pos_Open: ${addPositionFilter.posOpen},
-                Pos_South: ${addPositionFilter.posSouth},
-                staff_created: "${userInfo._id}",
-              }
+      const res = await client.query({
+        query: gql`
+          query Positions {
+            positions(where: {
+              Pos_Number: "${addPositionFilter.posNumber}"
             }) {
-              position {
-                _id
-                Pos_Name
-                Pos_Type
-                Pos_Number
-                Pos_Open
-                Pos_South
-                published_at
-                createdAt
-                updatedAt
-              }
+              _id
+              Pos_Name
+              Pos_Type
+              Pos_Number
+              Pos_Open
+              Pos_South
+              staff_created
+              staff_updated
+              published_at
+              createdAt
+              updatedAt
             }
           }
         `,
       })
 
-      console.log(res)
+      if (res.data.positions.length > 0) {
+        posNumberIsExisted = true
 
-      dispatch({
-        type: `SET_NOTIFICATION_DIALOG`,
-        notificationDialog: {
-          open: true,
-          title: `เพิ่มรายการสำเร็จ`,
-          description: `เพิ่มรายการคลังตำแหน่งสำเร็จ`,
-          variant: `success`,
-          callback: () => {
-            resetInput()
-          },
-        },
-      })
-    } catch (error) {
+        setIsError({
+          status: true,
+          type: `posNumberIsExisted`,
+          text: `มีเลขที่ตำแหน่งนี้ในฐานข้อมูลแล้ว`,
+        })
+      }
+    } catch {
       dispatch({
         type: `SET_NOTIFICATION_DIALOG`,
         notificationDialog: {
@@ -108,7 +108,72 @@ const AddPositionsPage = () => {
         },
       })
 
-      console.log(error)
+      dispatch({
+        type: `SET_BACKDROP_OPEN`,
+        backdropOpen: false,
+      })
+
+      return 0
+    }
+
+    if (!posNumberIsExisted) {
+      try {
+        await client.mutate({
+          mutation: gql`
+            mutation CreatePosition {
+              createPosition(input: {
+                data: {
+                  Pos_Name: "${addPositionFilter.posName}",
+                  Pos_Type: "${addPositionFilter.posType}",
+                  Pos_Number: "${addPositionFilter.posNumber}",
+                  Pos_Open: ${addPositionFilter.posOpen},
+                  Pos_South: ${addPositionFilter.posSouth},
+                  staff_created: "${userInfo._id}",
+                }
+              }) {
+                position {
+                  _id
+                  Pos_Name
+                  Pos_Type
+                  Pos_Number
+                  Pos_Open
+                  Pos_South
+                  published_at
+                  createdAt
+                  updatedAt
+                }
+              }
+            }
+          `,
+        })
+        // console.log(res)
+
+        dispatch({
+          type: `SET_NOTIFICATION_DIALOG`,
+          notificationDialog: {
+            open: true,
+            title: `เพิ่มรายการสำเร็จ`,
+            description: `เพิ่มรายการคลังตำแหน่งสำเร็จ`,
+            variant: `success`,
+            callback: () => {
+              resetInput()
+            },
+          },
+        })
+      } catch (error) {
+        dispatch({
+          type: `SET_NOTIFICATION_DIALOG`,
+          notificationDialog: {
+            open: true,
+            title: `เพิ่มรายการไม่สำเร็จ`,
+            description: `ไม่สามารถเพิ่มรายการคลังตำแหน่งได้`,
+            variant: `error`,
+            callback: () => {},
+          },
+        })
+
+        console.log(error)
+      }
     }
 
     dispatch({
@@ -214,7 +279,13 @@ const AddPositionsPage = () => {
                 })
               }}
               value={addPositionFilter.posNumber}
+              error={isError.status && isError.type === `posNumberIsExisted`}
             />
+            {isError.status && isError.type === `posNumberIsExisted` && (
+              <Alert sx={{ marginBottom: `1rem` }} severity="error">
+                {isError.text}
+              </Alert>
+            )}
             <Flex>
               <Checkbox
                 onChange={(_, newValue) => {
