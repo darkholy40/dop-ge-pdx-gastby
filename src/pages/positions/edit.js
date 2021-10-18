@@ -46,7 +46,6 @@ const EditPositionsPage = ({ location }) => {
   const [count, setCount] = useState(0)
   const [currentPosNumber, setCurrentPosNumber] = useState(``)
   const [isError, setIsError] = useState({
-    status: false,
     type: ``,
     text: ``,
   })
@@ -70,7 +69,6 @@ const EditPositionsPage = ({ location }) => {
 
     if (id === `0`) {
       setIsError({
-        status: true,
         type: `notFound`,
         text: `ไม่พบข้อมูลหน้านี้`,
       })
@@ -119,7 +117,6 @@ const EditPositionsPage = ({ location }) => {
         setCount(prev => prev + 1)
       } else {
         setIsError({
-          status: true,
           type: `notFound`,
           text: `ไม่พบข้อมูลหน้านี้`,
         })
@@ -128,7 +125,6 @@ const EditPositionsPage = ({ location }) => {
       console.log(error)
 
       setIsError({
-        status: true,
         type: `notFound`,
         text: `ไม่พบข้อมูลหน้านี้`,
       })
@@ -148,7 +144,6 @@ const EditPositionsPage = ({ location }) => {
     let posNumberIsExisted = false
 
     setIsError({
-      status: false,
       type: ``,
       text: ``,
     })
@@ -185,7 +180,6 @@ const EditPositionsPage = ({ location }) => {
           posNumberIsExisted = true
 
           setIsError({
-            status: true,
             type: `posNumberIsExisted`,
             text: `มีเลขที่ตำแหน่งนี้ในฐานข้อมูลแล้ว`,
           })
@@ -305,180 +299,183 @@ const EditPositionsPage = ({ location }) => {
 
   return (
     <Layout>
-      {token !== "" && !isError.status ? (
-        <>
-          <Seo title="แก้ไขคลังตำแหน่ง" />
-          <Breadcrumbs
-            previous={[
-              {
-                name: `คลังตำแหน่ง`,
-                link: `/positions`,
-              },
-              {
-                name: `ค้นหา`,
-                link: `/positions/list`,
-              },
-            ]}
-            current="แก้ไข"
-          />
+      {token !== "" ? (
+        isError.type !== `notFound` ? (
+          <>
+            <Seo title="แก้ไขคลังตำแหน่ง" />
+            <Breadcrumbs
+              previous={[
+                {
+                  name: `คลังตำแหน่ง`,
+                  link: `/positions`,
+                },
+                {
+                  name: `ค้นหา`,
+                  link: `/positions/list`,
+                },
+              ]}
+              current="แก้ไข"
+            />
 
-          {count > 0 && (
-            <>
-              <Form>
-                <TextField
-                  sx={{ marginBottom: `1rem` }}
-                  id="pos-name"
-                  label="ชื่อตำแหน่ง"
-                  variant="outlined"
-                  onChange={e => {
-                    dispatch({
-                      type: `SET_ADD_POSITION_FILTER`,
-                      addPositionFilter: {
-                        ...addPositionFilter,
-                        posName: e.target.value,
-                      },
-                    })
-                  }}
-                  value={addPositionFilter.posName}
-                />
-                <FormControl fullWidth>
-                  <InputLabel id="pos-type-label-id">
-                    ชื่อประเภทกลุ่มงาน
-                  </InputLabel>
-                  <Select
+            {count > 0 && (
+              <>
+                <Form>
+                  <TextField
                     sx={{ marginBottom: `1rem` }}
-                    labelId="pos-type-label-id"
-                    id="pos-type"
-                    label="ชื่อประเภทกลุ่มงาน"
+                    id="pos-name"
+                    label="ชื่อตำแหน่ง"
+                    variant="outlined"
                     onChange={e => {
                       dispatch({
                         type: `SET_ADD_POSITION_FILTER`,
                         addPositionFilter: {
                           ...addPositionFilter,
-                          posType: e.target.value,
+                          posName: e.target.value,
                         },
                       })
                     }}
-                    value={addPositionFilter.posType}
-                  >
-                    <MenuItem value="" selected>
-                      ---
-                    </MenuItem>
-                    {positionType.map((item, index) => {
-                      return (
-                        <MenuItem key={`postype_${index}`} value={item}>
-                          {item}
-                        </MenuItem>
-                      )
-                    })}
-                  </Select>
-                </FormControl>
-                {/* <TextField
-                sx={{ marginBottom: `1rem` }}
-                id="pos-type"
-                label="ชื่อประเภทกลุ่มงาน"
-                variant="outlined"
-                onChange={e => {
-                  dispatch({
-                    type: `SET_ADD_POSITION_FILTER`,
-                    addPositionFilter: {
-                      ...addPositionFilter,
-                      posType: e.target.value,
-                    },
-                  })
-                }}
-                value={addPositionFilter.posType}
-              /> */}
-                <TextField
+                    value={addPositionFilter.posName}
+                  />
+                  <FormControl fullWidth>
+                    <InputLabel id="pos-type-label-id">
+                      ชื่อประเภทกลุ่มงาน
+                    </InputLabel>
+                    <Select
+                      sx={{ marginBottom: `1rem` }}
+                      labelId="pos-type-label-id"
+                      id="pos-type"
+                      label="ชื่อประเภทกลุ่มงาน"
+                      onChange={e => {
+                        dispatch({
+                          type: `SET_ADD_POSITION_FILTER`,
+                          addPositionFilter: {
+                            ...addPositionFilter,
+                            posType: e.target.value,
+                          },
+                        })
+                      }}
+                      value={addPositionFilter.posType}
+                    >
+                      <MenuItem value="" selected>
+                        ---
+                      </MenuItem>
+                      {positionType.map((item, index) => {
+                        return (
+                          <MenuItem key={`postype_${index}`} value={item}>
+                            {item}
+                          </MenuItem>
+                        )
+                      })}
+                    </Select>
+                  </FormControl>
+                  {/* <TextField
                   sx={{ marginBottom: `1rem` }}
-                  id="pos-number"
-                  label="เลขที่ตำแหน่ง"
+                  id="pos-type"
+                  label="ชื่อประเภทกลุ่มงาน"
                   variant="outlined"
                   onChange={e => {
                     dispatch({
                       type: `SET_ADD_POSITION_FILTER`,
                       addPositionFilter: {
                         ...addPositionFilter,
-                        posNumber: e.target.value,
+                        posType: e.target.value,
                       },
                     })
                   }}
-                  value={addPositionFilter.posNumber}
-                  error={
-                    isError.status && isError.type === `posNumberIsExisted`
-                  }
-                />
-                {isError.status && isError.type === `posNumberIsExisted` && (
-                  <Alert sx={{ marginBottom: `1rem` }} severity="error">
-                    {isError.text}
-                  </Alert>
-                )}
-                <Flex>
-                  <Checkbox
-                    onChange={(_, newValue) => {
+                  value={addPositionFilter.posType}
+                /> */}
+                  <TextField
+                    sx={{ marginBottom: `1rem` }}
+                    id="pos-number"
+                    label="เลขที่ตำแหน่ง"
+                    variant="outlined"
+                    onChange={e => {
                       dispatch({
                         type: `SET_ADD_POSITION_FILTER`,
                         addPositionFilter: {
                           ...addPositionFilter,
-                          posOpen: newValue,
+                          posNumber: e.target.value,
                         },
                       })
                     }}
-                    checked={addPositionFilter.posOpen}
+                    value={addPositionFilter.posNumber}
+                    error={isError.type === `posNumberIsExisted`}
                   />
-                  <div>เปิดอัตรา</div>
-                </Flex>
-                <Flex>
-                  <Checkbox
-                    onChange={(_, newValue) => {
-                      dispatch({
-                        type: `SET_ADD_POSITION_FILTER`,
-                        addPositionFilter: {
-                          ...addPositionFilter,
-                          posSouth: newValue,
-                        },
-                      })
-                    }}
-                    checked={addPositionFilter.posSouth}
-                  />
-                  <div>อัตรากำลังจังหวัดชายแดนภาคใต้</div>
-                </Flex>
+                  {isError.type === `posNumberIsExisted` && (
+                    <Alert sx={{ marginBottom: `1rem` }} severity="error">
+                      {isError.text}
+                    </Alert>
+                  )}
+                  <Flex>
+                    <Checkbox
+                      onChange={(_, newValue) => {
+                        dispatch({
+                          type: `SET_ADD_POSITION_FILTER`,
+                          addPositionFilter: {
+                            ...addPositionFilter,
+                            posOpen: newValue,
+                          },
+                        })
+                      }}
+                      checked={addPositionFilter.posOpen}
+                    />
+                    <div>เปิดอัตรา</div>
+                  </Flex>
+                  <Flex>
+                    <Checkbox
+                      onChange={(_, newValue) => {
+                        dispatch({
+                          type: `SET_ADD_POSITION_FILTER`,
+                          addPositionFilter: {
+                            ...addPositionFilter,
+                            posSouth: newValue,
+                          },
+                        })
+                      }}
+                      checked={addPositionFilter.posSouth}
+                    />
+                    <div>อัตรากำลังจังหวัดชายแดนภาคใต้</div>
+                  </Flex>
 
-                <Button
-                  color="primary"
-                  variant="contained"
-                  onClick={() => goEdit()}
-                  disabled={
-                    addPositionFilter.posName === `` ||
-                    addPositionFilter.posType === `` ||
-                    addPositionFilter.posNumber === ``
-                  }
+                  <Button
+                    color="primary"
+                    variant="contained"
+                    onClick={() => goEdit()}
+                    disabled={
+                      addPositionFilter.posName === `` ||
+                      addPositionFilter.posType === `` ||
+                      addPositionFilter.posNumber === ``
+                    }
+                  >
+                    <FontAwesomeIcon icon={faSave} style={{ marginRight: 5 }} />
+                    บันทึก
+                  </Button>
+                </Form>
+
+                <Divider style={{ marginTop: `1rem`, marginBottom: `1rem` }} />
+                <Flex
+                  style={{
+                    justifyContent: `end`,
+                  }}
                 >
-                  <FontAwesomeIcon icon={faSave} style={{ marginRight: 5 }} />
-                  บันทึก
-                </Button>
-              </Form>
-
-              <Divider style={{ marginTop: `1rem`, marginBottom: `1rem` }} />
-              <Flex
-                style={{
-                  justifyContent: `end`,
-                }}
-              >
-                <Button color="error" variant="outlined" onClick={() => {}}>
-                  <FontAwesomeIcon icon={faTrash} style={{ marginRight: 5 }} />
-                  ลบ
-                </Button>
-              </Flex>
-            </>
-          )}
-        </>
-      ) : isError.type === `notFound` ? (
-        <PageNotFound
-          desc="ไม่พบ url ที่เรียกหรือเนื้อหาในส่วนนี้ได้ถูกลบออกจากระบบ"
-          link="/positions/list"
-          buttonText="กลับไปหน้าค้นหาคลังตำแหน่ง"
-        />
+                  <Button color="error" variant="outlined" onClick={() => {}}>
+                    <FontAwesomeIcon
+                      icon={faTrash}
+                      style={{ marginRight: 5 }}
+                    />
+                    ลบ
+                  </Button>
+                </Flex>
+              </>
+            )}
+          </>
+        ) : (
+          <PageNotFound
+            desc="ไม่พบ url ที่เรียกหรือเนื้อหาในส่วนนี้ได้ถูกลบออกจากระบบ"
+            link="/positions/list"
+            buttonText="กลับไปหน้าค้นหาคลังตำแหน่ง"
+          />
+        )
       ) : (
         <PageNotFound />
       )}
