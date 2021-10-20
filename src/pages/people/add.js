@@ -69,31 +69,24 @@ const AddPositionsPage = () => {
   const [emergencyName, setEmergencyName] = useState(``)
   const [emergencyNumber, setEmergencyNumber] = useState(``)
   const [startDate, setStartDate] = useState(``)
-
   const [eduLevel, setEduLevel] = useState(``)
   const [eduName, setEduName] = useState(``)
   const [eduGraduated, setEduGraduated] = useState(``)
   const [eduCountry, setEduCountry] = useState(``)
-
   const [movementType, setMovementType] = useState(``)
   const [outline, setOutline] = useState(``)
   const [south, setSouth] = useState(``)
-
   const [rewardType1, setRewardType1] = useState(``)
   const [rewardType2, setRewardType2] = useState(``)
   const [rewardType3, setRewardType3] = useState(``)
-
   const [contactCnt, setContactCnt] = useState(``)
   const [mission, setMission] = useState(``)
   const [currentContactStart, setCurrentContactStart] = useState(``)
   const [currentContactEnd, setCurrentContactEnd] = useState(``)
-
   const [guilty, setGuilty] = useState(``)
   const [punish, setPunish] = useState(``)
-
   const [decoration, setDecoration] = useState(``)
   const [percentSalary, setPercentSalary] = useState(``)
-
   const [scoreKPI, setScoreKPI] = useState(``)
   const [scoreCompetence, setScoreCompetence] = useState(``)
   const [statusDisability, setStatusDisability] = useState(``)
@@ -825,7 +818,7 @@ const AddPositionsPage = () => {
             </Grid>
 
             <Grid container spacing={2} sx={{ marginBottom: `1rem` }}>
-              <Grid item xs={12} sm={8}>
+              <Grid item xs={12} sm={6}>
                 <Button
                   fullWidth
                   color="primary"
@@ -862,55 +855,52 @@ const AddPositionsPage = () => {
                   เพิ่มรายการ
                 </Button>
               </Grid>
-              <Grid item xs={12} sm={4}>
-                {(prename !== `` ||
-                  name !== `` ||
-                  surname !== `` ||
-                  idCard !== `` ||
-                  sidCard !== `` ||
-                  gender !== `` ||
-                  birthDate !== `` ||
-                  marriedStatus !== `` ||
-                  telephone !== `` ||
-                  address !== `` ||
-                  emergencyName !== `` ||
-                  emergencyNumber !== `` ||
-                  startDate !== `` ||
-                  eduLevel !== `` ||
-                  eduName !== `` ||
-                  eduGraduated !== `` ||
-                  eduCountry !== `` ||
-                  movementType !== `` ||
-                  outline !== `` ||
-                  south !== `` ||
-                  rewardType1 !== `` ||
-                  rewardType2 !== `` ||
-                  rewardType3 !== `` ||
-                  contactCnt !== `` ||
-                  mission !== `` ||
-                  currentContactStart !== `` ||
-                  currentContactEnd !== `` ||
-                  guilty !== `` ||
-                  punish !== `` ||
-                  decoration !== `` ||
-                  percentSalary !== `` ||
-                  scoreKPI !== `` ||
-                  scoreCompetence !== `` ||
-                  statusDisability !== ``) && (
-                  <Button
-                    fullWidth
-                    color="error"
-                    variant="outlined"
-                    type="reset"
-                    onClick={() => clearInput()}
-                  >
-                    <FontAwesomeIcon
-                      icon={faTimes}
-                      style={{ marginRight: 5 }}
-                    />
-                    ล้าง
-                  </Button>
-                )}
+              <Grid item xs={12} sm={6}>
+                <Button
+                  fullWidth
+                  color="error"
+                  type="reset"
+                  onClick={() => clearInput()}
+                  disabled={
+                    prename === `` &&
+                    name === `` &&
+                    surname === `` &&
+                    idCard === `` &&
+                    sidCard === `` &&
+                    gender === `` &&
+                    birthDate === `` &&
+                    marriedStatus === `` &&
+                    telephone === `` &&
+                    address === `` &&
+                    emergencyName === `` &&
+                    emergencyNumber === `` &&
+                    startDate === `` &&
+                    eduLevel === `` &&
+                    eduName === `` &&
+                    eduGraduated === `` &&
+                    eduCountry === `` &&
+                    movementType === `` &&
+                    outline === `` &&
+                    south === `` &&
+                    rewardType1 === `` &&
+                    rewardType2 === `` &&
+                    rewardType3 === `` &&
+                    contactCnt === `` &&
+                    mission === `` &&
+                    currentContactStart === `` &&
+                    currentContactEnd === `` &&
+                    guilty === `` &&
+                    punish === `` &&
+                    decoration === `` &&
+                    percentSalary === `` &&
+                    scoreKPI === `` &&
+                    scoreCompetence === `` &&
+                    statusDisability === ``
+                  }
+                >
+                  <FontAwesomeIcon icon={faTimes} style={{ marginRight: 5 }} />
+                  ล้าง
+                </Button>
               </Grid>
             </Grid>
           </Form>
