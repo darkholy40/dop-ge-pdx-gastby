@@ -170,28 +170,16 @@ const PositionsPage = () => {
                         >
                           ลำดับ
                         </TableCell>
-                        <TableCell
-                          align="center"
-                          sx={{ backgroundColor: primaryColor[200] }}
-                        >
+                        <TableCell sx={{ backgroundColor: primaryColor[200] }}>
                           ตำแหน่ง
                         </TableCell>
-                        <TableCell
-                          align="center"
-                          sx={{ backgroundColor: primaryColor[200] }}
-                        >
+                        <TableCell sx={{ backgroundColor: primaryColor[200] }}>
                           กลุ่มงาน
                         </TableCell>
-                        <TableCell
-                          align="center"
-                          sx={{ backgroundColor: primaryColor[200] }}
-                        >
+                        <TableCell sx={{ backgroundColor: primaryColor[200] }}>
                           เลขที่ตำแหน่ง
                         </TableCell>
-                        <TableCell
-                          align="center"
-                          sx={{ backgroundColor: primaryColor[200] }}
-                        >
+                        <TableCell sx={{ backgroundColor: primaryColor[200] }}>
                           ชื่อ สกุล (ผู้ครองตำแหน่ง)
                         </TableCell>
                         <TableCell
@@ -224,7 +212,7 @@ const PositionsPage = () => {
                           </TableCell>
                           <TableCell align="left">{row.Pos_Type}</TableCell>
                           <TableCell align="left">{row.Pos_Number}</TableCell>
-                          <TableCell align="left"></TableCell>
+                          <TableCell align="left">-</TableCell>
                           <TableCell align="center">
                             {row.Pos_South && (
                               <FontAwesomeIcon
