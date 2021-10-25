@@ -12,7 +12,9 @@ import {
   MenuItem,
   Alert,
   Divider,
+  Checkbox,
 } from "@mui/material"
+import DatePicker from "@mui/lab/DatePicker"
 import { green } from "@mui/material/colors"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import {
@@ -35,6 +37,13 @@ const Form = styled.form`
   // margin: auto;
 `
 
+const Flex = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+`
+
 const textfieldProps = {
   width: `100%`,
 }
@@ -44,6 +53,22 @@ const selectProps = {
     {
       display: `none`,
     },
+}
+
+const datePickerProps = {
+  disableMaskedInput: true,
+  okText: "ตกลง",
+  cancelText: "ยกเลิก",
+  todayText: "วันนี้",
+  inputFormat: "d MMMM yyyy",
+  showToolbar: false,
+  inputProps: {
+    readOnly: true,
+    placeholder: "",
+    style: {
+      marginLeft: 15,
+    },
+  },
 }
 
 const AddPositionsPage = () => {
@@ -62,7 +87,7 @@ const AddPositionsPage = () => {
   const [idCard, setIdCard] = useState(``)
   const [sidCard, setSidCard] = useState(``)
   const [gender, setGender] = useState(``)
-  const [birthDate, setBirthDate] = useState(``)
+  const [birthDate, setBirthDate] = useState(null)
   const [marriedStatus, setMarriedStatus] = useState(``)
   const [telephone, setTelephone] = useState(``)
   const [address, setAddress] = useState(``)
@@ -75,14 +100,14 @@ const AddPositionsPage = () => {
   const [eduCountry, setEduCountry] = useState(``)
   const [movementType, setMovementType] = useState(``)
   const [outline, setOutline] = useState(``)
-  const [south, setSouth] = useState(``)
+  const [south, setSouth] = useState(false)
   const [rewardType1, setRewardType1] = useState(``)
   const [rewardType2, setRewardType2] = useState(``)
   const [rewardType3, setRewardType3] = useState(``)
   const [contactCnt, setContactCnt] = useState(``)
   const [mission, setMission] = useState(``)
-  const [currentContactStart, setCurrentContactStart] = useState(``)
-  const [currentContactEnd, setCurrentContactEnd] = useState(``)
+  const [currentContactStart, setCurrentContactStart] = useState(null)
+  const [currentContactEnd, setCurrentContactEnd] = useState(null)
   const [guilty, setGuilty] = useState(``)
   const [punish, setPunish] = useState(``)
   const [decoration, setDecoration] = useState(``)
@@ -269,7 +294,7 @@ const AddPositionsPage = () => {
     setIdCard(``)
     setSidCard(``)
     setGender(``)
-    setBirthDate(``)
+    setBirthDate(null)
     setMarriedStatus(``)
     setTelephone(``)
     setAddress(``)
@@ -282,14 +307,14 @@ const AddPositionsPage = () => {
     setEduCountry(``)
     setMovementType(``)
     setOutline(``)
-    setSouth(``)
+    setSouth(false)
     setRewardType1(``)
     setRewardType2(``)
     setRewardType3(``)
     setContactCnt(``)
     setMission(``)
-    setCurrentContactStart(``)
-    setCurrentContactEnd(``)
+    setCurrentContactStart(null)
+    setCurrentContactEnd(null)
     setGuilty(``)
     setPunish(``)
     setDecoration(``)
@@ -444,15 +469,27 @@ const AddPositionsPage = () => {
                 </FormControl>
               </Grid>
               <Grid item xs={12} sm={4}>
-                <TextField
-                  sx={textfieldProps}
+                <DatePicker
+                  {...datePickerProps}
                   id="BirthDate"
                   label="* วันเดือนปีเกิด"
-                  variant="outlined"
-                  onChange={e => setBirthDate(e.target.value)}
+                  onChange={newValue => {
+                    setBirthDate(newValue)
+                  }}
                   value={birthDate}
-                  InputProps={{
-                    endAdornment: renderCheckingIcon(birthDate),
+                  renderInput={params => {
+                    return (
+                      <TextField
+                        {...params}
+                        sx={textfieldProps}
+                        InputProps={{
+                          startAdornment: params.InputProps.endAdornment,
+                          endAdornment: renderCheckingIcon(
+                            birthDate === null ? `` : birthDate
+                          ),
+                        }}
+                      />
+                    )
                   }}
                 />
               </Grid>
@@ -610,7 +647,7 @@ const AddPositionsPage = () => {
             </Grid>
             <Divider style={{ margin: `1rem auto 2rem`, width: 360 }} />
             <Grid container spacing={2} sx={{ marginBottom: `1rem` }}>
-              <Grid item xs={12} sm={4}>
+              <Grid item xs={12} sm={6}>
                 <TextField
                   sx={textfieldProps}
                   id="MovementType"
@@ -623,7 +660,7 @@ const AddPositionsPage = () => {
                   }}
                 />
               </Grid>
-              <Grid item xs={12} sm={4}>
+              <Grid item xs={12} sm={6}>
                 <TextField
                   sx={textfieldProps}
                   id="Outline"
@@ -636,18 +673,18 @@ const AddPositionsPage = () => {
                   }}
                 />
               </Grid>
-              <Grid item xs={12} sm={4}>
-                <TextField
-                  sx={textfieldProps}
-                  id="South"
-                  label="* อัตรากำลังจังหวัดชายแดนภาคใต้"
-                  variant="outlined"
-                  onChange={e => setSouth(e.target.value)}
-                  value={south}
-                  InputProps={{
-                    endAdornment: renderCheckingIcon(south),
-                  }}
-                />
+            </Grid>
+            <Grid container spacing={2} sx={{ marginBottom: `1rem` }}>
+              <Grid item xs={12}>
+                <Flex>
+                  <Checkbox
+                    onChange={(_, newValue) => {
+                      setSouth(newValue)
+                    }}
+                    checked={south}
+                  />
+                  <div>อัตรากำลังจังหวัดชายแดนภาคใต้</div>
+                </Flex>
               </Grid>
             </Grid>
             <Grid container spacing={2} sx={{ marginBottom: `1rem` }}>
@@ -713,29 +750,51 @@ const AddPositionsPage = () => {
                 />
               </Grid>
               <Grid item xs={12} sm={3}>
-                <TextField
-                  sx={textfieldProps}
+                <DatePicker
+                  {...datePickerProps}
                   id="CurrentContactStart"
                   label="* วันที่เริ่มสัญญาปัจจุบัน"
-                  variant="outlined"
-                  onChange={e => setCurrentContactStart(e.target.value)}
-                  value={currentContactStart}
-                  InputProps={{
-                    endAdornment: renderCheckingIcon(currentContactStart),
+                  onChange={newValue => {
+                    setCurrentContactStart(newValue)
                   }}
+                  value={currentContactStart}
+                  renderInput={params => (
+                    <TextField
+                      {...params}
+                      sx={textfieldProps}
+                      InputProps={{
+                        startAdornment: params.InputProps.endAdornment,
+                        endAdornment: renderCheckingIcon(
+                          currentContactStart === null
+                            ? ``
+                            : currentContactStart
+                        ),
+                      }}
+                    />
+                  )}
                 />
               </Grid>
               <Grid item xs={12} sm={3}>
-                <TextField
-                  sx={textfieldProps}
+                <DatePicker
+                  {...datePickerProps}
                   id="CurrentContactEnd"
                   label="* วันที่สิ้นสุดสัญญาปัจจุบัน"
-                  variant="outlined"
-                  onChange={e => setCurrentContactEnd(e.target.value)}
-                  value={currentContactEnd}
-                  InputProps={{
-                    endAdornment: renderCheckingIcon(currentContactEnd),
+                  onChange={newValue => {
+                    setCurrentContactEnd(newValue)
                   }}
+                  value={currentContactEnd}
+                  renderInput={params => (
+                    <TextField
+                      {...params}
+                      sx={textfieldProps}
+                      InputProps={{
+                        startAdornment: params.InputProps.endAdornment,
+                        endAdornment: renderCheckingIcon(
+                          currentContactEnd === null ? `` : currentContactEnd
+                        ),
+                      }}
+                    />
+                  )}
                 />
               </Grid>
             </Grid>
@@ -830,7 +889,7 @@ const AddPositionsPage = () => {
                     idCard === `` ||
                     sidCard === `` ||
                     gender === `` ||
-                    birthDate === `` ||
+                    birthDate === null ||
                     marriedStatus === `` ||
                     telephone === `` ||
                     address === `` ||
@@ -843,12 +902,12 @@ const AddPositionsPage = () => {
                     eduCountry === `` ||
                     movementType === `` ||
                     outline === `` ||
-                    south === `` ||
+                    south === false ||
                     rewardType1 === `` ||
                     contactCnt === `` ||
                     mission === `` ||
-                    currentContactStart === `` ||
-                    currentContactEnd === ``
+                    currentContactStart === null ||
+                    currentContactEnd === null
                   }
                 >
                   <FontAwesomeIcon icon={faPlus} style={{ marginRight: 5 }} />
@@ -868,7 +927,7 @@ const AddPositionsPage = () => {
                     idCard === `` &&
                     sidCard === `` &&
                     gender === `` &&
-                    birthDate === `` &&
+                    birthDate === null &&
                     marriedStatus === `` &&
                     telephone === `` &&
                     address === `` &&
@@ -881,14 +940,14 @@ const AddPositionsPage = () => {
                     eduCountry === `` &&
                     movementType === `` &&
                     outline === `` &&
-                    south === `` &&
+                    south === false &&
                     rewardType1 === `` &&
                     rewardType2 === `` &&
                     rewardType3 === `` &&
                     contactCnt === `` &&
                     mission === `` &&
-                    currentContactStart === `` &&
-                    currentContactEnd === `` &&
+                    currentContactStart === null &&
+                    currentContactEnd === null &&
                     guilty === `` &&
                     punish === `` &&
                     decoration === `` &&

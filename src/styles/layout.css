@@ -12,3 +12,8 @@ body {
   margin: 0;
   font-family: var(--main-font-family);
 }
+
+.MuiDialogActions-root.MuiDialogActions-spacing
+  > .MuiButton-root.MuiButton-text.MuiButton-textPrimary.MuiButton-sizeMedium.MuiButton-textSizeMedium.MuiButtonBase-root:first-child {
+  display: none;
+}

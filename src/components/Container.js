@@ -4,6 +4,9 @@ import { useSelector } from "react-redux"
 import styled from "styled-components"
 import { Backdrop, CircularProgress } from "@mui/material"
 import { ThemeProvider, createTheme } from "@mui/material/styles"
+import AdapterDateFns from "@mui/lab/AdapterDateFns"
+import LocalizationProvider from "@mui/lab/LocalizationProvider"
+import thLocale from "date-fns/locale/th"
 
 import Navbar from "./Navbar"
 import NotificationDialog from "./NotificationDialog"
@@ -40,21 +43,23 @@ const Container = ({ children }) => {
 
   return (
     <ThemeProvider theme={muiTheme}>
-      <Navbar />
-      <MainContainer>
-        <Row>{children}</Row>
-        <Backdrop
-          sx={{
-            color: primaryColor[200],
-            zIndex: theme => theme.zIndex.drawer + 1,
-          }}
-          open={backdropOpen}
-        >
-          <CircularProgress color="inherit" size="4rem" />
-        </Backdrop>
-      </MainContainer>
-      <NotificationDialog />
-      <Footer />
+      <LocalizationProvider dateAdapter={AdapterDateFns} locale={thLocale}>
+        <Navbar />
+        <MainContainer>
+          <Row>{children}</Row>
+          <Backdrop
+            sx={{
+              color: primaryColor[200],
+              zIndex: theme => theme.zIndex.drawer + 1,
+            }}
+            open={backdropOpen}
+          >
+            <CircularProgress color="inherit" size="4rem" />
+          </Backdrop>
+        </MainContainer>
+        <NotificationDialog />
+        <Footer />
+      </LocalizationProvider>
     </ThemeProvider>
   )
 }
