@@ -92,8 +92,7 @@ const AddPositionsPage = () => {
   const dispatch = useDispatch()
   const [positions, setPositions] = useState([])
   const [isError, setIsError] = useState({
-    status: false,
-    type: ``,
+    status: ``,
     text: ``,
   })
   const [prename, setPrename] = useState(``)
@@ -144,6 +143,7 @@ const AddPositionsPage = () => {
           query Positions {
             positions(where: {
               staff_created: "${userInfo.id}"
+              person_id: ""
             }) {
               _id
               Pos_Name
@@ -161,7 +161,14 @@ const AddPositionsPage = () => {
         `,
       })
 
-      setPositions(res.data.positions)
+      if (res.data.positions.length > 0) {
+        setPositions(res.data.positions)
+      } else {
+        setIsError({
+          status: `notfound`,
+          text: `ไม่พบข้อมูล`,
+        })
+      }
     } catch {
       dispatch({
         type: `SET_NOTIFICATION_DIALOG`,
@@ -187,8 +194,7 @@ const AddPositionsPage = () => {
     let posNumberIsExisted = false
 
     setIsError({
-      status: false,
-      type: ``,
+      status: ``,
       text: ``,
     })
     dispatch({
@@ -223,8 +229,7 @@ const AddPositionsPage = () => {
         posNumberIsExisted = true
 
         setIsError({
-          status: true,
-          type: `posNumberIsExisted`,
+          status: `posNumberIsExisted`,
           text: `มีเลขที่ตำแหน่งนี้ในฐานข้อมูลแล้ว`,
         })
       }
@@ -528,7 +533,9 @@ const AddPositionsPage = () => {
                     options={positions}
                     noOptionsText={
                       positions.length === 0
-                        ? `กำลังเชื่อมต่อฐานข้อมูล...`
+                        ? isError.status === `notfound`
+                          ? `ไม่มีตำแหน่งว่าง`
+                          : `กำลังเชื่อมต่อฐานข้อมูล...`
                         : `ไม่พบข้อมูล`
                     }
                     getOptionLabel={option =>

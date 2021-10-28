@@ -130,6 +130,8 @@ const AddPositionsPage = () => {
                   Pos_Open: ${addPositionFilter.posOpen},
                   Pos_South: ${addPositionFilter.posSouth},
                   staff_created: "${userInfo._id}",
+                  staff_updated: "",
+                  person_id: "",
                 }
               }) {
                 position {
