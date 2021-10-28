@@ -100,10 +100,6 @@ const PositionsPage = () => {
     getPositions()
   }, [getPositions])
 
-  useEffect(() => {
-    console.log(isError.status)
-  }, [isError])
-
   return (
     <Layout>
       {token !== "" ? (
@@ -141,7 +137,7 @@ const PositionsPage = () => {
               color="primary"
               // variant="contained"
               disabled={
-                isError.status === `disable` || isError.status === `notfound`
+                isError.status === `disabled` || isError.status === `notfound`
               }
               onClick={() => {
                 dispatch({
