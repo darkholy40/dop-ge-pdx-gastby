@@ -40,7 +40,7 @@ const initialState = {
       type: ``,
     },
   },
-  searchFilter: {
+  searchPositionFilter: {
     posName: ``,
     posType: ``,
     posNumber: ``,
@@ -51,6 +51,13 @@ const initialState = {
     posNumber: ``,
     posOpen: false,
     posSouth: false,
+  },
+  searchPersonFilter: {
+    personName: ``,
+    personSurname: ``,
+    personId: ``,
+    personSid: ``,
+    posNumber: ``,
   },
   notificationDialog: {
     open: false,
@@ -94,16 +101,22 @@ const reducer = (state = initialState, action) => {
         userInfo: action.userInfo,
       }
 
-    case `SET_SEARCH_FILTER`:
+    case `SET_SEARCH_POSITION_FILTER`:
       return {
         ...state,
-        searchFilter: action.searchFilter,
+        searchPositionFilter: action.searchPositionFilter,
       }
 
     case `SET_ADD_POSITION_FILTER`:
       return {
         ...state,
         addPositionFilter: action.addPositionFilter,
+      }
+
+    case `SET_SEARCH_PERSON_FILTER`:
+      return {
+        ...state,
+        searchPersonFilter: action.searchPersonFilter,
       }
 
     case `SET_NOTIFICATION_DIALOG`:

@@ -30,9 +30,8 @@ import PageNotFound from "../../components/PageNotFound"
 import Warning from "../../components/Warning"
 
 const PositionsPage = () => {
-  const { token, userInfo, url, primaryColor, searchFilter } = useSelector(
-    state => state
-  )
+  const { token, userInfo, url, primaryColor, searchPositionFilter } =
+    useSelector(state => state)
   const dispatch = useDispatch()
   const [posData, setPosData] = useState([])
   const [isError, setIsError] = useState({
@@ -51,21 +50,23 @@ const PositionsPage = () => {
     let returnData = []
 
     if (
-      searchFilter.posName !== `` ||
-      searchFilter.posType !== `` ||
-      searchFilter.posNumber !== ``
+      searchPositionFilter.posName !== `` ||
+      searchPositionFilter.posType !== `` ||
+      searchPositionFilter.posNumber !== ``
     ) {
       filter = `${
-        searchFilter.posName !== `` ? `Pos_Name: "${searchFilter.posName}"` : ``
+        searchPositionFilter.posName !== ``
+          ? `Pos_Name: "${searchPositionFilter.posName}"`
+          : ``
       }
         ${
-          searchFilter.posType !== ``
-            ? `Pos_Type: "${searchFilter.posType}"`
+          searchPositionFilter.posType !== ``
+            ? `Pos_Type: "${searchPositionFilter.posType}"`
             : ``
         }
         ${
-          searchFilter.posNumber !== ``
-            ? `Pos_Number: "${searchFilter.posNumber}"`
+          searchPositionFilter.posNumber !== ``
+            ? `Pos_Number: "${searchPositionFilter.posNumber}"`
             : ``
         }`
     }
@@ -170,7 +171,7 @@ const PositionsPage = () => {
       type: `SET_BACKDROP_OPEN`,
       backdropOpen: false,
     })
-  }, [url, userInfo, searchFilter, dispatch])
+  }, [url, userInfo, searchPositionFilter, dispatch])
 
   useEffect(() => {
     dispatch({

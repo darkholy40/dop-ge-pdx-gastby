@@ -2,9 +2,13 @@ import React, { useCallback, useEffect, useState } from "react"
 import { navigate } from "gatsby"
 import { useSelector, useDispatch } from "react-redux"
 import styled from "styled-components"
-import { Button, Alert } from "@mui/material"
+import { Button, Alert, TextField } from "@mui/material"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { faPlusCircle } from "@fortawesome/free-solid-svg-icons"
+import {
+  faPlusCircle,
+  faSearch,
+  faTimes,
+} from "@fortawesome/free-solid-svg-icons"
 import { ApolloClient, InMemoryCache, gql } from "@apollo/client"
 
 import Layout from "../../components/Layout"
@@ -22,8 +26,22 @@ const Oparator = styled.div`
   margin-bottom: 1rem;
 `
 
+const Form = styled.form`
+  display: flex;
+  flex-direction: column;
+  max-width: 400px;
+  margin: auto;
+`
+
+const SubmitButtonFlex = styled.div`
+  display: flex;
+  justify-content: space-between;
+`
+
 const PositionsPage = () => {
-  const { token, url, userInfo } = useSelector(state => state)
+  const { token, url, userInfo, searchPersonFilter } = useSelector(
+    state => state
+  )
   const dispatch = useDispatch()
   const [isError, setIsError] = useState({
     status: `disabled`,
@@ -158,6 +176,132 @@ const PositionsPage = () => {
               เพิ่มกำลังพล
             </Button>
           </Oparator>
+
+          <Form onSubmit={e => e.preventDefault()}>
+            <TextField
+              sx={{ marginBottom: `1rem` }}
+              id="person-name"
+              label="ชื่อ"
+              variant="outlined"
+              onChange={e => {
+                dispatch({
+                  type: `SET_SEARCH_PERSON_FILTER`,
+                  searchPersonFilter: {
+                    ...searchPersonFilter,
+                    personName: e.target.value,
+                  },
+                })
+              }}
+              value={searchPersonFilter.personName}
+            />
+            <TextField
+              sx={{ marginBottom: `1rem` }}
+              id="person-surname"
+              label="สกุล"
+              variant="outlined"
+              onChange={e => {
+                dispatch({
+                  type: `SET_SEARCH_PERSON_FILTER`,
+                  searchPersonFilter: {
+                    ...searchPersonFilter,
+                    personSurname: e.target.value,
+                  },
+                })
+              }}
+              value={searchPersonFilter.personSurname}
+            />
+            <TextField
+              sx={{ marginBottom: `1rem` }}
+              id="person-id"
+              label="หมายเลขประจำตัวประชาชน (13 หลัก)"
+              variant="outlined"
+              onChange={e => {
+                dispatch({
+                  type: `SET_SEARCH_PERSON_FILTER`,
+                  searchPersonFilter: {
+                    ...searchPersonFilter,
+                    personId: e.target.value,
+                  },
+                })
+              }}
+              value={searchPersonFilter.personId}
+            />
+            <TextField
+              sx={{ marginBottom: `1rem` }}
+              id="person-sid"
+              label="หมายเลขประจำตัวข้าราชการกองทัพบก (10 หลัก)"
+              variant="outlined"
+              onChange={e => {
+                dispatch({
+                  type: `SET_SEARCH_PERSON_FILTER`,
+                  searchPersonFilter: {
+                    ...searchPersonFilter,
+                    personSid: e.target.value,
+                  },
+                })
+              }}
+              value={searchPersonFilter.personSid}
+            />
+            <TextField
+              sx={{ marginBottom: `1rem` }}
+              id="pos-number"
+              label="เลขที่ตำแหน่ง"
+              variant="outlined"
+              onChange={e => {
+                dispatch({
+                  type: `SET_SEARCH_PERSON_FILTER`,
+                  searchPersonFilter: {
+                    ...searchPersonFilter,
+                    posNumber: e.target.value,
+                  },
+                })
+              }}
+              value={searchPersonFilter.posNumber}
+            />
+            <SubmitButtonFlex>
+              <Button
+                style={{
+                  width: `100%`,
+                  marginRight: 10,
+                }}
+                color="primary"
+                variant="contained"
+                onClick={() => navigate(`/people/list`)}
+              >
+                <FontAwesomeIcon icon={faSearch} style={{ marginRight: 5 }} />
+                ค้นหา
+              </Button>
+              <Button
+                style={{
+                  width: `100%`,
+                }}
+                color="error"
+                type="reset"
+                onClick={() => {
+                  dispatch({
+                    type: `SET_SEARCH_PERSON_FILTER`,
+                    searchPersonFilter: {
+                      personName: ``,
+                      personSurname: ``,
+                      personId: ``,
+                      personSid: ``,
+                      posNumber: ``,
+                    },
+                  })
+                }}
+                disabled={
+                  searchPersonFilter.personName === `` &&
+                  searchPersonFilter.personSurname === `` &&
+                  searchPersonFilter.personId === `` &&
+                  searchPersonFilter.personSid === `` &&
+                  searchPersonFilter.posNumber === ``
+                }
+              >
+                <FontAwesomeIcon icon={faTimes} style={{ marginRight: 5 }} />
+                ล้าง
+              </Button>
+            </SubmitButtonFlex>
+          </Form>
         </>
       ) : (
         <PageNotFound />

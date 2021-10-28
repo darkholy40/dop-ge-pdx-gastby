@@ -47,7 +47,7 @@ const SubmitButtonFlex = styled.div`
 `
 
 const PositionsPage = () => {
-  const { token, searchFilter } = useSelector(state => state)
+  const { token, searchPositionFilter } = useSelector(state => state)
   const dispatch = useDispatch()
 
   useEffect(() => {
@@ -95,14 +95,14 @@ const PositionsPage = () => {
               variant="outlined"
               onChange={e => {
                 dispatch({
-                  type: `SET_SEARCH_FILTER`,
-                  searchFilter: {
-                    ...searchFilter,
+                  type: `SET_SEARCH_POSITION_FILTER`,
+                  searchPositionFilter: {
+                    ...searchPositionFilter,
                     posName: e.target.value,
                   },
                 })
               }}
-              value={searchFilter.posName}
+              value={searchPositionFilter.posName}
             />
             <FormControl fullWidth>
               <InputLabel id="pos-type-label-id">ชื่อประเภทกลุ่มงาน</InputLabel>
@@ -113,14 +113,14 @@ const PositionsPage = () => {
                 label="ชื่อประเภทกลุ่มงาน"
                 onChange={e => {
                   dispatch({
-                    type: `SET_SEARCH_FILTER`,
-                    searchFilter: {
-                      ...searchFilter,
+                    type: `SET_SEARCH_POSITION_FILTER`,
+                    searchPositionFilter: {
+                      ...searchPositionFilter,
                       posType: e.target.value,
                     },
                   })
                 }}
-                value={searchFilter.posType}
+                value={searchPositionFilter.posType}
               >
                 <MenuItem value="" selected>
                   ---
@@ -141,14 +141,14 @@ const PositionsPage = () => {
               variant="outlined"
               onChange={e => {
                 dispatch({
-                  type: `SET_SEARCH_FILTER`,
-                  searchFilter: {
-                    ...searchFilter,
+                  type: `SET_SEARCH_POSITION_FILTER`,
+                  searchPositionFilter: {
+                    ...searchPositionFilter,
                     posNumber: e.target.value,
                   },
                 })
               }}
-              value={searchFilter.posNumber}
+              value={searchPositionFilter.posNumber}
             />
             <SubmitButtonFlex>
               <Button
@@ -171,8 +171,8 @@ const PositionsPage = () => {
                 type="reset"
                 onClick={() => {
                   dispatch({
-                    type: `SET_SEARCH_FILTER`,
-                    searchFilter: {
+                    type: `SET_SEARCH_POSITION_FILTER`,
+                    searchPositionFilter: {
                       posName: ``,
                       posType: ``,
                       posNumber: ``,
@@ -180,9 +180,9 @@ const PositionsPage = () => {
                   })
                 }}
                 disabled={
-                  searchFilter.posName === `` &&
-                  searchFilter.posType === `` &&
-                  searchFilter.posNumber === ``
+                  searchPositionFilter.posName === `` &&
+                  searchPositionFilter.posType === `` &&
+                  searchPositionFilter.posNumber === ``
                 }
               >
                 <FontAwesomeIcon icon={faTimes} style={{ marginRight: 5 }} />
