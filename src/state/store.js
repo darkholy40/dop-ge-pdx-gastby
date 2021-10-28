@@ -57,6 +57,7 @@ const initialState = {
     title: ``,
     description: ``,
     variant: ``,
+    confirmText: ``,
     callback: () => {},
   },
 }

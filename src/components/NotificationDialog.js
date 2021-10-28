@@ -1,5 +1,4 @@
 import React from "react"
-import PropTypes from "prop-types"
 import { useSelector, useDispatch } from "react-redux"
 import { Dialog, DialogTitle, DialogActions, Button } from "@mui/material"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
@@ -31,6 +30,7 @@ const NotificationDialog = () => {
   const title = notificationDialog.title || ``
   const description = notificationDialog.description || ``
   const variant = notificationDialog.variant || ``
+  const confirmText = notificationDialog.confirmText || `ตกลง`
 
   const renderIcon = getVariant => {
     switch (getVariant) {
@@ -107,23 +107,11 @@ const NotificationDialog = () => {
             })
           }}
         >
-          ตกลง
+          {confirmText}
         </Button>
       </DialogActions>
     </Dialog>
   )
-}
-
-NotificationDialog.propTypes = {
-  title: PropTypes.string,
-  description: PropTypes.string,
-  variant: PropTypes.string,
-}
-
-NotificationDialog.defaultProps = {
-  title: `การแจ้งเตือน`,
-  description: ``,
-  variant: ``,
 }
 
 export default NotificationDialog

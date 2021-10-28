@@ -104,6 +104,7 @@ const AddPositionsPage = () => {
           title: `เพิ่มรายการไม่สำเร็จ`,
           description: `ไม่สามารถเพิ่มรายการคลังตำแหน่งได้`,
           variant: `error`,
+          confirmText: `ตกลง`,
           callback: () => {},
         },
       })
@@ -155,6 +156,7 @@ const AddPositionsPage = () => {
             title: `เพิ่มรายการสำเร็จ`,
             description: `เพิ่มรายการคลังตำแหน่งสำเร็จ`,
             variant: `success`,
+            confirmText: `ตกลง`,
             callback: () => {
               resetInput()
             },
@@ -168,6 +170,7 @@ const AddPositionsPage = () => {
             title: `เพิ่มรายการไม่สำเร็จ`,
             description: `ไม่สามารถเพิ่มรายการคลังตำแหน่งได้`,
             variant: `error`,
+            confirmText: `ตกลง`,
             callback: () => {},
           },
         })

@@ -192,6 +192,7 @@ const EditPositionsPage = ({ location }) => {
             title: `เพิ่มรายการไม่สำเร็จ`,
             description: `ไม่สามารถเพิ่มรายการคลังตำแหน่งได้`,
             variant: `error`,
+            confirmText: `ตกลง`,
             callback: () => {},
           },
         })
@@ -248,6 +249,7 @@ const EditPositionsPage = ({ location }) => {
             title: `แก้ไขรายการสำเร็จ`,
             description: `บันทึกรายการคลังตำแหน่งสำเร็จ`,
             variant: `success`,
+            confirmText: `ตกลง`,
             callback: () => {},
           },
         })
@@ -261,6 +263,7 @@ const EditPositionsPage = ({ location }) => {
             title: `แก้ไขรายการไม่สำเร็จ`,
             description: `ไม่สามารถบันทึกรายการคลังตำแหน่งได้`,
             variant: `error`,
+            confirmText: `ตกลง`,
             callback: () => {},
           },
         })

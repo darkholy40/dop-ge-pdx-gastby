@@ -15,6 +15,7 @@ import {
   Checkbox,
 } from "@mui/material"
 import DatePicker from "@mui/lab/DatePicker"
+import Autocomplete from "@mui/material/Autocomplete"
 import { green } from "@mui/material/colors"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import {
@@ -42,6 +43,19 @@ const Flex = styled.div`
   flex-direction: row;
   justify-content: flex-start;
   align-items: center;
+`
+
+const CheckCircleFlex = styled.div`
+  border-radius: 0 5px 5px 0;
+  border-top: 1px solid rgba(0, 0, 0, 0.24);
+  border-right: 1px solid rgba(0, 0, 0, 0.24);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.24);
+  height: 54px;
+  width: 30px;
+  padding-right: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 `
 
 const textfieldProps = {
@@ -76,6 +90,7 @@ const AddPositionsPage = () => {
     state => state
   )
   const dispatch = useDispatch()
+  const [positions, setPositions] = useState([])
   const [isError, setIsError] = useState({
     status: false,
     type: ``,
@@ -86,6 +101,7 @@ const AddPositionsPage = () => {
   const [surname, setSurname] = useState(``)
   const [idCard, setIdCard] = useState(``)
   const [sidCard, setSidCard] = useState(``)
+  const [positionInput, setPositionInput] = useState(null)
   const [gender, setGender] = useState(``)
   const [birthDate, setBirthDate] = useState(null)
   const [marriedStatus, setMarriedStatus] = useState(``)
@@ -115,6 +131,53 @@ const AddPositionsPage = () => {
   const [scoreKPI, setScoreKPI] = useState(``)
   const [scoreCompetence, setScoreCompetence] = useState(``)
   const [statusDisability, setStatusDisability] = useState(``)
+
+  const getPositions = useCallback(async () => {
+    const client = new ApolloClient({
+      uri: `${url}/graphql`,
+      cache: new InMemoryCache(),
+    })
+
+    try {
+      const res = await client.query({
+        query: gql`
+          query Positions {
+            positions(where: {
+              staff_created: "${userInfo.id}"
+            }) {
+              _id
+              Pos_Name
+              Pos_Type
+              Pos_Number
+              Pos_Open
+              Pos_South
+              staff_created
+              staff_updated
+              published_at
+              createdAt
+              updatedAt
+            }
+          }
+        `,
+      })
+
+      setPositions(res.data.positions)
+    } catch {
+      dispatch({
+        type: `SET_NOTIFICATION_DIALOG`,
+        notificationDialog: {
+          open: true,
+          title: `เชื่อมต่อฐานข้อมูลไม่สำเร็จ`,
+          description: `ไม่สามารถรับข้อมูลคลังตำแหน่งได้`,
+          variant: `error`,
+          confirmText: `เชื่อมต่ออีกครั้ง`,
+          callback: () => {
+            getPositions()
+          },
+        },
+      })
+    }
+  }, [url, userInfo.id, dispatch])
 
   const goAdd = async () => {
     const client = new ApolloClient({
@@ -173,6 +236,7 @@ const AddPositionsPage = () => {
           title: `เพิ่มรายการไม่สำเร็จ`,
           description: `ไม่สามารถเพิ่มรายการคลังตำแหน่งได้`,
           variant: `error`,
+          confirmText: `ตกลง`,
           callback: () => {},
         },
       })
@@ -224,6 +288,7 @@ const AddPositionsPage = () => {
             title: `เพิ่มรายการสำเร็จ`,
             description: `เพิ่มรายการคลังตำแหน่งสำเร็จ`,
             variant: `success`,
+            confirmText: `ตกลง`,
             callback: () => {
               resetInput()
             },
@@ -237,6 +302,7 @@ const AddPositionsPage = () => {
             title: `เพิ่มรายการไม่สำเร็จ`,
             description: `ไม่สามารถเพิ่มรายการคลังตำแหน่งได้`,
             variant: `error`,
+            confirmText: `ตกลง`,
             callback: () => {},
           },
         })
@@ -293,6 +359,7 @@ const AddPositionsPage = () => {
     setSurname(``)
     setIdCard(``)
     setSidCard(``)
+    setPositionInput(null)
     setGender(``)
     setBirthDate(null)
     setMarriedStatus(``)
@@ -330,6 +397,10 @@ const AddPositionsPage = () => {
       currentPage: `people`,
     })
   }, [dispatch])
+
+  useEffect(() => {
+    getPositions()
+  }, [getPositions])
 
   return (
     <Layout>
@@ -445,6 +516,50 @@ const AddPositionsPage = () => {
                     endAdornment: renderCheckingIcon(sidCard),
                   }}
                 />
+              </Grid>
+            </Grid>
+            <Grid container spacing={2} sx={{ marginBottom: `1rem` }}>
+              <Grid item xs={12}>
+                <Flex>
+                  <Autocomplete
+                    sx={{ width: `100%` }}
+                    id="position"
+                    disablePortal
+                    options={positions}
+                    noOptionsText={
+                      positions.length === 0
+                        ? `กำลังเชื่อมต่อฐานข้อมูล...`
+                        : `ไม่พบข้อมูล`
+                    }
+                    getOptionLabel={option =>
+                      `${option.Pos_Name} (${option.Pos_Number})`
+                    }
+                    isOptionEqualToValue={(option, value) => {
+                      return option._id === value._id
+                    }}
+                    onChange={(_, newValue) => {
+                      setPositionInput(newValue)
+                    }}
+                    value={positionInput}
+                    renderInput={params => (
+                      <TextField
+                        {...params}
+                        label="ตำแหน่ง"
+                        InputProps={{
+                          ...params.InputProps,
+                          sx: {
+                            borderRadius: `5px 0 0 5px`,
+                          },
+                        }}
+                      />
+                    )}
+                  />
+                  <CheckCircleFlex>
+                    {renderCheckingIcon(
+                      positionInput !== null ? `correct` : ``
+                    )}
+                  </CheckCircleFlex>
+                </Flex>
               </Grid>
             </Grid>
             <Grid container spacing={2} sx={{ marginBottom: `1rem` }}>
@@ -888,6 +1003,7 @@ const AddPositionsPage = () => {
                     surname === `` ||
                     idCard === `` ||
                     sidCard === `` ||
+                    positionInput === null ||
                     gender === `` ||
                     birthDate === null ||
                     marriedStatus === `` ||
@@ -926,6 +1042,7 @@ const AddPositionsPage = () => {
                     surname === `` &&
                     idCard === `` &&
                     sidCard === `` &&
+                    positionInput === null &&
                     gender === `` &&
                     birthDate === null &&
                     marriedStatus === `` &&
