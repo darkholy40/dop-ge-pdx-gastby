@@ -13,9 +13,8 @@ import {
   MenuItem,
   // Alert,
   Divider,
-  Checkbox,
 } from "@mui/material"
-import DatePicker from "@mui/lab/DatePicker"
+import MobileDatePicker from "@mui/lab/MobileDatePicker"
 import Autocomplete from "@mui/material/Autocomplete"
 import { green } from "@mui/material/colors"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
@@ -73,6 +72,8 @@ const selectProps = {
 
 const datePickerProps = {
   disableMaskedInput: true,
+  clearable: true,
+  clearText: "ล้าง",
   okText: "ตกลง",
   cancelText: "ยกเลิก",
   todayText: "วันนี้",
@@ -115,7 +116,6 @@ const AddPositionsPage = () => {
   const [eduCountry, setEduCountry] = useState(``)
   const [movementType, setMovementType] = useState(``)
   const [outline, setOutline] = useState(``)
-  const [south, setSouth] = useState(false)
   const [rewardType1, setRewardType1] = useState(``)
   const [rewardType2, setRewardType2] = useState(``)
   const [rewardType3, setRewardType3] = useState(``)
@@ -228,7 +228,6 @@ const AddPositionsPage = () => {
                 Edu_Country: "${eduCountry}",
                 MovementType: "${movementType}",
                 Outline: "${outline}",
-                South: ${south},
                 RewardType1: "${rewardType1}",
                 RewardType2: "${rewardType2}",
                 RewardType3: "${rewardType3}",
@@ -407,7 +406,6 @@ const AddPositionsPage = () => {
     setEduCountry(``)
     setMovementType(``)
     setOutline(``)
-    setSouth(false)
     setRewardType1(``)
     setRewardType2(``)
     setRewardType3(``)
@@ -512,7 +510,7 @@ const AddPositionsPage = () => {
                 <TextField
                   sx={textfieldProps}
                   id="ID_Card"
-                  label="* หมายเลขประจำตัวประชาชน"
+                  label="* หมายเลขประจำตัวประชาชน (13 หลัก)"
                   variant="outlined"
                   onChange={e => {
                     const newValue = e.target.value
@@ -541,12 +539,28 @@ const AddPositionsPage = () => {
                 <TextField
                   sx={textfieldProps}
                   id="SID_Card"
-                  label="* หมายเลขประจำตัวข้าราชการกองทัพบก"
+                  label="* หมายเลขประจำตัวข้าราชการกองทัพบก (10 หลัก)"
                   variant="outlined"
-                  onChange={e => setSidCard(e.target.value)}
+                  onChange={e => {
+                    const newValue = e.target.value
+                    const pattern = /[0-9]/g
+                    const result = newValue.match(pattern)
+
+                    if (result !== null) {
+                      const newSidCard = result.toString().replaceAll(`,`, ``)
+
+                      if (newSidCard.length <= 10) {
+                        setSidCard(newSidCard)
+                      }
+                    } else {
+                      setSidCard(``)
+                    }
+                  }}
                   value={sidCard}
                   InputProps={{
-                    endAdornment: renderCheckingIcon(sidCard),
+                    endAdornment: renderCheckingIcon(
+                      sidCard.length === 10 ? sidCard : ``
+                    ),
                   }}
                 />
               </Grid>
@@ -567,7 +581,7 @@ const AddPositionsPage = () => {
                         : `ไม่พบข้อมูล`
                     }
                     getOptionLabel={option =>
-                      `${option.Pos_Name} (${option.Pos_Number})`
+                      `${option.Pos_Name} / ${option.Pos_Type} (${option.Pos_Number})`
                     }
                     isOptionEqualToValue={(option, value) => {
                       return option._id === value._id
@@ -619,7 +633,7 @@ const AddPositionsPage = () => {
                 </FormControl>
               </Grid>
               <Grid item xs={12} sm={4}>
-                <DatePicker
+                <MobileDatePicker
                   {...datePickerProps}
                   id="BirthDate"
                   label="* วันเดือนปีเกิด"
@@ -738,7 +752,7 @@ const AddPositionsPage = () => {
                   }}
                 /> */}
 
-                <DatePicker
+                <MobileDatePicker
                   {...datePickerProps}
                   id="StartDate"
                   label="* วันเริ่มทำสัญญา"
@@ -847,20 +861,6 @@ const AddPositionsPage = () => {
               </Grid>
             </Grid>
             <Grid container spacing={2} sx={{ marginBottom: `1rem` }}>
-              <Grid item xs={12}>
-                <Flex>
-                  <Checkbox
-                    id="South"
-                    onChange={(_, newValue) => {
-                      setSouth(newValue)
-                    }}
-                    checked={south}
-                  />
-                  <div>อัตรากำลังจังหวัดชายแดนภาคใต้</div>
-                </Flex>
-              </Grid>
-            </Grid>
-            <Grid container spacing={2} sx={{ marginBottom: `1rem` }}>
               <Grid item xs={12} sm={4}>
                 <TextField
                   sx={textfieldProps}
@@ -923,7 +923,7 @@ const AddPositionsPage = () => {
                 />
               </Grid>
               <Grid item xs={12} sm={3}>
-                <DatePicker
+                <MobileDatePicker
                   {...datePickerProps}
                   id="CurrentContactStart"
                   label="* วันที่เริ่มสัญญาปัจจุบัน"
@@ -948,7 +948,7 @@ const AddPositionsPage = () => {
                 />
               </Grid>
               <Grid item xs={12} sm={3}>
-                <DatePicker
+                <MobileDatePicker
                   {...datePickerProps}
                   id="CurrentContactEnd"
                   label="* วันที่สิ้นสุดสัญญาปัจจุบัน"

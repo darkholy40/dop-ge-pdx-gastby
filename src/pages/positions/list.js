@@ -102,8 +102,6 @@ const PositionsPage = () => {
         `,
       })
 
-      console.log(res.data.positions)
-
       if (res.data.positions.length > 0) {
         for (let thisPos of res.data.positions) {
           let person = {
