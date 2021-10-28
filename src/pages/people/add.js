@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react"
+import { navigate } from "gatsby"
 import { useSelector, useDispatch } from "react-redux"
 import styled from "styled-components"
 import {
@@ -10,7 +11,7 @@ import {
   InputLabel,
   Select,
   MenuItem,
-  Alert,
+  // Alert,
   Divider,
   Checkbox,
 } from "@mui/material"
@@ -30,6 +31,7 @@ import Layout from "../../components/Layout"
 import Seo from "../../components/Seo"
 import Breadcrumbs from "../../components/Breadcrumbs"
 import PageNotFound from "../../components/PageNotFound"
+import renderDateForGraphQL from "../../functions/renderDateForGraphQL"
 
 const Form = styled.form`
   display: flex;
@@ -86,9 +88,7 @@ const datePickerProps = {
 }
 
 const AddPositionsPage = () => {
-  const { token, userInfo, url, addPositionFilter } = useSelector(
-    state => state
-  )
+  const { token, userInfo, url } = useSelector(state => state)
   const dispatch = useDispatch()
   const [positions, setPositions] = useState([])
   const [isError, setIsError] = useState({
@@ -108,7 +108,7 @@ const AddPositionsPage = () => {
   const [address, setAddress] = useState(``)
   const [emergencyName, setEmergencyName] = useState(``)
   const [emergencyNumber, setEmergencyNumber] = useState(``)
-  const [startDate, setStartDate] = useState(``)
+  const [startDate, setStartDate] = useState(null)
   const [eduLevel, setEduLevel] = useState(``)
   const [eduName, setEduName] = useState(``)
   const [eduGraduated, setEduGraduated] = useState(``)
@@ -142,6 +142,7 @@ const AddPositionsPage = () => {
         query: gql`
           query Positions {
             positions(where: {
+              Pos_Open: true
               staff_created: "${userInfo.id}"
               person_id: ""
             }) {
@@ -191,7 +192,7 @@ const AddPositionsPage = () => {
       uri: `${url}/graphql`,
       cache: new InMemoryCache(),
     })
-    let posNumberIsExisted = false
+    let getPersonID = ``
 
     setIsError({
       status: ``,
@@ -203,99 +204,118 @@ const AddPositionsPage = () => {
     })
 
     try {
-      const res = await client.query({
-        query: gql`
-          query Positions {
-            positions(where: {
-              Pos_Number: "${addPositionFilter.posNumber}"
+      const res = await client.mutate({
+        mutation: gql`
+          mutation CreatePerson {
+            createPerson(input: {
+              data: {
+                Prename: "${prename}",
+                Name: "${name}",
+                Surname: "${surname}",
+                ID_Card: "${idCard}",
+                SID_Card: "${sidCard}",
+                Gender: "${gender}",
+                BirthDate: "${renderDateForGraphQL(birthDate)}",
+                MarriedStatus: "${marriedStatus}",
+                Telephone: "${telephone}",
+                Address: "${address}",
+                Emergency_Name: "${emergencyName}",
+                Emergency_Number: "${emergencyNumber}",
+                StartDate: "${renderDateForGraphQL(startDate)}",
+                Edu_Level: "${eduLevel}",
+                Edu_Name: "${eduName}",
+                Edu_Graduated: "${eduGraduated}",
+                Edu_Country: "${eduCountry}",
+                MovementType: "${movementType}",
+                Outline: "${outline}",
+                South: ${south},
+                RewardType1: "${rewardType1}",
+                RewardType2: "${rewardType2}",
+                RewardType3: "${rewardType3}",
+                ContactCnt: "${contactCnt}",
+                Mission: "${mission}",
+                CurrentContactStart: "${renderDateForGraphQL(
+                  currentContactStart
+                )}",
+                CurrentContactEnd: "${renderDateForGraphQL(currentContactEnd)}",
+                Guilty: "${guilty}",
+                Punish: "${punish}",
+                Decoration: "${decoration}",
+                PercentSalary: "${percentSalary}",
+                ScoreKPI: "${scoreKPI}",
+                ScoreCompetence: "${scoreCompetence}",
+                StatusDisability: "${statusDisability}",
+              }
             }) {
-              _id
-              Pos_Name
-              Pos_Type
-              Pos_Number
-              Pos_Open
-              Pos_South
-              staff_created
-              staff_updated
-              published_at
-              createdAt
-              updatedAt
+              person {
+                _id
+              }
             }
           }
         `,
       })
+      console.log(res)
+      // {
+      //   "data": {
+      //     "createPerson": {
+      //       "person": {
+      //         "_id": "617a166993cffd00eeef2b18"
+      //       }
+      //     }
+      //   }
+      // }
 
-      if (res.data.positions.length > 0) {
-        posNumberIsExisted = true
-
-        setIsError({
-          status: `posNumberIsExisted`,
-          text: `มีเลขที่ตำแหน่งนี้ในฐานข้อมูลแล้ว`,
-        })
+      if (res) {
+        getPersonID = res.data.createPerson.person._id
       }
-    } catch {
+    } catch (error) {
       dispatch({
         type: `SET_NOTIFICATION_DIALOG`,
         notificationDialog: {
           open: true,
           title: `เพิ่มรายการไม่สำเร็จ`,
-          description: `ไม่สามารถเพิ่มรายการคลังตำแหน่งได้`,
+          description: `ไม่สามารถเพิ่มรายการกำลังพลได้`,
           variant: `error`,
-          confirmText: `ตกลง`,
-          callback: () => {},
+          confirmText: `ลองอีกครั้ง`,
+          callback: () => goAdd(),
         },
       })
 
-      dispatch({
-        type: `SET_BACKDROP_OPEN`,
-        backdropOpen: false,
-      })
-
-      return 0
+      console.log(error)
     }
 
-    if (!posNumberIsExisted) {
+    if (getPersonID !== ``) {
       try {
         await client.mutate({
           mutation: gql`
-            mutation CreatePosition {
-              createPosition(input: {
+            mutation UpdatePosition {
+              updatePosition(input: {
+                where: {
+                  id: "${positionInput._id}"
+                }
                 data: {
-                  Pos_Name: "${addPositionFilter.posName}",
-                  Pos_Type: "${addPositionFilter.posType}",
-                  Pos_Number: "${addPositionFilter.posNumber}",
-                  Pos_Open: ${addPositionFilter.posOpen},
-                  Pos_South: ${addPositionFilter.posSouth},
-                  staff_created: "${userInfo._id}",
+                  person_id: "${getPersonID}"
                 }
               }) {
                 position {
                   _id
-                  Pos_Name
-                  Pos_Type
-                  Pos_Number
-                  Pos_Open
-                  Pos_South
-                  published_at
-                  createdAt
-                  updatedAt
+                  person_id
                 }
               }
             }
           `,
         })
-        // console.log(res)
 
         dispatch({
           type: `SET_NOTIFICATION_DIALOG`,
           notificationDialog: {
             open: true,
             title: `เพิ่มรายการสำเร็จ`,
-            description: `เพิ่มรายการคลังตำแหน่งสำเร็จ`,
+            description: `เพิ่มรายการกำลังพลสำเร็จ`,
             variant: `success`,
             confirmText: `ตกลง`,
             callback: () => {
-              resetInput()
+              navigate(`/people`)
             },
           },
         })
@@ -305,11 +325,31 @@ const AddPositionsPage = () => {
           notificationDialog: {
             open: true,
             title: `เพิ่มรายการไม่สำเร็จ`,
-            description: `ไม่สามารถเพิ่มรายการคลังตำแหน่งได้`,
+            description: `ไม่สามารถเพิ่มรายการกำลังพลได้`,
             variant: `error`,
-            confirmText: `ตกลง`,
-            callback: () => {},
+            confirmText: `ลองอีกครั้ง`,
+            callback: () => goAdd(),
           },
+        })
+
+        // สั่งลบ getPersonID ที่เพิ่มไปก่อนหน้าออก
+        await client.mutate({
+          mutation: gql`
+            mutation DeletePerson {
+              deletePerson(input: {
+                where: {
+                  id: "${getPersonID}"
+                }
+              }) {
+                person {
+                  _id
+                  Prename
+                  Name
+                  Surname
+                }
+              }
+            }
+          `,
         })
 
         console.log(error)
@@ -321,19 +361,6 @@ const AddPositionsPage = () => {
       backdropOpen: false,
     })
   }
-
-  const resetInput = useCallback(() => {
-    dispatch({
-      type: `SET_ADD_POSITION_FILTER`,
-      addPositionFilter: {
-        posName: ``,
-        posType: ``,
-        posNumber: ``,
-        posOpen: false,
-        posSouth: false,
-      },
-    })
-  }, [dispatch])
 
   const renderCheckingIcon = value => {
     if (value === ``) {
@@ -355,7 +382,8 @@ const AddPositionsPage = () => {
   }
 
   const handleSubmit = e => {
-    console.log(`ssassss`)
+    console.log(`Go Adding`)
+    goAdd()
   }
 
   const clearInput = () => {
@@ -372,7 +400,7 @@ const AddPositionsPage = () => {
     setAddress(``)
     setEmergencyName(``)
     setEmergencyNumber(``)
-    setStartDate(``)
+    setStartDate(null)
     setEduLevel(``)
     setEduName(``)
     setEduGraduated(``)
@@ -411,7 +439,7 @@ const AddPositionsPage = () => {
     <Layout>
       {token !== "" ? (
         <>
-          <Seo title="เพิ่มคลังตำแหน่ง" />
+          <Seo title="เพิ่มกำลังพล" />
           <Breadcrumbs
             previous={[
               {
@@ -698,7 +726,7 @@ const AddPositionsPage = () => {
             <Divider style={{ margin: `1rem auto 2rem`, width: 360 }} />
             <Grid container spacing={2} sx={{ marginBottom: `1rem` }}>
               <Grid item xs={12}>
-                <TextField
+                {/* <TextField
                   sx={textfieldProps}
                   id="StartDate"
                   label="* วันเริ่มทำสัญญา"
@@ -708,6 +736,28 @@ const AddPositionsPage = () => {
                   InputProps={{
                     endAdornment: renderCheckingIcon(startDate),
                   }}
+                /> */}
+
+                <DatePicker
+                  {...datePickerProps}
+                  id="StartDate"
+                  label="* วันเริ่มทำสัญญา"
+                  onChange={newValue => {
+                    setStartDate(newValue)
+                  }}
+                  value={startDate}
+                  renderInput={params => (
+                    <TextField
+                      {...params}
+                      sx={textfieldProps}
+                      InputProps={{
+                        startAdornment: params.InputProps.endAdornment,
+                        endAdornment: renderCheckingIcon(
+                          startDate === null ? `` : startDate
+                        ),
+                      }}
+                    />
+                  )}
                 />
               </Grid>
             </Grid>
@@ -800,6 +850,7 @@ const AddPositionsPage = () => {
               <Grid item xs={12}>
                 <Flex>
                   <Checkbox
+                    id="South"
                     onChange={(_, newValue) => {
                       setSouth(newValue)
                     }}
@@ -1018,14 +1069,13 @@ const AddPositionsPage = () => {
                     address === `` ||
                     emergencyName === `` ||
                     emergencyNumber === `` ||
-                    startDate === `` ||
+                    startDate === null ||
                     eduLevel === `` ||
                     eduName === `` ||
                     eduGraduated === `` ||
                     eduCountry === `` ||
                     movementType === `` ||
                     outline === `` ||
-                    south === false ||
                     rewardType1 === `` ||
                     contactCnt === `` ||
                     mission === `` ||
@@ -1057,14 +1107,13 @@ const AddPositionsPage = () => {
                     address === `` &&
                     emergencyName === `` &&
                     emergencyNumber === `` &&
-                    startDate === `` &&
+                    startDate === null &&
                     eduLevel === `` &&
                     eduName === `` &&
                     eduGraduated === `` &&
                     eduCountry === `` &&
                     movementType === `` &&
                     outline === `` &&
-                    south === false &&
                     rewardType1 === `` &&
                     rewardType2 === `` &&
                     rewardType3 === `` &&

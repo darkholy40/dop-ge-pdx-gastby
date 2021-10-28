@@ -48,6 +48,7 @@ const PositionsPage = () => {
       cache: new InMemoryCache(),
     })
     let filter = ``
+    let returnData = []
 
     if (
       searchFilter.posName !== `` ||
@@ -95,15 +96,63 @@ const PositionsPage = () => {
               published_at
               createdAt
               updatedAt
+              person_id
             }
           }
         `,
       })
 
-      // console.log(res.data)
+      console.log(res.data.positions)
 
       if (res.data.positions.length > 0) {
-        setPosData(res.data.positions)
+        for (let thisPos of res.data.positions) {
+          let person = {
+            prename: `-`,
+            name: ``,
+            surname: ``,
+          }
+          if (thisPos.person_id !== ``) {
+            const resPerson = await client.query({
+              query: gql`
+                query Person {
+                  person(id: "${thisPos.person_id}") {
+                    _id
+                    Prename
+                    Name
+                    Surname
+                  }
+                }
+              `,
+            })
+
+            person = {
+              prename: resPerson.data.person.Prename,
+              name: resPerson.data.person.Name,
+              surname: resPerson.data.person.Surname,
+            }
+          }
+
+          returnData = [
+            ...returnData,
+            {
+              _id: thisPos._id,
+              Pos_Name: thisPos.Pos_Name,
+              Pos_Type: thisPos.Pos_Type,
+              Pos_Number: thisPos.Pos_Number,
+              Pos_Open: thisPos.Pos_Open,
+              Pos_South: thisPos.Pos_South,
+              staff_created: thisPos.staff_created,
+              staff_updated: thisPos.staff_updated,
+              published_at: thisPos.published_at,
+              createdAt: thisPos.createdAt,
+              updatedAt: thisPos.updatedAt,
+              person: person,
+            },
+          ]
+        }
+
+        // console.log(returnData)
+        setPosData(returnData)
       } else {
         setIsError({
           status: true,
@@ -192,6 +241,12 @@ const PositionsPage = () => {
                           align="center"
                           sx={{ backgroundColor: primaryColor[200] }}
                         >
+                          เปิดอัตรา
+                        </TableCell>
+                        <TableCell
+                          align="center"
+                          sx={{ backgroundColor: primaryColor[200] }}
+                        >
                           ตัวเลือก
                         </TableCell>
                       </TableRow>
@@ -212,9 +267,20 @@ const PositionsPage = () => {
                           </TableCell>
                           <TableCell align="left">{row.Pos_Type}</TableCell>
                           <TableCell align="left">{row.Pos_Number}</TableCell>
-                          <TableCell align="left">-</TableCell>
+                          <TableCell align="left">{`${row.person.prename} ${row.person.name} ${row.person.surname}`}</TableCell>
                           <TableCell align="center">
                             {row.Pos_South && (
+                              <FontAwesomeIcon
+                                icon={faCheckCircle}
+                                style={{
+                                  fontSize: 20,
+                                  color: primaryColor[500],
+                                }}
+                              />
+                            )}
+                          </TableCell>
+                          <TableCell align="center">
+                            {row.Pos_Open && (
                               <FontAwesomeIcon
                                 icon={faCheckCircle}
                                 style={{
