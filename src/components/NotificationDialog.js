@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import {
   faCheckCircle,
   faInfoCircle,
-  faTimesCircle,
+  faExclamationCircle,
 } from "@fortawesome/free-solid-svg-icons"
 import styled from "styled-components"
 import {
@@ -61,7 +61,7 @@ const NotificationDialog = () => {
       case `error`:
         return (
           <FontAwesomeIcon
-            icon={faTimesCircle}
+            icon={faExclamationCircle}
             style={{
               fontSize: `4rem`,
               marginBottom: `1rem`,

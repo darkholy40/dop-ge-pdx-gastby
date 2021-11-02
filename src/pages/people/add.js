@@ -244,6 +244,8 @@ const AddPositionsPage = () => {
                 ScoreKPI: "${scoreKPI}",
                 ScoreCompetence: "${scoreCompetence}",
                 StatusDisability: "${statusDisability}",
+                staff_created: "${userInfo.id}",
+                staff_updated: "",
               }
             }) {
               person {
