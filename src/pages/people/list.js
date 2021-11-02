@@ -22,6 +22,7 @@ import {
   faPen,
   faChevronLeft,
 } from "@fortawesome/free-solid-svg-icons"
+import axios from "axios"
 
 import Layout from "../../components/Layout"
 import Seo from "../../components/Seo"
@@ -47,6 +48,7 @@ const PositionsPage = () => {
       cache: new InMemoryCache(),
     })
     let filter = ``
+    let allUsers = []
     let returnData = []
 
     if (
@@ -88,109 +90,126 @@ const PositionsPage = () => {
     })
 
     try {
-      const res = await client.query({
-        query: gql`
-          query People {
-            people(${whereCondition}) {
-              _id
-              Prename
-              Name
-              Surname
-              ID_Card
-              SID_Card
-              staff_created
-              staff_updated
-              createdAt
-              updatedAt
-            }
-          }
-        `,
+      const res = await axios.get(`${url}/users`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       })
 
-      if (res.data.people.length > 0) {
-        for (let thisPerson of res.data.people) {
-          let position = {
-            _id: ``,
-            Pos_Name: ``,
-            Pos_Type: ``,
-            Pos_Number: ``,
-          }
-          if (thisPerson.person_id !== ``) {
-            const resPosition = await client.query({
-              query: gql`
-                query Positions {
-                  positions(where: {
-                    person_id: "${thisPerson._id}"
-                  }) {
-                    _id
-                    Pos_Name
-                    Pos_Type
-                    Pos_Number
-                  }
-                }
-              `,
-            })
+      allUsers = res.data
+    } catch (error) {
+      console.log(error)
+    }
 
-            position = {
-              _id: resPosition.data.positions[0]._id,
-              Pos_Name: resPosition.data.positions[0].Pos_Name,
-              Pos_Type: resPosition.data.positions[0].Pos_Type,
-              Pos_Number: resPosition.data.positions[0].Pos_Number,
+    if (allUsers.length > 0) {
+      try {
+        const res = await client.query({
+          query: gql`
+            query People {
+              people(${whereCondition}) {
+                _id
+                Prename
+                Name
+                Surname
+                ID_Card
+                SID_Card
+                staff_created
+                staff_updated
+                createdAt
+                updatedAt
+              }
             }
+          `,
+        })
+
+        if (res.data.people.length > 0) {
+          for (let thisPerson of res.data.people) {
+            let position = {
+              _id: ``,
+              Pos_Name: ``,
+              Pos_Type: ``,
+              Pos_Number: ``,
+            }
+            if (thisPerson.person_id !== ``) {
+              const resPosition = await client.query({
+                query: gql`
+                  query Positions {
+                    positions(where: {
+                      person_id: "${thisPerson._id}"
+                    }) {
+                      _id
+                      Pos_Name
+                      Pos_Type
+                      Pos_Number
+                    }
+                  }
+                `,
+              })
+
+              position = {
+                _id: resPosition.data.positions[0]._id,
+                Pos_Name: resPosition.data.positions[0].Pos_Name,
+                Pos_Type: resPosition.data.positions[0].Pos_Type,
+                Pos_Number: resPosition.data.positions[0].Pos_Number,
+              }
+            }
+
+            returnData = [
+              ...returnData,
+              {
+                _id: thisPerson._id,
+                Prename: thisPerson.Prename,
+                Name: thisPerson.Name,
+                Surname: thisPerson.Surname,
+                ID_Card: thisPerson.ID_Card,
+                SID_Card: thisPerson.SID_Card,
+                staff_created: thisPerson.staff_created,
+                staff_updated: thisPerson.staff_updated,
+                createdAt: thisPerson.createdAt,
+                updatedAt: thisPerson.updatedAt,
+                position: position,
+                division: allUsers.find(
+                  elem => elem._id === thisPerson.staff_created
+                ).division,
+              },
+            ]
           }
 
-          returnData = [
-            ...returnData,
-            {
-              _id: thisPerson._id,
-              Prename: thisPerson.Prename,
-              Name: thisPerson.Name,
-              Surname: thisPerson.Surname,
-              ID_Card: thisPerson.ID_Card,
-              SID_Card: thisPerson.SID_Card,
-              staff_created: thisPerson.staff_created,
-              staff_updated: thisPerson.staff_updated,
-              createdAt: thisPerson.createdAt,
-              updatedAt: thisPerson.updatedAt,
-              position: position,
-            },
-          ]
-        }
+          if (searchPersonFilter.posNumber !== ``) {
+            returnData = returnData.filter(
+              elem => elem.position.Pos_Number === searchPersonFilter.posNumber
+            )
+          }
 
-        if (searchPersonFilter.posNumber !== ``) {
-          returnData = returnData.filter(
-            elem => elem.position.Pos_Number === searchPersonFilter.posNumber
-          )
-        }
-
-        if (returnData.length > 0) {
-          setPeopleData(returnData)
+          if (returnData.length > 0) {
+            setPeopleData(returnData)
+          } else {
+            setIsError({
+              status: true,
+              text: `ไม่พบข้อมูล`,
+            })
+          }
         } else {
           setIsError({
             status: true,
             text: `ไม่พบข้อมูล`,
           })
         }
-      } else {
+      } catch (error) {
+        console.log(error)
+
         setIsError({
           status: true,
-          text: `ไม่พบข้อมูล`,
+          text: `ไม่สามารถเชื่อมต่อฐานข้อมูล`,
         })
       }
-    } catch (error) {
-      console.log(error)
-
-      setIsError({
-        status: true,
-        text: `ไม่สามารถเชื่อมต่อฐานข้อมูล`,
-      })
     }
 
     dispatch({
       type: `SET_BACKDROP_OPEN`,
       backdropOpen: false,
     })
-  }, [url, userInfo, searchPersonFilter, dispatch])
+  }, [url, token, userInfo, searchPersonFilter, dispatch])
 
   useEffect(() => {
     dispatch({
@@ -281,7 +300,9 @@ const PositionsPage = () => {
                           <TableCell align="left">
                             {row.position.Pos_Name}
                           </TableCell>
-                          <TableCell align="left">-</TableCell>
+                          <TableCell align="left">
+                            {row.division.DivisionName}
+                          </TableCell>
                           <TableCell align="center">
                             <IconButton
                               onClick={event => {
