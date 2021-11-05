@@ -47,6 +47,7 @@ const PositionsPage = () => {
       cache: new InMemoryCache(),
     })
     let filter = ``
+    let whereCondition = ``
     let returnData = []
 
     if (
@@ -71,10 +72,16 @@ const PositionsPage = () => {
         }`
     }
 
-    const whereCondition = `where: {
-      staff_created: "${userInfo._id}"
-      ${filter}
-    }`
+    if (userInfo.role.name === `Administrator`) {
+      whereCondition = `where: {
+        ${filter}
+      }`
+    } else {
+      whereCondition = `where: {
+        staff_created: "${userInfo._id}"
+        ${filter}
+      }`
+    }
 
     dispatch({
       type: `SET_BACKDROP_OPEN`,

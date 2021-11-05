@@ -136,6 +136,11 @@ const AddPositionsPage = () => {
       uri: `${url}/graphql`,
       cache: new InMemoryCache(),
     })
+    let role = ``
+
+    if (userInfo.role.name !== `Administrator`) {
+      role = `staff_created: "${userInfo.id}"`
+    }
 
     try {
       const res = await client.query({
@@ -143,7 +148,7 @@ const AddPositionsPage = () => {
           query Positions {
             positions(where: {
               Pos_Open: true
-              staff_created: "${userInfo.id}"
+              ${role}
               person_id: ""
             }) {
               _id
@@ -185,7 +190,7 @@ const AddPositionsPage = () => {
         },
       })
     }
-  }, [url, userInfo.id, dispatch])
+  }, [url, userInfo.id, userInfo.role.name, dispatch])
 
   const goAdd = async () => {
     const client = new ApolloClient({

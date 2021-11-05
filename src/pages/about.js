@@ -44,6 +44,10 @@ const AboutPage = () => {
         desc: userInfo.username,
       },
       {
+        title: `Role`,
+        desc: userInfo.role.name,
+      },
+      {
         title: `Token`,
         desc: token,
       },

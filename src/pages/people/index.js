@@ -53,6 +53,11 @@ const PositionsPage = () => {
       uri: `${url}/graphql`,
       cache: new InMemoryCache(),
     })
+    let role = ``
+
+    if (userInfo.role.name !== `Administrator`) {
+      role = `staff_created: "${userInfo.id}"`
+    }
 
     try {
       const res = await client.query({
@@ -60,7 +65,7 @@ const PositionsPage = () => {
           query Positions {
             positions(where: {
               Pos_Open: true
-              staff_created: "${userInfo.id}"
+              ${role}
               person_id: ""
             }) {
               _id
@@ -105,7 +110,7 @@ const PositionsPage = () => {
         },
       })
     }
-  }, [url, userInfo.id, dispatch])
+  }, [url, userInfo.id, userInfo.role.name, dispatch])
 
   useEffect(() => {
     dispatch({
