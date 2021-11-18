@@ -60,12 +60,12 @@ const PositionsPage = () => {
     ) {
       filter = `${
         searchPersonFilter.personName !== ``
-          ? `Name: "${searchPersonFilter.personName}"`
+          ? `Name_contains: "${searchPersonFilter.personName}"`
           : ``
       }
       ${
         searchPersonFilter.personSurname !== ``
-          ? `Surname: "${searchPersonFilter.personSurname}"`
+          ? `Surname_contains: "${searchPersonFilter.personSurname}"`
           : ``
       }
       ${
@@ -184,7 +184,11 @@ const PositionsPage = () => {
 
           if (searchPersonFilter.posNumber !== ``) {
             returnData = returnData.filter(
-              elem => elem.position.Pos_Number === searchPersonFilter.posNumber
+              elem =>
+                elem.position.Pos_Number ===
+                elem.position.Pos_Number.includes(
+                  `${searchPersonFilter.posNumber}`
+                )
             )
           }
 

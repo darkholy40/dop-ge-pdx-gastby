@@ -57,7 +57,7 @@ const PositionsPage = () => {
     ) {
       filter = `${
         searchPositionFilter.posName !== ``
-          ? `Pos_Name: "${searchPositionFilter.posName}"`
+          ? `Pos_Name_contains: "${searchPositionFilter.posName}"`
           : ``
       }
         ${
@@ -67,7 +67,7 @@ const PositionsPage = () => {
         }
         ${
           searchPositionFilter.posNumber !== ``
-            ? `Pos_Number: "${searchPositionFilter.posNumber}"`
+            ? `Pos_Number_contains: "${searchPositionFilter.posNumber}"`
             : ``
         }`
     }
