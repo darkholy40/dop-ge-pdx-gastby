@@ -6,24 +6,45 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faUser, faLock } from "@fortawesome/free-solid-svg-icons"
 import axios from "axios"
 
+import Image from "./Image"
+
 const Title = styled.p`
-  font-size: 2rem;
+  font-size: 1.5rem;
   text-align: center;
 `
 
 const Flex = styled.div`
-  width: 100%;
+  width: calc(100% - 1rem);
+  margin: auto;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   justify-content: center;
   align-items: center;
+  box-shadow: rgb(0 0 0 / 10%) 0px 2px 4px, rgb(0 0 0 / 10%) 0px 8px 16px;
+
+  @media (max-width: 991px) {
+    flex-direction: column;
+  }
+`
+
+const Column = styled.div`
+  display: flex;
+  flex-direction: row;
 `
 
 const Row = styled.div`
-  box-shadow: rgb(0 0 0 / 10%) 0px 2px 4px, rgb(0 0 0 / 10%) 0px 8px 16px;
   width: 100%;
   max-width: 600px;
   padding: 2.5rem;
+`
+
+const LogoContainer = styled.div`
+  max-width: 150px;
+  margin: auto;
+
+  @media (max-width: 991px) {
+    margin-top: 1.5rem;
+  }
 `
 
 const IndexPage = () => {
@@ -118,72 +139,82 @@ const IndexPage = () => {
         }}
       >
         <Flex>
-          <Row>
-            <TextField
-              style={{
-                width: `100%`,
-                marginBottom: `1rem`,
-              }}
-              id="uname"
-              label="ชื่อผู้ใช้งาน"
-              type="text"
-              variant="outlined"
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <FontAwesomeIcon icon={faUser} style={{ fontSize: 20 }} />
-                  </InputAdornment>
-                ),
-              }}
-              value={usernameInput}
-              onChange={e => setUsernameInput(e.target.value)}
-              disabled={isLoading}
-            />
-            <TextField
-              style={{
-                width: `100%`,
-                marginBottom: `2rem`,
-              }}
-              id="pwd"
-              label="รหัสผ่าน"
-              type="password"
-              autoComplete="true"
-              variant="outlined"
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <FontAwesomeIcon icon={faLock} style={{ fontSize: 20 }} />
-                  </InputAdornment>
-                ),
-              }}
-              value={passwordInput}
-              onChange={e => setPasswordInput(e.target.value)}
-              disabled={isLoading}
-            />
-            <Button
-              style={{
-                width: `100%`,
-              }}
-              type="submit"
-              color="primary"
-              variant="contained"
-              size="large"
-              disabled={
-                usernameInput === `` || passwordInput === `` || isLoading
-              }
-            >
-              {!isLoading ? (
-                <span>เข้าสู่ระบบ</span>
-              ) : (
-                <span>กำลังเข้าสู่ระบบ...</span>
+          <Column>
+            <LogoContainer>
+              <Image src="icon.png" />
+            </LogoContainer>
+          </Column>
+          <Column>
+            <Row>
+              <TextField
+                style={{
+                  width: `100%`,
+                  marginBottom: `1rem`,
+                }}
+                id="uname"
+                label="ชื่อผู้ใช้งาน"
+                type="text"
+                variant="outlined"
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <FontAwesomeIcon icon={faUser} style={{ fontSize: 20 }} />
+                    </InputAdornment>
+                  ),
+                }}
+                value={usernameInput}
+                onChange={e => setUsernameInput(e.target.value)}
+                disabled={isLoading}
+              />
+              <TextField
+                style={{
+                  width: `100%`,
+                  marginBottom: `1.5rem`,
+                }}
+                id="pwd"
+                label="รหัสผ่าน"
+                type="password"
+                autoComplete="true"
+                variant="outlined"
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <FontAwesomeIcon icon={faLock} style={{ fontSize: 20 }} />
+                    </InputAdornment>
+                  ),
+                }}
+                value={passwordInput}
+                onChange={e => setPasswordInput(e.target.value)}
+                disabled={isLoading}
+              />
+              <Button
+                style={{
+                  width: `100%`,
+                }}
+                type="submit"
+                color="primary"
+                variant="contained"
+                size="large"
+                disabled={
+                  usernameInput === `` || passwordInput === `` || isLoading
+                }
+              >
+                {!isLoading ? (
+                  <span>เข้าสู่ระบบ</span>
+                ) : (
+                  <span>กำลังเข้าสู่ระบบ...</span>
+                )}
+              </Button>
+              {isError.status && (
+                <Alert
+                  sx={{ marginTop: `1rem`, animation: `fadein 0.3s` }}
+                  severity="error"
+                >
+                  {isError.text}
+                </Alert>
               )}
-            </Button>
-            {isError.status && (
-              <Alert sx={{ marginTop: `1rem` }} severity="error">
-                {isError.text}
-              </Alert>
-            )}
-          </Row>
+            </Row>
+          </Column>
         </Flex>
       </form>
     </>
