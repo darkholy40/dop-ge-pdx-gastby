@@ -78,7 +78,7 @@ const PositionsPage = () => {
       }`
     } else {
       whereCondition = `where: {
-        staff_created: "${userInfo._id}"
+        division: "${userInfo.division._id}"
         ${filter}
       }`
     }

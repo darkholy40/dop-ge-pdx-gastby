@@ -56,7 +56,7 @@ const PositionsPage = () => {
     let role = ``
 
     if (userInfo.role.name !== `Administrator`) {
-      role = `staff_created: "${userInfo.id}"`
+      role = `division: "${userInfo.division._id}"`
     }
 
     try {
@@ -110,7 +110,7 @@ const PositionsPage = () => {
         },
       })
     }
-  }, [url, userInfo.id, userInfo.role.name, dispatch])
+  }, [url, userInfo.division._id, userInfo.role.name, dispatch])
 
   useEffect(() => {
     dispatch({

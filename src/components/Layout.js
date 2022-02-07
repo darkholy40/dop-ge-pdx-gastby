@@ -4,7 +4,7 @@ import styled from "styled-components"
 
 const Main = styled.main`
   width: 100%;
-  max-width: 960px;
+  max-width: 1024px;
   min-height: calc(100vh - 172px);
   margin-left: auto;
   margin-right: auto;

@@ -139,7 +139,7 @@ const AddPositionsPage = () => {
     let role = ``
 
     if (userInfo.role.name !== `Administrator`) {
-      role = `staff_created: "${userInfo.id}"`
+      role = `division: "${userInfo.division._id}"`
     }
 
     try {
@@ -162,6 +162,9 @@ const AddPositionsPage = () => {
               published_at
               createdAt
               updatedAt
+              division {
+                DivisionName
+              }
             }
           }
         `,
@@ -190,7 +193,7 @@ const AddPositionsPage = () => {
         },
       })
     }
-  }, [url, userInfo.id, userInfo.role.name, dispatch])
+  }, [url, userInfo.division._id, userInfo.role.name, dispatch])
 
   const goAdd = async () => {
     const client = new ApolloClient({
@@ -280,7 +283,7 @@ const AddPositionsPage = () => {
         notificationDialog: {
           open: true,
           title: `เพิ่มรายการไม่สำเร็จ`,
-          description: `ไม่สามารถเพิ่มรายการกำลังพลได้`,
+          description: `ไม่สามารถเพิ่มรายการกำลังพลได้ 1`,
           variant: `error`,
           confirmText: `ลองอีกครั้ง`,
           callback: () => goAdd(),
@@ -331,7 +334,7 @@ const AddPositionsPage = () => {
           notificationDialog: {
             open: true,
             title: `เพิ่มรายการไม่สำเร็จ`,
-            description: `ไม่สามารถเพิ่มรายการกำลังพลได้`,
+            description: `ไม่สามารถเพิ่มรายการกำลังพลได้ 2`,
             variant: `error`,
             confirmText: `ลองอีกครั้ง`,
             callback: () => goAdd(),
@@ -588,7 +591,7 @@ const AddPositionsPage = () => {
                         : `ไม่พบข้อมูล`
                     }
                     getOptionLabel={option =>
-                      `${option.Pos_Name} / ${option.Pos_Type} (${option.Pos_Number})`
+                      `${option.Pos_Name} / ${option.Pos_Type} (${option.Pos_Number}) / ${option.division.DivisionName}`
                     }
                     isOptionEqualToValue={(option, value) => {
                       return option._id === value._id
