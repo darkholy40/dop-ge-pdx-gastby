@@ -62,32 +62,26 @@ const PositionsPage = () => {
     try {
       const res = await client.query({
         query: gql`
-          query Positions {
-            positions(where: {
+          query PositionsCount {
+            positionsConnection(where: {
               Pos_Open: true
               ${role}
               person_id: ""
             }) {
-              _id
-              Pos_Name
-              Pos_Type
-              Pos_Number
-              Pos_Open
-              Pos_South
-              staff_created
-              staff_updated
-              published_at
-              createdAt
-              updatedAt
+              aggregate {
+                count
+              }
             }
           }
         `,
       })
 
-      if (res.data.positions.length > 0) {
+      const totalCount = res.data.positionsConnection.aggregate.count
+
+      if (totalCount > 0) {
         setIsError({
           status: ``,
-          text: `มีตำแหน่งว่าง ${res.data.positions.length} ตำแหน่ง`,
+          text: `มีตำแหน่งว่าง ${totalCount} ตำแหน่ง`,
         })
       } else {
         setIsError({
