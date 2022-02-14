@@ -28,6 +28,7 @@ import Seo from "../../components/Seo"
 import Breadcrumbs from "../../components/Breadcrumbs"
 import PageNotFound from "../../components/PageNotFound"
 import Warning from "../../components/Warning"
+import renderDivision from "../../functions/renderDivision"
 
 const PositionsPage = () => {
   const { token, userInfo, url, primaryColor, searchPositionFilter } =
@@ -50,31 +51,21 @@ const PositionsPage = () => {
     let whereCondition = ``
     let returnData = []
 
-    if (
-      searchPositionFilter.posName !== `` ||
-      searchPositionFilter.posType !== `` ||
-      searchPositionFilter.posNumber !== ``
-    ) {
-      filter = `${
-        searchPositionFilter.posName !== ``
-          ? `Pos_Name_contains: "${searchPositionFilter.posName}"`
-          : ``
+    filter = `
+      position_type: {
+        type_contains: "${searchPositionFilter.posType}"
+        name_contains: "${searchPositionFilter.posName}"
       }
-        ${
-          searchPositionFilter.posType !== ``
-            ? `Pos_Type: "${searchPositionFilter.posType}"`
-            : ``
-        }
-        ${
-          searchPositionFilter.posNumber !== ``
-            ? `Pos_Number_contains: "${searchPositionFilter.posNumber}"`
-            : ``
-        }`
-    }
+    `
 
     if (userInfo.role.name === `Administrator`) {
       whereCondition = `where: {
         ${filter}
+        ${
+          searchPositionFilter.unit !== null
+            ? `division: "${searchPositionFilter.unit._id}"`
+            : ``
+        }
       }`
     } else {
       whereCondition = `where: {
@@ -94,16 +85,25 @@ const PositionsPage = () => {
           query Position {
             positions(${whereCondition}) {
               _id
-              Pos_Name
-              Pos_Type
-              Pos_Number
-              Pos_Open
-              Pos_South
+              number
+              position_type {
+                type
+                name
+                order
+              }
+              isOpen
+              isSouth
               staff_created
               staff_updated
               published_at
               createdAt
               updatedAt
+              division {
+                id
+                division1
+                division2
+                division3
+              }
               person_id
             }
           }
@@ -142,16 +142,19 @@ const PositionsPage = () => {
             ...returnData,
             {
               _id: thisPos._id,
-              Pos_Name: thisPos.Pos_Name,
-              Pos_Type: thisPos.Pos_Type,
-              Pos_Number: thisPos.Pos_Number,
-              Pos_Open: thisPos.Pos_Open,
-              Pos_South: thisPos.Pos_South,
+              position: {
+                type: thisPos.position_type.type,
+                name: thisPos.position_type.name,
+                number: thisPos.number,
+              },
+              isOpen: thisPos.isOpen,
+              isSouth: thisPos.isSouth,
               staff_created: thisPos.staff_created,
               staff_updated: thisPos.staff_updated,
               published_at: thisPos.published_at,
               createdAt: thisPos.createdAt,
               updatedAt: thisPos.updatedAt,
+              division: thisPos.division,
               person: person,
             },
           ]
@@ -235,6 +238,9 @@ const PositionsPage = () => {
                           เลขที่ตำแหน่ง
                         </TableCell>
                         <TableCell sx={{ backgroundColor: primaryColor[200] }}>
+                          สังกัด
+                        </TableCell>
+                        <TableCell sx={{ backgroundColor: primaryColor[200] }}>
                           ชื่อ สกุล (ผู้ครองตำแหน่ง)
                         </TableCell>
                         <TableCell
@@ -272,13 +278,20 @@ const PositionsPage = () => {
                             {rowIndex + 1}
                           </TableCell>
                           <TableCell align="left" sx={{ minWidth: 100 }}>
-                            {row.Pos_Name}
+                            {row.position.name}
                           </TableCell>
-                          <TableCell align="left">{row.Pos_Type}</TableCell>
-                          <TableCell align="left">{row.Pos_Number}</TableCell>
+                          <TableCell align="left">
+                            {row.position.type}
+                          </TableCell>
+                          <TableCell align="left">
+                            {row.position.number}
+                          </TableCell>
+                          <TableCell align="left">
+                            {renderDivision(row.division)}
+                          </TableCell>
                           <TableCell align="left">{`${row.person.prename} ${row.person.name} ${row.person.surname}`}</TableCell>
                           <TableCell align="center">
-                            {row.Pos_South && (
+                            {row.isSouth && (
                               <FontAwesomeIcon
                                 icon={faCheckCircle}
                                 style={{
@@ -289,7 +302,7 @@ const PositionsPage = () => {
                             )}
                           </TableCell>
                           <TableCell align="center">
-                            {row.Pos_Open && (
+                            {row.isOpen && (
                               <FontAwesomeIcon
                                 icon={faCheckCircle}
                                 style={{
@@ -328,6 +341,14 @@ const PositionsPage = () => {
                   open={Boolean(anchorEl)}
                   onClose={() => {
                     setAnchorEl(null)
+                  }}
+                  anchorOrigin={{
+                    vertical: "bottom",
+                    horizontal: "right",
+                  }}
+                  transformOrigin={{
+                    vertical: "top",
+                    horizontal: "right",
                   }}
                 >
                   <MenuItem

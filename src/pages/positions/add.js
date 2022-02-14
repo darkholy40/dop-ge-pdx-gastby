@@ -1,16 +1,7 @@
 import React, { useCallback, useEffect, useState } from "react"
 import { useSelector, useDispatch } from "react-redux"
-import styled from "styled-components"
-import {
-  Button,
-  TextField,
-  Checkbox,
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
-  Alert,
-} from "@mui/material"
+import { Button, TextField, Checkbox, Alert } from "@mui/material"
+import Autocomplete from "@mui/material/Autocomplete"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faPlus } from "@fortawesome/free-solid-svg-icons"
 import { ApolloClient, InMemoryCache, gql } from "@apollo/client"
@@ -19,32 +10,26 @@ import Layout from "../../components/Layout"
 import Seo from "../../components/Seo"
 import Breadcrumbs from "../../components/Breadcrumbs"
 import PageNotFound from "../../components/PageNotFound"
-import positionType from "../../positionType"
-
-const Form = styled.form`
-  display: flex;
-  flex-direction: column;
-  max-width: 400px;
-  margin: auto;
-`
-
-const Flex = styled.div`
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: flex-start;
-  margin-bottom: 1rem;
-`
+import { Form, Flex, CheckCircleFlex } from "../../components/Styles"
+import renderCheckingIcon from "../../functions/renderCheckingIcon"
 
 const AddPositionsPage = () => {
-  const { token, userInfo, url, addPositionFilter } = useSelector(
-    state => state
-  )
+  const { token, userInfo, url, positionTypes, positionNames, units } =
+    useSelector(state => state)
   const dispatch = useDispatch()
   const [isError, setIsError] = useState({
     status: false,
     type: ``,
     text: ``,
+  })
+  const [addPositionFilter, setAddPositionFilter] = useState({
+    posId: ``,
+    posName: ``,
+    posType: ``,
+    posNumber: ``,
+    unit: null,
+    posOpen: false,
+    posSouth: false,
   })
 
   const goAdd = async () => {
@@ -69,14 +54,16 @@ const AddPositionsPage = () => {
         query: gql`
           query Positions {
             positions(where: {
-              Pos_Number: "${addPositionFilter.posNumber}"
+              number: "${addPositionFilter.posNumber}"
             }) {
               _id
-              Pos_Name
-              Pos_Type
-              Pos_Number
-              Pos_Open
-              Pos_South
+              position_type {
+                type
+                name
+              }
+              number
+              isOpen
+              isSouth
               staff_created
               staff_updated
               published_at
@@ -124,23 +111,29 @@ const AddPositionsPage = () => {
             mutation CreatePosition {
               createPosition(input: {
                 data: {
-                  Pos_Name: "${addPositionFilter.posName}",
-                  Pos_Type: "${addPositionFilter.posType}",
-                  Pos_Number: "${addPositionFilter.posNumber}",
-                  Pos_Open: ${addPositionFilter.posOpen},
-                  Pos_South: ${addPositionFilter.posSouth},
+                  position_type: "${addPositionFilter.posId}",
+                  number: "${addPositionFilter.posNumber}",
+                  isOpen: ${addPositionFilter.posOpen},
+                  isSouth: ${addPositionFilter.posSouth},
                   staff_created: "${userInfo._id}",
                   staff_updated: "",
                   person_id: "",
+                  division: "${
+                    userInfo.role.name === `Administrator`
+                      ? `${addPositionFilter.unit._id}`
+                      : `${userInfo.division._id}`
+                  }"
                 }
               }) {
                 position {
                   _id
-                  Pos_Name
-                  Pos_Type
-                  Pos_Number
-                  Pos_Open
-                  Pos_South
+                  position_type {
+                    type
+                    name
+                  }
+                  number
+                  isOpen
+                  isSouth
                   published_at
                   createdAt
                   updatedAt
@@ -188,17 +181,16 @@ const AddPositionsPage = () => {
   }
 
   const resetInput = useCallback(() => {
-    dispatch({
-      type: `SET_ADD_POSITION_FILTER`,
-      addPositionFilter: {
-        posName: ``,
-        posType: ``,
-        posNumber: ``,
-        posOpen: false,
-        posSouth: false,
-      },
+    setAddPositionFilter({
+      posId: ``,
+      posName: ``,
+      posType: ``,
+      posNumber: ``,
+      unit: null,
+      posOpen: false,
+      posSouth: false,
     })
-  }, [dispatch])
+  }, [])
 
   useEffect(() => {
     dispatch({
@@ -223,64 +215,191 @@ const AddPositionsPage = () => {
           />
 
           <Form>
-            <TextField
-              sx={{ marginBottom: `1rem` }}
-              id="pos-name"
-              label="ชื่อตำแหน่ง"
-              variant="outlined"
-              onChange={e => {
-                dispatch({
-                  type: `SET_ADD_POSITION_FILTER`,
-                  addPositionFilter: {
-                    ...addPositionFilter,
-                    posName: e.target.value,
-                  },
-                })
-              }}
-              value={addPositionFilter.posName}
-            />
-            <FormControl fullWidth>
-              <InputLabel id="pos-type-label-id">ชื่อประเภทกลุ่มงาน</InputLabel>
-              <Select
-                sx={{ marginBottom: `1rem` }}
-                labelId="pos-type-label-id"
-                id="pos-type"
-                label="ชื่อประเภทกลุ่มงาน"
-                onChange={e => {
-                  dispatch({
-                    type: `SET_ADD_POSITION_FILTER`,
-                    addPositionFilter: {
-                      ...addPositionFilter,
-                      posType: e.target.value,
-                    },
-                  })
+            <Flex style={{ marginBottom: `1rem` }}>
+              <Autocomplete
+                sx={{ width: `100%` }}
+                id="position-type"
+                disablePortal
+                options={positionTypes}
+                noOptionsText={`ไม่พบข้อมูล`}
+                getOptionLabel={option => option.type}
+                isOptionEqualToValue={(option, value) => {
+                  return option === value
                 }}
-                value={addPositionFilter.posType}
-              >
-                <MenuItem value="" selected>
-                  ---
-                </MenuItem>
-                {positionType.map((item, index) => {
-                  return (
-                    <MenuItem key={`postype_${index}`} value={item}>
-                      {item}
-                    </MenuItem>
-                  )
-                })}
-              </Select>
-            </FormControl>
+                onChange={(_, newValue) => {
+                  if (newValue !== null) {
+                    setAddPositionFilter({
+                      ...addPositionFilter,
+                      posType: newValue.type,
+                      posName: ``,
+                    })
+                  } else {
+                    setAddPositionFilter({
+                      ...addPositionFilter,
+                      posId: ``,
+                      posType: ``,
+                      posName: ``,
+                    })
+                  }
+                }}
+                value={
+                  addPositionFilter.posType !== ``
+                    ? positionTypes.find(
+                        elem => elem.type === addPositionFilter.posType
+                      )
+                    : null
+                }
+                renderInput={params => (
+                  <TextField
+                    {...params}
+                    label="ชื่อประเภทกลุ่มงาน"
+                    InputProps={{
+                      ...params.InputProps,
+                      sx: {
+                        borderRadius: `5px 0 0 5px`,
+                      },
+                    }}
+                  />
+                )}
+              />
+              <CheckCircleFlex>
+                {renderCheckingIcon(
+                  addPositionFilter.posType !== `` ? `correct` : ``
+                )}
+              </CheckCircleFlex>
+            </Flex>
+
+            <Flex style={{ marginBottom: `1rem` }}>
+              <Autocomplete
+                sx={{ width: `100%` }}
+                id="position-name"
+                disablePortal
+                options={
+                  addPositionFilter.posType !== ``
+                    ? positionNames.filter(
+                        elem => elem.type === addPositionFilter.posType
+                      )
+                    : positionNames
+                }
+                noOptionsText={`ไม่พบข้อมูล`}
+                getOptionLabel={option => option.name}
+                isOptionEqualToValue={(option, value) => {
+                  return option === value
+                }}
+                onChange={(_, newValue) => {
+                  if (newValue !== null) {
+                    setAddPositionFilter({
+                      ...addPositionFilter,
+                      posId: newValue._id,
+                      posName: newValue.name,
+                      posType: newValue.type,
+                    })
+                  } else {
+                    setAddPositionFilter({
+                      ...addPositionFilter,
+                      posId: ``,
+                      posName: ``,
+                    })
+                  }
+                }}
+                value={
+                  addPositionFilter.posName !== ``
+                    ? positionNames.find(
+                        elem => elem.name === addPositionFilter.posName
+                      )
+                    : null
+                }
+                renderInput={params => (
+                  <TextField
+                    {...params}
+                    label="ชื่อตำแหน่งในสายงาน"
+                    InputProps={{
+                      ...params.InputProps,
+                      sx: {
+                        borderRadius: `5px 0 0 5px`,
+                      },
+                    }}
+                  />
+                )}
+              />
+              <CheckCircleFlex>
+                {renderCheckingIcon(
+                  addPositionFilter.posName !== `` ? `correct` : ``
+                )}
+              </CheckCircleFlex>
+            </Flex>
+
+            {userInfo.role.name === `Administrator` && (
+              <Flex style={{ marginBottom: `1rem` }}>
+                <Autocomplete
+                  sx={{ width: `100%` }}
+                  id="position-name"
+                  disablePortal
+                  options={units}
+                  noOptionsText={`ไม่พบข้อมูล`}
+                  getOptionLabel={option => {
+                    let label = ``
+
+                    if (option.division1) {
+                      label = option.division1
+                    }
+
+                    if (option.division2) {
+                      label = option.division2
+                    }
+
+                    if (option.division3) {
+                      label = option.division3
+                    }
+                    return label
+                  }}
+                  isOptionEqualToValue={(option, value) => {
+                    return option === value
+                  }}
+                  onChange={(_, newValue) => {
+                    if (newValue !== null) {
+                      setAddPositionFilter({
+                        ...addPositionFilter,
+                        unit: newValue,
+                      })
+                    } else {
+                      setAddPositionFilter({
+                        ...addPositionFilter,
+                        unit: null,
+                      })
+                    }
+                  }}
+                  value={addPositionFilter.unit}
+                  renderInput={params => (
+                    <TextField
+                      {...params}
+                      label="สังกัด"
+                      InputProps={{
+                        ...params.InputProps,
+                        sx: {
+                          borderRadius: `5px 0 0 5px`,
+                        },
+                      }}
+                    />
+                  )}
+                />
+                <CheckCircleFlex>
+                  {renderCheckingIcon(
+                    addPositionFilter.unit !== null ? `correct` : ``
+                  )}
+                </CheckCircleFlex>
+              </Flex>
+            )}
+
             <TextField
               sx={{ marginBottom: `1rem` }}
               id="pos-number"
               label="เลขที่ตำแหน่ง"
               variant="outlined"
               onChange={e => {
-                dispatch({
-                  type: `SET_ADD_POSITION_FILTER`,
-                  addPositionFilter: {
-                    ...addPositionFilter,
-                    posNumber: e.target.value,
-                  },
+                setAddPositionFilter({
+                  ...addPositionFilter,
+                  posNumber: e.target.value,
                 })
               }}
               value={addPositionFilter.posNumber}
@@ -294,12 +413,9 @@ const AddPositionsPage = () => {
             <Flex>
               <Checkbox
                 onChange={(_, newValue) => {
-                  dispatch({
-                    type: `SET_ADD_POSITION_FILTER`,
-                    addPositionFilter: {
-                      ...addPositionFilter,
-                      posOpen: newValue,
-                    },
+                  setAddPositionFilter({
+                    ...addPositionFilter,
+                    posOpen: newValue,
                   })
                 }}
                 checked={addPositionFilter.posOpen}
@@ -309,12 +425,9 @@ const AddPositionsPage = () => {
             <Flex>
               <Checkbox
                 onChange={(_, newValue) => {
-                  dispatch({
-                    type: `SET_ADD_POSITION_FILTER`,
-                    addPositionFilter: {
-                      ...addPositionFilter,
-                      posSouth: newValue,
-                    },
+                  setAddPositionFilter({
+                    ...addPositionFilter,
+                    posSouth: newValue,
                   })
                 }}
                 checked={addPositionFilter.posSouth}
@@ -327,9 +440,14 @@ const AddPositionsPage = () => {
               variant="contained"
               onClick={() => goAdd()}
               disabled={
-                addPositionFilter.posName === `` ||
-                addPositionFilter.posType === `` ||
-                addPositionFilter.posNumber === ``
+                userInfo.role.name === `Administrator`
+                  ? addPositionFilter.posName === `` ||
+                    addPositionFilter.posType === `` ||
+                    addPositionFilter.posNumber === `` ||
+                    addPositionFilter.unit === null
+                  : addPositionFilter.posName === `` ||
+                    addPositionFilter.posType === `` ||
+                    addPositionFilter.posNumber === ``
               }
             >
               <FontAwesomeIcon icon={faPlus} style={{ marginRight: 5 }} />
