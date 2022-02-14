@@ -7,6 +7,9 @@ import {
 } from "@mui/material/colors"
 
 const initialState = {
+  positionTypes: [],
+  positionNames: [],
+  units: [],
   primaryColor: primaryColor,
   secondaryColor: secondaryColor,
   lang: `th`,
@@ -26,13 +29,6 @@ const initialState = {
     updatedAt: ``,
     division: {
       _id: ``,
-      Organize: ``,
-      OrganizeType: ``,
-      ministry: ``,
-      DivisionName: ``,
-      published_at: ``,
-      createdAt: ``,
-      updatedAt: ``,
     },
     role: {
       _id: ``,
@@ -43,7 +39,7 @@ const initialState = {
   searchPositionFilter: {
     posName: ``,
     posType: ``,
-    posNumber: ``,
+    unit: null,
   },
   addPositionFilter: {
     posName: ``,
@@ -123,6 +119,24 @@ const reducer = (state = initialState, action) => {
       return {
         ...state,
         notificationDialog: action.notificationDialog,
+      }
+
+    case `SET_POSITION_TYPES`:
+      return {
+        ...state,
+        positionTypes: action.positionTypes,
+      }
+
+    case `SET_POSITION_NAMES`:
+      return {
+        ...state,
+        positionNames: action.positionNames,
+      }
+
+    case `SET_UNITS`:
+      return {
+        ...state,
+        units: action.units,
       }
 
     default:

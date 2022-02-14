@@ -9,6 +9,7 @@ import LocalizationProvider from "@mui/lab/LocalizationProvider"
 import thLocale from "date-fns/locale/th"
 
 import Navbar from "./Navbar"
+import StaticData from "./StaticData"
 import NotificationDialog from "./NotificationDialog"
 import Footer from "./Footer"
 
@@ -45,6 +46,7 @@ const Container = ({ children }) => {
     <ThemeProvider theme={muiTheme}>
       <LocalizationProvider dateAdapter={AdapterDateFns} locale={thLocale}>
         <Navbar />
+        <StaticData />
         <MainContainer>
           <Row>{children}</Row>
           <Backdrop

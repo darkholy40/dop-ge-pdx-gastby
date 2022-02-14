@@ -2,14 +2,8 @@ import React, { useEffect } from "react"
 import { navigate } from "gatsby"
 import { useSelector, useDispatch } from "react-redux"
 import styled from "styled-components"
-import {
-  Button,
-  TextField,
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
-} from "@mui/material"
+import { Button, TextField } from "@mui/material"
+import Autocomplete from "@mui/material/Autocomplete"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import {
   faPlusCircle,
@@ -21,7 +15,7 @@ import Layout from "../../components/Layout"
 import Seo from "../../components/Seo"
 import Breadcrumbs from "../../components/Breadcrumbs"
 import PageNotFound from "../../components/PageNotFound"
-import positionType from "../../positionType"
+import renderCheckingIcon from "../../functions/renderCheckingIcon"
 
 const Oparator = styled.div`
   display: flex;
@@ -46,8 +40,35 @@ const SubmitButtonFlex = styled.div`
   justify-content: space-between;
 `
 
+const Flex = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+`
+
+const CheckCircleFlex = styled.div`
+  border-radius: 0 5px 5px 0;
+  border-top: 1px solid rgba(0, 0, 0, 0.24);
+  border-right: 1px solid rgba(0, 0, 0, 0.24);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.24);
+  height: 54px;
+  width: 30px;
+  padding-right: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`
+
 const PositionsPage = () => {
-  const { token, searchPositionFilter } = useSelector(state => state)
+  const {
+    token,
+    userInfo,
+    searchPositionFilter,
+    positionTypes,
+    positionNames,
+    units,
+  } = useSelector(state => state)
   const dispatch = useDispatch()
 
   useEffect(() => {
@@ -88,68 +109,197 @@ const PositionsPage = () => {
             </Button>
           </Oparator>
           <Form onSubmit={e => e.preventDefault()}>
-            <TextField
-              sx={{ marginBottom: `1rem` }}
-              id="pos-name"
-              label="ชื่อตำแหน่ง"
-              variant="outlined"
-              onChange={e => {
-                dispatch({
-                  type: `SET_SEARCH_POSITION_FILTER`,
-                  searchPositionFilter: {
-                    ...searchPositionFilter,
-                    posName: e.target.value,
-                  },
-                })
-              }}
-              value={searchPositionFilter.posName}
-            />
-            <FormControl fullWidth>
-              <InputLabel id="pos-type-label-id">ชื่อประเภทกลุ่มงาน</InputLabel>
-              <Select
-                sx={{ marginBottom: `1rem` }}
-                labelId="pos-type-label-id"
-                id="pos-type"
-                label="ชื่อประเภทกลุ่มงาน"
-                onChange={e => {
-                  dispatch({
-                    type: `SET_SEARCH_POSITION_FILTER`,
-                    searchPositionFilter: {
-                      ...searchPositionFilter,
-                      posType: e.target.value,
-                    },
-                  })
+            <Flex style={{ marginBottom: `1rem` }}>
+              <Autocomplete
+                sx={{ width: `100%` }}
+                id="position-type"
+                disablePortal
+                options={positionTypes}
+                noOptionsText={`ไม่พบข้อมูล`}
+                getOptionLabel={option => option.type}
+                isOptionEqualToValue={(option, value) => {
+                  return option === value
                 }}
-                value={searchPositionFilter.posType}
-              >
-                <MenuItem value="" selected>
-                  ---
-                </MenuItem>
-                {positionType.map((item, index) => {
-                  return (
-                    <MenuItem key={`postype_${index}`} value={item}>
-                      {item}
-                    </MenuItem>
-                  )
-                })}
-              </Select>
-            </FormControl>
-            <TextField
-              sx={{ marginBottom: `1rem` }}
-              id="pos-number"
-              label="เลขที่ตำแหน่ง"
-              variant="outlined"
-              onChange={e => {
-                dispatch({
-                  type: `SET_SEARCH_POSITION_FILTER`,
-                  searchPositionFilter: {
-                    ...searchPositionFilter,
-                    posNumber: e.target.value,
-                  },
-                })
-              }}
-              value={searchPositionFilter.posNumber}
-            />
+                onChange={(_, newValue) => {
+                  if (newValue !== null) {
+                    dispatch({
+                      type: `SET_SEARCH_POSITION_FILTER`,
+                      searchPositionFilter: {
+                        ...searchPositionFilter,
+                        posType: newValue.type,
+                        posName: ``,
+                      },
+                    })
+                  } else {
+                    dispatch({
+                      type: `SET_SEARCH_POSITION_FILTER`,
+                      searchPositionFilter: {
+                        ...searchPositionFilter,
+                        posType: ``,
+                        posName: ``,
+                      },
+                    })
+                  }
+                }}
+                value={
+                  searchPositionFilter.posType !== ``
+                    ? positionTypes.find(
+                        elem => elem.type === searchPositionFilter.posType
+                      )
+                    : null
+                }
+                renderInput={params => (
+                  <TextField
+                    {...params}
+                    label="ชื่อประเภทกลุ่มงาน"
+                    InputProps={{
+                      ...params.InputProps,
+                      sx: {
+                        borderRadius: `5px 0 0 5px`,
+                      },
+                    }}
+                  />
+                )}
+              />
+              <CheckCircleFlex>
+                {renderCheckingIcon(
+                  searchPositionFilter.posType !== `` ? `correct` : ``
+                )}
+              </CheckCircleFlex>
+            </Flex>
+
+            <Flex style={{ marginBottom: `1rem` }}>
+              <Autocomplete
+                sx={{ width: `100%` }}
+                id="position-name"
+                disablePortal
+                options={
+                  searchPositionFilter.posType !== ``
+                    ? positionNames.filter(
+                        elem => elem.type === searchPositionFilter.posType
+                      )
+                    : positionNames
+                }
+                noOptionsText={`ไม่พบข้อมูล`}
+                getOptionLabel={option => option.name}
+                isOptionEqualToValue={(option, value) => {
+                  return option === value
+                }}
+                onChange={(_, newValue) => {
+                  if (newValue !== null) {
+                    dispatch({
+                      type: `SET_SEARCH_POSITION_FILTER`,
+                      searchPositionFilter: {
+                        ...searchPositionFilter,
+                        posName: newValue.name,
+                        posType: newValue.type,
+                      },
+                    })
+                  } else {
+                    dispatch({
+                      type: `SET_SEARCH_POSITION_FILTER`,
+                      searchPositionFilter: {
+                        ...searchPositionFilter,
+                        posName: ``,
+                      },
+                    })
+                  }
+                }}
+                value={
+                  searchPositionFilter.posName !== ``
+                    ? positionNames.find(
+                        elem => elem.name === searchPositionFilter.posName
+                      )
+                    : null
+                }
+                renderInput={params => (
+                  <TextField
+                    {...params}
+                    label="ชื่อตำแหน่งในสายงาน"
+                    InputProps={{
+                      ...params.InputProps,
+                      sx: {
+                        borderRadius: `5px 0 0 5px`,
+                      },
+                    }}
+                  />
+                )}
+              />
+              <CheckCircleFlex>
+                {renderCheckingIcon(
+                  searchPositionFilter.posName !== `` ? `correct` : ``
+                )}
+              </CheckCircleFlex>
+            </Flex>
+
+            {userInfo.role.name === `Administrator` && (
+              <Flex style={{ marginBottom: `1rem` }}>
+                <Autocomplete
+                  sx={{ width: `100%` }}
+                  id="position-name"
+                  disablePortal
+                  options={units}
+                  noOptionsText={`ไม่พบข้อมูล`}
+                  getOptionLabel={option => {
+                    let label = ``
+
+                    if (option.division1) {
+                      label = option.division1
+                    }
+
+                    if (option.division2) {
+                      label = option.division2
+                    }
+
+                    if (option.division3) {
+                      label = option.division3
+                    }
+                    return label
+                  }}
+                  isOptionEqualToValue={(option, value) => {
+                    return option === value
+                  }}
+                  onChange={(_, newValue) => {
+                    if (newValue !== null) {
+                      dispatch({
+                        type: `SET_SEARCH_POSITION_FILTER`,
+                        searchPositionFilter: {
+                          ...searchPositionFilter,
+                          unit: newValue,
+                        },
+                      })
+                    } else {
+                      dispatch({
+                        type: `SET_SEARCH_POSITION_FILTER`,
+                        searchPositionFilter: {
+                          ...searchPositionFilter,
+                          unit: null,
+                        },
+                      })
+                    }
+                  }}
+                  value={searchPositionFilter.unit}
+                  renderInput={params => (
+                    <TextField
+                      {...params}
+                      label="สังกัด"
+                      InputProps={{
+                        ...params.InputProps,
+                        sx: {
+                          borderRadius: `5px 0 0 5px`,
+                        },
+                      }}
+                    />
+                  )}
+                />
+                <CheckCircleFlex>
+                  {renderCheckingIcon(
+                    searchPositionFilter.unit !== null ? `correct` : ``
+                  )}
+                </CheckCircleFlex>
+              </Flex>
+            )}
+
             <SubmitButtonFlex>
               <Button
                 style={{
@@ -175,14 +325,14 @@ const PositionsPage = () => {
                     searchPositionFilter: {
                       posName: ``,
                       posType: ``,
-                      posNumber: ``,
+                      unit: null,
                     },
                   })
                 }}
                 disabled={
                   searchPositionFilter.posName === `` &&
                   searchPositionFilter.posType === `` &&
-                  searchPositionFilter.posNumber === ``
+                  searchPositionFilter.unit === null
                 }
               >
                 <FontAwesomeIcon icon={faTimes} style={{ marginRight: 5 }} />
