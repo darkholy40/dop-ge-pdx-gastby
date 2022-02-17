@@ -31,6 +31,7 @@ import Seo from "../../components/Seo"
 import Breadcrumbs from "../../components/Breadcrumbs"
 import PageNotFound from "../../components/PageNotFound"
 import renderDateForGraphQL from "../../functions/renderDateForGraphQL"
+import renderDivision from "../../functions/renderDivision"
 
 const Form = styled.form`
   display: flex;
@@ -154,10 +155,18 @@ const AddPositionsPage = () => {
             positions(where: {
               isOpen: true
               ${role}
-              person_id: ""
+              person_null: true
               position_type: {
-                type_contains: "${positionTypeSelect}"
-                name_contains: "${positionNameSelect}"
+                ${
+                  positionTypeSelect !== ``
+                    ? `type_contains: "${positionTypeSelect}"`
+                    : ``
+                }
+                ${
+                  positionNameSelect !== ``
+                    ? `name_contains: "${positionNameSelect}"`
+                    : ``
+                }
               }
             }) {
               _id
@@ -209,14 +218,7 @@ const AddPositionsPage = () => {
         },
       })
     }
-  }, [
-    url,
-    userInfo.division._id,
-    userInfo.role.name,
-    positionTypeSelect,
-    positionNameSelect,
-    dispatch,
-  ])
+  }, [url, userInfo, positionTypeSelect, positionNameSelect, dispatch])
 
   const goAdd = async () => {
     const client = new ApolloClient({
@@ -327,12 +329,14 @@ const AddPositionsPage = () => {
                   id: "${positionInput._id}"
                 }
                 data: {
-                  person_id: "${getPersonID}"
+                  person: "${getPersonID}"
                 }
               }) {
                 position {
                   _id
-                  person_id
+                  person {
+                    _id
+                  }
                 }
               }
             }
@@ -720,7 +724,17 @@ const AddPositionsPage = () => {
                           : `กำลังเชื่อมต่อฐานข้อมูล...`
                         : `ไม่พบข้อมูล`
                     }
-                    getOptionLabel={option => option.number}
+                    getOptionLabel={option => {
+                      let returnLabel = option.number
+
+                      if (userInfo.role.name === `Administrator`) {
+                        returnLabel = `${option.number} (${renderDivision(
+                          option.division
+                        )})`
+                      }
+
+                      return returnLabel
+                    }}
                     isOptionEqualToValue={(option, value) => {
                       return option._id === value._id
                     }}

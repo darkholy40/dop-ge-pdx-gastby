@@ -15,13 +15,7 @@ import Layout from "../../components/Layout"
 import Seo from "../../components/Seo"
 import Breadcrumbs from "../../components/Breadcrumbs"
 import PageNotFound from "../../components/PageNotFound"
-import {
-  Form,
-  SubmitButtonFlex,
-  Flex,
-  CheckCircleFlex,
-} from "../../components/Styles"
-import renderCheckingIcon from "../../functions/renderCheckingIcon"
+import { Form, SubmitButtonFlex, Flex } from "../../components/Styles"
 
 const Oparator = styled.div`
   display: flex;
@@ -117,18 +111,10 @@ const PositionsPage = () => {
                     label="ชื่อประเภทกลุ่มงาน"
                     InputProps={{
                       ...params.InputProps,
-                      sx: {
-                        borderRadius: `5px 0 0 5px`,
-                      },
                     }}
                   />
                 )}
               />
-              <CheckCircleFlex>
-                {renderCheckingIcon(
-                  searchPositionFilter.posType !== `` ? `correct` : ``
-                )}
-              </CheckCircleFlex>
             </Flex>
 
             <Flex style={{ marginBottom: `1rem` }}>
@@ -181,18 +167,10 @@ const PositionsPage = () => {
                     label="ชื่อตำแหน่งในสายงาน"
                     InputProps={{
                       ...params.InputProps,
-                      sx: {
-                        borderRadius: `5px 0 0 5px`,
-                      },
                     }}
                   />
                 )}
               />
-              <CheckCircleFlex>
-                {renderCheckingIcon(
-                  searchPositionFilter.posName !== `` ? `correct` : ``
-                )}
-              </CheckCircleFlex>
             </Flex>
 
             {userInfo.role.name === `Administrator` && (
@@ -248,18 +226,10 @@ const PositionsPage = () => {
                       label="สังกัด"
                       InputProps={{
                         ...params.InputProps,
-                        sx: {
-                          borderRadius: `5px 0 0 5px`,
-                        },
                       }}
                     />
                   )}
                 />
-                <CheckCircleFlex>
-                  {renderCheckingIcon(
-                    searchPositionFilter.unit !== null ? `correct` : ``
-                  )}
-                </CheckCircleFlex>
               </Flex>
             )}
 

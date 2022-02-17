@@ -47,6 +47,7 @@ const initialState = {
     personId: ``,
     personSid: ``,
     posNumber: ``,
+    unit: null,
   },
   notificationDialog: {
     open: false,

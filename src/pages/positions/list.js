@@ -104,11 +104,15 @@ const PositionsPage = () => {
                 division2
                 division3
               }
-              person_id
+              person {
+                _id
+              }
             }
           }
         `,
       })
+
+      console.log(res)
 
       if (res.data.positions.length > 0) {
         for (let thisPos of res.data.positions) {
@@ -117,11 +121,11 @@ const PositionsPage = () => {
             name: ``,
             surname: ``,
           }
-          if (thisPos.person_id !== ``) {
+          if (thisPos.person !== null) {
             const resPerson = await client.query({
               query: gql`
                 query Person {
-                  person(id: "${thisPos.person_id}") {
+                  person(id: "${thisPos.person._id}") {
                     _id
                     Prename
                     Name

@@ -118,7 +118,7 @@ const AddPositionsPage = () => {
                   isSouth: ${addPositionFilter.posSouth},
                   staff_created: "${userInfo._id}",
                   staff_updated: "",
-                  person_id: "",
+                  person: null,
                   division: "${
                     userInfo.role.name === `Administrator`
                       ? `${addPositionFilter.unit._id}`

@@ -20,6 +20,7 @@ import { green } from "@mui/material/colors"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import {
   faSave,
+  faTrash,
   faTimes,
   faCheckCircle as faFilledCheckCircle,
 } from "@fortawesome/free-solid-svg-icons"
@@ -31,6 +32,7 @@ import Seo from "../../components/Seo"
 import Breadcrumbs from "../../components/Breadcrumbs"
 import PageNotFound from "../../components/PageNotFound"
 import renderDateForGraphQL from "../../functions/renderDateForGraphQL"
+import renderDivision from "../../functions/renderDivision"
 
 const Form = styled.form`
   display: flex;
@@ -228,7 +230,7 @@ const AddPositionsPage = ({ location }) => {
         query: gql`
           query Position {
             positions(where: {
-              person_id: "${id}"
+              person: "${id}"
             }) {
               _id
               number
@@ -296,28 +298,31 @@ const AddPositionsPage = ({ location }) => {
             positions(where: {
               _or: [
                 {
-                  person_id: "${id}"
-                  position_type: {
-                    type_contains: "${positionTypeSelect}"
-                    name_contains: "${positionNameSelect}"
-                  }
+                  person: "${id}"
                 },
                 {
-                  position_type: {
-                    type_contains: "${positionTypeSelect}"
-                    name_contains: "${positionNameSelect}"
-                  }
+                  person_null: true
                 },
               ]
               isOpen: true
               ${role}
               position_type: {
-                type_contains: "${positionTypeSelect}"
-                name_contains: "${positionNameSelect}"
+                ${
+                  positionTypeSelect !== ``
+                    ? `type_contains: "${positionTypeSelect}"`
+                    : ``
+                }
+                ${
+                  positionNameSelect !== ``
+                    ? `name_contains: "${positionNameSelect}"`
+                    : ``
+                }
               }
             }) {
               _id
-              person_id
+              person {
+                _id
+              }
               number
               position_type {
                 type
@@ -341,8 +346,6 @@ const AddPositionsPage = ({ location }) => {
           }
         `,
       })
-
-      // console.log(res.data)
 
       if (res.data.positions.length > 0) {
         setPositions(res.data.positions)
@@ -368,15 +371,7 @@ const AddPositionsPage = ({ location }) => {
         },
       })
     }
-  }, [
-    url,
-    userInfo.division._id,
-    userInfo.role.name,
-    positionTypeSelect,
-    positionNameSelect,
-    dispatch,
-    id,
-  ])
+  }, [url, userInfo, positionTypeSelect, positionNameSelect, dispatch, id])
 
   const goEdit = async () => {
     const client = new ApolloClient({
@@ -484,7 +479,7 @@ const AddPositionsPage = ({ location }) => {
         const res = await client.query({
           query: gql`
             query Positions {
-              positions(where: { person_id: "620b4f2d2c194a021edb96d8" }) {
+              positions(where: { person: "${getPersonID}" }) {
                 _id
               }
             }
@@ -519,12 +514,14 @@ const AddPositionsPage = ({ location }) => {
                     id: "${oldPositionId}"
                   }
                   data: {
-                    person_id: ""
+                    person: null
                   }
                 }) {
                   position {
                     _id
-                    person_id
+                    person {
+                      _id
+                    }
                   }
                 }
               }
@@ -560,12 +557,14 @@ const AddPositionsPage = ({ location }) => {
                     id: "${positionInput._id}"
                   }
                   data: {
-                    person_id: "${getPersonID}"
+                    person: "${getPersonID}"
                   }
                 }) {
                   position {
                     _id
-                    person_id
+                    person {
+                      _id
+                    }
                   }
                 }
               }
@@ -752,867 +751,894 @@ const AddPositionsPage = ({ location }) => {
             />
 
             {firstStrike && (
-              <Form
-                onSubmit={e => {
-                  e.preventDefault()
-                  handleSubmit()
-                }}
-              >
-                <Grid container spacing={2} sx={{ marginBottom: `1rem` }}>
-                  <Grid item xs={12} sm={3}>
-                    <FormControl fullWidth>
-                      <InputLabel id="prefix-id">* คำนำหน้าชื่อ</InputLabel>
-                      <Select
-                        sx={selectProps}
-                        labelId="prefix-id"
-                        id="Prename"
-                        label="* คำนำหน้าชื่อ"
-                        onChange={e => setPrename(e.target.value)}
-                        value={prename}
-                        endAdornment={renderCheckingIcon(prename)}
-                      >
-                        <MenuItem value="" selected>
-                          ---
-                        </MenuItem>
-                        <MenuItem value="นาย">นาย</MenuItem>
-                        <MenuItem value="นาง">นาง</MenuItem>
-                        <MenuItem value="นางสาว">นางสาว</MenuItem>
-                        <MenuItem value="ว่าที่ ร.ต.">ว่าที่ ร.ต.</MenuItem>
-                        <MenuItem value="ว่าที่ ร.ต.หญิง">
-                          ว่าที่ ร.ต.หญิง
-                        </MenuItem>
-                      </Select>
-                    </FormControl>
-                  </Grid>
-                  <Grid item xs={12} sm={4}>
-                    <TextField
-                      sx={textfieldProps}
-                      id="Name"
-                      label="* ชื่อ"
-                      variant="outlined"
-                      onChange={e => setName(e.target.value)}
-                      value={name}
-                      InputProps={{
-                        endAdornment: renderCheckingIcon(name),
-                      }}
-                    />
-                  </Grid>
-                  <Grid item xs={12} sm={5}>
-                    <TextField
-                      sx={textfieldProps}
-                      id="Surname"
-                      label="* นามสกุล"
-                      variant="outlined"
-                      onChange={e => setSurname(e.target.value)}
-                      value={surname}
-                      InputProps={{
-                        endAdornment: renderCheckingIcon(surname),
-                      }}
-                    />
-                  </Grid>
-                </Grid>
-                <Grid container spacing={2} sx={{ marginBottom: `1rem` }}>
-                  <Grid item xs={12} sm={6}>
-                    <TextField
-                      sx={textfieldProps}
-                      id="ID_Card"
-                      label="* หมายเลขประจำตัวประชาชน (13 หลัก)"
-                      variant="outlined"
-                      onChange={e => {
-                        const newValue = e.target.value
-                        const pattern = /[0-9]/g
-                        const result = newValue.match(pattern)
-
-                        if (result !== null) {
-                          const newIdCard = result
-                            .toString()
-                            .replaceAll(`,`, ``)
-
-                          if (newIdCard.length <= 13) {
-                            setIdCard(newIdCard)
-                          }
-                        } else {
-                          setIdCard(``)
-                        }
-                      }}
-                      value={idCard}
-                      InputProps={{
-                        endAdornment: renderCheckingIcon(
-                          idCard.length === 13 ? idCard : ``
-                        ),
-                      }}
-                    />
-                  </Grid>
-                  <Grid item xs={12} sm={6}>
-                    <TextField
-                      sx={textfieldProps}
-                      id="SID_Card"
-                      label="* หมายเลขประจำตัวข้าราชการกองทัพบก (10 หลัก)"
-                      variant="outlined"
-                      onChange={e => {
-                        const newValue = e.target.value
-                        const pattern = /[0-9]/g
-                        const result = newValue.match(pattern)
-
-                        if (result !== null) {
-                          const newSidCard = result
-                            .toString()
-                            .replaceAll(`,`, ``)
-
-                          if (newSidCard.length <= 10) {
-                            setSidCard(newSidCard)
-                          }
-                        } else {
-                          setSidCard(``)
-                        }
-                      }}
-                      value={sidCard}
-                      InputProps={{
-                        endAdornment: renderCheckingIcon(
-                          sidCard.length === 10 ? sidCard : ``
-                        ),
-                      }}
-                    />
-                  </Grid>
-                </Grid>
-                <Grid container spacing={2} sx={{ marginBottom: `1rem` }}>
-                  <Grid item xs={12} sm={3}>
-                    <Flex>
-                      <Autocomplete
-                        sx={{ width: `100%` }}
-                        id="position-type"
-                        disablePortal
-                        options={positionTypes}
-                        noOptionsText={
-                          positionTypes.length === 0
-                            ? isError.status === `notfound`
-                              ? `ไม่มีตำแหน่งว่าง`
-                              : `กำลังเชื่อมต่อฐานข้อมูล...`
-                            : `ไม่พบข้อมูล`
-                        }
-                        getOptionLabel={option => option.type}
-                        isOptionEqualToValue={(option, value) => {
-                          return option === value
+              <>
+                <Form
+                  onSubmit={e => {
+                    e.preventDefault()
+                    handleSubmit()
+                  }}
+                >
+                  <Grid container spacing={2} sx={{ marginBottom: `1rem` }}>
+                    <Grid item xs={12} sm={3}>
+                      <FormControl fullWidth>
+                        <InputLabel id="prefix-id">* คำนำหน้าชื่อ</InputLabel>
+                        <Select
+                          sx={selectProps}
+                          labelId="prefix-id"
+                          id="Prename"
+                          label="* คำนำหน้าชื่อ"
+                          onChange={e => setPrename(e.target.value)}
+                          value={prename}
+                          endAdornment={renderCheckingIcon(prename)}
+                        >
+                          <MenuItem value="" selected>
+                            ---
+                          </MenuItem>
+                          <MenuItem value="นาย">นาย</MenuItem>
+                          <MenuItem value="นาง">นาง</MenuItem>
+                          <MenuItem value="นางสาว">นางสาว</MenuItem>
+                          <MenuItem value="ว่าที่ ร.ต.">ว่าที่ ร.ต.</MenuItem>
+                          <MenuItem value="ว่าที่ ร.ต.หญิง">
+                            ว่าที่ ร.ต.หญิง
+                          </MenuItem>
+                        </Select>
+                      </FormControl>
+                    </Grid>
+                    <Grid item xs={12} sm={4}>
+                      <TextField
+                        sx={textfieldProps}
+                        id="Name"
+                        label="* ชื่อ"
+                        variant="outlined"
+                        onChange={e => setName(e.target.value)}
+                        value={name}
+                        InputProps={{
+                          endAdornment: renderCheckingIcon(name),
                         }}
-                        onChange={(_, newValue) => {
-                          if (newValue !== null) {
-                            setPositionTypeSelect(newValue.type)
-                            setPositionNameSelect(``)
+                      />
+                    </Grid>
+                    <Grid item xs={12} sm={5}>
+                      <TextField
+                        sx={textfieldProps}
+                        id="Surname"
+                        label="* นามสกุล"
+                        variant="outlined"
+                        onChange={e => setSurname(e.target.value)}
+                        value={surname}
+                        InputProps={{
+                          endAdornment: renderCheckingIcon(surname),
+                        }}
+                      />
+                    </Grid>
+                  </Grid>
+                  <Grid container spacing={2} sx={{ marginBottom: `1rem` }}>
+                    <Grid item xs={12} sm={6}>
+                      <TextField
+                        sx={textfieldProps}
+                        id="ID_Card"
+                        label="* หมายเลขประจำตัวประชาชน (13 หลัก)"
+                        variant="outlined"
+                        onChange={e => {
+                          const newValue = e.target.value
+                          const pattern = /[0-9]/g
+                          const result = newValue.match(pattern)
+
+                          if (result !== null) {
+                            const newIdCard = result
+                              .toString()
+                              .replaceAll(`,`, ``)
+
+                            if (newIdCard.length <= 13) {
+                              setIdCard(newIdCard)
+                            }
                           } else {
-                            setPositionTypeSelect(``)
-                            setPositionNameSelect(``)
-                            setPositionInput(null)
+                            setIdCard(``)
                           }
                         }}
-                        value={
-                          positionTypeSelect !== ``
-                            ? positionTypes.find(
-                                elem => elem.type === positionTypeSelect
-                              )
-                            : null
-                        }
-                        renderInput={params => (
-                          <TextField
-                            {...params}
-                            label="ชื่อประเภทกลุ่มงาน"
-                            InputProps={{
-                              ...params.InputProps,
-                              sx: {
-                                borderRadius: `5px 0 0 5px`,
-                              },
-                            }}
-                          />
-                        )}
-                      />
-                      <CheckCircleFlex>
-                        {renderCheckingIcon(
-                          positionTypeSelect !== `` ? `correct` : ``
-                        )}
-                      </CheckCircleFlex>
-                    </Flex>
-                  </Grid>
-                  <Grid item xs={12} sm={3}>
-                    <Flex>
-                      <Autocomplete
-                        sx={{ width: `100%` }}
-                        id="position-name"
-                        disablePortal
-                        options={
-                          positionTypeSelect !== ``
-                            ? positionNames.filter(
-                                elem => elem.type === positionTypeSelect
-                              )
-                            : positionNames
-                        }
-                        noOptionsText={
-                          positionNames.length === 0
-                            ? isError.status === `notfound`
-                              ? `ไม่มีตำแหน่งว่าง`
-                              : `กำลังเชื่อมต่อฐานข้อมูล...`
-                            : `ไม่พบข้อมูล`
-                        }
-                        getOptionLabel={option => option.name}
-                        isOptionEqualToValue={(option, value) => {
-                          return option === value
+                        value={idCard}
+                        InputProps={{
+                          endAdornment: renderCheckingIcon(
+                            idCard.length === 13 ? idCard : ``
+                          ),
                         }}
-                        onChange={(_, newValue) => {
-                          if (newValue !== null) {
-                            setPositionTypeSelect(newValue.type)
-                            setPositionNameSelect(newValue.name)
+                      />
+                    </Grid>
+                    <Grid item xs={12} sm={6}>
+                      <TextField
+                        sx={textfieldProps}
+                        id="SID_Card"
+                        label="* หมายเลขประจำตัวข้าราชการกองทัพบก (10 หลัก)"
+                        variant="outlined"
+                        onChange={e => {
+                          const newValue = e.target.value
+                          const pattern = /[0-9]/g
+                          const result = newValue.match(pattern)
+
+                          if (result !== null) {
+                            const newSidCard = result
+                              .toString()
+                              .replaceAll(`,`, ``)
+
+                            if (newSidCard.length <= 10) {
+                              setSidCard(newSidCard)
+                            }
                           } else {
-                            setPositionNameSelect(``)
-                            setPositionInput(null)
+                            setSidCard(``)
                           }
                         }}
-                        value={
-                          positionNameSelect !== ``
-                            ? positionNames.find(
-                                elem => elem.name === positionNameSelect
-                              )
-                            : null
-                        }
-                        renderInput={params => (
-                          <TextField
-                            {...params}
-                            label="ชื่อตำแหน่งในสายงาน"
-                            InputProps={{
-                              ...params.InputProps,
-                              sx: {
-                                borderRadius: `5px 0 0 5px`,
-                              },
-                            }}
-                          />
-                        )}
-                      />
-                      <CheckCircleFlex>
-                        {renderCheckingIcon(
-                          positionNameSelect !== `` ? `correct` : ``
-                        )}
-                      </CheckCircleFlex>
-                    </Flex>
-                  </Grid>
-                  <Grid item xs={12} sm={3}>
-                    <Flex>
-                      <Autocomplete
-                        sx={{ width: `100%` }}
-                        id="position-number"
-                        disablePortal
-                        // getOptionDisabled={option => option.person_id !== `` && option.person_id !== id}
-                        // options={positions}
-                        options={positions.filter(elem => elem.person_id === `` || elem.person_id === id)}
-                        noOptionsText={
-                          positions.length === 0
-                            ? isError.status === `notfound`
-                              ? `ไม่มีตำแหน่งว่าง`
-                              : `กำลังเชื่อมต่อฐานข้อมูล...`
-                            : `ไม่พบข้อมูล`
-                        }
-                        getOptionLabel={option => option.number}
-                        isOptionEqualToValue={(option, value) => {
-                          return option._id === value._id
+                        value={sidCard}
+                        InputProps={{
+                          endAdornment: renderCheckingIcon(
+                            sidCard.length === 10 ? sidCard : ``
+                          ),
                         }}
-                        onChange={(_, newValue) => {
-                          if (newValue !== null) {
-                            setPositionTypeSelect(newValue.position_type.type)
-                            setPositionNameSelect(newValue.position_type.name)
-                            setPositionInput(newValue)
-                          } else {
-                            setPositionInput(null)
+                      />
+                    </Grid>
+                  </Grid>
+                  <Grid container spacing={2} sx={{ marginBottom: `1rem` }}>
+                    <Grid item xs={12} sm={3}>
+                      <Flex>
+                        <Autocomplete
+                          sx={{ width: `100%` }}
+                          id="position-type"
+                          disablePortal
+                          options={positionTypes}
+                          noOptionsText={
+                            positionTypes.length === 0
+                              ? isError.status === `notfound`
+                                ? `ไม่มีตำแหน่งว่าง`
+                                : `กำลังเชื่อมต่อฐานข้อมูล...`
+                              : `ไม่พบข้อมูล`
                           }
+                          getOptionLabel={option => option.type}
+                          isOptionEqualToValue={(option, value) => {
+                            return option === value
+                          }}
+                          onChange={(_, newValue) => {
+                            if (newValue !== null) {
+                              setPositionTypeSelect(newValue.type)
+                              setPositionNameSelect(``)
+                            } else {
+                              setPositionTypeSelect(``)
+                              setPositionNameSelect(``)
+                              setPositionInput(null)
+                            }
+                          }}
+                          value={
+                            positionTypeSelect !== ``
+                              ? positionTypes.find(
+                                  elem => elem.type === positionTypeSelect
+                                )
+                              : null
+                          }
+                          renderInput={params => (
+                            <TextField
+                              {...params}
+                              label="ชื่อประเภทกลุ่มงาน"
+                              InputProps={{
+                                ...params.InputProps,
+                                sx: {
+                                  borderRadius: `5px 0 0 5px`,
+                                },
+                              }}
+                            />
+                          )}
+                        />
+                        <CheckCircleFlex>
+                          {renderCheckingIcon(
+                            positionTypeSelect !== `` ? `correct` : ``
+                          )}
+                        </CheckCircleFlex>
+                      </Flex>
+                    </Grid>
+                    <Grid item xs={12} sm={3}>
+                      <Flex>
+                        <Autocomplete
+                          sx={{ width: `100%` }}
+                          id="position-name"
+                          disablePortal
+                          options={
+                            positionTypeSelect !== ``
+                              ? positionNames.filter(
+                                  elem => elem.type === positionTypeSelect
+                                )
+                              : positionNames
+                          }
+                          noOptionsText={
+                            positionNames.length === 0
+                              ? isError.status === `notfound`
+                                ? `ไม่มีตำแหน่งว่าง`
+                                : `กำลังเชื่อมต่อฐานข้อมูล...`
+                              : `ไม่พบข้อมูล`
+                          }
+                          getOptionLabel={option => option.name}
+                          isOptionEqualToValue={(option, value) => {
+                            return option === value
+                          }}
+                          onChange={(_, newValue) => {
+                            if (newValue !== null) {
+                              setPositionTypeSelect(newValue.type)
+                              setPositionNameSelect(newValue.name)
+                            } else {
+                              setPositionNameSelect(``)
+                              setPositionInput(null)
+                            }
+                          }}
+                          value={
+                            positionNameSelect !== ``
+                              ? positionNames.find(
+                                  elem => elem.name === positionNameSelect
+                                )
+                              : null
+                          }
+                          renderInput={params => (
+                            <TextField
+                              {...params}
+                              label="ชื่อตำแหน่งในสายงาน"
+                              InputProps={{
+                                ...params.InputProps,
+                                sx: {
+                                  borderRadius: `5px 0 0 5px`,
+                                },
+                              }}
+                            />
+                          )}
+                        />
+                        <CheckCircleFlex>
+                          {renderCheckingIcon(
+                            positionNameSelect !== `` ? `correct` : ``
+                          )}
+                        </CheckCircleFlex>
+                      </Flex>
+                    </Grid>
+                    <Grid item xs={12} sm={3}>
+                      <Flex>
+                        <Autocomplete
+                          sx={{ width: `100%` }}
+                          id="position-number"
+                          disablePortal
+                          options={positions}
+                          noOptionsText={
+                            positions.length === 0
+                              ? isError.status === `notfound`
+                                ? `ไม่มีตำแหน่งว่าง`
+                                : `กำลังเชื่อมต่อฐานข้อมูล...`
+                              : `ไม่พบข้อมูล`
+                          }
+                          getOptionLabel={option => {
+                            let returnLabel = option.number
+
+                            if (userInfo.role.name === `Administrator`) {
+                              returnLabel = `${option.number} (${renderDivision(
+                                option.division
+                              )})`
+                            }
+
+                            return returnLabel
+                          }}
+                          isOptionEqualToValue={(option, value) => {
+                            return option._id === value._id
+                          }}
+                          onChange={(_, newValue) => {
+                            if (newValue !== null) {
+                              setPositionTypeSelect(newValue.position_type.type)
+                              setPositionNameSelect(newValue.position_type.name)
+                              setPositionInput(newValue)
+                            } else {
+                              setPositionInput(null)
+                            }
+                          }}
+                          value={positionInput}
+                          renderInput={params => (
+                            <TextField
+                              {...params}
+                              label="รหัสตำแหน่ง"
+                              InputProps={{
+                                ...params.InputProps,
+                                sx: {
+                                  borderRadius: `5px 0 0 5px`,
+                                },
+                              }}
+                            />
+                          )}
+                        />
+                        <CheckCircleFlex>
+                          {renderCheckingIcon(
+                            positionInput !== null ? `correct` : ``
+                          )}
+                        </CheckCircleFlex>
+                      </Flex>
+                    </Grid>
+                    <Grid item xs={12} sm={3}>
+                      <Flex>
+                        <Autocomplete
+                          sx={{ width: `100%` }}
+                          id="person-type"
+                          disablePortal
+                          options={[`พนักงานราชการ`, `ลูกจ้างประจำ`]}
+                          noOptionsText={`ไม่พบข้อมูล`}
+                          getOptionLabel={option => option}
+                          isOptionEqualToValue={(option, value) => {
+                            return option === value
+                          }}
+                          onChange={(_, newValue) => {
+                            setJobType(newValue)
+                          }}
+                          value={jobType}
+                          renderInput={params => (
+                            <TextField
+                              {...params}
+                              label="ประเภท"
+                              InputProps={{
+                                ...params.InputProps,
+                                sx: {
+                                  borderRadius: `5px 0 0 5px`,
+                                },
+                              }}
+                            />
+                          )}
+                        />
+                        <CheckCircleFlex>
+                          {renderCheckingIcon(
+                            jobType !== null ? `correct` : ``
+                          )}
+                        </CheckCircleFlex>
+                      </Flex>
+                    </Grid>
+                  </Grid>
+                  <Grid container spacing={2} sx={{ marginBottom: `1rem` }}>
+                    <Grid item xs={12} sm={2}>
+                      <FormControl fullWidth>
+                        <InputLabel id="gender-id">* เพศ</InputLabel>
+                        <Select
+                          sx={selectProps}
+                          labelId="gender-id"
+                          id="Gender"
+                          label="* เพศ"
+                          onChange={e => setGender(e.target.value)}
+                          value={gender}
+                          endAdornment={renderCheckingIcon(gender)}
+                        >
+                          <MenuItem value="" selected>
+                            ---
+                          </MenuItem>
+                          <MenuItem value="ชาย">ชาย</MenuItem>
+                          <MenuItem value="หญิง">หญิง</MenuItem>
+                        </Select>
+                      </FormControl>
+                    </Grid>
+                    <Grid item xs={12} sm={4}>
+                      <MobileDatePicker
+                        {...datePickerProps}
+                        id="BirthDate"
+                        label="* วันเดือนปีเกิด"
+                        onChange={newValue => {
+                          setBirthDate(newValue)
                         }}
-                        value={positionInput}
-                        renderInput={params => (
-                          <TextField
-                            {...params}
-                            label="รหัสตำแหน่ง"
-                            InputProps={{
-                              ...params.InputProps,
-                              sx: {
-                                borderRadius: `5px 0 0 5px`,
-                              },
-                            }}
-                          />
-                        )}
+                        value={birthDate}
+                        renderInput={params => {
+                          return (
+                            <TextField
+                              {...params}
+                              sx={textfieldProps}
+                              InputProps={{
+                                startAdornment: params.InputProps.endAdornment,
+                                endAdornment: renderCheckingIcon(
+                                  birthDate === null ? `` : birthDate
+                                ),
+                              }}
+                            />
+                          )
+                        }}
                       />
-                      <CheckCircleFlex>
-                        {renderCheckingIcon(
-                          positionInput !== null ? `correct` : ``
-                        )}
-                      </CheckCircleFlex>
-                    </Flex>
-                  </Grid>
-                  <Grid item xs={12} sm={3}>
-                    <Flex>
-                      <Autocomplete
-                        sx={{ width: `100%` }}
-                        id="person-type"
-                        disablePortal
-                        options={[`พนักงานราชการ`, `ลูกจ้างประจำ`]}
-                        noOptionsText={`ไม่พบข้อมูล`}
-                        getOptionLabel={option => option}
-                        isOptionEqualToValue={(option, value) => {
-                          return option === value
+                    </Grid>
+                    <Grid item xs={12} sm={3}>
+                      <FormControl fullWidth>
+                        <InputLabel id="marriedStatus-id">
+                          * สถานภาพสมรส
+                        </InputLabel>
+                        <Select
+                          sx={selectProps}
+                          labelId="marriedStatus-id"
+                          id="MarriedStatus"
+                          label="* สถานภาพสมรส"
+                          onChange={e => setMarriedStatus(e.target.value)}
+                          value={marriedStatus}
+                          endAdornment={renderCheckingIcon(marriedStatus)}
+                        >
+                          <MenuItem value="" selected>
+                            ---
+                          </MenuItem>
+                          <MenuItem value="โสด">โสด</MenuItem>
+                          <MenuItem value="สมรส">สมรส</MenuItem>
+                          <MenuItem value="หม้าย">หม้าย</MenuItem>
+                          <MenuItem value="หย่า">หย่า</MenuItem>
+                          <MenuItem value="แยกกันอยู่">แยกกันอยู่</MenuItem>
+                        </Select>
+                      </FormControl>
+                    </Grid>
+                    <Grid item xs={12} sm={3}>
+                      <TextField
+                        sx={textfieldProps}
+                        id="Telephone"
+                        label="* หมายเลขโทรศัพท์"
+                        variant="outlined"
+                        onChange={e => setTelephone(e.target.value)}
+                        value={telephone}
+                        InputProps={{
+                          endAdornment: renderCheckingIcon(telephone),
                         }}
-                        onChange={(_, newValue) => {
-                          setJobType(newValue)
-                        }}
-                        value={jobType}
-                        renderInput={params => (
-                          <TextField
-                            {...params}
-                            label="ประเภท"
-                            InputProps={{
-                              ...params.InputProps,
-                              sx: {
-                                borderRadius: `5px 0 0 5px`,
-                              },
-                            }}
-                          />
-                        )}
                       />
-                      <CheckCircleFlex>
-                        {renderCheckingIcon(jobType !== null ? `correct` : ``)}
-                      </CheckCircleFlex>
-                    </Flex>
+                    </Grid>
                   </Grid>
-                </Grid>
-                <Grid container spacing={2} sx={{ marginBottom: `1rem` }}>
-                  <Grid item xs={12} sm={2}>
-                    <FormControl fullWidth>
-                      <InputLabel id="gender-id">* เพศ</InputLabel>
-                      <Select
-                        sx={selectProps}
-                        labelId="gender-id"
-                        id="Gender"
-                        label="* เพศ"
-                        onChange={e => setGender(e.target.value)}
-                        value={gender}
-                        endAdornment={renderCheckingIcon(gender)}
-                      >
-                        <MenuItem value="" selected>
-                          ---
-                        </MenuItem>
-                        <MenuItem value="ชาย">ชาย</MenuItem>
-                        <MenuItem value="หญิง">หญิง</MenuItem>
-                      </Select>
-                    </FormControl>
+                  <Grid container spacing={2} sx={{ marginBottom: `1rem` }}>
+                    <Grid item xs={12}>
+                      <TextField
+                        sx={textfieldProps}
+                        id="Address"
+                        label="* ที่อยู่"
+                        variant="outlined"
+                        onChange={e => setAddress(e.target.value)}
+                        value={address}
+                        InputProps={{
+                          endAdornment: renderCheckingIcon(address),
+                        }}
+                      />
+                    </Grid>
                   </Grid>
-                  <Grid item xs={12} sm={4}>
-                    <MobileDatePicker
-                      {...datePickerProps}
-                      id="BirthDate"
-                      label="* วันเดือนปีเกิด"
-                      onChange={newValue => {
-                        setBirthDate(newValue)
-                      }}
-                      value={birthDate}
-                      renderInput={params => {
-                        return (
+                  <Grid container spacing={2} sx={{ marginBottom: `1rem` }}>
+                    <Grid item xs={12} sm={6}>
+                      <TextField
+                        sx={textfieldProps}
+                        id="Emergency_Name"
+                        label="* ชื่อผู้ติดต่อฉุกเฉิน"
+                        variant="outlined"
+                        onChange={e => setEmergencyName(e.target.value)}
+                        value={emergencyName}
+                        InputProps={{
+                          endAdornment: renderCheckingIcon(emergencyName),
+                        }}
+                      />
+                    </Grid>
+                    <Grid item xs={12} sm={6}>
+                      <TextField
+                        sx={textfieldProps}
+                        id="Emergency_Number"
+                        label="* หมายเลขโทรศัพท์ผู้ติดต่อฉุกเฉิน"
+                        variant="outlined"
+                        onChange={e => setEmergencyNumber(e.target.value)}
+                        value={emergencyNumber}
+                        InputProps={{
+                          endAdornment: renderCheckingIcon(emergencyNumber),
+                        }}
+                      />
+                    </Grid>
+                  </Grid>
+                  <Divider style={{ margin: `1rem auto 2rem`, width: 360 }} />
+                  <Grid container spacing={2} sx={{ marginBottom: `1rem` }}>
+                    <Grid item xs={12}>
+                      {/* <TextField
+                    sx={textfieldProps}
+                    id="StartDate"
+                    label="* วันเริ่มทำสัญญา"
+                    variant="outlined"
+                    onChange={e => setStartDate(e.target.value)}
+                    value={startDate}
+                    InputProps={{
+                      endAdornment: renderCheckingIcon(startDate),
+                    }}
+                  /> */}
+
+                      <MobileDatePicker
+                        {...datePickerProps}
+                        id="StartDate"
+                        label="* วันเริ่มทำสัญญา"
+                        onChange={newValue => {
+                          setStartDate(newValue)
+                        }}
+                        value={startDate}
+                        renderInput={params => (
                           <TextField
                             {...params}
                             sx={textfieldProps}
                             InputProps={{
                               startAdornment: params.InputProps.endAdornment,
                               endAdornment: renderCheckingIcon(
-                                birthDate === null ? `` : birthDate
+                                startDate === null ? `` : startDate
                               ),
                             }}
                           />
-                        )
-                      }}
-                    />
+                        )}
+                      />
+                    </Grid>
                   </Grid>
-                  <Grid item xs={12} sm={3}>
-                    <FormControl fullWidth>
-                      <InputLabel id="marriedStatus-id">
-                        * สถานภาพสมรส
-                      </InputLabel>
-                      <Select
-                        sx={selectProps}
-                        labelId="marriedStatus-id"
-                        id="MarriedStatus"
-                        label="* สถานภาพสมรส"
-                        onChange={e => setMarriedStatus(e.target.value)}
-                        value={marriedStatus}
-                        endAdornment={renderCheckingIcon(marriedStatus)}
+                  <Grid container spacing={2} sx={{ marginBottom: `1rem` }}>
+                    <Grid item xs={12} sm={6}>
+                      <TextField
+                        sx={textfieldProps}
+                        id="Edu_Level"
+                        label="* ระดับการศึกษา"
+                        variant="outlined"
+                        onChange={e => setEduLevel(e.target.value)}
+                        value={eduLevel}
+                        InputProps={{
+                          endAdornment: renderCheckingIcon(eduLevel),
+                        }}
+                      />
+                    </Grid>
+                    <Grid item xs={12} sm={6}>
+                      <TextField
+                        sx={textfieldProps}
+                        id="Edu_Name"
+                        label="* ชื่อวุฒิการศึกษา"
+                        variant="outlined"
+                        onChange={e => setEduName(e.target.value)}
+                        value={eduName}
+                        InputProps={{
+                          endAdornment: renderCheckingIcon(eduName),
+                        }}
+                      />
+                    </Grid>
+                  </Grid>
+                  <Grid container spacing={2} sx={{ marginBottom: `1rem` }}>
+                    <Grid item xs={12} sm={6}>
+                      <TextField
+                        sx={textfieldProps}
+                        id="Edu_Graduated"
+                        label="* ชื่อสถาบันที่สำเร็จการศึกษา"
+                        variant="outlined"
+                        onChange={e => setEduGraduated(e.target.value)}
+                        value={eduGraduated}
+                        InputProps={{
+                          endAdornment: renderCheckingIcon(eduGraduated),
+                        }}
+                      />
+                    </Grid>
+                    <Grid item xs={12} sm={6}>
+                      <TextField
+                        sx={textfieldProps}
+                        id="Edu_Country"
+                        label="* ชื่อประเทศ"
+                        variant="outlined"
+                        onChange={e => setEduCountry(e.target.value)}
+                        value={eduCountry}
+                        InputProps={{
+                          endAdornment: renderCheckingIcon(eduCountry),
+                        }}
+                      />
+                    </Grid>
+                  </Grid>
+                  <Divider style={{ margin: `1rem auto 2rem`, width: 360 }} />
+                  <Grid container spacing={2} sx={{ marginBottom: `1rem` }}>
+                    <Grid item xs={12} sm={6}>
+                      <TextField
+                        sx={textfieldProps}
+                        id="MovementType"
+                        label="* ชื่อประเภทการเคลื่อนไหวล่าสุด"
+                        variant="outlined"
+                        onChange={e => setMovementType(e.target.value)}
+                        value={movementType}
+                        InputProps={{
+                          endAdornment: renderCheckingIcon(movementType),
+                        }}
+                      />
+                    </Grid>
+                    <Grid item xs={12} sm={6}>
+                      <TextField
+                        sx={textfieldProps}
+                        id="Outline"
+                        label="* กรอบอัตรากำลัง"
+                        variant="outlined"
+                        onChange={e => setOutline(e.target.value)}
+                        value={outline}
+                        InputProps={{
+                          endAdornment: renderCheckingIcon(outline),
+                        }}
+                      />
+                    </Grid>
+                  </Grid>
+                  <Grid container spacing={2} sx={{ marginBottom: `1rem` }}>
+                    <Grid item xs={12} sm={4}>
+                      <TextField
+                        sx={textfieldProps}
+                        id="RewardType1"
+                        label="* ค่าตอบแทนปัจจุบัน(เงินเดือน)"
+                        variant="outlined"
+                        onChange={e => setRewardType1(e.target.value)}
+                        value={rewardType1}
+                        InputProps={{
+                          endAdornment: renderCheckingIcon(rewardType1),
+                        }}
+                      />
+                    </Grid>
+                    <Grid item xs={12} sm={4}>
+                      <TextField
+                        sx={textfieldProps}
+                        id="RewardType2"
+                        label="ค่าตอบแทนสำหรับตำแหน่งที่มีเหตุพิเศษ"
+                        variant="outlined"
+                        onChange={e => setRewardType2(e.target.value)}
+                        value={rewardType2}
+                      />
+                    </Grid>
+                    <Grid item xs={12} sm={4}>
+                      <TextField
+                        sx={textfieldProps}
+                        id="RewardType3"
+                        label="ค่าครองชีพชั่วคราว"
+                        variant="outlined"
+                        onChange={e => setRewardType3(e.target.value)}
+                        value={rewardType3}
+                      />
+                    </Grid>
+                  </Grid>
+                  <Grid container spacing={2} sx={{ marginBottom: `1rem` }}>
+                    <Grid item xs={12} sm={3}>
+                      <TextField
+                        sx={textfieldProps}
+                        id="ContactCnt"
+                        label="* จำนวนครั้งที่ทำสัญญา"
+                        variant="outlined"
+                        onChange={e => setContactCnt(e.target.value)}
+                        value={contactCnt}
+                        InputProps={{
+                          endAdornment: renderCheckingIcon(contactCnt),
+                        }}
+                      />
+                    </Grid>
+                    <Grid item xs={12} sm={3}>
+                      <TextField
+                        sx={textfieldProps}
+                        id="Mission"
+                        label="* ประเภทภารกิจ"
+                        variant="outlined"
+                        onChange={e => setMission(e.target.value)}
+                        value={mission}
+                        InputProps={{
+                          endAdornment: renderCheckingIcon(mission),
+                        }}
+                      />
+                    </Grid>
+                    <Grid item xs={12} sm={3}>
+                      <MobileDatePicker
+                        {...datePickerProps}
+                        id="CurrentContactStart"
+                        label="* วันที่เริ่มสัญญาปัจจุบัน"
+                        onChange={newValue => {
+                          setCurrentContactStart(newValue)
+                        }}
+                        value={currentContactStart}
+                        renderInput={params => (
+                          <TextField
+                            {...params}
+                            sx={textfieldProps}
+                            InputProps={{
+                              startAdornment: params.InputProps.endAdornment,
+                              endAdornment: renderCheckingIcon(
+                                currentContactStart === null
+                                  ? ``
+                                  : currentContactStart
+                              ),
+                            }}
+                          />
+                        )}
+                      />
+                    </Grid>
+                    <Grid item xs={12} sm={3}>
+                      <MobileDatePicker
+                        {...datePickerProps}
+                        id="CurrentContactEnd"
+                        label="* วันที่สิ้นสุดสัญญาปัจจุบัน"
+                        onChange={newValue => {
+                          setCurrentContactEnd(newValue)
+                        }}
+                        value={currentContactEnd}
+                        renderInput={params => (
+                          <TextField
+                            {...params}
+                            sx={textfieldProps}
+                            InputProps={{
+                              startAdornment: params.InputProps.endAdornment,
+                              endAdornment: renderCheckingIcon(
+                                currentContactEnd === null
+                                  ? ``
+                                  : currentContactEnd
+                              ),
+                            }}
+                          />
+                        )}
+                      />
+                    </Grid>
+                  </Grid>
+                  <Divider style={{ margin: `1rem auto 2rem`, width: 360 }} />
+                  <Grid container spacing={2} sx={{ marginBottom: `1rem` }}>
+                    <Grid item xs={12} sm={6}>
+                      <TextField
+                        sx={textfieldProps}
+                        id="Guilty"
+                        label="ความผิดทางวินัย"
+                        variant="outlined"
+                        onChange={e => setGuilty(e.target.value)}
+                        value={guilty}
+                      />
+                    </Grid>
+                    <Grid item xs={12} sm={6}>
+                      <TextField
+                        sx={textfieldProps}
+                        id="Punish"
+                        label="ประเภทโทษทางวินัย"
+                        variant="outlined"
+                        onChange={e => setPunish(e.target.value)}
+                        value={punish}
+                      />
+                    </Grid>
+                  </Grid>
+                  <Grid container spacing={2} sx={{ marginBottom: `1rem` }}>
+                    <Grid item xs={12} sm={6}>
+                      <TextField
+                        sx={textfieldProps}
+                        id="Decoration"
+                        label="เครื่องราชอิสริยาภรณ์สูงสุดที่ได้รับ"
+                        variant="outlined"
+                        onChange={e => setDecoration(e.target.value)}
+                        value={decoration}
+                      />
+                    </Grid>
+                    <Grid item xs={12} sm={6}>
+                      <TextField
+                        sx={textfieldProps}
+                        id="PercentSalary"
+                        label="ร้อยละที่ได้รับการเลื่อนเงินเดือน"
+                        variant="outlined"
+                        onChange={e => setPercentSalary(e.target.value)}
+                        value={percentSalary}
+                      />
+                    </Grid>
+                  </Grid>
+                  <Grid container spacing={2} sx={{ marginBottom: `1rem` }}>
+                    <Grid item xs={12} sm={4}>
+                      <TextField
+                        sx={textfieldProps}
+                        id="ScoreKPI"
+                        label="คะแนนผลสัมฤทธิ์ของงาน"
+                        variant="outlined"
+                        onChange={e => setScoreKPI(e.target.value)}
+                        value={scoreKPI}
+                      />
+                    </Grid>
+                    <Grid item xs={12} sm={4}>
+                      <TextField
+                        sx={textfieldProps}
+                        id="ScoreCompetence"
+                        label="คะแนนประเมินสมรรถนะ"
+                        variant="outlined"
+                        onChange={e => setScoreCompetence(e.target.value)}
+                        value={scoreCompetence}
+                      />
+                    </Grid>
+                    <Grid item xs={12} sm={4}>
+                      <TextField
+                        sx={textfieldProps}
+                        id="StatusDisability"
+                        label="สภานภาพทางกาย"
+                        variant="outlined"
+                        onChange={e => setStatusDisability(e.target.value)}
+                        value={statusDisability}
+                      />
+                    </Grid>
+                  </Grid>
+
+                  <Grid container spacing={2} sx={{ marginBottom: `1rem` }}>
+                    <Grid item xs={12} sm={6}>
+                      <Button
+                        fullWidth
+                        color="primary"
+                        variant="contained"
+                        type="submit"
+                        disabled={
+                          name === `` ||
+                          surname === `` ||
+                          idCard === `` ||
+                          sidCard === `` ||
+                          positionInput === null ||
+                          jobType === null ||
+                          gender === `` ||
+                          birthDate === null ||
+                          marriedStatus === `` ||
+                          telephone === `` ||
+                          address === `` ||
+                          emergencyName === `` ||
+                          emergencyNumber === `` ||
+                          startDate === null ||
+                          eduLevel === `` ||
+                          eduName === `` ||
+                          eduGraduated === `` ||
+                          eduCountry === `` ||
+                          movementType === `` ||
+                          outline === `` ||
+                          rewardType1 === `` ||
+                          contactCnt === `` ||
+                          mission === `` ||
+                          currentContactStart === null ||
+                          currentContactEnd === null
+                        }
                       >
-                        <MenuItem value="" selected>
-                          ---
-                        </MenuItem>
-                        <MenuItem value="โสด">โสด</MenuItem>
-                        <MenuItem value="สมรส">สมรส</MenuItem>
-                        <MenuItem value="หม้าย">หม้าย</MenuItem>
-                        <MenuItem value="หย่า">หย่า</MenuItem>
-                        <MenuItem value="แยกกันอยู่">แยกกันอยู่</MenuItem>
-                      </Select>
-                    </FormControl>
+                        <FontAwesomeIcon
+                          icon={faSave}
+                          style={{ marginRight: 5 }}
+                        />
+                        บันทึก
+                      </Button>
+                    </Grid>
+                    <Grid item xs={12} sm={6}>
+                      <Button
+                        fullWidth
+                        color="error"
+                        type="reset"
+                        onClick={() => clearInput()}
+                        disabled={
+                          prename === `` &&
+                          name === `` &&
+                          surname === `` &&
+                          idCard === `` &&
+                          sidCard === `` &&
+                          positionInput === null &&
+                          jobType === null &&
+                          gender === `` &&
+                          birthDate === null &&
+                          marriedStatus === `` &&
+                          telephone === `` &&
+                          address === `` &&
+                          emergencyName === `` &&
+                          emergencyNumber === `` &&
+                          startDate === null &&
+                          eduLevel === `` &&
+                          eduName === `` &&
+                          eduGraduated === `` &&
+                          eduCountry === `` &&
+                          movementType === `` &&
+                          outline === `` &&
+                          rewardType1 === `` &&
+                          rewardType2 === `` &&
+                          rewardType3 === `` &&
+                          contactCnt === `` &&
+                          mission === `` &&
+                          currentContactStart === null &&
+                          currentContactEnd === null &&
+                          guilty === `` &&
+                          punish === `` &&
+                          decoration === `` &&
+                          percentSalary === `` &&
+                          scoreKPI === `` &&
+                          scoreCompetence === `` &&
+                          statusDisability === ``
+                        }
+                      >
+                        <FontAwesomeIcon
+                          icon={faTimes}
+                          style={{ marginRight: 5 }}
+                        />
+                        ล้าง
+                      </Button>
+                    </Grid>
                   </Grid>
-                  <Grid item xs={12} sm={3}>
-                    <TextField
-                      sx={textfieldProps}
-                      id="Telephone"
-                      label="* หมายเลขโทรศัพท์"
-                      variant="outlined"
-                      onChange={e => setTelephone(e.target.value)}
-                      value={telephone}
-                      InputProps={{
-                        endAdornment: renderCheckingIcon(telephone),
-                      }}
-                    />
-                  </Grid>
-                </Grid>
-                <Grid container spacing={2} sx={{ marginBottom: `1rem` }}>
-                  <Grid item xs={12}>
-                    <TextField
-                      sx={textfieldProps}
-                      id="Address"
-                      label="* ที่อยู่"
-                      variant="outlined"
-                      onChange={e => setAddress(e.target.value)}
-                      value={address}
-                      InputProps={{
-                        endAdornment: renderCheckingIcon(address),
-                      }}
-                    />
-                  </Grid>
-                </Grid>
-                <Grid container spacing={2} sx={{ marginBottom: `1rem` }}>
-                  <Grid item xs={12} sm={6}>
-                    <TextField
-                      sx={textfieldProps}
-                      id="Emergency_Name"
-                      label="* ชื่อผู้ติดต่อฉุกเฉิน"
-                      variant="outlined"
-                      onChange={e => setEmergencyName(e.target.value)}
-                      value={emergencyName}
-                      InputProps={{
-                        endAdornment: renderCheckingIcon(emergencyName),
-                      }}
-                    />
-                  </Grid>
-                  <Grid item xs={12} sm={6}>
-                    <TextField
-                      sx={textfieldProps}
-                      id="Emergency_Number"
-                      label="* หมายเลขโทรศัพท์ผู้ติดต่อฉุกเฉิน"
-                      variant="outlined"
-                      onChange={e => setEmergencyNumber(e.target.value)}
-                      value={emergencyNumber}
-                      InputProps={{
-                        endAdornment: renderCheckingIcon(emergencyNumber),
-                      }}
-                    />
-                  </Grid>
-                </Grid>
-                <Divider style={{ margin: `1rem auto 2rem`, width: 360 }} />
-                <Grid container spacing={2} sx={{ marginBottom: `1rem` }}>
-                  <Grid item xs={12}>
-                    {/* <TextField
-                  sx={textfieldProps}
-                  id="StartDate"
-                  label="* วันเริ่มทำสัญญา"
-                  variant="outlined"
-                  onChange={e => setStartDate(e.target.value)}
-                  value={startDate}
-                  InputProps={{
-                    endAdornment: renderCheckingIcon(startDate),
+                </Form>
+
+                <Divider style={{ marginTop: `1rem`, marginBottom: `1rem` }} />
+                <Flex
+                  style={{
+                    justifyContent: `end`,
                   }}
-                /> */}
-
-                    <MobileDatePicker
-                      {...datePickerProps}
-                      id="StartDate"
-                      label="* วันเริ่มทำสัญญา"
-                      onChange={newValue => {
-                        setStartDate(newValue)
-                      }}
-                      value={startDate}
-                      renderInput={params => (
-                        <TextField
-                          {...params}
-                          sx={textfieldProps}
-                          InputProps={{
-                            startAdornment: params.InputProps.endAdornment,
-                            endAdornment: renderCheckingIcon(
-                              startDate === null ? `` : startDate
-                            ),
-                          }}
-                        />
-                      )}
+                >
+                  <Button color="error" variant="outlined" onClick={() => {}}>
+                    <FontAwesomeIcon
+                      icon={faTrash}
+                      style={{ marginRight: 5 }}
                     />
-                  </Grid>
-                </Grid>
-                <Grid container spacing={2} sx={{ marginBottom: `1rem` }}>
-                  <Grid item xs={12} sm={6}>
-                    <TextField
-                      sx={textfieldProps}
-                      id="Edu_Level"
-                      label="* ระดับการศึกษา"
-                      variant="outlined"
-                      onChange={e => setEduLevel(e.target.value)}
-                      value={eduLevel}
-                      InputProps={{
-                        endAdornment: renderCheckingIcon(eduLevel),
-                      }}
-                    />
-                  </Grid>
-                  <Grid item xs={12} sm={6}>
-                    <TextField
-                      sx={textfieldProps}
-                      id="Edu_Name"
-                      label="* ชื่อวุฒิการศึกษา"
-                      variant="outlined"
-                      onChange={e => setEduName(e.target.value)}
-                      value={eduName}
-                      InputProps={{
-                        endAdornment: renderCheckingIcon(eduName),
-                      }}
-                    />
-                  </Grid>
-                </Grid>
-                <Grid container spacing={2} sx={{ marginBottom: `1rem` }}>
-                  <Grid item xs={12} sm={6}>
-                    <TextField
-                      sx={textfieldProps}
-                      id="Edu_Graduated"
-                      label="* ชื่อสถาบันที่สำเร็จการศึกษา"
-                      variant="outlined"
-                      onChange={e => setEduGraduated(e.target.value)}
-                      value={eduGraduated}
-                      InputProps={{
-                        endAdornment: renderCheckingIcon(eduGraduated),
-                      }}
-                    />
-                  </Grid>
-                  <Grid item xs={12} sm={6}>
-                    <TextField
-                      sx={textfieldProps}
-                      id="Edu_Country"
-                      label="* ชื่อประเทศ"
-                      variant="outlined"
-                      onChange={e => setEduCountry(e.target.value)}
-                      value={eduCountry}
-                      InputProps={{
-                        endAdornment: renderCheckingIcon(eduCountry),
-                      }}
-                    />
-                  </Grid>
-                </Grid>
-                <Divider style={{ margin: `1rem auto 2rem`, width: 360 }} />
-                <Grid container spacing={2} sx={{ marginBottom: `1rem` }}>
-                  <Grid item xs={12} sm={6}>
-                    <TextField
-                      sx={textfieldProps}
-                      id="MovementType"
-                      label="* ชื่อประเภทการเคลื่อนไหวล่าสุด"
-                      variant="outlined"
-                      onChange={e => setMovementType(e.target.value)}
-                      value={movementType}
-                      InputProps={{
-                        endAdornment: renderCheckingIcon(movementType),
-                      }}
-                    />
-                  </Grid>
-                  <Grid item xs={12} sm={6}>
-                    <TextField
-                      sx={textfieldProps}
-                      id="Outline"
-                      label="* กรอบอัตรากำลัง"
-                      variant="outlined"
-                      onChange={e => setOutline(e.target.value)}
-                      value={outline}
-                      InputProps={{
-                        endAdornment: renderCheckingIcon(outline),
-                      }}
-                    />
-                  </Grid>
-                </Grid>
-                <Grid container spacing={2} sx={{ marginBottom: `1rem` }}>
-                  <Grid item xs={12} sm={4}>
-                    <TextField
-                      sx={textfieldProps}
-                      id="RewardType1"
-                      label="* ค่าตอบแทนปัจจุบัน(เงินเดือน)"
-                      variant="outlined"
-                      onChange={e => setRewardType1(e.target.value)}
-                      value={rewardType1}
-                      InputProps={{
-                        endAdornment: renderCheckingIcon(rewardType1),
-                      }}
-                    />
-                  </Grid>
-                  <Grid item xs={12} sm={4}>
-                    <TextField
-                      sx={textfieldProps}
-                      id="RewardType2"
-                      label="ค่าตอบแทนสำหรับตำแหน่งที่มีเหตุพิเศษ"
-                      variant="outlined"
-                      onChange={e => setRewardType2(e.target.value)}
-                      value={rewardType2}
-                    />
-                  </Grid>
-                  <Grid item xs={12} sm={4}>
-                    <TextField
-                      sx={textfieldProps}
-                      id="RewardType3"
-                      label="ค่าครองชีพชั่วคราว"
-                      variant="outlined"
-                      onChange={e => setRewardType3(e.target.value)}
-                      value={rewardType3}
-                    />
-                  </Grid>
-                </Grid>
-                <Grid container spacing={2} sx={{ marginBottom: `1rem` }}>
-                  <Grid item xs={12} sm={3}>
-                    <TextField
-                      sx={textfieldProps}
-                      id="ContactCnt"
-                      label="* จำนวนครั้งที่ทำสัญญา"
-                      variant="outlined"
-                      onChange={e => setContactCnt(e.target.value)}
-                      value={contactCnt}
-                      InputProps={{
-                        endAdornment: renderCheckingIcon(contactCnt),
-                      }}
-                    />
-                  </Grid>
-                  <Grid item xs={12} sm={3}>
-                    <TextField
-                      sx={textfieldProps}
-                      id="Mission"
-                      label="* ประเภทภารกิจ"
-                      variant="outlined"
-                      onChange={e => setMission(e.target.value)}
-                      value={mission}
-                      InputProps={{
-                        endAdornment: renderCheckingIcon(mission),
-                      }}
-                    />
-                  </Grid>
-                  <Grid item xs={12} sm={3}>
-                    <MobileDatePicker
-                      {...datePickerProps}
-                      id="CurrentContactStart"
-                      label="* วันที่เริ่มสัญญาปัจจุบัน"
-                      onChange={newValue => {
-                        setCurrentContactStart(newValue)
-                      }}
-                      value={currentContactStart}
-                      renderInput={params => (
-                        <TextField
-                          {...params}
-                          sx={textfieldProps}
-                          InputProps={{
-                            startAdornment: params.InputProps.endAdornment,
-                            endAdornment: renderCheckingIcon(
-                              currentContactStart === null
-                                ? ``
-                                : currentContactStart
-                            ),
-                          }}
-                        />
-                      )}
-                    />
-                  </Grid>
-                  <Grid item xs={12} sm={3}>
-                    <MobileDatePicker
-                      {...datePickerProps}
-                      id="CurrentContactEnd"
-                      label="* วันที่สิ้นสุดสัญญาปัจจุบัน"
-                      onChange={newValue => {
-                        setCurrentContactEnd(newValue)
-                      }}
-                      value={currentContactEnd}
-                      renderInput={params => (
-                        <TextField
-                          {...params}
-                          sx={textfieldProps}
-                          InputProps={{
-                            startAdornment: params.InputProps.endAdornment,
-                            endAdornment: renderCheckingIcon(
-                              currentContactEnd === null
-                                ? ``
-                                : currentContactEnd
-                            ),
-                          }}
-                        />
-                      )}
-                    />
-                  </Grid>
-                </Grid>
-                <Divider style={{ margin: `1rem auto 2rem`, width: 360 }} />
-                <Grid container spacing={2} sx={{ marginBottom: `1rem` }}>
-                  <Grid item xs={12} sm={6}>
-                    <TextField
-                      sx={textfieldProps}
-                      id="Guilty"
-                      label="ความผิดทางวินัย"
-                      variant="outlined"
-                      onChange={e => setGuilty(e.target.value)}
-                      value={guilty}
-                    />
-                  </Grid>
-                  <Grid item xs={12} sm={6}>
-                    <TextField
-                      sx={textfieldProps}
-                      id="Punish"
-                      label="ประเภทโทษทางวินัย"
-                      variant="outlined"
-                      onChange={e => setPunish(e.target.value)}
-                      value={punish}
-                    />
-                  </Grid>
-                </Grid>
-                <Grid container spacing={2} sx={{ marginBottom: `1rem` }}>
-                  <Grid item xs={12} sm={6}>
-                    <TextField
-                      sx={textfieldProps}
-                      id="Decoration"
-                      label="เครื่องราชอิสริยาภรณ์สูงสุดที่ได้รับ"
-                      variant="outlined"
-                      onChange={e => setDecoration(e.target.value)}
-                      value={decoration}
-                    />
-                  </Grid>
-                  <Grid item xs={12} sm={6}>
-                    <TextField
-                      sx={textfieldProps}
-                      id="PercentSalary"
-                      label="ร้อยละที่ได้รับการเลื่อนเงินเดือน"
-                      variant="outlined"
-                      onChange={e => setPercentSalary(e.target.value)}
-                      value={percentSalary}
-                    />
-                  </Grid>
-                </Grid>
-                <Grid container spacing={2} sx={{ marginBottom: `1rem` }}>
-                  <Grid item xs={12} sm={4}>
-                    <TextField
-                      sx={textfieldProps}
-                      id="ScoreKPI"
-                      label="คะแนนผลสัมฤทธิ์ของงาน"
-                      variant="outlined"
-                      onChange={e => setScoreKPI(e.target.value)}
-                      value={scoreKPI}
-                    />
-                  </Grid>
-                  <Grid item xs={12} sm={4}>
-                    <TextField
-                      sx={textfieldProps}
-                      id="ScoreCompetence"
-                      label="คะแนนประเมินสมรรถนะ"
-                      variant="outlined"
-                      onChange={e => setScoreCompetence(e.target.value)}
-                      value={scoreCompetence}
-                    />
-                  </Grid>
-                  <Grid item xs={12} sm={4}>
-                    <TextField
-                      sx={textfieldProps}
-                      id="StatusDisability"
-                      label="สภานภาพทางกาย"
-                      variant="outlined"
-                      onChange={e => setStatusDisability(e.target.value)}
-                      value={statusDisability}
-                    />
-                  </Grid>
-                </Grid>
-
-                <Grid container spacing={2} sx={{ marginBottom: `1rem` }}>
-                  <Grid item xs={12} sm={6}>
-                    <Button
-                      fullWidth
-                      color="primary"
-                      variant="contained"
-                      type="submit"
-                      disabled={
-                        name === `` ||
-                        surname === `` ||
-                        idCard === `` ||
-                        sidCard === `` ||
-                        positionInput === null ||
-                        jobType === null ||
-                        gender === `` ||
-                        birthDate === null ||
-                        marriedStatus === `` ||
-                        telephone === `` ||
-                        address === `` ||
-                        emergencyName === `` ||
-                        emergencyNumber === `` ||
-                        startDate === null ||
-                        eduLevel === `` ||
-                        eduName === `` ||
-                        eduGraduated === `` ||
-                        eduCountry === `` ||
-                        movementType === `` ||
-                        outline === `` ||
-                        rewardType1 === `` ||
-                        contactCnt === `` ||
-                        mission === `` ||
-                        currentContactStart === null ||
-                        currentContactEnd === null
-                      }
-                    >
-                      <FontAwesomeIcon
-                        icon={faSave}
-                        style={{ marginRight: 5 }}
-                      />
-                      บันทึก
-                    </Button>
-                  </Grid>
-                  <Grid item xs={12} sm={6}>
-                    <Button
-                      fullWidth
-                      color="error"
-                      type="reset"
-                      onClick={() => clearInput()}
-                      disabled={
-                        prename === `` &&
-                        name === `` &&
-                        surname === `` &&
-                        idCard === `` &&
-                        sidCard === `` &&
-                        positionInput === null &&
-                        jobType === null &&
-                        gender === `` &&
-                        birthDate === null &&
-                        marriedStatus === `` &&
-                        telephone === `` &&
-                        address === `` &&
-                        emergencyName === `` &&
-                        emergencyNumber === `` &&
-                        startDate === null &&
-                        eduLevel === `` &&
-                        eduName === `` &&
-                        eduGraduated === `` &&
-                        eduCountry === `` &&
-                        movementType === `` &&
-                        outline === `` &&
-                        rewardType1 === `` &&
-                        rewardType2 === `` &&
-                        rewardType3 === `` &&
-                        contactCnt === `` &&
-                        mission === `` &&
-                        currentContactStart === null &&
-                        currentContactEnd === null &&
-                        guilty === `` &&
-                        punish === `` &&
-                        decoration === `` &&
-                        percentSalary === `` &&
-                        scoreKPI === `` &&
-                        scoreCompetence === `` &&
-                        statusDisability === ``
-                      }
-                    >
-                      <FontAwesomeIcon
-                        icon={faTimes}
-                        style={{ marginRight: 5 }}
-                      />
-                      ล้าง
-                    </Button>
-                  </Grid>
-                </Grid>
-              </Form>
+                    ลบ
+                  </Button>
+                </Flex>
+              </>
             )}
           </>
         ) : (

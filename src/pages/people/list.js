@@ -22,7 +22,6 @@ import {
   faPen,
   faChevronLeft,
 } from "@fortawesome/free-solid-svg-icons"
-import axios from "axios"
 
 import Layout from "../../components/Layout"
 import Seo from "../../components/Seo"
@@ -50,7 +49,6 @@ const PositionsPage = () => {
     })
     let filter = ``
     let whereCondition = ``
-    let allUsers = []
     let returnData = []
 
     if (
@@ -81,14 +79,10 @@ const PositionsPage = () => {
       }`
     }
 
-    if (userInfo.role.name === `Administrator`) {
-      whereCondition = `where: {
-        ${filter}
-      }`
-    } else {
-      whereCondition = `where: {
-        ${filter}
-      }`
+    if (userInfo.role.name !== `Administrator`) {
+      whereCondition = `
+        division: "${userInfo.division._id}"
+      `
     }
 
     dispatch({
@@ -97,23 +91,38 @@ const PositionsPage = () => {
     })
 
     try {
-      const res = await axios.get(`${url}/users`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
-
-      allUsers = res.data
-    } catch (error) {
-      console.log(error)
-    }
-
-    if (allUsers.length > 0) {
-      try {
-        const res = await client.query({
-          query: gql`
-            query People {
-              people(${whereCondition}) {
+      const res = await client.query({
+        query: gql`
+          query Positions {
+            positions(where: {
+              ${whereCondition}
+              number_contains: "${searchPersonFilter.posNumber}"
+              ${
+                filter !== ``
+                  ? `person: {
+                ${filter}
+              }`
+                  : `person_null: false`
+              }
+              ${
+                searchPersonFilter.unit !== null
+                  ? `division: "${searchPersonFilter.unit._id}"`
+                  : ``
+              }
+            }) {
+              _id
+              position_type {
+                type
+                name
+              }
+              number
+              division {
+                _id
+                division1
+                division2
+                division3
+              }
+              person {
                 _id
                 Prename
                 Name
@@ -126,96 +135,124 @@ const PositionsPage = () => {
                 updatedAt
               }
             }
-          `,
-        })
-
-        if (res.data.people.length > 0) {
-          for (let thisPerson of res.data.people) {
-            let position = {
-              _id: ``,
-              posName: ``,
-              posType: ``,
-              posNumber: ``,
-            }
-            if (thisPerson.person_id !== ``) {
-              const resPosition = await client.query({
-                query: gql`
-                  query Positions {
-                    positions(where: {
-                      person_id: "${thisPerson._id}"
-                      number_contains: "${searchPersonFilter.posNumber}"
-                    }) {
-                      _id
-                      position_type {
-                        type
-                        name
-                      }
-                      number
-                    }
-                  }
-                `,
-              })
-
-              if (resPosition.data.positions.length > 0) {
-                position = {
-                  _id: resPosition.data.positions[0]._id,
-                  posName: resPosition.data.positions[0].position_type.name,
-                  posType: resPosition.data.positions[0].position_type.type,
-                  posNumber: resPosition.data.positions[0].number,
-                }
-
-                returnData = [
-                  ...returnData,
-                  {
-                    _id: thisPerson._id,
-                    Prename: thisPerson.Prename,
-                    Name: thisPerson.Name,
-                    Surname: thisPerson.Surname,
-                    ID_Card: thisPerson.ID_Card,
-                    SID_Card: thisPerson.SID_Card,
-                    staff_created: thisPerson.staff_created,
-                    staff_updated: thisPerson.staff_updated,
-                    createdAt: thisPerson.createdAt,
-                    updatedAt: thisPerson.updatedAt,
-                    position: position,
-                    division: allUsers.find(
-                      elem => elem._id === thisPerson.staff_created
-                    ).division,
-                  },
-                ]
-              }
-            }
           }
+        `,
+      })
 
-          if (returnData.length > 0) {
-            setPeopleData(returnData)
-          } else {
-            setIsError({
-              status: true,
-              text: `ไม่พบข้อมูล`,
-            })
-          }
+      if (res.data.positions.length > 0) {
+        for (let thisPosition of res.data.positions) {
+          returnData = [
+            ...returnData,
+            {
+              _id: thisPosition.person._id,
+              Prename: thisPosition.person.Prename,
+              Name: thisPosition.person.Name,
+              Surname: thisPosition.person.Surname,
+              ID_Card: thisPosition.person.ID_Card,
+              SID_Card: thisPosition.person.SID_Card,
+              staff_created: thisPosition.person.staff_created,
+              staff_updated: thisPosition.person.staff_updated,
+              createdAt: thisPosition.person.createdAt,
+              updatedAt: thisPosition.person.updatedAt,
+              position: {
+                _id: thisPosition._id,
+                posName: thisPosition.position_type.name,
+                posType: thisPosition.position_type.type,
+                posNumber: thisPosition.number,
+              },
+              division: thisPosition.division,
+            },
+          ]
+
+          // let position = {
+          //   _id: ``,
+          //   posName: ``,
+          //   posType: ``,
+          //   posNumber: ``,
+          // }
+
+          // if (thisPosition.person._id !== ``) {
+          // const resPerson = await client.query({
+          //   query: gql`
+          //     query Positions {
+          //       positions(where: {
+          //         person._id: "${thisPosition._id}"
+          //         number_contains: "${searchPersonFilter.posNumber}"
+          //       }) {
+          //         _id
+          //         position_type {
+          //           type
+          //           name
+          //         }
+          //         number
+          //         division {
+          //           _id
+          //           division1
+          //           division2
+          //           division3
+          //         }
+          //       }
+          //     }
+          //   `,
+          // })
+
+          // if (resPerson.data.positions.length > 0) {
+          //   position = {
+          //     _id: resPerson.data.positions[0]._id,
+          //     posName: resPerson.data.positions[0].position_type.name,
+          //     posType: resPerson.data.positions[0].position_type.type,
+          //     posNumber: resPerson.data.positions[0].number,
+          //   }
+
+          //   returnData = [
+          //     ...returnData,
+          //     {
+          //       _id: thisPerson._id,
+          //       Prename: thisPerson.Prename,
+          //       Name: thisPerson.Name,
+          //       Surname: thisPerson.Surname,
+          //       ID_Card: thisPerson.ID_Card,
+          //       SID_Card: thisPerson.SID_Card,
+          //       staff_created: thisPerson.staff_created,
+          //       staff_updated: thisPerson.staff_updated,
+          //       createdAt: thisPerson.createdAt,
+          //       updatedAt: thisPerson.updatedAt,
+          //       position: position,
+          //       division: resPerson.data.positions[0].division,
+          //     },
+          //   ]
+          // }
+          // }
+        }
+
+        if (returnData.length > 0) {
+          setPeopleData(returnData)
         } else {
           setIsError({
             status: true,
             text: `ไม่พบข้อมูล`,
           })
         }
-      } catch (error) {
-        console.log(error)
-
+      } else {
         setIsError({
           status: true,
-          text: `ไม่สามารถเชื่อมต่อฐานข้อมูล`,
+          text: `ไม่พบข้อมูล`,
         })
       }
+    } catch (error) {
+      console.log(error)
+
+      setIsError({
+        status: true,
+        text: `ไม่สามารถเชื่อมต่อฐานข้อมูล`,
+      })
     }
 
     dispatch({
       type: `SET_BACKDROP_OPEN`,
       backdropOpen: false,
     })
-  }, [url, token, userInfo, searchPersonFilter, dispatch])
+  }, [url, userInfo, searchPersonFilter, dispatch])
 
   useEffect(() => {
     dispatch({

@@ -3,6 +3,7 @@ import { navigate } from "gatsby"
 import { useSelector, useDispatch } from "react-redux"
 import styled from "styled-components"
 import { Button, Alert, TextField } from "@mui/material"
+import Autocomplete from "@mui/material/Autocomplete"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import {
   faPlusCircle,
@@ -15,7 +16,7 @@ import Layout from "../../components/Layout"
 import Seo from "../../components/Seo"
 import Breadcrumbs from "../../components/Breadcrumbs"
 import PageNotFound from "../../components/PageNotFound"
-import { Form, SubmitButtonFlex } from "../../components/Styles"
+import { Form, SubmitButtonFlex, Flex } from "../../components/Styles"
 
 const Oparator = styled.div`
   display: flex;
@@ -28,7 +29,7 @@ const Oparator = styled.div`
 `
 
 const PositionsPage = () => {
-  const { token, url, userInfo, searchPersonFilter } = useSelector(
+  const { token, url, userInfo, searchPersonFilter, units } = useSelector(
     state => state
   )
   const dispatch = useDispatch()
@@ -55,7 +56,7 @@ const PositionsPage = () => {
             positionsConnection(where: {
               isOpen: true
               ${role}
-              person_id: ""
+              person_null: true
             }) {
               aggregate {
                 count
@@ -93,7 +94,7 @@ const PositionsPage = () => {
         },
       })
     }
-  }, [url, userInfo.division._id, userInfo.role.name, dispatch])
+  }, [url, userInfo, dispatch])
 
   useEffect(() => {
     dispatch({
@@ -235,6 +236,65 @@ const PositionsPage = () => {
               }}
               value={searchPersonFilter.posNumber}
             />
+            {userInfo.role.name === `Administrator` && (
+              <Flex style={{ marginBottom: `1rem` }}>
+                <Autocomplete
+                  sx={{ width: `100%` }}
+                  id="position-name"
+                  disablePortal
+                  options={units}
+                  noOptionsText={`ไม่พบข้อมูล`}
+                  getOptionLabel={option => {
+                    let label = ``
+
+                    if (option.division1) {
+                      label = option.division1
+                    }
+
+                    if (option.division2) {
+                      label = option.division2
+                    }
+
+                    if (option.division3) {
+                      label = option.division3
+                    }
+                    return label
+                  }}
+                  isOptionEqualToValue={(option, value) => {
+                    return option === value
+                  }}
+                  onChange={(_, newValue) => {
+                    if (newValue !== null) {
+                      dispatch({
+                        type: `SET_SEARCH_PERSON_FILTER`,
+                        searchPersonFilter: {
+                          ...searchPersonFilter,
+                          unit: newValue,
+                        },
+                      })
+                    } else {
+                      dispatch({
+                        type: `SET_SEARCH_PERSON_FILTER`,
+                        searchPersonFilter: {
+                          ...searchPersonFilter,
+                          unit: null,
+                        },
+                      })
+                    }
+                  }}
+                  value={searchPersonFilter.unit}
+                  renderInput={params => (
+                    <TextField
+                      {...params}
+                      label="สังกัด"
+                      InputProps={{
+                        ...params.InputProps,
+                      }}
+                    />
+                  )}
+                />
+              </Flex>
+            )}
             <SubmitButtonFlex>
               <Button
                 style={{
@@ -263,6 +323,7 @@ const PositionsPage = () => {
                       personId: ``,
                       personSid: ``,
                       posNumber: ``,
+                      unit: null,
                     },
                   })
                 }}
@@ -271,7 +332,8 @@ const PositionsPage = () => {
                   searchPersonFilter.personSurname === `` &&
                   searchPersonFilter.personId === `` &&
                   searchPersonFilter.personSid === `` &&
-                  searchPersonFilter.posNumber === ``
+                  searchPersonFilter.posNumber === `` &&
+                  searchPersonFilter.unit === null
                 }
               >
                 <FontAwesomeIcon icon={faTimes} style={{ marginRight: 5 }} />
