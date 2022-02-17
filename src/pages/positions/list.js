@@ -360,7 +360,7 @@ const PositionsPage = () => {
                     disableRipple
                   >
                     <FontAwesomeIcon icon={faPen} style={{ marginRight: 5 }} />
-                    แก้ไข
+                    แก้ไขตำแหน่ง
                   </MenuItem>
                 </Menu>
               </>

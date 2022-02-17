@@ -275,28 +275,14 @@ const EditPositionsPage = ({ location }) => {
     })
   }
 
-  const resetInput = useCallback(() => {
-    setAddPositionFilter({
-      posId: ``,
-      posName: ``,
-      posType: ``,
-      posNumber: ``,
-      unit: null,
-      posOpen: false,
-      posSouth: false,
-    })
-  }, [])
-
   useEffect(() => {
     dispatch({
       type: `SET_CURRENT_PAGE`,
       currentPage: `positions`,
     })
 
-    resetInput()
-
     getPosition()
-  }, [dispatch, getPosition, resetInput])
+  }, [dispatch, getPosition])
 
   return (
     <Layout>

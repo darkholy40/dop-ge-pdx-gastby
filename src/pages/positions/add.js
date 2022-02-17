@@ -1,4 +1,5 @@
-import React, { useCallback, useEffect, useState } from "react"
+import React, { useEffect, useState } from "react"
+import { navigate } from "gatsby"
 import { useSelector, useDispatch } from "react-redux"
 import { Button, TextField, Checkbox, Alert } from "@mui/material"
 import Autocomplete from "@mui/material/Autocomplete"
@@ -153,7 +154,7 @@ const AddPositionsPage = () => {
             variant: `success`,
             confirmText: `ตกลง`,
             callback: () => {
-              resetInput()
+              navigate(`/positions`)
             },
           },
         })
@@ -179,18 +180,6 @@ const AddPositionsPage = () => {
       backdropOpen: false,
     })
   }
-
-  const resetInput = useCallback(() => {
-    setAddPositionFilter({
-      posId: ``,
-      posName: ``,
-      posType: ``,
-      posNumber: ``,
-      unit: null,
-      posOpen: false,
-      posSouth: false,
-    })
-  }, [])
 
   useEffect(() => {
     dispatch({

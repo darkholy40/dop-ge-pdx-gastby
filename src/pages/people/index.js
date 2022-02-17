@@ -15,6 +15,7 @@ import Layout from "../../components/Layout"
 import Seo from "../../components/Seo"
 import Breadcrumbs from "../../components/Breadcrumbs"
 import PageNotFound from "../../components/PageNotFound"
+import { Form, SubmitButtonFlex } from "../../components/Styles"
 
 const Oparator = styled.div`
   display: flex;
@@ -24,18 +25,6 @@ const Oparator = styled.div`
   margin-left: auto;
   margin-right: auto;
   margin-bottom: 1rem;
-`
-
-const Form = styled.form`
-  display: flex;
-  flex-direction: column;
-  max-width: 400px;
-  margin: auto;
-`
-
-const SubmitButtonFlex = styled.div`
-  display: flex;
-  justify-content: space-between;
 `
 
 const PositionsPage = () => {
@@ -64,7 +53,7 @@ const PositionsPage = () => {
         query: gql`
           query PositionsCount {
             positionsConnection(where: {
-              Pos_Open: true
+              isOpen: true
               ${role}
               person_id: ""
             }) {
@@ -157,17 +146,6 @@ const PositionsPage = () => {
                 isError.status === `disabled` || isError.status === `notfound`
               }
               onClick={() => {
-                dispatch({
-                  type: `SET_ADD_POSITION_FILTER`,
-                  addPositionFilter: {
-                    posName: ``,
-                    posType: ``,
-                    posNumber: ``,
-                    posOpen: false,
-                    posSouth: false,
-                  },
-                })
-
                 navigate(`/people/add`)
               }}
             >

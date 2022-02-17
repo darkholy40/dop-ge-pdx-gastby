@@ -29,6 +29,7 @@ import Seo from "../../components/Seo"
 import Breadcrumbs from "../../components/Breadcrumbs"
 import PageNotFound from "../../components/PageNotFound"
 import Warning from "../../components/Warning"
+import renderDivision from "../../functions/renderDivision"
 
 const PositionsPage = () => {
   const { token, userInfo, url, primaryColor, searchPersonFilter } =
@@ -86,7 +87,6 @@ const PositionsPage = () => {
       }`
     } else {
       whereCondition = `where: {
-        staff_created: "${userInfo._id}"
         ${filter}
       }`
     }
@@ -133,9 +133,9 @@ const PositionsPage = () => {
           for (let thisPerson of res.data.people) {
             let position = {
               _id: ``,
-              Pos_Name: ``,
-              Pos_Type: ``,
-              Pos_Number: ``,
+              posName: ``,
+              posType: ``,
+              posNumber: ``,
             }
             if (thisPerson.person_id !== ``) {
               const resPosition = await client.query({
@@ -143,53 +143,48 @@ const PositionsPage = () => {
                   query Positions {
                     positions(where: {
                       person_id: "${thisPerson._id}"
+                      number_contains: "${searchPersonFilter.posNumber}"
                     }) {
                       _id
-                      Pos_Name
-                      Pos_Type
-                      Pos_Number
+                      position_type {
+                        type
+                        name
+                      }
+                      number
                     }
                   }
                 `,
               })
 
-              position = {
-                _id: resPosition.data.positions[0]._id,
-                Pos_Name: resPosition.data.positions[0].Pos_Name,
-                Pos_Type: resPosition.data.positions[0].Pos_Type,
-                Pos_Number: resPosition.data.positions[0].Pos_Number,
+              if (resPosition.data.positions.length > 0) {
+                position = {
+                  _id: resPosition.data.positions[0]._id,
+                  posName: resPosition.data.positions[0].position_type.name,
+                  posType: resPosition.data.positions[0].position_type.type,
+                  posNumber: resPosition.data.positions[0].number,
+                }
+
+                returnData = [
+                  ...returnData,
+                  {
+                    _id: thisPerson._id,
+                    Prename: thisPerson.Prename,
+                    Name: thisPerson.Name,
+                    Surname: thisPerson.Surname,
+                    ID_Card: thisPerson.ID_Card,
+                    SID_Card: thisPerson.SID_Card,
+                    staff_created: thisPerson.staff_created,
+                    staff_updated: thisPerson.staff_updated,
+                    createdAt: thisPerson.createdAt,
+                    updatedAt: thisPerson.updatedAt,
+                    position: position,
+                    division: allUsers.find(
+                      elem => elem._id === thisPerson.staff_created
+                    ).division,
+                  },
+                ]
               }
             }
-
-            returnData = [
-              ...returnData,
-              {
-                _id: thisPerson._id,
-                Prename: thisPerson.Prename,
-                Name: thisPerson.Name,
-                Surname: thisPerson.Surname,
-                ID_Card: thisPerson.ID_Card,
-                SID_Card: thisPerson.SID_Card,
-                staff_created: thisPerson.staff_created,
-                staff_updated: thisPerson.staff_updated,
-                createdAt: thisPerson.createdAt,
-                updatedAt: thisPerson.updatedAt,
-                position: position,
-                division: allUsers.find(
-                  elem => elem._id === thisPerson.staff_created
-                ).division,
-              },
-            ]
-          }
-
-          if (searchPersonFilter.posNumber !== ``) {
-            returnData = returnData.filter(
-              elem =>
-                elem.position.Pos_Number ===
-                elem.position.Pos_Number.includes(
-                  `${searchPersonFilter.posNumber}`
-                )
-            )
           }
 
           if (returnData.length > 0) {
@@ -280,7 +275,7 @@ const PositionsPage = () => {
                           ตำแหน่งในสายงาน
                         </TableCell>
                         <TableCell sx={{ backgroundColor: primaryColor[200] }}>
-                          สำนัก / กอง
+                          สังกัด
                         </TableCell>
                         <TableCell
                           align="center"
@@ -305,22 +300,22 @@ const PositionsPage = () => {
                             {rowIndex + 1}
                           </TableCell>
                           <TableCell align="left" sx={{ minWidth: 100 }}>
-                            {row.position.Pos_Number}
+                            {row.position.posNumber}
                           </TableCell>
                           <TableCell align="left">{`${row.Prename} ${row.Name} ${row.Surname}`}</TableCell>
                           <TableCell align="left">
-                            {row.position.Pos_Type}
+                            {row.position.posType}
                           </TableCell>
                           <TableCell align="left">
-                            {row.position.Pos_Name}
+                            {row.position.posName}
                           </TableCell>
                           <TableCell align="left">
-                            {row.division.DivisionName}
+                            {renderDivision(row.division)}
                           </TableCell>
                           <TableCell align="center">
                             <IconButton
                               onClick={event => {
-                                // setAnchorEl(event.currentTarget)
+                                setAnchorEl(event.currentTarget)
                                 setCurrentRow(row)
                               }}
                             >
@@ -347,17 +342,25 @@ const PositionsPage = () => {
                   onClose={() => {
                     setAnchorEl(null)
                   }}
+                  anchorOrigin={{
+                    vertical: "bottom",
+                    horizontal: "right",
+                  }}
+                  transformOrigin={{
+                    vertical: "top",
+                    horizontal: "right",
+                  }}
                 >
                   <MenuItem
                     onClick={() => {
                       setAnchorEl(null)
 
-                      navigate(`/positions/edit?id=${currentRow._id}`)
+                      navigate(`/people/edit?id=${currentRow._id}`)
                     }}
                     disableRipple
                   >
                     <FontAwesomeIcon icon={faPen} style={{ marginRight: 5 }} />
-                    แก้ไข
+                    แก้ไขกำลังพล
                   </MenuItem>
                 </Menu>
               </>

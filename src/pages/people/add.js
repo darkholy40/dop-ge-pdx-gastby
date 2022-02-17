@@ -89,7 +89,9 @@ const datePickerProps = {
 }
 
 const AddPositionsPage = () => {
-  const { token, userInfo, url } = useSelector(state => state)
+  const { token, userInfo, url, positionTypes, positionNames } = useSelector(
+    state => state
+  )
   const dispatch = useDispatch()
   const [positions, setPositions] = useState([])
   const [isError, setIsError] = useState({
@@ -101,7 +103,10 @@ const AddPositionsPage = () => {
   const [surname, setSurname] = useState(``)
   const [idCard, setIdCard] = useState(``)
   const [sidCard, setSidCard] = useState(``)
+  const [positionTypeSelect, setPositionTypeSelect] = useState(``)
+  const [positionNameSelect, setPositionNameSelect] = useState(``)
   const [positionInput, setPositionInput] = useState(null)
+  const [jobType, setJobType] = useState(null)
   const [gender, setGender] = useState(``)
   const [birthDate, setBirthDate] = useState(null)
   const [marriedStatus, setMarriedStatus] = useState(``)
@@ -147,23 +152,33 @@ const AddPositionsPage = () => {
         query: gql`
           query Positions {
             positions(where: {
-              Pos_Open: true
+              isOpen: true
               ${role}
               person_id: ""
+              position_type: {
+                type_contains: "${positionTypeSelect}"
+                name_contains: "${positionNameSelect}"
+              }
             }) {
               _id
-              Pos_Name
-              Pos_Type
-              Pos_Number
-              Pos_Open
-              Pos_South
+              number
+              position_type {
+                type
+                name
+                order
+              }
+              isOpen
+              isSouth
               staff_created
               staff_updated
               published_at
               createdAt
               updatedAt
               division {
-                DivisionName
+                _id
+                division1
+                division2
+                division3
               }
             }
           }
@@ -173,6 +188,7 @@ const AddPositionsPage = () => {
       if (res.data.positions.length > 0) {
         setPositions(res.data.positions)
       } else {
+        setPositions([])
         setIsError({
           status: `notfound`,
           text: `ไม่พบข้อมูล`,
@@ -193,7 +209,14 @@ const AddPositionsPage = () => {
         },
       })
     }
-  }, [url, userInfo.division._id, userInfo.role.name, dispatch])
+  }, [
+    url,
+    userInfo.division._id,
+    userInfo.role.name,
+    positionTypeSelect,
+    positionNameSelect,
+    dispatch,
+  ])
 
   const goAdd = async () => {
     const client = new ApolloClient({
@@ -254,6 +277,7 @@ const AddPositionsPage = () => {
                 StatusDisability: "${statusDisability}",
                 staff_created: "${userInfo.id}",
                 staff_updated: "",
+                type: "${jobType}",
               }
             }) {
               person {
@@ -283,7 +307,7 @@ const AddPositionsPage = () => {
         notificationDialog: {
           open: true,
           title: `เพิ่มรายการไม่สำเร็จ`,
-          description: `ไม่สามารถเพิ่มรายการกำลังพลได้ 1`,
+          description: `[Error001] - ไม่สามารถเพิ่มรายการกำลังพลได้`,
           variant: `error`,
           confirmText: `ลองอีกครั้ง`,
           callback: () => goAdd(),
@@ -334,7 +358,7 @@ const AddPositionsPage = () => {
           notificationDialog: {
             open: true,
             title: `เพิ่มรายการไม่สำเร็จ`,
-            description: `ไม่สามารถเพิ่มรายการกำลังพลได้ 2`,
+            description: `[Error002] - ไม่สามารถเพิ่มรายการกำลังพลได้`,
             variant: `error`,
             confirmText: `ลองอีกครั้ง`,
             callback: () => goAdd(),
@@ -401,7 +425,10 @@ const AddPositionsPage = () => {
     setSurname(``)
     setIdCard(``)
     setSidCard(``)
+    setPositionTypeSelect(``)
+    setPositionNameSelect(``)
     setPositionInput(null)
+    setJobType(null)
     setGender(``)
     setBirthDate(null)
     setMarriedStatus(``)
@@ -576,11 +603,114 @@ const AddPositionsPage = () => {
               </Grid>
             </Grid>
             <Grid container spacing={2} sx={{ marginBottom: `1rem` }}>
-              <Grid item xs={12}>
+              <Grid item xs={12} sm={3}>
                 <Flex>
                   <Autocomplete
                     sx={{ width: `100%` }}
-                    id="position"
+                    id="position-type"
+                    disablePortal
+                    options={positionTypes}
+                    noOptionsText={`ไม่พบข้อมูล`}
+                    getOptionLabel={option => option.type}
+                    isOptionEqualToValue={(option, value) => {
+                      return option === value
+                    }}
+                    onChange={(_, newValue) => {
+                      if (newValue !== null) {
+                        setPositionTypeSelect(newValue.type)
+                        setPositionNameSelect(``)
+                      } else {
+                        setPositionTypeSelect(``)
+                        setPositionNameSelect(``)
+                        setPositionInput(null)
+                      }
+                    }}
+                    value={
+                      positionTypeSelect !== ``
+                        ? positionTypes.find(
+                            elem => elem.type === positionTypeSelect
+                          )
+                        : null
+                    }
+                    renderInput={params => (
+                      <TextField
+                        {...params}
+                        label="ชื่อประเภทกลุ่มงาน"
+                        InputProps={{
+                          ...params.InputProps,
+                          sx: {
+                            borderRadius: `5px 0 0 5px`,
+                          },
+                        }}
+                      />
+                    )}
+                  />
+                  <CheckCircleFlex>
+                    {renderCheckingIcon(
+                      positionTypeSelect !== `` ? `correct` : ``
+                    )}
+                  </CheckCircleFlex>
+                </Flex>
+              </Grid>
+              <Grid item xs={12} sm={3}>
+                <Flex>
+                  <Autocomplete
+                    sx={{ width: `100%` }}
+                    id="position-name"
+                    disablePortal
+                    options={
+                      positionTypeSelect !== ``
+                        ? positionNames.filter(
+                            elem => elem.type === positionTypeSelect
+                          )
+                        : positionNames
+                    }
+                    noOptionsText={`ไม่พบข้อมูล`}
+                    getOptionLabel={option => option.name}
+                    isOptionEqualToValue={(option, value) => {
+                      return option === value
+                    }}
+                    onChange={(_, newValue) => {
+                      if (newValue !== null) {
+                        setPositionTypeSelect(newValue.type)
+                        setPositionNameSelect(newValue.name)
+                      } else {
+                        setPositionNameSelect(``)
+                        setPositionInput(null)
+                      }
+                    }}
+                    value={
+                      positionNameSelect !== ``
+                        ? positionNames.find(
+                            elem => elem.name === positionNameSelect
+                          )
+                        : null
+                    }
+                    renderInput={params => (
+                      <TextField
+                        {...params}
+                        label="ชื่อตำแหน่งในสายงาน"
+                        InputProps={{
+                          ...params.InputProps,
+                          sx: {
+                            borderRadius: `5px 0 0 5px`,
+                          },
+                        }}
+                      />
+                    )}
+                  />
+                  <CheckCircleFlex>
+                    {renderCheckingIcon(
+                      positionNameSelect !== `` ? `correct` : ``
+                    )}
+                  </CheckCircleFlex>
+                </Flex>
+              </Grid>
+              <Grid item xs={12} sm={3}>
+                <Flex>
+                  <Autocomplete
+                    sx={{ width: `100%` }}
+                    id="position-number"
                     disablePortal
                     options={positions}
                     noOptionsText={
@@ -590,20 +720,24 @@ const AddPositionsPage = () => {
                           : `กำลังเชื่อมต่อฐานข้อมูล...`
                         : `ไม่พบข้อมูล`
                     }
-                    getOptionLabel={option =>
-                      `${option.Pos_Name} / ${option.Pos_Type} (${option.Pos_Number}) / ${option.division.DivisionName}`
-                    }
+                    getOptionLabel={option => option.number}
                     isOptionEqualToValue={(option, value) => {
                       return option._id === value._id
                     }}
                     onChange={(_, newValue) => {
-                      setPositionInput(newValue)
+                      if (newValue !== null) {
+                        setPositionTypeSelect(newValue.position_type.type)
+                        setPositionNameSelect(newValue.position_type.name)
+                        setPositionInput(newValue)
+                      } else {
+                        setPositionInput(null)
+                      }
                     }}
                     value={positionInput}
                     renderInput={params => (
                       <TextField
                         {...params}
-                        label="ตำแหน่ง"
+                        label="รหัสตำแหน่ง"
                         InputProps={{
                           ...params.InputProps,
                           sx: {
@@ -617,6 +751,40 @@ const AddPositionsPage = () => {
                     {renderCheckingIcon(
                       positionInput !== null ? `correct` : ``
                     )}
+                  </CheckCircleFlex>
+                </Flex>
+              </Grid>
+              <Grid item xs={12} sm={3}>
+                <Flex>
+                  <Autocomplete
+                    sx={{ width: `100%` }}
+                    id="person-type"
+                    disablePortal
+                    options={[`พนักงานราชการ`, `ลูกจ้างประจำ`]}
+                    noOptionsText={`ไม่พบข้อมูล`}
+                    getOptionLabel={option => option}
+                    isOptionEqualToValue={(option, value) => {
+                      return option === value
+                    }}
+                    onChange={(_, newValue) => {
+                      setJobType(newValue)
+                    }}
+                    value={jobType}
+                    renderInput={params => (
+                      <TextField
+                        {...params}
+                        label="ประเภท"
+                        InputProps={{
+                          ...params.InputProps,
+                          sx: {
+                            borderRadius: `5px 0 0 5px`,
+                          },
+                        }}
+                      />
+                    )}
+                  />
+                  <CheckCircleFlex>
+                    {renderCheckingIcon(jobType !== null ? `correct` : ``)}
                   </CheckCircleFlex>
                 </Flex>
               </Grid>
@@ -1072,6 +1240,7 @@ const AddPositionsPage = () => {
                     idCard === `` ||
                     sidCard === `` ||
                     positionInput === null ||
+                    jobType === null ||
                     gender === `` ||
                     birthDate === null ||
                     marriedStatus === `` ||
@@ -1110,6 +1279,7 @@ const AddPositionsPage = () => {
                     idCard === `` &&
                     sidCard === `` &&
                     positionInput === null &&
+                    jobType === null &&
                     gender === `` &&
                     birthDate === null &&
                     marriedStatus === `` &&

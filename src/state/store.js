@@ -41,13 +41,6 @@ const initialState = {
     posType: ``,
     unit: null,
   },
-  addPositionFilter: {
-    posName: ``,
-    posType: ``,
-    posNumber: ``,
-    posOpen: false,
-    posSouth: false,
-  },
   searchPersonFilter: {
     personName: ``,
     personSurname: ``,
@@ -101,12 +94,6 @@ const reducer = (state = initialState, action) => {
       return {
         ...state,
         searchPositionFilter: action.searchPositionFilter,
-      }
-
-    case `SET_ADD_POSITION_FILTER`:
-      return {
-        ...state,
-        addPositionFilter: action.addPositionFilter,
       }
 
     case `SET_SEARCH_PERSON_FILTER`:

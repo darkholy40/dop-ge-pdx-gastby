@@ -133,6 +133,10 @@ const IndexPage = () => {
     <>
       <Title>ลงชื่อเข้าใช้งานระบบ</Title>
       <form
+        style={{
+          maxWidth: `960px`,
+          margin: `auto`,
+        }}
         onSubmit={e => {
           e.preventDefault()
           goLogin()
