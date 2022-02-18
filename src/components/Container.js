@@ -1,7 +1,7 @@
 import React from "react"
 import PropTypes from "prop-types"
 import { useSelector } from "react-redux"
-import styled from "styled-components"
+import styled, { createGlobalStyle } from "styled-components"
 import { Backdrop, CircularProgress } from "@mui/material"
 import { ThemeProvider, createTheme } from "@mui/material/styles"
 import AdapterDateFns from "@mui/lab/AdapterDateFns"
@@ -12,6 +12,22 @@ import Navbar from "./Navbar"
 import StaticData from "./StaticData"
 import NotificationDialog from "./NotificationDialog"
 import Footer from "./Footer"
+
+const GlobalStyles = createGlobalStyle`
+  a {
+    color: ${({ color }) => color[700]};
+    transition: color 0.2s;
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+
+    &:active {
+      color: ${({ color }) => color[300]};
+    }
+  }
+`
 
 const MainContainer = styled.div`
   width: 100%;
@@ -45,6 +61,7 @@ const Container = ({ children }) => {
   return (
     <ThemeProvider theme={muiTheme}>
       <LocalizationProvider dateAdapter={AdapterDateFns} locale={thLocale}>
+        <GlobalStyles color={primaryColor} />
         <Navbar />
         <StaticData />
         <MainContainer>

@@ -976,18 +976,6 @@ const AddPositionsPage = () => {
             <Divider style={{ margin: `1rem auto 2rem`, width: 360 }} />
             <Grid container spacing={2} sx={{ marginBottom: `1rem` }}>
               <Grid item xs={12}>
-                {/* <TextField
-                  sx={textfieldProps}
-                  id="StartDate"
-                  label="* วันเริ่มทำสัญญา"
-                  variant="outlined"
-                  onChange={e => setStartDate(e.target.value)}
-                  value={startDate}
-                  InputProps={{
-                    endAdornment: renderCheckingIcon(startDate),
-                  }}
-                /> */}
-
                 <MobileDatePicker
                   {...datePickerProps}
                   id="StartDate"

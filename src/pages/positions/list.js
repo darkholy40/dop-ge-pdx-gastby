@@ -1,5 +1,5 @@
 import React, { useEffect, useCallback, useState } from "react"
-import { navigate } from "gatsby"
+import { navigate, Link } from "gatsby"
 import { useSelector, useDispatch } from "react-redux"
 import {
   Table,
@@ -126,7 +126,8 @@ const PositionsPage = () => {
         let lap = 0
         for (let thisPos of res.data.positions) {
           let person = {
-            prename: `-`,
+            _id: ``,
+            prename: ``,
             name: ``,
             surname: ``,
           }
@@ -145,6 +146,7 @@ const PositionsPage = () => {
             })
 
             person = {
+              _id: resPerson.data.person._id,
               prename: resPerson.data.person.Prename,
               name: resPerson.data.person.Name,
               surname: resPerson.data.person.Surname,
@@ -331,7 +333,15 @@ const PositionsPage = () => {
                           <TableCell align="left">
                             {renderDivision(row.division)}
                           </TableCell>
-                          <TableCell align="left">{`${row.person.prename} ${row.person.name} ${row.person.surname}`}</TableCell>
+                          <TableCell align="left">
+                            {row.person._id !== `` ? (
+                              <Link
+                                to={`/people/edit?id=${row.person._id}`}
+                              >{`${row.person.prename} ${row.person.name} ${row.person.surname}`}</Link>
+                            ) : (
+                              <span>-</span>
+                            )}
+                          </TableCell>
                           <TableCell align="center">
                             {row.isSouth && (
                               <FontAwesomeIcon

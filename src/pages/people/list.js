@@ -1,5 +1,5 @@
 import React, { useEffect, useCallback, useState } from "react"
-import { navigate } from "gatsby"
+import { navigate, Link } from "gatsby"
 import { useSelector, useDispatch } from "react-redux"
 import {
   Table,
@@ -13,6 +13,7 @@ import {
   Menu,
   MenuItem,
   Button,
+  TablePagination,
 } from "@mui/material"
 import { ApolloClient, InMemoryCache, gql } from "@apollo/client"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
@@ -41,6 +42,11 @@ const PositionsPage = () => {
   })
   const [anchorEl, setAnchorEl] = useState(null)
   const [currentRow, setCurrentRow] = useState({})
+  const [tableOption, setTableOption] = useState({
+    totalRows: 0,
+    page: 0,
+    rowsPerPage: 10,
+  })
 
   const getPosition = useCallback(async () => {
     const client = new ApolloClient({
@@ -48,7 +54,7 @@ const PositionsPage = () => {
       cache: new InMemoryCache(),
     })
     let filter = ``
-    let whereCondition = ``
+    let role = ``
     let returnData = []
 
     if (
@@ -80,9 +86,14 @@ const PositionsPage = () => {
     }
 
     if (userInfo.role.name !== `Administrator`) {
-      whereCondition = `
+      role = `
         division: "${userInfo.division._id}"
       `
+    } else {
+      role =
+        searchPersonFilter.unit !== null
+          ? `division: "${searchPersonFilter.unit._id}"`
+          : ``
     }
 
     dispatch({
@@ -95,7 +106,7 @@ const PositionsPage = () => {
         query: gql`
           query Positions {
             positions(where: {
-              ${whereCondition}
+              ${role}
               number_contains: "${searchPersonFilter.posNumber}"
               ${
                 filter !== ``
@@ -104,12 +115,7 @@ const PositionsPage = () => {
               }`
                   : `person_null: false`
               }
-              ${
-                searchPersonFilter.unit !== null
-                  ? `division: "${searchPersonFilter.unit._id}"`
-                  : ``
-              }
-            }) {
+            }, start: ${parseInt(tableOption.rowsPerPage * tableOption.page)}) {
               _id
               position_type {
                 type
@@ -163,70 +169,38 @@ const PositionsPage = () => {
               division: thisPosition.division,
             },
           ]
-
-          // let position = {
-          //   _id: ``,
-          //   posName: ``,
-          //   posType: ``,
-          //   posNumber: ``,
-          // }
-
-          // if (thisPosition.person._id !== ``) {
-          // const resPerson = await client.query({
-          //   query: gql`
-          //     query Positions {
-          //       positions(where: {
-          //         person._id: "${thisPosition._id}"
-          //         number_contains: "${searchPersonFilter.posNumber}"
-          //       }) {
-          //         _id
-          //         position_type {
-          //           type
-          //           name
-          //         }
-          //         number
-          //         division {
-          //           _id
-          //           division1
-          //           division2
-          //           division3
-          //         }
-          //       }
-          //     }
-          //   `,
-          // })
-
-          // if (resPerson.data.positions.length > 0) {
-          //   position = {
-          //     _id: resPerson.data.positions[0]._id,
-          //     posName: resPerson.data.positions[0].position_type.name,
-          //     posType: resPerson.data.positions[0].position_type.type,
-          //     posNumber: resPerson.data.positions[0].number,
-          //   }
-
-          //   returnData = [
-          //     ...returnData,
-          //     {
-          //       _id: thisPerson._id,
-          //       Prename: thisPerson.Prename,
-          //       Name: thisPerson.Name,
-          //       Surname: thisPerson.Surname,
-          //       ID_Card: thisPerson.ID_Card,
-          //       SID_Card: thisPerson.SID_Card,
-          //       staff_created: thisPerson.staff_created,
-          //       staff_updated: thisPerson.staff_updated,
-          //       createdAt: thisPerson.createdAt,
-          //       updatedAt: thisPerson.updatedAt,
-          //       position: position,
-          //       division: resPerson.data.positions[0].division,
-          //     },
-          //   ]
-          // }
-          // }
         }
 
         if (returnData.length > 0) {
           setPeopleData(returnData)
+
+          const total = await client.query({
+            query: gql`
+              query PositionsCount {
+                positionsConnection(where: {
+                  ${role}
+                  number_contains: "${searchPersonFilter.posNumber}"
+                  ${
+                    filter !== ``
+                      ? `person: {
+                    ${filter}
+                  }`
+                      : `person_null: false`
+                  }
+                }) {
+                  aggregate {
+                    count
+                    totalCount
+                  }
+                }
+              }
+            `,
+          })
+
+          setTableOption(prev => ({
+            ...prev,
+            totalRows: total.data.positionsConnection.aggregate.count,
+          }))
         } else {
           setIsError({
             status: true,
@@ -252,7 +226,14 @@ const PositionsPage = () => {
       type: `SET_BACKDROP_OPEN`,
       backdropOpen: false,
     })
-  }, [url, userInfo, searchPersonFilter, dispatch])
+  }, [
+    url,
+    userInfo,
+    searchPersonFilter,
+    dispatch,
+    tableOption.page,
+    tableOption.rowsPerPage,
+  ])
 
   useEffect(() => {
     dispatch({
@@ -339,7 +320,11 @@ const PositionsPage = () => {
                           <TableCell align="left" sx={{ minWidth: 100 }}>
                             {row.position.posNumber}
                           </TableCell>
-                          <TableCell align="left">{`${row.Prename} ${row.Name} ${row.Surname}`}</TableCell>
+                          <TableCell align="left">
+                            <Link
+                              to={`/people/edit?id=${row._id}`}
+                            >{`${row.Prename} ${row.Name} ${row.Surname}`}</Link>
+                          </TableCell>
                           <TableCell align="left">
                             {row.position.posType}
                           </TableCell>
@@ -367,6 +352,32 @@ const PositionsPage = () => {
                     </TableBody>
                   </Table>
                 </TableContainer>
+                <TablePagination
+                  rowsPerPageOptions={[10, 25, 50, 100]}
+                  component="div"
+                  count={tableOption.totalRows}
+                  rowsPerPage={tableOption.rowsPerPage}
+                  labelRowsPerPage="แสดงแถวต่อหน้า:"
+                  labelDisplayedRows={({ from, to, count }) =>
+                    `${from}-${to} จาก ${
+                      count !== -1 ? count : `มากกว่า ${to}`
+                    }`
+                  }
+                  page={tableOption.page}
+                  onPageChange={(_, newPage) => {
+                    setTableOption(prev => ({
+                      ...prev,
+                      page: newPage,
+                    }))
+                  }}
+                  onRowsPerPageChange={event => {
+                    setTableOption(prev => ({
+                      ...prev,
+                      page: 0,
+                      rowsPerPage: parseInt(event.target.value, 10),
+                    }))
+                  }}
+                />
 
                 <Menu
                   sx={{
