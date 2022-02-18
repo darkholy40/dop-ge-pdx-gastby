@@ -1,10 +1,17 @@
 import React, { useEffect } from "react"
 import { useSelector, useDispatch } from "react-redux"
+import styled from "styled-components"
 
 import Layout from "../components/Layout"
 import Seo from "../components/Seo"
-import Breadcrumbs from "../components/Breadcrumbs"
 import Login from "../components/Login"
+
+const Container = styled.div`
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`
 
 const IndexPage = () => {
   const { token } = useSelector(state => state)
@@ -29,8 +36,9 @@ const IndexPage = () => {
         <>
           <Seo title="หน้าแรก" />
 
-          <Breadcrumbs current="หน้าแรก" />
-          <p>Verified</p>
+          <Container>
+            <p>ยินดีต้อนรับเข้าสู่ระบบพนักงานราชการและลูกจ้าง</p>
+          </Container>
         </>
       )}
     </Layout>

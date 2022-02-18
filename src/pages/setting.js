@@ -23,7 +23,7 @@ const AboutPage = () => {
   useEffect(() => {
     dispatch({
       type: `SET_CURRENT_PAGE`,
-      currentPage: `about`,
+      currentPage: `setting`,
     })
   }, [dispatch])
 
@@ -59,15 +59,15 @@ const AboutPage = () => {
     <Layout>
       {token !== `` ? (
         <>
-          <Seo title="เกี่ยวกับ" />
-          <Breadcrumbs current="เกี่ยวกับผู้ใช้งาน" />
+          <Seo title="ตั้งค่า" />
+          <Breadcrumbs current="ตั้งค่า" />
 
           <TableContainer component={Paper}>
-            <Table sx={{ minWidth: 300 }} aria-label="about table">
+            <Table sx={{ minWidth: 300 }} aria-label="setting table">
               {/* <TableHead>
                 <TableRow>
                   <TableCell colSpan={2} align="center">
-                    เกี่ยวกับ
+                    ตั้งค่า
                   </TableCell>
                 </TableRow>
               </TableHead> */}
