@@ -50,8 +50,8 @@ const PositionsPage = () => {
     <Layout>
       {token !== `` ? (
         <>
-          <Seo title="คลังตำแหน่ง" />
-          <Breadcrumbs current="คลังตำแหน่ง" />
+          <Seo title="จัดการคลังตำแหน่ง" />
+          <Breadcrumbs current="จัดการคลังตำแหน่ง" />
 
           <Oparator>
             <Button

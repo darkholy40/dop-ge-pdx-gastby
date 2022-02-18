@@ -242,8 +242,8 @@ const PositionsPage = () => {
     })
 
     dispatch({
-      type: `SET_FROM_PAGE`,
-      fromPage: `/people/list`,
+      type: `SET_REDIRECT_PAGE`,
+      redirectPage: `/people/list`,
     })
   }, [dispatch])
 

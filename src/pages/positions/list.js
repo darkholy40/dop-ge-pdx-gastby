@@ -234,8 +234,8 @@ const PositionsPage = () => {
     })
 
     dispatch({
-      type: `SET_FROM_PAGE`,
-      fromPage: `/positions/list`,
+      type: `SET_REDIRECT_PAGE`,
+      redirectPage: `/positions/list`,
     })
   }, [dispatch])
 
@@ -253,7 +253,7 @@ const PositionsPage = () => {
           <Breadcrumbs
             previous={[
               {
-                name: `คลังตำแหน่ง`,
+                name: `จัดการคลังตำแหน่ง`,
                 link: `/positions`,
               },
             ]}

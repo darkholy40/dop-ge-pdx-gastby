@@ -91,7 +91,7 @@ const datePickerProps = {
 }
 
 const AddPositionsPage = ({ location }) => {
-  const { token, userInfo, url, positionTypes, positionNames, fromPage } =
+  const { token, userInfo, url, positionTypes, positionNames, redirectPage } =
     useSelector(state => state)
   const dispatch = useDispatch()
   const [positions, setPositions] = useState([])
@@ -643,7 +643,7 @@ const AddPositionsPage = ({ location }) => {
             variant: `success`,
             confirmText: `ตกลง`,
             callback: () => {
-              navigate(fromPage)
+              navigate(redirectPage)
             },
           },
         })
@@ -780,11 +780,11 @@ const AddPositionsPage = ({ location }) => {
         isError.type !== `notFound` ? (
           <>
             <Seo title="เพิ่มกำลังพล" />
-            {fromPage === `/positions/list` ? (
+            {redirectPage === `/positions/list` ? (
               <Breadcrumbs
                 previous={[
                   {
-                    name: `คลังตำแหน่ง`,
+                    name: `จัดการคลังตำแหน่ง`,
                     link: `/positions`,
                   },
                   {

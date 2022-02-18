@@ -196,7 +196,7 @@ const AddPositionsPage = () => {
           <Breadcrumbs
             previous={[
               {
-                name: `คลังตำแหน่ง`,
+                name: `จัดการคลังตำแหน่ง`,
                 link: `/positions`,
               },
             ]}

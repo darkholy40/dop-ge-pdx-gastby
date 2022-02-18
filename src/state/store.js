@@ -57,7 +57,7 @@ const initialState = {
     confirmText: ``,
     callback: () => {},
   },
-  fromPage: ``,
+  redirectPage: ``,
 }
 
 const reducer = (state = initialState, action) => {
@@ -128,10 +128,10 @@ const reducer = (state = initialState, action) => {
         units: action.units,
       }
 
-    case `SET_FROM_PAGE`:
+    case `SET_REDIRECT_PAGE`:
       return {
         ...state,
-        fromPage: action.fromPage,
+        redirectPage: action.redirectPage,
       }
 
     default:

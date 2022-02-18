@@ -298,7 +298,7 @@ const EditPositionsPage = ({ location }) => {
             <Breadcrumbs
               previous={[
                 {
-                  name: `คลังตำแหน่ง`,
+                  name: `จัดการคลังตำแหน่ง`,
                   link: `/positions`,
                 },
                 {
