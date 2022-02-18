@@ -286,6 +286,7 @@ const AddPositionsPage = ({ location }) => {
       cache: new InMemoryCache(),
     })
     let role = ``
+    let lap = 0
 
     if (userInfo.role.name !== `Administrator`) {
       role = `division: "${userInfo.division._id}"`
@@ -294,68 +295,30 @@ const AddPositionsPage = ({ location }) => {
     try {
       const res = await client.query({
         query: gql`
-          query Positions {
-            positions(where: {
+          query PositionsCount {
+            positionsConnection(where: {
               _or: [
                 {
-                  person: "${id}"
+                  isOpen: true
+                  person_null: true
+                  ${role}
                 },
                 {
-                  person_null: true
-                },
+                  person: "${id}"   
+                }
               ]
-              isOpen: true
-              ${role}
-              position_type: {
-                ${
-                  positionTypeSelect !== ``
-                    ? `type_contains: "${positionTypeSelect}"`
-                    : ``
-                }
-                ${
-                  positionNameSelect !== ``
-                    ? `name_contains: "${positionNameSelect}"`
-                    : ``
-                }
-              }
             }) {
-              _id
-              person {
-                _id
-              }
-              number
-              position_type {
-                type
-                name
-                order
-              }
-              isOpen
-              isSouth
-              staff_created
-              staff_updated
-              published_at
-              createdAt
-              updatedAt
-              division {
-                _id
-                division1
-                division2
-                division3
+              aggregate {
+                count
+                totalCount
               }
             }
           }
         `,
       })
 
-      if (res.data.positions.length > 0) {
-        setPositions(res.data.positions)
-      } else {
-        setPositions([])
-        setIsError({
-          status: `notfound`,
-          text: `ไม่พบข้อมูล`,
-        })
-      }
+      const totalCount = res.data.positionsConnection.aggregate.count
+      lap = Math.ceil(totalCount / 100)
     } catch {
       dispatch({
         type: `SET_NOTIFICATION_DIALOG`,
@@ -370,6 +333,87 @@ const AddPositionsPage = ({ location }) => {
           },
         },
       })
+    }
+
+    if (lap > 0) {
+      let returnData = []
+      for (let i = 0; i < lap; i++) {
+        const res = await client.query({
+          query: gql`
+            query Positions {
+              positions(where: {
+                _or: [
+                  {
+                    isOpen: true
+                    person_null: true
+                    ${role}
+                  },
+                  {
+                    person: "${id}"   
+                  }
+                ]
+              }, limit: 100, start: ${i * 100}) {
+                _id
+                number
+                position_type {
+                  type
+                  name
+                  order
+                }
+                isOpen
+                isSouth
+                staff_created
+                staff_updated
+                published_at
+                createdAt
+                updatedAt
+                division {
+                  _id
+                  division1
+                  division2
+                  division3
+                }
+              }
+            }
+          `,
+        })
+
+        for (let position of res.data.positions) {
+          returnData = [...returnData, position]
+        }
+
+        if (returnData.length > 0) {
+          let returnPosition = returnData
+
+          if (positionTypeSelect !== ``) {
+            returnPosition = returnData.filter(
+              elem => elem.position_type.type === positionTypeSelect
+            )
+          }
+
+          if (positionNameSelect !== ``) {
+            returnPosition = returnData.filter(
+              elem =>
+                elem.position_type.type === positionTypeSelect &&
+                elem.position_type.name === positionNameSelect
+            )
+          }
+
+          setPositions(returnPosition)
+          if (returnPosition.length === 0) {
+            setIsError({
+              status: `notfound`,
+              text: `ไม่พบข้อมูล`,
+            })
+          }
+        } else {
+          setPositions([])
+          setIsError({
+            status: `notfound`,
+            text: `ไม่พบข้อมูล`,
+          })
+        }
+      }
     }
   }, [url, userInfo, positionTypeSelect, positionNameSelect, dispatch, id])
 
@@ -902,6 +946,7 @@ const AddPositionsPage = ({ location }) => {
                             if (newValue !== null) {
                               setPositionTypeSelect(newValue.type)
                               setPositionNameSelect(``)
+                              setPositionInput(null)
                             } else {
                               setPositionTypeSelect(``)
                               setPositionNameSelect(``)
@@ -963,6 +1008,7 @@ const AddPositionsPage = ({ location }) => {
                             if (newValue !== null) {
                               setPositionTypeSelect(newValue.type)
                               setPositionNameSelect(newValue.name)
+                              setPositionInput(null)
                             } else {
                               setPositionNameSelect(``)
                               setPositionInput(null)
