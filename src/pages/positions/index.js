@@ -48,7 +48,7 @@ const PositionsPage = () => {
 
   return (
     <Layout>
-      {token !== "" ? (
+      {token !== `` ? (
         <>
           <Seo title="คลังตำแหน่ง" />
           <Breadcrumbs current="คลังตำแหน่ง" />

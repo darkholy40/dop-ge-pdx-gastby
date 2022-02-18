@@ -471,12 +471,14 @@ const AddPositionsPage = () => {
   }, [dispatch])
 
   useEffect(() => {
-    getPositions()
-  }, [getPositions])
+    if (token !== ``) {
+      getPositions()
+    }
+  }, [getPositions, token])
 
   return (
     <Layout>
-      {token !== "" ? (
+      {token !== `` ? (
         <>
           <Seo title="เพิ่มกำลังพล" />
           <Breadcrumbs
@@ -1242,7 +1244,7 @@ const AddPositionsPage = () => {
             </Grid>
 
             <Grid container spacing={2} sx={{ marginBottom: `1rem` }}>
-              <Grid item xs={12} sm={6}>
+              <Grid item xs={12}>
                 <Button
                   fullWidth
                   color="primary"
@@ -1280,7 +1282,7 @@ const AddPositionsPage = () => {
                   เพิ่มรายการ
                 </Button>
               </Grid>
-              <Grid item xs={12} sm={6}>
+              <Grid item xs={12}>
                 <Button
                   fullWidth
                   color="error"

@@ -13,6 +13,7 @@ import {
   Menu,
   MenuItem,
   Button,
+  TablePagination,
 } from "@mui/material"
 import { ApolloClient, InMemoryCache, gql } from "@apollo/client"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
@@ -41,6 +42,11 @@ const PositionsPage = () => {
   })
   const [anchorEl, setAnchorEl] = useState(null)
   const [currentRow, setCurrentRow] = useState({})
+  const [tableOption, setTableOption] = useState({
+    totalRows: 0,
+    page: 0,
+    rowsPerPage: 10,
+  })
 
   const getPosition = useCallback(async () => {
     const client = new ApolloClient({
@@ -83,7 +89,9 @@ const PositionsPage = () => {
       const res = await client.query({
         query: gql`
           query Position {
-            positions(${whereCondition}) {
+            positions(${whereCondition}, limit: ${
+          tableOption.rowsPerPage
+        }, start: ${parseInt(tableOption.rowsPerPage * tableOption.page)}) {
               _id
               number
               position_type {
@@ -115,6 +123,7 @@ const PositionsPage = () => {
       console.log(res)
 
       if (res.data.positions.length > 0) {
+        let lap = 0
         for (let thisPos of res.data.positions) {
           let person = {
             prename: `-`,
@@ -146,6 +155,8 @@ const PositionsPage = () => {
             ...returnData,
             {
               _id: thisPos._id,
+              orderNumber:
+                lap + 1 + parseInt(tableOption.rowsPerPage * tableOption.page),
               position: {
                 type: thisPos.position_type.type,
                 name: thisPos.position_type.name,
@@ -162,10 +173,30 @@ const PositionsPage = () => {
               person: person,
             },
           ]
+
+          lap++
         }
 
         // console.log(returnData)
         setPosData(returnData)
+
+        const total = await client.query({
+          query: gql`
+            query PositionsCount {
+              positionsConnection(${whereCondition}) {
+                aggregate {
+                  count
+                  totalCount
+                }
+              }
+            }
+          `,
+        })
+
+        setTableOption(prev => ({
+          ...prev,
+          totalRows: total.data.positionsConnection.aggregate.count,
+        }))
       } else {
         setIsError({
           status: true,
@@ -185,7 +216,14 @@ const PositionsPage = () => {
       type: `SET_BACKDROP_OPEN`,
       backdropOpen: false,
     })
-  }, [url, userInfo, searchPositionFilter, dispatch])
+  }, [
+    url,
+    userInfo,
+    searchPositionFilter,
+    dispatch,
+    tableOption.page,
+    tableOption.rowsPerPage,
+  ])
 
   useEffect(() => {
     dispatch({
@@ -279,7 +317,7 @@ const PositionsPage = () => {
                           }}
                         >
                           <TableCell component="th" scope="row" align="center">
-                            {rowIndex + 1}
+                            {row.orderNumber}
                           </TableCell>
                           <TableCell align="left" sx={{ minWidth: 100 }}>
                             {row.position.name}
@@ -334,6 +372,32 @@ const PositionsPage = () => {
                     </TableBody>
                   </Table>
                 </TableContainer>
+                <TablePagination
+                  rowsPerPageOptions={[10, 25, 50, 100]}
+                  component="div"
+                  count={tableOption.totalRows}
+                  rowsPerPage={tableOption.rowsPerPage}
+                  labelRowsPerPage="แสดงแถวต่อหน้า:"
+                  labelDisplayedRows={({ from, to, count }) =>
+                    `${from}-${to} จาก ${
+                      count !== -1 ? count : `มากกว่า ${to}`
+                    }`
+                  }
+                  page={tableOption.page}
+                  onPageChange={(_, newPage) => {
+                    setTableOption(prev => ({
+                      ...prev,
+                      page: newPage,
+                    }))
+                  }}
+                  onRowsPerPageChange={event => {
+                    setTableOption(prev => ({
+                      ...prev,
+                      page: 0,
+                      rowsPerPage: parseInt(event.target.value, 10),
+                    }))
+                  }}
+                />
 
                 <Menu
                   sx={{

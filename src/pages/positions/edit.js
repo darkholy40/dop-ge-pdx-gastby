@@ -280,13 +280,17 @@ const EditPositionsPage = ({ location }) => {
       type: `SET_CURRENT_PAGE`,
       currentPage: `positions`,
     })
+  }, [dispatch])
 
-    getPosition()
-  }, [dispatch, getPosition])
+  useEffect(() => {
+    if (token !== ``) {
+      getPosition()
+    }
+  }, [getPosition, token])
 
   return (
     <Layout>
-      {token !== "" ? (
+      {token !== `` ? (
         isError.type !== `notFound` ? (
           <>
             <Seo title="แก้ไขคลังตำแหน่ง" />

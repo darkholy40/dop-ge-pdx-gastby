@@ -190,7 +190,7 @@ const AddPositionsPage = () => {
 
   return (
     <Layout>
-      {token !== "" ? (
+      {token !== `` ? (
         <>
           <Seo title="เพิ่มคลังตำแหน่ง" />
           <Breadcrumbs

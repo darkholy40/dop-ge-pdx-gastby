@@ -723,16 +723,20 @@ const AddPositionsPage = ({ location }) => {
   }, [dispatch])
 
   useEffect(() => {
-    getPerson()
-  }, [getPerson])
+    if (token !== ``) {
+      getPerson()
+    }
+  }, [getPerson, token])
 
   useEffect(() => {
-    getPositions()
-  }, [getPositions])
+    if (token !== ``) {
+      getPositions()
+    }
+  }, [getPositions, token])
 
   return (
     <Layout>
-      {token !== "" ? (
+      {token !== `` ? (
         isError.type !== `notFound` ? (
           <>
             <Seo title="เพิ่มกำลังพล" />
@@ -1529,7 +1533,7 @@ const AddPositionsPage = ({ location }) => {
                   </Grid>
 
                   <Grid container spacing={2} sx={{ marginBottom: `1rem` }}>
-                    <Grid item xs={12} sm={6}>
+                    <Grid item xs={12}>
                       <Button
                         fullWidth
                         color="primary"
@@ -1570,7 +1574,7 @@ const AddPositionsPage = ({ location }) => {
                         บันทึก
                       </Button>
                     </Grid>
-                    <Grid item xs={12} sm={6}>
+                    <Grid item xs={12}>
                       <Button
                         fullWidth
                         color="error"

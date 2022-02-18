@@ -104,12 +104,14 @@ const PositionsPage = () => {
   }, [dispatch])
 
   useEffect(() => {
-    getPositions()
-  }, [getPositions])
+    if (token !== ``) {
+      getPositions()
+    }
+  }, [getPositions, token])
 
   return (
     <Layout>
-      {token !== "" ? (
+      {token !== `` ? (
         <>
           <Seo title="จัดการประวัติกำลังพล" />
           <Breadcrumbs current="จัดการประวัติกำลังพล" />
