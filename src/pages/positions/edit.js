@@ -182,8 +182,8 @@ const EditPositionsPage = ({ location }) => {
           type: `SET_NOTIFICATION_DIALOG`,
           notificationDialog: {
             open: true,
-            title: `เพิ่มรายการไม่สำเร็จ`,
-            description: `ไม่สามารถเพิ่มรายการคลังตำแหน่งได้`,
+            title: `การเชื่อมต่อไม่เสถียร`,
+            description: `ไม่สามารถตรวจสอบเลขที่ตำแหน่งได้`,
             variant: `error`,
             confirmText: `ตกลง`,
             callback: () => {},
@@ -240,16 +240,17 @@ const EditPositionsPage = ({ location }) => {
         })
         // console.log(res)
 
-        navigate(`/positions/list`)
         dispatch({
           type: `SET_NOTIFICATION_DIALOG`,
           notificationDialog: {
             open: true,
-            title: `แก้ไขรายการสำเร็จ`,
-            description: `บันทึกรายการคลังตำแหน่งสำเร็จ`,
+            title: `บันทึกรายการสำเร็จ`,
+            description: `แก้ไขรายการคลังตำแหน่งสำเร็จ`,
             variant: `success`,
             confirmText: `ตกลง`,
-            callback: () => {},
+            callback: () => {
+              navigate(`/positions/list`)
+            },
           },
         })
       } catch (error) {
@@ -259,8 +260,8 @@ const EditPositionsPage = ({ location }) => {
           type: `SET_NOTIFICATION_DIALOG`,
           notificationDialog: {
             open: true,
-            title: `แก้ไขรายการไม่สำเร็จ`,
-            description: `ไม่สามารถบันทึกรายการคลังตำแหน่งได้`,
+            title: `บันทึกรายการไม่สำเร็จ`,
+            description: `ไม่สามารถแก้ไขรายการคลังตำแหน่งได้`,
             variant: `error`,
             confirmText: `ตกลง`,
             callback: () => {},
@@ -301,16 +302,21 @@ const EditPositionsPage = ({ location }) => {
                   link: `/positions`,
                 },
                 {
-                  name: `ค้นหา`,
+                  name: `ค้นหาคลังตำแหน่ง`,
                   link: `/positions/list`,
                 },
               ]}
-              current="แก้ไข"
+              current="แก้ไขคลังตำแหน่ง"
             />
 
             {count > 0 && (
               <>
-                <Form>
+                <Form
+                  onSubmit={e => {
+                    e.preventDefault()
+                    goEdit()
+                  }}
+                >
                   <Flex style={{ marginBottom: `1rem` }}>
                     <Autocomplete
                       sx={{ width: `100%` }}
@@ -534,7 +540,7 @@ const EditPositionsPage = ({ location }) => {
                   <Button
                     color="primary"
                     variant="contained"
-                    onClick={() => goEdit()}
+                    type="submit"
                     disabled={
                       addPositionFilter.posName === `` ||
                       addPositionFilter.posType === `` ||

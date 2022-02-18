@@ -200,10 +200,15 @@ const AddPositionsPage = () => {
                 link: `/positions`,
               },
             ]}
-            current="เพิ่ม"
+            current="เพิ่มคลังตำแหน่ง"
           />
 
-          <Form>
+          <Form
+            onSubmit={e => {
+              e.preventDefault()
+              goAdd()
+            }}
+          >
             <Flex style={{ marginBottom: `1rem` }}>
               <Autocomplete
                 sx={{ width: `100%` }}
@@ -427,7 +432,7 @@ const AddPositionsPage = () => {
             <Button
               color="primary"
               variant="contained"
-              onClick={() => goAdd()}
+              type="submit"
               disabled={
                 userInfo.role.name === `Administrator`
                   ? addPositionFilter.posName === `` ||

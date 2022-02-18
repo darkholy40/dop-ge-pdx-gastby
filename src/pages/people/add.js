@@ -458,11 +458,6 @@ const AddPositionsPage = () => {
     )
   }
 
-  const handleSubmit = e => {
-    console.log(`Go Adding`)
-    goAdd()
-  }
-
   const clearInput = () => {
     setPrename(``)
     setName(``)
@@ -528,13 +523,13 @@ const AddPositionsPage = () => {
                 link: `/people`,
               },
             ]}
-            current="เพิ่ม"
+            current="เพิ่มกำลังพล"
           />
 
           <Form
             onSubmit={e => {
               e.preventDefault()
-              handleSubmit()
+              goAdd()
             }}
           >
             <Grid container spacing={2} sx={{ marginBottom: `1rem` }}>

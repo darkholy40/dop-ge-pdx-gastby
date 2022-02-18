@@ -1,5 +1,5 @@
 import React, { useEffect, useCallback, useState } from "react"
-import { navigate, Link } from "gatsby"
+import { navigate } from "gatsby"
 import { useSelector, useDispatch } from "react-redux"
 import {
   Table,
@@ -240,6 +240,11 @@ const PositionsPage = () => {
       type: `SET_CURRENT_PAGE`,
       currentPage: `people`,
     })
+
+    dispatch({
+      type: `SET_FROM_PAGE`,
+      fromPage: `/people/list`,
+    })
   }, [dispatch])
 
   useEffect(() => {
@@ -252,7 +257,7 @@ const PositionsPage = () => {
     <Layout>
       {token !== `` ? (
         <>
-          <Seo title="ค้นหาคลังตำแหน่ง" />
+          <Seo title="ค้นหากำลังพล" />
           <Breadcrumbs
             previous={[
               {
@@ -260,7 +265,7 @@ const PositionsPage = () => {
                 link: `/people`,
               },
             ]}
-            current="ค้นหา"
+            current="ค้นหากำลังพล"
           />
 
           {!isError.status ? (
@@ -321,9 +326,7 @@ const PositionsPage = () => {
                             {row.position.posNumber}
                           </TableCell>
                           <TableCell align="left">
-                            <Link
-                              to={`/people/edit?id=${row._id}`}
-                            >{`${row.Prename} ${row.Name} ${row.Surname}`}</Link>
+                            {`${row.Prename} ${row.Name} ${row.Surname}`}
                           </TableCell>
                           <TableCell align="left">
                             {row.position.posType}
@@ -408,7 +411,7 @@ const PositionsPage = () => {
                     disableRipple
                   >
                     <FontAwesomeIcon icon={faPen} style={{ marginRight: 5 }} />
-                    แก้ไขกำลังพล
+                    แก้ไขประวัติกำลังพล
                   </MenuItem>
                 </Menu>
               </>
@@ -417,6 +420,7 @@ const PositionsPage = () => {
             <>
               <Warning
                 text={isError.text}
+                variant={isError.text === `ไม่พบข้อมูล` ? `notfound` : ``}
                 button={
                   <Button
                     color="primary"
@@ -427,7 +431,7 @@ const PositionsPage = () => {
                       icon={faChevronLeft}
                       style={{ marginRight: 5 }}
                     />
-                    <span>กลับไปหน้าคลังตำแหน่ง</span>
+                    <span>กลับไปหน้าประวัติกำลังพล</span>
                   </Button>
                 }
               />

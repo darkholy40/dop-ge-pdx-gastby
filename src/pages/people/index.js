@@ -49,6 +49,11 @@ const PositionsPage = () => {
       role = `division: "${userInfo.division._id}"`
     }
 
+    dispatch({
+      type: `SET_BACKDROP_OPEN`,
+      backdropOpen: true,
+    })
+
     try {
       const res = await client.query({
         query: gql`
@@ -94,6 +99,11 @@ const PositionsPage = () => {
         },
       })
     }
+
+    dispatch({
+      type: `SET_BACKDROP_OPEN`,
+      backdropOpen: false,
+    })
   }, [url, userInfo, dispatch])
 
   useEffect(() => {

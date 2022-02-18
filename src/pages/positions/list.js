@@ -232,6 +232,11 @@ const PositionsPage = () => {
       type: `SET_CURRENT_PAGE`,
       currentPage: `positions`,
     })
+
+    dispatch({
+      type: `SET_FROM_PAGE`,
+      fromPage: `/positions/list`,
+    })
   }, [dispatch])
 
   useEffect(() => {
@@ -252,7 +257,7 @@ const PositionsPage = () => {
                 link: `/positions`,
               },
             ]}
-            current="ค้นหา"
+            current="ค้นหาคลังตำแหน่ง"
           />
 
           {!isError.status ? (
@@ -438,7 +443,7 @@ const PositionsPage = () => {
                     disableRipple
                   >
                     <FontAwesomeIcon icon={faPen} style={{ marginRight: 5 }} />
-                    แก้ไขตำแหน่ง
+                    แก้ไขคลังตำแหน่ง
                   </MenuItem>
                 </Menu>
               </>
@@ -447,6 +452,7 @@ const PositionsPage = () => {
             <>
               <Warning
                 text={isError.text}
+                variant={isError.text === `ไม่พบข้อมูล` ? `notfound` : ``}
                 button={
                   <Button
                     color="primary"

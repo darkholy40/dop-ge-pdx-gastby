@@ -91,9 +91,8 @@ const datePickerProps = {
 }
 
 const AddPositionsPage = ({ location }) => {
-  const { token, userInfo, url, positionTypes, positionNames } = useSelector(
-    state => state
-  )
+  const { token, userInfo, url, positionTypes, positionNames, fromPage } =
+    useSelector(state => state)
   const dispatch = useDispatch()
   const [positions, setPositions] = useState([])
   const [isError, setIsError] = useState({
@@ -500,7 +499,7 @@ const AddPositionsPage = ({ location }) => {
         type: `SET_NOTIFICATION_DIALOG`,
         notificationDialog: {
           open: true,
-          title: `เพิ่มรายการไม่สำเร็จ`,
+          title: `บันทึกรายการไม่สำเร็จ`,
           description: `[Error001] - ไม่สามารถแก้ไขรายการกำลังพลได้`,
           variant: `error`,
           confirmText: `ลองอีกครั้ง`,
@@ -621,7 +620,7 @@ const AddPositionsPage = ({ location }) => {
             type: `SET_NOTIFICATION_DIALOG`,
             notificationDialog: {
               open: true,
-              title: `เพิ่มรายการไม่สำเร็จ`,
+              title: `บันทึกรายการไม่สำเร็จ`,
               description: `[Error004] - ไม่สามารถแก้ไขรายการกำลังพลได้`,
               variant: `error`,
               confirmText: `ลองอีกครั้ง`,
@@ -635,7 +634,6 @@ const AddPositionsPage = ({ location }) => {
       }
 
       if (check.pass1 && check.pass2) {
-        navigate(`/people/list`)
         dispatch({
           type: `SET_NOTIFICATION_DIALOG`,
           notificationDialog: {
@@ -644,7 +642,9 @@ const AddPositionsPage = ({ location }) => {
             description: `แก้ไขรายการกำลังพลสำเร็จ`,
             variant: `success`,
             confirmText: `ตกลง`,
-            callback: () => {},
+            callback: () => {
+              navigate(fromPage)
+            },
           },
         })
       }
@@ -673,10 +673,6 @@ const AddPositionsPage = ({ location }) => {
         />
       </InputAdornment>
     )
-  }
-
-  const handleSubmit = () => {
-    goEdit()
   }
 
   const setInput = data => {
@@ -784,26 +780,42 @@ const AddPositionsPage = ({ location }) => {
         isError.type !== `notFound` ? (
           <>
             <Seo title="เพิ่มกำลังพล" />
-            <Breadcrumbs
-              previous={[
-                {
-                  name: `จัดการประวัติกำลังพล`,
-                  link: `/people`,
-                },
-                {
-                  name: `ค้นหา`,
-                  link: `/people/list`,
-                },
-              ]}
-              current="แก้ไข"
-            />
+            {fromPage === `/positions/list` ? (
+              <Breadcrumbs
+                previous={[
+                  {
+                    name: `คลังตำแหน่ง`,
+                    link: `/positions`,
+                  },
+                  {
+                    name: `ค้นหาคลังตำแหน่ง`,
+                    link: `/positions/list`,
+                  },
+                ]}
+                current="แก้ไขประวัติกำลังพล"
+              />
+            ) : (
+              <Breadcrumbs
+                previous={[
+                  {
+                    name: `จัดการประวัติกำลังพล`,
+                    link: `/people`,
+                  },
+                  {
+                    name: `ค้นหากำลังพล`,
+                    link: `/people/list`,
+                  },
+                ]}
+                current="แก้ไขประวัติกำลังพล"
+              />
+            )}
 
             {firstStrike && (
               <>
                 <Form
                   onSubmit={e => {
                     e.preventDefault()
-                    handleSubmit()
+                    goEdit()
                   }}
                 >
                   <Grid container spacing={2} sx={{ marginBottom: `1rem` }}>

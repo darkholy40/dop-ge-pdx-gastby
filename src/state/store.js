@@ -57,6 +57,7 @@ const initialState = {
     confirmText: ``,
     callback: () => {},
   },
+  fromPage: ``,
 }
 
 const reducer = (state = initialState, action) => {
@@ -125,6 +126,12 @@ const reducer = (state = initialState, action) => {
       return {
         ...state,
         units: action.units,
+      }
+
+    case `SET_FROM_PAGE`:
+      return {
+        ...state,
+        fromPage: action.fromPage,
       }
 
     default:
