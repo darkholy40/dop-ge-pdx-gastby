@@ -1,19 +1,38 @@
 import React, { useEffect, useState } from "react"
 import { useSelector, useDispatch } from "react-redux"
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  // TableHead,
-  TableRow,
-  Paper,
-} from "@mui/material"
+import styled from "styled-components"
 
 import Layout from "../components/Layout"
 import Seo from "../components/Seo"
 import Breadcrumbs from "../components/Breadcrumbs"
 import PageNotFound from "../components/PageNotFound"
+import renderDivision from "../functions/renderDivision"
+
+const Container = styled.div`
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  border-radius: 8px;
+  padding: 16px 24px;
+  width: 100%;
+  max-width: 800px;
+  margin: auto;
+`
+
+const Flex = styled.div`
+  display: flex;
+  width: 100%;
+  margin-bottom: 1.25rem;
+`
+
+const Left = styled.div`
+  width: 45%;
+  text-align: right;
+`
+
+const Right = styled.div`
+  width: 55%;
+  margin-left: 1.5rem;
+  word-break: break-word;
+`
 
 const AboutPage = () => {
   const { token, userInfo } = useSelector(state => state)
@@ -44,6 +63,11 @@ const AboutPage = () => {
         desc: userInfo.username,
       },
       {
+        title: `สังกัด`,
+        desc:
+          userInfo.division !== null ? renderDivision(userInfo.division) : `-`,
+      },
+      {
         title: `Role`,
         desc: userInfo.role.name,
       },
@@ -62,36 +86,14 @@ const AboutPage = () => {
           <Seo title="ตั้งค่า" />
           <Breadcrumbs current="ตั้งค่า" />
 
-          <TableContainer component={Paper}>
-            <Table sx={{ minWidth: 300 }} aria-label="setting table">
-              {/* <TableHead>
-                <TableRow>
-                  <TableCell colSpan={2} align="center">
-                    ตั้งค่า
-                  </TableCell>
-                </TableRow>
-              </TableHead> */}
-              <TableBody>
-                {rows.map(row => (
-                  <TableRow
-                    key={row.title}
-                    sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-                  >
-                    <TableCell
-                      component="th"
-                      scope="row"
-                      sx={{ minWidth: 100 }}
-                    >
-                      {row.title}
-                    </TableCell>
-                    <TableCell align="left" sx={{ wordBreak: `break-word` }}>
-                      {row.desc}
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
+          <Container>
+            {rows.map(row => (
+              <Flex key={row.title}>
+                <Left>{row.title}</Left>
+                <Right>{row.desc}</Right>
+              </Flex>
+            ))}
+          </Container>
         </>
       ) : (
         <>
