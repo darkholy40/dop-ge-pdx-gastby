@@ -778,7 +778,7 @@ const AddPositionsPage = ({ location }) => {
       {token !== `` ? (
         isError.type !== `notFound` ? (
           <>
-            <Seo title="เพิ่มกำลังพล" />
+            <Seo title="แก้ไขประวัติกำลังพล" />
             {redirectPage === `/positions/list` ? (
               <Breadcrumbs
                 previous={[

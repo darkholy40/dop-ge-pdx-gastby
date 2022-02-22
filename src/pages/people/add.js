@@ -514,7 +514,7 @@ const AddPositionsPage = () => {
     <Layout>
       {token !== `` ? (
         <>
-          <Seo title="เพิ่มกำลังพล" />
+          <Seo title="เพิ่มประวัติกำลังพล" />
           <Breadcrumbs
             previous={[
               {
@@ -522,7 +522,7 @@ const AddPositionsPage = () => {
                 link: `/people`,
               },
             ]}
-            current="เพิ่มกำลังพล"
+            current="เพิ่มประวัติกำลังพล"
           />
 
           <Form

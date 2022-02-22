@@ -47,9 +47,9 @@ const ColorButton = styled.div`
     user-select: none;
 
     > div {
-      height: 50px;
+      height: ${({ height }) => (height !== undefined ? height : `50px`)};;
       margin: 8px;
-      padding: 4px;
+      padding: 6px 12px;
       border: 1px solid rgba(0, 0, 0, 0.24);
       border-radius: 8px;
       cursor: pointer;

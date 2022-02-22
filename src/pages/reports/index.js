@@ -35,7 +35,7 @@ const IndexPage = () => {
           <Breadcrumbs current="ออกรายงาน" />
 
           <Container>
-            <ColorButton primaryColor={primaryColor} width="800px">
+            <ColorButton primaryColor={primaryColor} width="800px" height="75px">
               <div className="row">
                 <div
                   role="presentation"
@@ -45,7 +45,7 @@ const IndexPage = () => {
                 </div>
               </div>
             </ColorButton>
-            <ColorButton primaryColor={primaryColor} width="800px">
+            <ColorButton primaryColor={primaryColor} width="800px" height="75px">
               <div className="row">
                 <div
                   role="presentation"
