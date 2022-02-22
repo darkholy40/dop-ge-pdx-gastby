@@ -19,6 +19,8 @@ import {
 } from "@fortawesome/free-solid-svg-icons"
 import styled from "styled-components"
 
+import { ColorButton } from "./Styles"
+
 const Flex = styled.div`
   display: flex;
   flex-direction: row;
@@ -48,41 +50,6 @@ const Flex = styled.div`
   }
 `
 
-const FlexMobile = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-start;
-  width: 300px;
-
-  .row {
-    width: 100%;
-    user-select: none;
-
-    > div {
-      height: 50px;
-      margin: 8px;
-      padding: 4px;
-      border: 1px solid rgba(0, 0, 0, 0.24);
-      border-radius: 8px;
-
-      display: flex;
-      align-items: center;
-      justify-content: center;
-
-      &:active {
-        background-color: ${({ primaryColor }) => primaryColor[900]};
-        color: ${({ primaryColor }) => primaryColor[100]};
-      }
-
-      &.active {
-        background-color: ${({ primaryColor }) => primaryColor[800]};
-        color: ${({ primaryColor }) => primaryColor[100]};
-      }
-    }
-  }
-`
-
 const Navbar = () => {
   const dispatch = useDispatch()
   const { currentPage, token, userInfo, primaryColor } = useSelector(
@@ -101,6 +68,25 @@ const Navbar = () => {
   )
   const [anchorElMenu, setAnchorElMenu] = useState(null)
   const [anchorElMyInfo, setAnchorElMyInfo] = useState(null)
+
+  const pages = [
+    {
+      name: `home`,
+      desc: site.siteMetadata.title,
+    },
+    {
+      name: `positions`,
+      desc: `คลังตำแหน่ง`,
+    },
+    {
+      name: `people`,
+      desc: `ประวัติกำลังพล`,
+    },
+    {
+      name: `reports`,
+      desc: `ออกรายงาน`,
+    },
+  ]
 
   const changePage = getPage => {
     if (getPage !== currentPage) {
@@ -158,40 +144,27 @@ const Navbar = () => {
                 horizontal: "left",
               }}
             >
-              <FlexMobile primaryColor={primaryColor}>
+              <ColorButton primaryColor={primaryColor}>
                 <div className="row">
-                  <div
-                    role="presentation"
-                    className={currentPage === `home` ? `active` : ``}
-                    onClick={() => {
-                      changePage(`home`)
-                      setAnchorElMenu(null)
-                    }}
-                  >
-                    {site.siteMetadata.title}
-                  </div>
-                  <div
-                    role="presentation"
-                    className={currentPage === `positions` ? `active` : ``}
-                    onClick={() => {
-                      changePage(`positions`)
-                      setAnchorElMenu(null)
-                    }}
-                  >
-                    คลังตำแหน่ง
-                  </div>
-                  <div
-                    role="presentation"
-                    className={currentPage === `people` ? `active` : ``}
-                    onClick={() => {
-                      changePage(`people`)
-                      setAnchorElMenu(null)
-                    }}
-                  >
-                    ประวัติกำลังพล
-                  </div>
+                  {pages.map((page, pageIndex) => {
+                    return (
+                      <div
+                        key={`page_m_${pageIndex}`}
+                        role="presentation"
+                        className={
+                          currentPage === `${page.name}` ? `active` : ``
+                        }
+                        onClick={() => {
+                          changePage(`${page.name}`)
+                          setAnchorElMenu(null)
+                        }}
+                      >
+                        {page.desc}
+                      </div>
+                    )
+                  })}
                 </div>
-              </FlexMobile>
+              </ColorButton>
             </Menu>
           </>
         )}
@@ -200,27 +173,25 @@ const Navbar = () => {
           <Flex primaryColor={primaryColor}>
             <div
               role="presentation"
-              className={currentPage === `home` ? `active` : ``}
-              onClick={() => changePage(`home`)}
+              className={currentPage === `${pages[0].name}` ? `active` : ``}
+              onClick={() => changePage(`${pages[0].name}`)}
             >
-              {site.siteMetadata.title}
+              {pages[0].desc}
             </div>
             {token !== `` && (
               <>
-                <div
-                  role="presentation"
-                  className={currentPage === `positions` ? `active` : ``}
-                  onClick={() => changePage(`positions`)}
-                >
-                  คลังตำแหน่ง
-                </div>
-                <div
-                  role="presentation"
-                  className={currentPage === `people` ? `active` : ``}
-                  onClick={() => changePage(`people`)}
-                >
-                  ประวัติกำลังพล
-                </div>
+                {pages.slice(1).map((page, pageIndex) => {
+                  return (
+                    <div
+                      key={`page_${pageIndex}`}
+                      role="presentation"
+                      className={currentPage === `${page.name}` ? `active` : ``}
+                      onClick={() => changePage(`${page.name}`)}
+                    >
+                      {page.desc}
+                    </div>
+                  )
+                })}
               </>
             )}
           </Flex>
