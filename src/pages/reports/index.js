@@ -45,7 +45,7 @@ const IndexPage = () => {
                   role="presentation"
                   onClick={() => navigate(`/reports/stock`)}
                 >
-                  รายชื่อพนักงานราชการและตำแหน่งว่าง
+                  รายชื่อพนักงานราชการและตำแหน่งว่าง (Stock)
                 </div>
               </div>
             </ColorButton>
@@ -59,7 +59,7 @@ const IndexPage = () => {
                   role="presentation"
                   onClick={() => navigate(`/reports/flow-out`)}
                 >
-                  รายชื่อพนักงานราชการที่ออกในปีงบประมาณที่ผ่านมา
+                  รายชื่อพนักงานราชการที่ออกในปีงบประมาณที่ผ่านมา (Flow-Out)
                 </div>
               </div>
             </ColorButton>
