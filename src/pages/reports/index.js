@@ -17,7 +17,7 @@ const Container = styled.div`
 `
 
 const IndexPage = () => {
-  const { token, primaryColor } = useSelector(state => state)
+  const { token, primaryColor, userInfo } = useSelector(state => state)
   const dispatch = useDispatch()
 
   useEffect(() => {
@@ -29,7 +29,7 @@ const IndexPage = () => {
 
   return (
     <Layout>
-      {token !== `` ? (
+      {token !== `` && userInfo.role.name === `Administrator` ? (
         <>
           <Seo title="ออกรายงาน" />
           <Breadcrumbs current="ออกรายงาน" />

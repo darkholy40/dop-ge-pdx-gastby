@@ -57,7 +57,7 @@ const ColorButton = styled.div`
       display: flex;
       align-items: center;
       justify-content: center;
-      transition: background-color 0.1s, color 0.1s;
+      transition: background-color 0.2s, color 0.2s;
 
       @media (hover: hover) {
         &:hover {
@@ -65,7 +65,7 @@ const ColorButton = styled.div`
             primaryColor !== undefined ? primaryColor[800] : blue[800]};
           color: ${({ primaryColor }) =>
             primaryColor !== undefined ? primaryColor[100] : blue[100]};
-          transition: background-color 0.2s, color 0.2s;
+          transition: background-color 0.1s, color 0.1s;
         }
       }
 

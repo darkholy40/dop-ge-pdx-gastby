@@ -85,6 +85,7 @@ const Navbar = () => {
     {
       name: `reports`,
       desc: `ออกรายงาน`,
+      role: `administrator`,
     },
   ]
 
@@ -147,7 +148,7 @@ const Navbar = () => {
               <ColorButton primaryColor={primaryColor}>
                 <div className="row">
                   {pages.map((page, pageIndex) => {
-                    return (
+                    const menuList = () => (
                       <div
                         key={`page_m_${pageIndex}`}
                         role="presentation"
@@ -162,6 +163,15 @@ const Navbar = () => {
                         {page.desc}
                       </div>
                     )
+
+                    if (userInfo.role.name !== `Administrator`) {
+                      if (page.role !== `administrator`) {
+                        return menuList()
+                      }
+                      return null
+                    } else {
+                      return menuList()
+                    }
                   })}
                 </div>
               </ColorButton>
@@ -181,7 +191,7 @@ const Navbar = () => {
             {token !== `` && (
               <>
                 {pages.slice(1).map((page, pageIndex) => {
-                  return (
+                  const menuList = () => (
                     <div
                       key={`page_${pageIndex}`}
                       role="presentation"
@@ -191,6 +201,15 @@ const Navbar = () => {
                       {page.desc}
                     </div>
                   )
+
+                  if (userInfo.role.name !== `Administrator`) {
+                    if (page.role !== `administrator`) {
+                      return menuList()
+                    }
+                    return null
+                  } else {
+                    return menuList()
+                  }
                 })}
               </>
             )}
