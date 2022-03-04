@@ -42,7 +42,6 @@ const ColorButton = styled.div`
 
   .row {
     width: 100%;
-    min-width: 300px;
     max-width: ${({ width }) => (width !== undefined ? width : `300px`)};
     user-select: none;
 
