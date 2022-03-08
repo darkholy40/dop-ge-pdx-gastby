@@ -40,6 +40,7 @@ const initialState = {
     posName: ``,
     posType: ``,
     unit: null,
+    currentPage: 0,
   },
   searchPersonFilter: {
     personName: ``,
@@ -48,6 +49,7 @@ const initialState = {
     personSid: ``,
     posNumber: ``,
     unit: null,
+    currentPage: 0,
   },
   notificationDialog: {
     open: false,

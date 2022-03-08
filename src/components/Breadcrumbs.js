@@ -1,5 +1,6 @@
 import React from "react"
 import { navigate } from "gatsby"
+import { useSelector } from "react-redux"
 import PropTypes from "prop-types"
 import styled from "styled-components"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
@@ -11,6 +12,12 @@ const Flex = styled.div`
   flex-direction: row;
   width: 100%;
   margin-bottom: 2rem;
+
+  width: calc(100% - 32px);
+  padding: 12px 16px;
+  background-color: ${({ primaryColor }) => primaryColor[50]};
+  border-radius: 4px;
+  transform: skewX(-10deg);
 `
 
 const Previous = styled.div`
@@ -27,19 +34,29 @@ const Previous = styled.div`
   }
 `
 
+const Text = styled.div`
+  transform: skewX(10deg);
+
+  + svg {
+    transform: skewX(10deg);
+  }
+`
+
 const Breadcrumbs = ({ previous, current }) => {
+  const { primaryColor } = useSelector(state => state)
+
   return (
-    <Flex>
+    <Flex primaryColor={primaryColor}>
       {previous.map((item, index) => {
         return (
           <Previous key={`pre_bread_${index}`}>
-            <div
+            <Text
               className="previous"
               role="presentation"
               onClick={() => navigate(`${item.link}`)}
             >
               {item.name}
-            </div>
+            </Text>
             <FontAwesomeIcon
               icon={faChevronRight}
               style={{ fontSize: `1rem`, marginLeft: 7, marginRight: 7 }}
@@ -47,7 +64,7 @@ const Breadcrumbs = ({ previous, current }) => {
           </Previous>
         )
       })}
-      <div>{current}</div>
+      <Text>{current}</Text>
     </Flex>
   )
 }

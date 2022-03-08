@@ -44,7 +44,7 @@ const PositionsPage = () => {
   const [currentRow, setCurrentRow] = useState({})
   const [tableOption, setTableOption] = useState({
     totalRows: 0,
-    page: 0,
+    page: searchPersonFilter.currentPage,
     rowsPerPage: 10,
   })
 
@@ -102,10 +102,10 @@ const PositionsPage = () => {
     })
 
     try {
-      const res = await client.query({
+      const total = await client.query({
         query: gql`
-          query Positions {
-            positions(where: {
+          query PositionsCount {
+            positionsConnection(where: {
               ${role}
               number_contains: "${searchPersonFilter.posNumber}"
               ${
@@ -115,37 +115,67 @@ const PositionsPage = () => {
               }`
                   : `person_null: false`
               }
-            }, start: ${parseInt(tableOption.rowsPerPage * tableOption.page)}) {
-              _id
-              position_type {
-                type
-                name
-              }
-              number
-              division {
-                _id
-                division1
-                division2
-                division3
-              }
-              person {
-                _id
-                Prename
-                Name
-                Surname
-                ID_Card
-                SID_Card
-                staff_created
-                staff_updated
-                createdAt
-                updatedAt
+            }) {
+              aggregate {
+                count
+                totalCount
               }
             }
           }
         `,
       })
 
-      if (res.data.positions.length > 0) {
+      setTableOption(prev => ({
+        ...prev,
+        totalRows: total.data.positionsConnection.aggregate.count,
+      }))
+
+      if (total.data.positionsConnection.aggregate.totalCount > 0) {
+        const res = await client.query({
+          query: gql`
+            query Positions {
+              positions(where: {
+                ${role}
+                number_contains: "${searchPersonFilter.posNumber}"
+                ${
+                  filter !== ``
+                    ? `person: {
+                  ${filter}
+                }`
+                    : `person_null: false`
+                }
+              }, start: ${parseInt(
+                tableOption.rowsPerPage * tableOption.page
+              )}) {
+                _id
+                position_type {
+                  type
+                  name
+                }
+                number
+                division {
+                  _id
+                  division1
+                  division2
+                  division3
+                }
+                person {
+                  _id
+                  Prename
+                  Name
+                  Surname
+                  ID_Card
+                  SID_Card
+                  staff_created
+                  staff_updated
+                  createdAt
+                  updatedAt
+                }
+              }
+            }
+          `,
+        })
+
         for (let thisPosition of res.data.positions) {
           returnData = [
             ...returnData,
@@ -171,42 +201,7 @@ const PositionsPage = () => {
           ]
         }
 
-        if (returnData.length > 0) {
-          setPeopleData(returnData)
-
-          const total = await client.query({
-            query: gql`
-              query PositionsCount {
-                positionsConnection(where: {
-                  ${role}
-                  number_contains: "${searchPersonFilter.posNumber}"
-                  ${
-                    filter !== ``
-                      ? `person: {
-                    ${filter}
-                  }`
-                      : `person_null: false`
-                  }
-                }) {
-                  aggregate {
-                    count
-                    totalCount
-                  }
-                }
-              }
-            `,
-          })
-
-          setTableOption(prev => ({
-            ...prev,
-            totalRows: total.data.positionsConnection.aggregate.count,
-          }))
-        } else {
-          setIsError({
-            status: true,
-            text: `ไม่พบข้อมูล`,
-          })
-        }
+        setPeopleData(returnData)
       } else {
         setIsError({
           status: true,
@@ -372,6 +367,14 @@ const PositionsPage = () => {
                       ...prev,
                       page: newPage,
                     }))
+
+                    dispatch({
+                      type: `SET_SEARCH_PERSON_FILTER`,
+                      searchPersonFilter: {
+                        ...searchPersonFilter,
+                        currentPage: newPage,
+                      },
+                    })
                   }}
                   onRowsPerPageChange={event => {
                     setTableOption(prev => ({

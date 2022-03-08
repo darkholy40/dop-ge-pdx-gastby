@@ -241,7 +241,16 @@ const PositionsPage = () => {
                 }}
                 color="primary"
                 variant="contained"
-                onClick={() => navigate(`/positions/list`)}
+                onClick={() => {
+                  dispatch({
+                    type: `SET_SEARCH_POSITION_FILTER`,
+                    searchPositionFilter: {
+                      ...searchPositionFilter,
+                      currentPage: 0,
+                    },
+                  })
+                  navigate(`/positions/list`)
+                }}
               >
                 <FontAwesomeIcon icon={faSearch} style={{ marginRight: 5 }} />
                 ค้นหา

@@ -54,23 +54,7 @@ const StaticData = () => {
     } catch (error) {
       console.log(error)
 
-      dispatch({
-        type: `SET_NOTIFICATION_DIALOG`,
-        notificationDialog: {
-          open: true,
-          title: `เชื่อมต่อฐานข้อมูลไม่สำเร็จ`,
-          description: `ไม่สามารถรับข้อมูลคลังตำแหน่งได้`,
-          variant: `error`,
-          confirmText: `ลองอีกครั้ง`,
-          callback: () => {
-            setIsFetchingComplete(prev => ({
-              ...prev,
-              positionTypes: false,
-            }))
-            getPositionTypes()
-          },
-        },
-      })
+      getPositionTypes()
     }
   }, [url, dispatch])
 
@@ -100,23 +84,7 @@ const StaticData = () => {
     } catch (error) {
       console.log(error)
 
-      dispatch({
-        type: `SET_NOTIFICATION_DIALOG`,
-        notificationDialog: {
-          open: true,
-          title: `เชื่อมต่อฐานข้อมูลไม่สำเร็จ`,
-          description: `ไม่สามารถรับข้อมูลคลังตำแหน่งได้`,
-          variant: `error`,
-          confirmText: `ลองอีกครั้ง`,
-          callback: () => {
-            setIsFetchingComplete(prev => ({
-              ...prev,
-              positionNames: false,
-            }))
-            getPositionName()
-          },
-        },
-      })
+      getPositionName()
     }
 
     if (lap > 0) {
@@ -177,23 +145,7 @@ const StaticData = () => {
     } catch (error) {
       console.log(error)
 
-      dispatch({
-        type: `SET_NOTIFICATION_DIALOG`,
-        notificationDialog: {
-          open: true,
-          title: `เชื่อมต่อฐานข้อมูลไม่สำเร็จ`,
-          description: `ไม่สามารถรับข้อมูลหน่วยได้`,
-          variant: `error`,
-          confirmText: `ลองอีกครั้ง`,
-          callback: () => {
-            setIsFetchingComplete(prev => ({
-              ...prev,
-              units: false,
-            }))
-            getUnits()
-          },
-        },
-      })
+      getUnits()
     }
 
     if (lap > 0) {

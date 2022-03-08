@@ -44,7 +44,7 @@ const PositionsPage = () => {
   const [currentRow, setCurrentRow] = useState({})
   const [tableOption, setTableOption] = useState({
     totalRows: 0,
-    page: 0,
+    page: searchPositionFilter.currentPage,
     rowsPerPage: 10,
   })
 
@@ -86,43 +86,61 @@ const PositionsPage = () => {
     })
 
     try {
-      const res = await client.query({
+      const total = await client.query({
         query: gql`
-          query Position {
-            positions(${whereCondition}, limit: ${
-          tableOption.rowsPerPage
-        }, start: ${parseInt(tableOption.rowsPerPage * tableOption.page)}) {
-              _id
-              number
-              position_type {
-                type
-                name
-                order
-              }
-              isOpen
-              isSouth
-              staff_created
-              staff_updated
-              published_at
-              createdAt
-              updatedAt
-              division {
-                id
-                division1
-                division2
-                division3
-              }
-              person {
-                _id
+          query PositionsCount {
+            positionsConnection(${whereCondition}) {
+              aggregate {
+                count
+                totalCount
               }
             }
           }
         `,
       })
 
-      console.log(res)
+      setTableOption(prev => ({
+        ...prev,
+        totalRows: total.data.positionsConnection.aggregate.count,
+      }))
 
-      if (res.data.positions.length > 0) {
+      if (total.data.positionsConnection.aggregate.totalCount > 0) {
+        const res = await client.query({
+          query: gql`
+            query Position {
+              positions(${whereCondition}, limit: ${
+            tableOption.rowsPerPage
+          }, start: ${parseInt(tableOption.rowsPerPage * tableOption.page)}) {
+                _id
+                number
+                position_type {
+                  type
+                  name
+                  order
+                }
+                isOpen
+                isSouth
+                staff_created
+                staff_updated
+                published_at
+                createdAt
+                updatedAt
+                division {
+                  id
+                  division1
+                  division2
+                  division3
+                }
+                person {
+                  _id
+                }
+              }
+            }
+          `,
+        })
+
+        console.log(res)
+
         let lap = 0
         for (let thisPos of res.data.positions) {
           let person = {
@@ -181,24 +199,6 @@ const PositionsPage = () => {
 
         // console.log(returnData)
         setPosData(returnData)
-
-        const total = await client.query({
-          query: gql`
-            query PositionsCount {
-              positionsConnection(${whereCondition}) {
-                aggregate {
-                  count
-                  totalCount
-                }
-              }
-            }
-          `,
-        })
-
-        setTableOption(prev => ({
-          ...prev,
-          totalRows: total.data.positionsConnection.aggregate.count,
-        }))
       } else {
         setIsError({
           status: true,
@@ -404,6 +404,14 @@ const PositionsPage = () => {
                       ...prev,
                       page: newPage,
                     }))
+
+                    dispatch({
+                      type: `SET_SEARCH_POSITION_FILTER`,
+                      searchPositionFilter: {
+                        ...searchPositionFilter,
+                        currentPage: newPage,
+                      },
+                    })
                   }}
                   onRowsPerPageChange={event => {
                     setTableOption(prev => ({
