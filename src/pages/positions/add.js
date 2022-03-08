@@ -414,9 +414,20 @@ const AddPositionsPage = () => {
                 }}
                 checked={addPositionFilter.posOpen}
               />
-              <div>เปิดอัตรา</div>
+              <div
+                role="presentation"
+                style={{ cursor: `pointer`, userSelect: `none` }}
+                onClick={() =>
+                  setAddPositionFilter({
+                    ...addPositionFilter,
+                    posOpen: !addPositionFilter.posOpen,
+                  })
+                }
+              >
+                เปิดอัตรา
+              </div>
             </Flex>
-            <Flex>
+            <Flex style={{ marginBottom: `1rem` }}>
               <Checkbox
                 onChange={(_, newValue) => {
                   setAddPositionFilter({
@@ -426,7 +437,18 @@ const AddPositionsPage = () => {
                 }}
                 checked={addPositionFilter.posSouth}
               />
-              <div>อัตรากำลังจังหวัดชายแดนภาคใต้</div>
+              <div
+                role="presentation"
+                style={{ cursor: `pointer`, userSelect: `none` }}
+                onClick={() =>
+                  setAddPositionFilter({
+                    ...addPositionFilter,
+                    posSouth: !addPositionFilter.posSouth,
+                  })
+                }
+              >
+                อัตรากำลังจังหวัดชายแดนภาคใต้
+              </div>
             </Flex>
 
             <Button

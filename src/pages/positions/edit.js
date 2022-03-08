@@ -522,9 +522,20 @@ const EditPositionsPage = ({ location }) => {
                       }}
                       checked={addPositionFilter.posOpen}
                     />
-                    <div>เปิดอัตรา</div>
+                    <div
+                      role="presentation"
+                      style={{ cursor: `pointer`, userSelect: `none` }}
+                      onClick={() =>
+                        setAddPositionFilter({
+                          ...addPositionFilter,
+                          posOpen: !addPositionFilter.posOpen,
+                        })
+                      }
+                    >
+                      เปิดอัตรา
+                    </div>
                   </Flex>
-                  <Flex>
+                  <Flex style={{ marginBottom: `1rem` }}>
                     <Checkbox
                       onChange={(_, newValue) => {
                         setAddPositionFilter({
@@ -534,7 +545,18 @@ const EditPositionsPage = ({ location }) => {
                       }}
                       checked={addPositionFilter.posSouth}
                     />
-                    <div>อัตรากำลังจังหวัดชายแดนภาคใต้</div>
+                    <div
+                      role="presentation"
+                      style={{ cursor: `pointer`, userSelect: `none` }}
+                      onClick={() =>
+                        setAddPositionFilter({
+                          ...addPositionFilter,
+                          posSouth: !addPositionFilter.posSouth,
+                        })
+                      }
+                    >
+                      อัตรากำลังจังหวัดชายแดนภาคใต้
+                    </div>
                   </Flex>
 
                   <Button
@@ -542,9 +564,14 @@ const EditPositionsPage = ({ location }) => {
                     variant="contained"
                     type="submit"
                     disabled={
-                      addPositionFilter.posName === `` ||
-                      addPositionFilter.posType === `` ||
-                      addPositionFilter.posNumber === ``
+                      userInfo.role.name === `Administrator`
+                        ? addPositionFilter.posName === `` ||
+                          addPositionFilter.posType === `` ||
+                          addPositionFilter.posNumber === `` ||
+                          addPositionFilter.unit === null
+                        : addPositionFilter.posName === `` ||
+                          addPositionFilter.posType === `` ||
+                          addPositionFilter.posNumber === ``
                     }
                   >
                     <FontAwesomeIcon icon={faSave} style={{ marginRight: 5 }} />

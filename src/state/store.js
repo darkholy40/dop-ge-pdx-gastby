@@ -2,7 +2,7 @@ import { createStore as reduxCreateStore } from "redux"
 import { persistStore, persistReducer } from "redux-persist"
 import storage from "redux-persist/lib/storage"
 import {
-  green as primaryColor,
+  blue as primaryColor,
   amber as secondaryColor,
 } from "@mui/material/colors"
 

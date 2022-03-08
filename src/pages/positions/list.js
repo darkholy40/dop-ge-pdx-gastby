@@ -15,6 +15,7 @@ import {
   Button,
   TablePagination,
 } from "@mui/material"
+import { green } from "@mui/material/colors"
 import { ApolloClient, InMemoryCache, gql } from "@apollo/client"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import {
@@ -353,7 +354,7 @@ const PositionsPage = () => {
                                 icon={faCheckCircle}
                                 style={{
                                   fontSize: 20,
-                                  color: primaryColor[500],
+                                  color: green[500],
                                 }}
                               />
                             )}
@@ -364,7 +365,7 @@ const PositionsPage = () => {
                                 icon={faCheckCircle}
                                 style={{
                                   fontSize: 20,
-                                  color: primaryColor[500],
+                                  color: green[500],
                                 }}
                               />
                             )}
