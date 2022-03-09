@@ -21,6 +21,7 @@ import {
   // faCheckCircle,
   faEllipsisH,
   faPen,
+  faSignOutAlt,
   faChevronLeft,
 } from "@fortawesome/free-solid-svg-icons"
 
@@ -415,6 +416,20 @@ const PositionsPage = () => {
                   >
                     <FontAwesomeIcon icon={faPen} style={{ marginRight: 5 }} />
                     แก้ไขประวัติกำลังพล
+                  </MenuItem>
+                  <MenuItem
+                    onClick={() => {
+                      setAnchorEl(null)
+
+                      navigate(`/people/resignation?id=${currentRow._id}`)
+                    }}
+                    disableRipple
+                  >
+                    <FontAwesomeIcon
+                      icon={faSignOutAlt}
+                      style={{ marginRight: 5 }}
+                    />
+                    ลาออก
                   </MenuItem>
                 </Menu>
               </>
