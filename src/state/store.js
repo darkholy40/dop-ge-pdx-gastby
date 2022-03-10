@@ -49,6 +49,7 @@ const initialState = {
     personSid: ``,
     posNumber: ``,
     unit: null,
+    isResigned: false,
     currentPage: 0,
   },
   notificationDialog: {

@@ -140,7 +140,7 @@ const PositionsPage = () => {
           `,
         })
 
-        console.log(res)
+        // console.log(res)
 
         let lap = 0
         for (let thisPos of res.data.positions) {

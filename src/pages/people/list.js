@@ -102,21 +102,23 @@ const PositionsPage = () => {
       backdropOpen: true,
     })
 
+    const whereCondition = `{
+      ${role}
+      number_contains: "${searchPersonFilter.posNumber}"
+      ${
+        filter !== ``
+          ? `person: {
+        ${filter}
+      }`
+          : `person_null: false`
+      }
+    }`
+
     try {
       const total = await client.query({
         query: gql`
           query PositionsCount {
-            positionsConnection(where: {
-              ${role}
-              number_contains: "${searchPersonFilter.posNumber}"
-              ${
-                filter !== ``
-                  ? `person: {
-                ${filter}
-              }`
-                  : `person_null: false`
-              }
-            }) {
+            positionsConnection(where: ${whereCondition}) {
               aggregate {
                 count
                 totalCount
@@ -135,19 +137,9 @@ const PositionsPage = () => {
         const res = await client.query({
           query: gql`
             query Positions {
-              positions(where: {
-                ${role}
-                number_contains: "${searchPersonFilter.posNumber}"
-                ${
-                  filter !== ``
-                    ? `person: {
-                  ${filter}
-                }`
-                    : `person_null: false`
-                }
-              }, start: ${parseInt(
-                tableOption.rowsPerPage * tableOption.page
-              )}) {
+              positions(where: ${whereCondition}, start: ${parseInt(
+            tableOption.rowsPerPage * tableOption.page
+          )}) {
                 _id
                 position_type {
                   type

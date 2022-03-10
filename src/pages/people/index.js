@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useState } from "react"
 import { navigate } from "gatsby"
 import { useSelector, useDispatch } from "react-redux"
 import styled from "styled-components"
-import { Button, Alert, TextField } from "@mui/material"
+import { Button, Alert, TextField, Divider, Checkbox } from "@mui/material"
 import Autocomplete from "@mui/material/Autocomplete"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import {
@@ -166,7 +166,7 @@ const PositionsPage = () => {
               เพิ่มกำลังพล
             </Button>
           </Oparator>
-
+          <Divider style={{ marginTop: `1rem`, marginBottom: `1rem` }} />
           <Form onSubmit={e => e.preventDefault()}>
             <TextField
               sx={{ marginBottom: `1rem` }}
@@ -307,6 +307,35 @@ const PositionsPage = () => {
                 />
               </Flex>
             )}
+            <Flex style={{ marginBottom: `1rem` }}>
+              <Checkbox
+                onChange={(_, newValue) => {
+                  dispatch({
+                    type: `SET_SEARCH_PERSON_FILTER`,
+                    searchPersonFilter: {
+                      ...searchPersonFilter,
+                      isResigned: newValue,
+                    },
+                  })
+                }}
+                checked={searchPersonFilter.isResigned}
+              />
+              <div
+                role="presentation"
+                style={{ cursor: `pointer`, userSelect: `none` }}
+                onClick={() =>
+                  dispatch({
+                    type: `SET_SEARCH_PERSON_FILTER`,
+                    searchPersonFilter: {
+                      ...searchPersonFilter,
+                      isResigned: !searchPersonFilter.isResigned,
+                    },
+                  })
+                }
+              >
+                ที่ลาออกแล้ว
+              </div>
+            </Flex>
             <SubmitButtonFlex>
               <Button
                 style={{
@@ -315,7 +344,13 @@ const PositionsPage = () => {
                 }}
                 color="primary"
                 variant="contained"
-                onClick={() => navigate(`/people/list`)}
+                onClick={() =>
+                  navigate(
+                    !searchPersonFilter.isResigned
+                      ? `/people/list`
+                      : `/people/resigned-list`
+                  )
+                }
               >
                 <FontAwesomeIcon icon={faSearch} style={{ marginRight: 5 }} />
                 ค้นหา
