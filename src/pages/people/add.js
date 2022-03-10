@@ -319,6 +319,9 @@ const AddPositionsPage = () => {
                 staff_created: "${userInfo.id}",
                 staff_updated: "",
                 type: "${jobType}",
+                isResigned: false,
+                resignationNote: "",
+                position: null,
               }
             }) {
               person {

@@ -211,8 +211,13 @@ const AddPositionsPage = ({ location }) => {
         `,
       })
 
-      if (res) {
+      if (res.data.person !== null) {
         returnData.person = res.data.person
+      } else {
+        setIsError({
+          type: `notFound`,
+          text: `ไม่พบข้อมูลหน้านี้`,
+        })
       }
     } catch (error) {
       console.log(error)
@@ -285,6 +290,10 @@ const AddPositionsPage = ({ location }) => {
     })
     let role = ``
     let lap = 0
+
+    if (id === `0`) {
+      return 0
+    }
 
     if (userInfo.role.name !== `Administrator`) {
       role = `division: "${userInfo.division._id}"`

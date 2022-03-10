@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react"
 import { navigate } from "gatsby"
 import { useSelector, useDispatch } from "react-redux"
-import { Button, TextField } from "@mui/material"
+import { Button, TextField, Alert } from "@mui/material"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { faSave } from "@fortawesome/free-solid-svg-icons"
+import { faSave, faChevronLeft } from "@fortawesome/free-solid-svg-icons"
 import { ApolloClient, InMemoryCache, gql } from "@apollo/client"
 
 import Layout from "../../components/Layout"
@@ -86,20 +86,24 @@ const Resignation = ({ location }) => {
           getPersonID = res.data.updatePerson.person._id
         }
       }
-    } catch (error) {
+    } catch {
+      setIsError({
+        status: true,
+        type: `id-notfound`,
+        text: `ไม่พบกำลังพลรายการนี้ หรือข้อมูลถูกลบออกจากระบบแล้ว`,
+      })
+
       dispatch({
         type: `SET_NOTIFICATION_DIALOG`,
         notificationDialog: {
           open: true,
           title: `บันทึกรายการไม่สำเร็จ`,
-          description: `[Error001] - ไม่สามารถแก้ไขรายการกำลังพลได้`,
+          description: `ไม่พบกำลังพลรายการนี้ หรือข้อมูลถูกลบออกจากระบบแล้ว`,
           variant: `error`,
-          confirmText: `ลองอีกครั้ง`,
-          callback: () => goSaveResignation(),
+          confirmText: `ตกลง`,
+          callback: () => {},
         },
       })
-
-      console.log(error)
     }
 
     let oldPositionId = ``
@@ -248,18 +252,41 @@ const Resignation = ({ location }) => {
                 })
               }}
               value={input.note}
-              error={isError.status}
+              disabled={isError.type === `id-notfound`}
             />
 
             <Button
               color="primary"
               variant="contained"
               type="submit"
-              disabled={input.note === ``}
+              disabled={input.note === `` || isError.type === `id-notfound`}
             >
               <FontAwesomeIcon icon={faSave} style={{ marginRight: 5 }} />
               บันทึก
             </Button>
+            {isError.type === `id-notfound` && (
+              <>
+                <Alert
+                  sx={{ marginTop: `1rem`, animation: `fadein 0.3s` }}
+                  severity="error"
+                >
+                  {isError.text}
+                </Alert>
+
+                <Button
+                  sx={{ marginTop: `3rem` }}
+                  color="primary"
+                  variant="outlined"
+                  onClick={() => navigate(`/people/list`)}
+                >
+                  <FontAwesomeIcon
+                    icon={faChevronLeft}
+                    style={{ marginRight: 5 }}
+                  />
+                  กลับไปหน้าค้นหากำลังพล
+                </Button>
+              </>
+            )}
           </Form>
         </>
       ) : (

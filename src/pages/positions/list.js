@@ -199,7 +199,14 @@ const PositionsPage = () => {
         }
 
         // console.log(returnData)
-        setPosData(returnData)
+        if (returnData.length > 0) {
+          setPosData(returnData)
+        } else {
+          setIsError({
+            status: true,
+            text: `ไม่พบข้อมูล`,
+          })
+        }
       } else {
         setIsError({
           status: true,

@@ -146,7 +146,14 @@ const reducer = (state = initialState, action) => {
 const persistConfig = {
   key: `gepdx`,
   storage: storage,
-  whitelist: [`lang`, `token`, `userInfo`],
+  whitelist: [
+    `lang`,
+    `token`,
+    `userInfo`,
+    `positionTypes`,
+    `positionNames`,
+    `units`,
+  ],
 }
 
 const persistedReducer = persistReducer(persistConfig, reducer)

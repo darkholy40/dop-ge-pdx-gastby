@@ -202,7 +202,14 @@ const PositionsPage = () => {
           ]
         }
 
-        setPeopleData(returnData)
+        if (returnData.length > 0) {
+          setPeopleData(returnData)
+        } else {
+          setIsError({
+            status: true,
+            text: `ไม่พบข้อมูล`,
+          })
+        }
       } else {
         setIsError({
           status: true,
