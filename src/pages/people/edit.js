@@ -20,7 +20,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import {
   faSave,
   faTrash,
-  faTimes,
+  faRedoAlt,
   faCheckCircle as faFilledCheckCircle,
 } from "@fortawesome/free-solid-svg-icons"
 import { faCheckCircle } from "@fortawesome/free-regular-svg-icons"
@@ -724,43 +724,44 @@ const AddPositionsPage = ({ location }) => {
   }
 
   const clearInput = () => {
-    setPrename(``)
-    setName(``)
-    setSurname(``)
-    setIdCard(``)
-    setSidCard(``)
-    setPositionTypeSelect(``)
-    setPositionNameSelect(``)
-    setPositionInput(null)
-    setJobType(null)
-    setGender(``)
-    setBirthDate(null)
-    setMarriedStatus(``)
-    setTelephone(``)
-    setAddress(``)
-    setEmergencyName(``)
-    setEmergencyNumber(``)
-    setStartDate(null)
-    setEduLevel(``)
-    setEduName(``)
-    setEduGraduated(``)
-    setEduCountry(``)
-    setMovementType(``)
-    setOutline(``)
-    setRewardType1(``)
-    setRewardType2(``)
-    setRewardType3(``)
-    setContactCnt(``)
-    setMission(``)
-    setCurrentContactStart(null)
-    setCurrentContactEnd(null)
-    setGuilty(``)
-    setPunish(``)
-    setDecoration(``)
-    setPercentSalary(``)
-    setScoreKPI(``)
-    setScoreCompetence(``)
-    setStatusDisability(``)
+    getPerson()
+    // setPrename(``)
+    // setName(``)
+    // setSurname(``)
+    // setIdCard(``)
+    // setSidCard(``)
+    // setPositionTypeSelect(``)
+    // setPositionNameSelect(``)
+    // setPositionInput(null)
+    // setJobType(null)
+    // setGender(``)
+    // setBirthDate(null)
+    // setMarriedStatus(``)
+    // setTelephone(``)
+    // setAddress(``)
+    // setEmergencyName(``)
+    // setEmergencyNumber(``)
+    // setStartDate(null)
+    // setEduLevel(``)
+    // setEduName(``)
+    // setEduGraduated(``)
+    // setEduCountry(``)
+    // setMovementType(``)
+    // setOutline(``)
+    // setRewardType1(``)
+    // setRewardType2(``)
+    // setRewardType3(``)
+    // setContactCnt(``)
+    // setMission(``)
+    // setCurrentContactStart(null)
+    // setCurrentContactEnd(null)
+    // setGuilty(``)
+    // setPunish(``)
+    // setDecoration(``)
+    // setPercentSalary(``)
+    // setScoreKPI(``)
+    // setScoreCompetence(``)
+    // setStatusDisability(``)
   }
 
   useEffect(() => {
@@ -1631,52 +1632,15 @@ const AddPositionsPage = ({ location }) => {
                     <Grid item xs={12}>
                       <Button
                         fullWidth
-                        color="error"
+                        color="primary"
                         type="reset"
                         onClick={() => clearInput()}
-                        disabled={
-                          prename === `` &&
-                          name === `` &&
-                          surname === `` &&
-                          idCard === `` &&
-                          sidCard === `` &&
-                          positionInput === null &&
-                          jobType === null &&
-                          gender === `` &&
-                          birthDate === null &&
-                          marriedStatus === `` &&
-                          telephone === `` &&
-                          address === `` &&
-                          emergencyName === `` &&
-                          emergencyNumber === `` &&
-                          startDate === null &&
-                          eduLevel === `` &&
-                          eduName === `` &&
-                          eduGraduated === `` &&
-                          eduCountry === `` &&
-                          movementType === `` &&
-                          outline === `` &&
-                          rewardType1 === `` &&
-                          rewardType2 === `` &&
-                          rewardType3 === `` &&
-                          contactCnt === `` &&
-                          mission === `` &&
-                          currentContactStart === null &&
-                          currentContactEnd === null &&
-                          guilty === `` &&
-                          punish === `` &&
-                          decoration === `` &&
-                          percentSalary === `` &&
-                          scoreKPI === `` &&
-                          scoreCompetence === `` &&
-                          statusDisability === ``
-                        }
                       >
                         <FontAwesomeIcon
-                          icon={faTimes}
+                          icon={faRedoAlt}
                           style={{ marginRight: 5 }}
                         />
-                        ล้าง
+                        โหลดข้อมูลใหม่
                       </Button>
                     </Grid>
                   </Grid>

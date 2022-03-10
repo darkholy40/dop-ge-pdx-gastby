@@ -61,9 +61,8 @@ const ColorButton = styled.div`
       @media (hover: hover) {
         &:hover {
           background-color: ${({ primaryColor }) =>
-            primaryColor !== undefined ? primaryColor[800] : blue[800]};
-          color: ${({ primaryColor }) =>
-            primaryColor !== undefined ? primaryColor[100] : blue[100]};
+            primaryColor !== undefined ? primaryColor[700] : blue[700]};
+          color: #fff;
           transition: background-color 0.1s, color 0.1s;
         }
       }
@@ -71,15 +70,13 @@ const ColorButton = styled.div`
       &:active {
         background-color: ${({ primaryColor }) =>
           primaryColor !== undefined ? primaryColor[900] : blue[900]};
-        color: ${({ primaryColor }) =>
-          primaryColor !== undefined ? primaryColor[100] : blue[100]};
+        color: #fff;
       }
 
       &.active {
         background-color: ${({ primaryColor }) =>
-          primaryColor !== undefined ? primaryColor[800] : blue[800]};
-        color: ${({ primaryColor }) =>
-          primaryColor !== undefined ? primaryColor[100] : blue[100]};
+          primaryColor !== undefined ? primaryColor[700] : blue[700]};
+        color: #fff;
       }
     }
   }

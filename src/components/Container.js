@@ -73,7 +73,7 @@ const Container = ({ children }) => {
             }}
             open={backdropOpen}
           >
-            <CircularProgress color="inherit" size="4rem" />
+            <CircularProgress color="inherit" size="5rem" thickness={5} />
           </Backdrop>
         </MainContainer>
         <NotificationDialog />
