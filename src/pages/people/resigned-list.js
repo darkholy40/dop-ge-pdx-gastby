@@ -9,21 +9,12 @@ import {
   TableHead,
   TableRow,
   Paper,
-  IconButton,
-  Menu,
-  MenuItem,
   Button,
   TablePagination,
 } from "@mui/material"
 import { ApolloClient, InMemoryCache, gql } from "@apollo/client"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import {
-  // faCheckCircle,
-  faEllipsisH,
-  faPen,
-  faSignOutAlt,
-  faChevronLeft,
-} from "@fortawesome/free-solid-svg-icons"
+import { faChevronLeft } from "@fortawesome/free-solid-svg-icons"
 
 import Layout from "../../components/Layout"
 import Seo from "../../components/Seo"
@@ -32,7 +23,7 @@ import PageNotFound from "../../components/PageNotFound"
 import Warning from "../../components/Warning"
 import renderDivision from "../../functions/renderDivision"
 
-const PeopleList = () => {
+const ResignedPeopleList = () => {
   const { token, userInfo, url, primaryColor, searchPersonFilter } =
     useSelector(state => state)
   const dispatch = useDispatch()
@@ -41,8 +32,6 @@ const PeopleList = () => {
     status: false,
     text: ``,
   })
-  const [anchorEl, setAnchorEl] = useState(null)
-  const [currentRow, setCurrentRow] = useState({})
   const [tableOption, setTableOption] = useState({
     totalRows: 0,
     page: searchPersonFilter.currentPage,
@@ -97,28 +86,31 @@ const PeopleList = () => {
           : ``
     }
 
+    const whereCondition = `{
+      isResigned: true
+      ${filter !== `` ? `${filter}` : ``}
+      position: {
+        ${role}
+        ${
+          searchPersonFilter.posNumber !== ``
+            ? `
+          number_contains: "${searchPersonFilter.posNumber}"
+      `
+            : ``
+        }
+      }
+    }`
+
     dispatch({
       type: `SET_BACKDROP_OPEN`,
       backdropOpen: true,
     })
 
-    const whereCondition = `{
-      ${role}
-      number_contains: "${searchPersonFilter.posNumber}"
-      ${
-        filter !== ``
-          ? `person: {
-        ${filter}
-      }`
-          : `person_null: false`
-      }
-    }`
-
     try {
       const total = await client.query({
         query: gql`
-          query PositionsCount {
-            positionsConnection(where: ${whereCondition}) {
+          query PersonCount {
+            peopleConnection(where: ${whereCondition}) {
               aggregate {
                 count
                 totalCount
@@ -130,66 +122,83 @@ const PeopleList = () => {
 
       setTableOption(prev => ({
         ...prev,
-        totalRows: total.data.positionsConnection.aggregate.count,
+        totalRows: total.data.peopleConnection.aggregate.count,
       }))
 
-      if (total.data.positionsConnection.aggregate.totalCount > 0) {
+      if (total.data.peopleConnection.aggregate.totalCount > 0) {
         const res = await client.query({
           query: gql`
-            query Positions {
-              positions(where: ${whereCondition}, start: ${parseInt(
+            query Person {
+              people(where: ${whereCondition}, start: ${parseInt(
             tableOption.rowsPerPage * tableOption.page
           )}) {
                 _id
-                position_type {
-                  type
-                  name
-                }
-                number
-                division {
+                Prename
+                Name
+                Surname
+                ID_Card
+                SID_Card
+                isResigned
+                resignationNote
+                staff_created
+                staff_updated
+                createdAt
+                updatedAt
+                position {
                   _id
-                  division1
-                  division2
-                  division3
-                }
-                person {
-                  _id
-                  Prename
-                  Name
-                  Surname
-                  ID_Card
-                  SID_Card
-                  staff_created
-                  staff_updated
-                  createdAt
-                  updatedAt
+                  position_type {
+                    type
+                    name
+                  }
+                  number
+                  division {
+                    _id
+                    division1
+                    division2
+                    division3
+                  } 
                 }
               }
             }
           `,
         })
 
-        for (let thisPosition of res.data.positions) {
+        for (let thisPerson of res.data.people) {
+          const resUser = await client.query({
+            query: gql`
+              query User {
+                user(id: "${thisPerson.staff_updated}") {
+                  _id
+                  name
+                  surname
+                }
+              }
+            `,
+          })
+
           returnData = [
             ...returnData,
             {
-              _id: thisPosition.person._id,
-              Prename: thisPosition.person.Prename,
-              Name: thisPosition.person.Name,
-              Surname: thisPosition.person.Surname,
-              ID_Card: thisPosition.person.ID_Card,
-              SID_Card: thisPosition.person.SID_Card,
-              staff_created: thisPosition.person.staff_created,
-              staff_updated: thisPosition.person.staff_updated,
-              createdAt: thisPosition.person.createdAt,
-              updatedAt: thisPosition.person.updatedAt,
+              _id: thisPerson._id,
+              Prename: thisPerson.Prename,
+              Name: thisPerson.Name,
+              Surname: thisPerson.Surname,
+              ID_Card: thisPerson.ID_Card,
+              SID_Card: thisPerson.SID_Card,
+              isResigned: thisPerson.isResigned,
+              resignationNote: thisPerson.resignationNote,
+              staff_created: thisPerson.staff_created,
+              staff_updated: thisPerson.staff_updated,
+              staff_updated_fullname: `${resUser.data.user.name} ${resUser.data.user.surname}`,
+              createdAt: thisPerson.createdAt,
+              updatedAt: thisPerson.updatedAt,
               position: {
-                _id: thisPosition._id,
-                posName: thisPosition.position_type.name,
-                posType: thisPosition.position_type.type,
-                posNumber: thisPosition.number,
+                _id: thisPerson.position._id,
+                posName: thisPerson.position.position_type.name,
+                posType: thisPerson.position.position_type.type,
+                posNumber: thisPerson.position.number,
               },
-              division: thisPosition.division,
+              division: thisPerson.position.division,
             },
           ]
         }
@@ -252,7 +261,7 @@ const PeopleList = () => {
     <Layout>
       {token !== `` ? (
         <>
-          <Seo title="ค้นหากำลังพล" />
+          <Seo title="ค้นหากำลังพลที่ลาออกแล้ว" />
           <Breadcrumbs
             previous={[
               {
@@ -260,7 +269,7 @@ const PeopleList = () => {
                 link: `/people`,
               },
             ]}
-            current="ค้นหากำลังพล"
+            current="ค้นหากำลังพลที่ลาออกแล้ว"
           />
 
           {!isError.status ? (
@@ -295,11 +304,11 @@ const PeopleList = () => {
                         <TableCell sx={{ backgroundColor: primaryColor[200] }}>
                           สังกัด
                         </TableCell>
-                        <TableCell
-                          align="center"
-                          sx={{ backgroundColor: primaryColor[200] }}
-                        >
-                          ตัวเลือก
+                        <TableCell sx={{ backgroundColor: primaryColor[200] }}>
+                          สาเหตุการออก
+                        </TableCell>
+                        <TableCell sx={{ backgroundColor: primaryColor[200] }}>
+                          เจ้าหน้าที่บันทึกข้อมูล
                         </TableCell>
                       </TableRow>
                     </TableHead>
@@ -332,18 +341,11 @@ const PeopleList = () => {
                           <TableCell align="left">
                             {renderDivision(row.division)}
                           </TableCell>
-                          <TableCell align="center">
-                            <IconButton
-                              onClick={event => {
-                                setAnchorEl(event.currentTarget)
-                                setCurrentRow(row)
-                              }}
-                            >
-                              <FontAwesomeIcon
-                                icon={faEllipsisH}
-                                style={{ fontSize: 16 }}
-                              />
-                            </IconButton>
+                          <TableCell align="left">
+                            {row.resignationNote}
+                          </TableCell>
+                          <TableCell align="left">
+                            {row.staff_updated_fullname}
                           </TableCell>
                         </TableRow>
                       ))}
@@ -384,53 +386,6 @@ const PeopleList = () => {
                     }))
                   }}
                 />
-
-                <Menu
-                  sx={{
-                    ".MuiList-root.MuiList-padding.MuiMenu-list": {
-                      minWidth: 180,
-                    },
-                  }}
-                  anchorEl={anchorEl}
-                  open={Boolean(anchorEl)}
-                  onClose={() => {
-                    setAnchorEl(null)
-                  }}
-                  anchorOrigin={{
-                    vertical: "bottom",
-                    horizontal: "right",
-                  }}
-                  transformOrigin={{
-                    vertical: "top",
-                    horizontal: "right",
-                  }}
-                >
-                  <MenuItem
-                    onClick={() => {
-                      setAnchorEl(null)
-
-                      navigate(`/people/edit?id=${currentRow._id}`)
-                    }}
-                    disableRipple
-                  >
-                    <FontAwesomeIcon icon={faPen} style={{ marginRight: 5 }} />
-                    แก้ไขประวัติกำลังพล
-                  </MenuItem>
-                  <MenuItem
-                    onClick={() => {
-                      setAnchorEl(null)
-
-                      navigate(`/people/resignation?id=${currentRow._id}`)
-                    }}
-                    disableRipple
-                  >
-                    <FontAwesomeIcon
-                      icon={faSignOutAlt}
-                      style={{ marginRight: 5 }}
-                    />
-                    ลาออก
-                  </MenuItem>
-                </Menu>
               </>
             )
           ) : (
@@ -462,4 +417,4 @@ const PeopleList = () => {
   )
 }
 
-export default PeopleList
+export default ResignedPeopleList

@@ -121,8 +121,6 @@ const IndexPage = () => {
                 ชื่อประเภทกลุ่มงาน: person.position.position_type.type,
                 "สังกัดราชการส่วนกลาง/ส่วนภูมิภาค": "xxx",
                 ชื่อจังหวัด: "xxx",
-                "สถานภาพของตำแหน่ง ":
-                  person !== null ? `ตำแหน่งที่มีคนครอง` : `ตำแหน่งว่าง`,
                 "ชื่อคำนำหน้าชื่อ ": person !== null ? person.Prename : ``,
                 ชื่อผู้ครองตำแหน่ง: person !== null ? person.Name : ``,
                 นามสกุลผู้ครองตำแหน่ง: person !== null ? person.Surname : ``,

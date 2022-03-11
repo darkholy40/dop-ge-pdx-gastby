@@ -265,6 +265,7 @@ const PositionsPage = () => {
                   dispatch({
                     type: `SET_SEARCH_POSITION_FILTER`,
                     searchPositionFilter: {
+                      ...searchPositionFilter,
                       posName: ``,
                       posType: ``,
                       unit: null,

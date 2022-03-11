@@ -365,12 +365,14 @@ const PositionsPage = () => {
                   dispatch({
                     type: `SET_SEARCH_PERSON_FILTER`,
                     searchPersonFilter: {
+                      ...searchPersonFilter,
                       personName: ``,
                       personSurname: ``,
                       personId: ``,
                       personSid: ``,
                       posNumber: ``,
                       unit: null,
+                      isResigned: false,
                     },
                   })
                 }}
@@ -380,7 +382,8 @@ const PositionsPage = () => {
                   searchPersonFilter.personId === `` &&
                   searchPersonFilter.personSid === `` &&
                   searchPersonFilter.posNumber === `` &&
-                  searchPersonFilter.unit === null
+                  searchPersonFilter.unit === null &&
+                  searchPersonFilter.isResigned === false
                 }
               >
                 <FontAwesomeIcon icon={faTimes} style={{ marginRight: 5 }} />
