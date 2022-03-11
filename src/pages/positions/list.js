@@ -32,7 +32,7 @@ import PageNotFound from "../../components/PageNotFound"
 import Warning from "../../components/Warning"
 import renderDivision from "../../functions/renderDivision"
 
-const PositionsPage = () => {
+const PositionsListPage = () => {
   const { token, userInfo, url, primaryColor, searchPositionFilter } =
     useSelector(state => state)
   const dispatch = useDispatch()
@@ -493,4 +493,4 @@ const PositionsPage = () => {
   )
 }
 
-export default PositionsPage
+export default PositionsListPage

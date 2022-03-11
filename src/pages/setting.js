@@ -34,7 +34,7 @@ const Right = styled.div`
   word-break: break-word;
 `
 
-const AboutPage = () => {
+const SettingPage = () => {
   const { token, userInfo } = useSelector(state => state)
   const dispatch = useDispatch()
   const [rows, setRows] = useState([])
@@ -104,4 +104,4 @@ const AboutPage = () => {
   )
 }
 
-export default AboutPage
+export default SettingPage

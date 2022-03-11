@@ -12,7 +12,7 @@ import Breadcrumbs from "../../components/Breadcrumbs"
 import PageNotFound from "../../components/PageNotFound"
 import { Form } from "../../components/Styles"
 
-const Resignation = ({ location }) => {
+const ResignationPage = ({ location }) => {
   const { token, userInfo, url } = useSelector(state => state)
   const dispatch = useDispatch()
   const [isError, setIsError] = useState({
@@ -296,4 +296,4 @@ const Resignation = ({ location }) => {
   )
 }
 
-export default Resignation
+export default ResignationPage

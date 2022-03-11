@@ -21,7 +21,7 @@ const Container = styled.div`
   align-items: center;
 `
 
-const IndexPage = () => {
+const FlowOutPage = () => {
   const { token, url, userInfo, units } = useSelector(state => state)
   const dispatch = useDispatch()
 
@@ -228,4 +228,4 @@ const IndexPage = () => {
   )
 }
 
-export default IndexPage
+export default FlowOutPage

@@ -32,7 +32,7 @@ import PageNotFound from "../../components/PageNotFound"
 import Warning from "../../components/Warning"
 import renderDivision from "../../functions/renderDivision"
 
-const PeopleList = () => {
+const PeopleListPage = () => {
   const { token, userInfo, url, primaryColor, searchPersonFilter } =
     useSelector(state => state)
   const dispatch = useDispatch()
@@ -462,4 +462,4 @@ const PeopleList = () => {
   )
 }
 
-export default PeopleList
+export default PeopleListPage

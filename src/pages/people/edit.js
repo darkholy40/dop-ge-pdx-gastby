@@ -89,7 +89,7 @@ const datePickerProps = {
   },
 }
 
-const AddPositionsPage = ({ location }) => {
+const EditPositionsPage = ({ location }) => {
   const { token, userInfo, url, positionTypes, positionNames, redirectPage } =
     useSelector(state => state)
   const dispatch = useDispatch()
@@ -1677,4 +1677,4 @@ const AddPositionsPage = ({ location }) => {
   )
 }
 
-export default AddPositionsPage
+export default EditPositionsPage

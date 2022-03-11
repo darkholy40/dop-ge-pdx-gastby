@@ -22,7 +22,7 @@ const Container = styled.div`
   align-items: center;
 `
 
-const IndexPage = () => {
+const StockPage = () => {
   const { token, url, userInfo, units } = useSelector(state => state)
   const dispatch = useDispatch()
   const [input, setInput] = useState({
@@ -309,4 +309,4 @@ const IndexPage = () => {
   )
 }
 
-export default IndexPage
+export default StockPage

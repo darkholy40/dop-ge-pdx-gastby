@@ -23,7 +23,7 @@ import PageNotFound from "../../components/PageNotFound"
 import Warning from "../../components/Warning"
 import renderDivision from "../../functions/renderDivision"
 
-const ResignedPeopleList = () => {
+const ResignedPeopleListPage = () => {
   const { token, userInfo, url, primaryColor, searchPersonFilter } =
     useSelector(state => state)
   const dispatch = useDispatch()
@@ -417,4 +417,4 @@ const ResignedPeopleList = () => {
   )
 }
 
-export default ResignedPeopleList
+export default ResignedPeopleListPage
