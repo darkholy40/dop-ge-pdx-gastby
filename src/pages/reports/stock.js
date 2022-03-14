@@ -202,15 +202,15 @@ const StockPage = () => {
                     : ``,
                 ร้อยละที่ได้รับการเลื่อนเงินเดือน:
                   position.person !== null
-                    ? renderNumberAsText(position.person.PercentSalary)
+                    ? renderNumberAsText(position.person.PercentSalary, 2)
                     : ``,
                 คะแนนผลสัมฤทธิ์ของงาน:
                   position.person !== null
-                    ? renderNumberAsText(position.person.ScoreKPI)
+                    ? renderNumberAsText(position.person.ScoreKPI, 2)
                     : ``,
                 คะแนนประเมินสมรรถนะ:
                   position.person !== null
-                    ? renderNumberAsText(position.person.ScoreCompetence)
+                    ? renderNumberAsText(position.person.ScoreCompetence, 2)
                     : ``,
                 สภานภาพทางกาย:
                   position.person !== null

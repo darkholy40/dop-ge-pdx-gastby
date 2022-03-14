@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useState } from "react"
 import { navigate } from "gatsby"
 import { useSelector, useDispatch } from "react-redux"
 import { Button, TextField, Alert, Divider } from "@mui/material"
+import Autocomplete from "@mui/material/Autocomplete"
 import styled from "styled-components"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faSave, faChevronLeft } from "@fortawesome/free-solid-svg-icons"
@@ -11,8 +12,9 @@ import Layout from "../../components/Layout"
 import Seo from "../../components/Seo"
 import Breadcrumbs from "../../components/Breadcrumbs"
 import PageNotFound from "../../components/PageNotFound"
-import { Form } from "../../components/Styles"
+import { Form, Flex, CheckCircleFlex } from "../../components/Styles"
 import renderDivision from "../../functions/renderDivision"
+import renderCheckingIcon from "../../functions/renderCheckingIcon"
 
 const Line = styled.div`
   margin-bottom: 1rem;
@@ -344,21 +346,53 @@ const ResignationPage = ({ location }) => {
                   goSaveResignation()
                 }}
               >
-                <TextField
-                  sx={{ marginBottom: `1rem` }}
-                  multiline
-                  id="resignation-note"
-                  label="สาเหตุการลาออก"
-                  variant="outlined"
-                  onChange={e => {
-                    setInput({
-                      ...input,
-                      note: e.target.value,
-                    })
-                  }}
-                  value={input.note}
-                  disabled={isError.type === `id-notfound`}
-                />
+                <Flex style={{ marginBottom: `1rem` }}>
+                  <Autocomplete
+                    sx={{ width: `100%` }}
+                    id="resignation-note"
+                    disablePortal
+                    freeSolo
+                    options={[
+                      `ไปรับราชการ`,
+                      `ทำงานเอกชน`,
+                      `ประกอบอาชีพอิสระ`,
+                      `ไม่ผ่านการประเมินผลการปฏิบัติงาน`,
+                    ]}
+                    noOptionsText={`ไม่พบข้อมูล`}
+                    getOptionLabel={option => option}
+                    isOptionEqualToValue={(option, value) => {
+                      return option === value
+                    }}
+                    onChange={(_, newValue) => {
+                      setInput({
+                        ...input,
+                        note: newValue !== null ? newValue : ``,
+                      })
+                    }}
+                    value={input.note !== `` ? input.note : null}
+                    renderInput={params => (
+                      <TextField
+                        {...params}
+                        label="* สาเหตุการลาออก"
+                        InputProps={{
+                          ...params.InputProps,
+                          sx: {
+                            borderRadius: `5px 0 0 5px`,
+                          },
+                          onChange: e =>
+                            setInput({
+                              ...input,
+                              note: e.target.value,
+                            }),
+                          disabled: isError.type === `id-notfound`,
+                        }}
+                      />
+                    )}
+                  />
+                  <CheckCircleFlex>
+                    {renderCheckingIcon(input.note)}
+                  </CheckCircleFlex>
+                </Flex>
 
                 <Button
                   color="primary"

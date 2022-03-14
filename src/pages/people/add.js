@@ -2,35 +2,27 @@ import React, { useCallback, useEffect, useState } from "react"
 import { navigate } from "gatsby"
 import { useSelector, useDispatch } from "react-redux"
 import styled from "styled-components"
-import {
-  Grid,
-  Button,
-  TextField,
-  InputAdornment,
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
-  Divider,
-} from "@mui/material"
+import { Grid, Button, TextField, Divider } from "@mui/material"
 import MobileDatePicker from "@mui/lab/MobileDatePicker"
 import Autocomplete from "@mui/material/Autocomplete"
-import { green } from "@mui/material/colors"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import {
-  faPlus,
-  faTimes,
-  faCheckCircle as faFilledCheckCircle,
-} from "@fortawesome/free-solid-svg-icons"
-import { faCheckCircle } from "@fortawesome/free-regular-svg-icons"
+import { faPlus, faTimes } from "@fortawesome/free-solid-svg-icons"
 import { ApolloClient, InMemoryCache, gql } from "@apollo/client"
 
 import Layout from "../../components/Layout"
 import Seo from "../../components/Seo"
 import Breadcrumbs from "../../components/Breadcrumbs"
 import PageNotFound from "../../components/PageNotFound"
+import { Flex, CheckCircleFlex } from "../../components/Styles"
+import {
+  PhoneNumber,
+  Currency,
+  Percent,
+  Integer,
+} from "../../components/NumberFormatAndMask"
 import renderDateForGraphQL from "../../functions/renderDateForGraphQL"
 import renderDivision from "../../functions/renderDivision"
+import renderCheckingIcon from "../../functions/renderCheckingIcon"
 
 const Form = styled.form`
   display: flex;
@@ -39,35 +31,8 @@ const Form = styled.form`
   // margin: auto;
 `
 
-const Flex = styled.div`
-  display: flex;
-  flex-direction: row;
-  justify-content: flex-start;
-  align-items: center;
-`
-
-const CheckCircleFlex = styled.div`
-  border-radius: 0 5px 5px 0;
-  border-top: 1px solid rgba(0, 0, 0, 0.24);
-  border-right: 1px solid rgba(0, 0, 0, 0.24);
-  border-bottom: 1px solid rgba(0, 0, 0, 0.24);
-  height: 54px;
-  width: 30px;
-  padding-right: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-`
-
 const textfieldProps = {
   width: `100%`,
-}
-
-const selectProps = {
-  ".MuiSvgIcon-root.MuiSvgIcon-fontSizeMedium.MuiSelect-icon.MuiSelect-iconOutlined":
-    {
-      display: `none`,
-    },
 }
 
 const datePickerProps = {
@@ -443,25 +408,6 @@ const AddPositionsPage = () => {
     })
   }
 
-  const renderCheckingIcon = value => {
-    if (value === ``) {
-      return (
-        <InputAdornment position="end">
-          <FontAwesomeIcon icon={faCheckCircle} />
-        </InputAdornment>
-      )
-    }
-
-    return (
-      <InputAdornment position="end">
-        <FontAwesomeIcon
-          icon={faFilledCheckCircle}
-          style={{ color: green[500] }}
-        />
-      </InputAdornment>
-    )
-  }
-
   const clearInput = () => {
     setPrename(``)
     setName(``)
@@ -539,27 +485,44 @@ const AddPositionsPage = () => {
           >
             <Grid container spacing={2} sx={{ marginBottom: `1rem` }}>
               <Grid item xs={12} sm={3}>
-                <FormControl fullWidth>
-                  <InputLabel id="prefix-id">* คำนำหน้าชื่อ</InputLabel>
-                  <Select
-                    sx={selectProps}
-                    labelId="prefix-id"
+                <Flex>
+                  <Autocomplete
+                    sx={{ width: `100%` }}
                     id="Prename"
-                    label="* คำนำหน้าชื่อ"
-                    onChange={e => setPrename(e.target.value)}
-                    value={prename}
-                    endAdornment={renderCheckingIcon(prename)}
-                  >
-                    <MenuItem value="" selected>
-                      ---
-                    </MenuItem>
-                    <MenuItem value="นาย">นาย</MenuItem>
-                    <MenuItem value="นาง">นาง</MenuItem>
-                    <MenuItem value="นางสาว">นางสาว</MenuItem>
-                    <MenuItem value="ว่าที่ ร.ต.">ว่าที่ ร.ต.</MenuItem>
-                    <MenuItem value="ว่าที่ ร.ต.หญิง">ว่าที่ ร.ต.หญิง</MenuItem>
-                  </Select>
-                </FormControl>
+                    disablePortal
+                    options={[
+                      `นาย`,
+                      `นาง`,
+                      `นางสาว`,
+                      `ว่าที่ ร.ต.`,
+                      `ว่าที่ ร.ต.หญิง`,
+                    ]}
+                    noOptionsText={`ไม่พบข้อมูล`}
+                    getOptionLabel={option => option}
+                    isOptionEqualToValue={(option, value) => {
+                      return option === value
+                    }}
+                    onChange={(_, newValue) => {
+                      setPrename(newValue !== null ? newValue : ``)
+                    }}
+                    value={prename !== `` ? prename : null}
+                    renderInput={params => (
+                      <TextField
+                        {...params}
+                        label="* คำนำหน้าชื่อ"
+                        InputProps={{
+                          ...params.InputProps,
+                          sx: {
+                            borderRadius: `5px 0 0 5px`,
+                          },
+                        }}
+                      />
+                    )}
+                  />
+                  <CheckCircleFlex>
+                    {renderCheckingIcon(prename)}
+                  </CheckCircleFlex>
+                </Flex>
               </Grid>
               <Grid item xs={12} sm={4}>
                 <TextField
@@ -849,24 +812,38 @@ const AddPositionsPage = () => {
             </Grid>
             <Grid container spacing={2} sx={{ marginBottom: `1rem` }}>
               <Grid item xs={12} sm={2}>
-                <FormControl fullWidth>
-                  <InputLabel id="gender-id">* เพศ</InputLabel>
-                  <Select
-                    sx={selectProps}
-                    labelId="gender-id"
+                <Flex>
+                  <Autocomplete
+                    sx={{ width: `100%` }}
                     id="Gender"
-                    label="* เพศ"
-                    onChange={e => setGender(e.target.value)}
-                    value={gender}
-                    endAdornment={renderCheckingIcon(gender)}
-                  >
-                    <MenuItem value="" selected>
-                      ---
-                    </MenuItem>
-                    <MenuItem value="ชาย">ชาย</MenuItem>
-                    <MenuItem value="หญิง">หญิง</MenuItem>
-                  </Select>
-                </FormControl>
+                    disablePortal
+                    options={[`ชาย`, `หญิง`]}
+                    noOptionsText={`ไม่พบข้อมูล`}
+                    getOptionLabel={option => option}
+                    isOptionEqualToValue={(option, value) => {
+                      return option === value
+                    }}
+                    onChange={(_, newValue) => {
+                      setGender(newValue !== null ? newValue : ``)
+                    }}
+                    value={gender !== `` ? gender : null}
+                    renderInput={params => (
+                      <TextField
+                        {...params}
+                        label="* เพศ"
+                        InputProps={{
+                          ...params.InputProps,
+                          sx: {
+                            borderRadius: `5px 0 0 5px`,
+                          },
+                        }}
+                      />
+                    )}
+                  />
+                  <CheckCircleFlex>
+                    {renderCheckingIcon(gender)}
+                  </CheckCircleFlex>
+                </Flex>
               </Grid>
               <Grid item xs={12} sm={4}>
                 <MobileDatePicker
@@ -894,27 +871,38 @@ const AddPositionsPage = () => {
                 />
               </Grid>
               <Grid item xs={12} sm={3}>
-                <FormControl fullWidth>
-                  <InputLabel id="marriedStatus-id">* สถานภาพสมรส</InputLabel>
-                  <Select
-                    sx={selectProps}
-                    labelId="marriedStatus-id"
+                <Flex>
+                  <Autocomplete
+                    sx={{ width: `100%` }}
                     id="MarriedStatus"
-                    label="* สถานภาพสมรส"
-                    onChange={e => setMarriedStatus(e.target.value)}
-                    value={marriedStatus}
-                    endAdornment={renderCheckingIcon(marriedStatus)}
-                  >
-                    <MenuItem value="" selected>
-                      ---
-                    </MenuItem>
-                    <MenuItem value="โสด">โสด</MenuItem>
-                    <MenuItem value="สมรส">สมรส</MenuItem>
-                    <MenuItem value="หม้าย">หม้าย</MenuItem>
-                    <MenuItem value="หย่า">หย่า</MenuItem>
-                    <MenuItem value="แยกกันอยู่">แยกกันอยู่</MenuItem>
-                  </Select>
-                </FormControl>
+                    disablePortal
+                    options={[`โสด`, `สมรส`, `หม้าย`, `หย่า`, `แยกกันอยู่`]}
+                    noOptionsText={`ไม่พบข้อมูล`}
+                    getOptionLabel={option => option}
+                    isOptionEqualToValue={(option, value) => {
+                      return option === value
+                    }}
+                    onChange={(_, newValue) => {
+                      setMarriedStatus(newValue !== null ? newValue : ``)
+                    }}
+                    value={marriedStatus !== `` ? marriedStatus : null}
+                    renderInput={params => (
+                      <TextField
+                        {...params}
+                        label="* สถานภาพสมรส"
+                        InputProps={{
+                          ...params.InputProps,
+                          sx: {
+                            borderRadius: `5px 0 0 5px`,
+                          },
+                        }}
+                      />
+                    )}
+                  />
+                  <CheckCircleFlex>
+                    {renderCheckingIcon(marriedStatus)}
+                  </CheckCircleFlex>
+                </Flex>
               </Grid>
               <Grid item xs={12} sm={3}>
                 <TextField
@@ -925,6 +913,7 @@ const AddPositionsPage = () => {
                   onChange={e => setTelephone(e.target.value)}
                   value={telephone}
                   InputProps={{
+                    inputComponent: PhoneNumber,
                     endAdornment: renderCheckingIcon(telephone),
                   }}
                 />
@@ -968,6 +957,7 @@ const AddPositionsPage = () => {
                   onChange={e => setEmergencyNumber(e.target.value)}
                   value={emergencyNumber}
                   InputProps={{
+                    inputComponent: PhoneNumber,
                     endAdornment: renderCheckingIcon(emergencyNumber),
                   }}
                 />
@@ -1001,17 +991,47 @@ const AddPositionsPage = () => {
             </Grid>
             <Grid container spacing={2} sx={{ marginBottom: `1rem` }}>
               <Grid item xs={12} sm={6}>
-                <TextField
-                  sx={textfieldProps}
-                  id="Edu_Level"
-                  label="* ระดับการศึกษา"
-                  variant="outlined"
-                  onChange={e => setEduLevel(e.target.value)}
-                  value={eduLevel}
-                  InputProps={{
-                    endAdornment: renderCheckingIcon(eduLevel),
-                  }}
-                />
+                <Flex>
+                  <Autocomplete
+                    sx={{ width: `100%` }}
+                    id="Edu_Level"
+                    disablePortal
+                    freeSolo
+                    options={[
+                      `มัธยมศึกษา`,
+                      `เทียบเท่าประกาศนียบัตรวิชาชีพ`,
+                      `ปริญญาตรีหรือเทียบเท่า`,
+                      `ปริญญาโทหรือเทียบเท่า`,
+                      `ปริญญาเอกหรือเทียบเท่า`,
+                      `ทักษะประสบการณ์ที่ใช้แทนวุฒิการศึกษา`,
+                    ]}
+                    noOptionsText={`ไม่พบข้อมูล`}
+                    getOptionLabel={option => option}
+                    isOptionEqualToValue={(option, value) => {
+                      return option === value
+                    }}
+                    onChange={(_, newValue) => {
+                      setEduLevel(newValue !== null ? newValue : ``)
+                    }}
+                    value={eduLevel !== `` ? eduLevel : null}
+                    renderInput={params => (
+                      <TextField
+                        {...params}
+                        label="* ระดับการศึกษา"
+                        InputProps={{
+                          ...params.InputProps,
+                          sx: {
+                            borderRadius: `5px 0 0 5px`,
+                          },
+                          onChange: e => setEduLevel(e.target.value),
+                        }}
+                      />
+                    )}
+                  />
+                  <CheckCircleFlex>
+                    {renderCheckingIcon(eduLevel)}
+                  </CheckCircleFlex>
+                </Flex>
               </Grid>
               <Grid item xs={12} sm={6}>
                 <TextField
@@ -1058,30 +1078,76 @@ const AddPositionsPage = () => {
             <Divider style={{ margin: `1rem auto 2rem`, width: 360 }} />
             <Grid container spacing={2} sx={{ marginBottom: `1rem` }}>
               <Grid item xs={12} sm={6}>
-                <TextField
-                  sx={textfieldProps}
-                  id="MovementType"
-                  label="* ชื่อประเภทการเคลื่อนไหวล่าสุด"
-                  variant="outlined"
-                  onChange={e => setMovementType(e.target.value)}
-                  value={movementType}
-                  InputProps={{
-                    endAdornment: renderCheckingIcon(movementType),
-                  }}
-                />
+                <Flex>
+                  <Autocomplete
+                    sx={{ width: `100%` }}
+                    id="MovementType"
+                    disablePortal
+                    options={[`การต่อสัญญา`, `การทำสัญญาครั้งแรก`]}
+                    noOptionsText={`ไม่พบข้อมูล`}
+                    getOptionLabel={option => option}
+                    isOptionEqualToValue={(option, value) => {
+                      return option === value
+                    }}
+                    onChange={(_, newValue) => {
+                      setMovementType(newValue !== null ? newValue : ``)
+                    }}
+                    value={movementType !== `` ? movementType : null}
+                    renderInput={params => (
+                      <TextField
+                        {...params}
+                        label="* ชื่อประเภทการเคลื่อนไหวล่าสุด"
+                        InputProps={{
+                          ...params.InputProps,
+                          sx: {
+                            borderRadius: `5px 0 0 5px`,
+                          },
+                        }}
+                      />
+                    )}
+                  />
+                  <CheckCircleFlex>
+                    {renderCheckingIcon(movementType)}
+                  </CheckCircleFlex>
+                </Flex>
               </Grid>
               <Grid item xs={12} sm={6}>
-                <TextField
-                  sx={textfieldProps}
-                  id="Outline"
-                  label="* กรอบอัตรากำลัง"
-                  variant="outlined"
-                  onChange={e => setOutline(e.target.value)}
-                  value={outline}
-                  InputProps={{
-                    endAdornment: renderCheckingIcon(outline),
-                  }}
-                />
+                <Flex>
+                  <Autocomplete
+                    sx={{ width: `100%` }}
+                    id="Outline"
+                    disablePortal
+                    options={[
+                      `กรอบอัตรากำลัง 4 ปี`,
+                      `กรอบอัตรากำลังตามมติ ครม. 5 ต.ค. 47 (กลุ่ม 2)`,
+                      `กรอบอัตรากำลังตามประกาศ คพร. ข้อ 19`,
+                    ]}
+                    noOptionsText={`ไม่พบข้อมูล`}
+                    getOptionLabel={option => option}
+                    isOptionEqualToValue={(option, value) => {
+                      return option === value
+                    }}
+                    onChange={(_, newValue) => {
+                      setOutline(newValue !== null ? newValue : ``)
+                    }}
+                    value={outline !== `` ? outline : null}
+                    renderInput={params => (
+                      <TextField
+                        {...params}
+                        label="* กรอบอัตรากำลัง"
+                        InputProps={{
+                          ...params.InputProps,
+                          sx: {
+                            borderRadius: `5px 0 0 5px`,
+                          },
+                        }}
+                      />
+                    )}
+                  />
+                  <CheckCircleFlex>
+                    {renderCheckingIcon(outline)}
+                  </CheckCircleFlex>
+                </Flex>
               </Grid>
             </Grid>
             <Grid container spacing={2} sx={{ marginBottom: `1rem` }}>
@@ -1094,6 +1160,7 @@ const AddPositionsPage = () => {
                   onChange={e => setRewardType1(e.target.value)}
                   value={rewardType1}
                   InputProps={{
+                    inputComponent: Currency,
                     endAdornment: renderCheckingIcon(rewardType1),
                   }}
                 />
@@ -1106,6 +1173,9 @@ const AddPositionsPage = () => {
                   variant="outlined"
                   onChange={e => setRewardType2(e.target.value)}
                   value={rewardType2}
+                  InputProps={{
+                    inputComponent: Currency,
+                  }}
                 />
               </Grid>
               <Grid item xs={12} sm={4}>
@@ -1116,6 +1186,9 @@ const AddPositionsPage = () => {
                   variant="outlined"
                   onChange={e => setRewardType3(e.target.value)}
                   value={rewardType3}
+                  InputProps={{
+                    inputComponent: Currency,
+                  }}
                 />
               </Grid>
             </Grid>
@@ -1129,22 +1202,48 @@ const AddPositionsPage = () => {
                   onChange={e => setContactCnt(e.target.value)}
                   value={contactCnt}
                   InputProps={{
+                    inputComponent: Integer,
                     endAdornment: renderCheckingIcon(contactCnt),
                   }}
                 />
               </Grid>
               <Grid item xs={12} sm={3}>
-                <TextField
-                  sx={textfieldProps}
-                  id="Mission"
-                  label="* ประเภทภารกิจ"
-                  variant="outlined"
-                  onChange={e => setMission(e.target.value)}
-                  value={mission}
-                  InputProps={{
-                    endAdornment: renderCheckingIcon(mission),
-                  }}
-                />
+                <Flex>
+                  <Autocomplete
+                    sx={{ width: `100%` }}
+                    id="Mission"
+                    disablePortal
+                    options={[
+                      `ตำแหน่งในภารกิจหลัก`,
+                      `ตำแหน่งในภารกิจรอง`,
+                      `ตำแหน่งในภารกิจสนับสนุน`,
+                    ]}
+                    noOptionsText={`ไม่พบข้อมูล`}
+                    getOptionLabel={option => option}
+                    isOptionEqualToValue={(option, value) => {
+                      return option === value
+                    }}
+                    onChange={(_, newValue) => {
+                      setMission(newValue !== null ? newValue : ``)
+                    }}
+                    value={mission !== `` ? mission : null}
+                    renderInput={params => (
+                      <TextField
+                        {...params}
+                        label="* ประเภทภารกิจ"
+                        InputProps={{
+                          ...params.InputProps,
+                          sx: {
+                            borderRadius: `5px 0 0 5px`,
+                          },
+                        }}
+                      />
+                    )}
+                  />
+                  <CheckCircleFlex>
+                    {renderCheckingIcon(mission)}
+                  </CheckCircleFlex>
+                </Flex>
               </Grid>
               <Grid item xs={12} sm={3}>
                 <MobileDatePicker
@@ -1198,24 +1297,79 @@ const AddPositionsPage = () => {
             <Divider style={{ margin: `1rem auto 2rem`, width: 360 }} />
             <Grid container spacing={2} sx={{ marginBottom: `1rem` }}>
               <Grid item xs={12} sm={6}>
-                <TextField
-                  sx={textfieldProps}
-                  id="Guilty"
-                  label="ความผิดทางวินัย"
-                  variant="outlined"
-                  onChange={e => setGuilty(e.target.value)}
-                  value={guilty}
-                />
+                <Flex>
+                  <Autocomplete
+                    sx={{ width: `100%` }}
+                    id="Guilty"
+                    disablePortal
+                    options={[
+                      `ความผิดทางวินัยอย่างร้ายแรง`,
+                      `ความผิดทางวินัยไม่ร้ายแรง`,
+                    ]}
+                    noOptionsText={`ไม่พบข้อมูล`}
+                    getOptionLabel={option => option}
+                    isOptionEqualToValue={(option, value) => {
+                      return option === value
+                    }}
+                    onChange={(_, newValue) => {
+                      setGuilty(newValue !== null ? newValue : ``)
+                    }}
+                    value={guilty !== `` ? guilty : null}
+                    renderInput={params => (
+                      <TextField
+                        {...params}
+                        label="ความผิดทางวินัย"
+                        InputProps={{
+                          ...params.InputProps,
+                          sx: {
+                            borderRadius: `5px`,
+                          },
+                        }}
+                      />
+                    )}
+                  />
+                </Flex>
               </Grid>
               <Grid item xs={12} sm={6}>
-                <TextField
-                  sx={textfieldProps}
-                  id="Punish"
-                  label="ประเภทโทษทางวินัย"
-                  variant="outlined"
-                  onChange={e => setPunish(e.target.value)}
-                  value={punish}
-                />
+                <Flex>
+                  <Autocomplete
+                    sx={{ width: `100%` }}
+                    id="Punish"
+                    disablePortal
+                    options={[
+                      `ภาคทัณฑ์`,
+                      `ตัดค่าตอบแทน(เงินเดือน)`,
+                      `ลดขั้นเงินเดือน`,
+                      `ให้ออกเหตุวินัย`,
+                      `ปลดออก`,
+                      `ไล่ออก`,
+                      `ทำทัณฑ์บน`,
+                      `ว่ากล่าวตักเตือน`,
+                      `ยุติเรื่อง`,
+                    ]}
+                    noOptionsText={`ไม่พบข้อมูล`}
+                    getOptionLabel={option => option}
+                    isOptionEqualToValue={(option, value) => {
+                      return option === value
+                    }}
+                    onChange={(_, newValue) => {
+                      setPunish(newValue !== null ? newValue : ``)
+                    }}
+                    value={punish !== `` ? punish : null}
+                    renderInput={params => (
+                      <TextField
+                        {...params}
+                        label="ประเภทโทษทางวินัย"
+                        InputProps={{
+                          ...params.InputProps,
+                          sx: {
+                            borderRadius: `5px`,
+                          },
+                        }}
+                      />
+                    )}
+                  />
+                </Flex>
               </Grid>
             </Grid>
             <Grid container spacing={2} sx={{ marginBottom: `1rem` }}>
@@ -1237,6 +1391,9 @@ const AddPositionsPage = () => {
                   variant="outlined"
                   onChange={e => setPercentSalary(e.target.value)}
                   value={percentSalary}
+                  InputProps={{
+                    inputComponent: Percent,
+                  }}
                 />
               </Grid>
             </Grid>
@@ -1249,6 +1406,9 @@ const AddPositionsPage = () => {
                   variant="outlined"
                   onChange={e => setScoreKPI(e.target.value)}
                   value={scoreKPI}
+                  InputProps={{
+                    inputComponent: Percent,
+                  }}
                 />
               </Grid>
               <Grid item xs={12} sm={4}>
@@ -1259,17 +1419,41 @@ const AddPositionsPage = () => {
                   variant="outlined"
                   onChange={e => setScoreCompetence(e.target.value)}
                   value={scoreCompetence}
+                  InputProps={{
+                    inputComponent: Percent,
+                  }}
                 />
               </Grid>
               <Grid item xs={12} sm={4}>
-                <TextField
-                  sx={textfieldProps}
-                  id="StatusDisability"
-                  label="สภานภาพทางกาย"
-                  variant="outlined"
-                  onChange={e => setStatusDisability(e.target.value)}
-                  value={statusDisability}
-                />
+                <Flex>
+                  <Autocomplete
+                    sx={{ width: `100%` }}
+                    id="StatusDisability"
+                    disablePortal
+                    options={[`ปกติ`, `ทุพพลภาพ`]}
+                    noOptionsText={`ไม่พบข้อมูล`}
+                    getOptionLabel={option => option}
+                    isOptionEqualToValue={(option, value) => {
+                      return option === value
+                    }}
+                    onChange={(_, newValue) => {
+                      setStatusDisability(newValue !== null ? newValue : ``)
+                    }}
+                    value={statusDisability !== `` ? statusDisability : null}
+                    renderInput={params => (
+                      <TextField
+                        {...params}
+                        label="สภานภาพทางกาย"
+                        InputProps={{
+                          ...params.InputProps,
+                          sx: {
+                            borderRadius: `5px`,
+                          },
+                        }}
+                      />
+                    )}
+                  />
+                </Flex>
               </Grid>
             </Grid>
             <Grid container spacing={2} sx={{ marginBottom: `1rem` }}>
