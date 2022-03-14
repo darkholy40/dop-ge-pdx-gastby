@@ -853,6 +853,11 @@ const AddPositionsPage = () => {
                   onChange={newValue => {
                     setBirthDate(newValue)
                   }}
+                  onOpen={() => {
+                    if (birthDate === null) {
+                      setBirthDate(new Date())
+                    }
+                  }}
                   value={birthDate}
                   renderInput={params => {
                     return (
@@ -972,6 +977,11 @@ const AddPositionsPage = () => {
                   label="* วันเริ่มทำสัญญา"
                   onChange={newValue => {
                     setStartDate(newValue)
+                  }}
+                  onOpen={() => {
+                    if (startDate === null) {
+                      setStartDate(new Date())
+                    }
                   }}
                   value={startDate}
                   renderInput={params => (
@@ -1253,6 +1263,11 @@ const AddPositionsPage = () => {
                   onChange={newValue => {
                     setCurrentContactStart(newValue)
                   }}
+                  onOpen={() => {
+                    if (currentContactStart === null) {
+                      setCurrentContactStart(new Date())
+                    }
+                  }}
                   value={currentContactStart}
                   renderInput={params => (
                     <TextField
@@ -1277,6 +1292,11 @@ const AddPositionsPage = () => {
                   label="* วันที่สิ้นสุดสัญญาปัจจุบัน"
                   onChange={newValue => {
                     setCurrentContactEnd(newValue)
+                  }}
+                  onOpen={() => {
+                    if (currentContactEnd === null) {
+                      setCurrentContactEnd(new Date())
+                    }
                   }}
                   value={currentContactEnd}
                   renderInput={params => (

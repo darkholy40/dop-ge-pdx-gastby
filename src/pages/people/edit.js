@@ -672,7 +672,7 @@ const EditPositionsPage = ({ location }) => {
     setSkills(data.person.skills)
   }
 
-  const clearInput = () => {
+  const reloadInput = () => {
     getPerson()
     // setPrename(``)
     // setName(``)
@@ -686,10 +686,10 @@ const EditPositionsPage = ({ location }) => {
     // setGender(``)
     // setBirthDate(null)
     // setMarriedStatus(``)
-    // setTelephone(``)
+    setTelephone(``)
     // setAddress(``)
     // setEmergencyName(``)
-    // setEmergencyNumber(``)
+    setEmergencyNumber(``)
     // setStartDate(null)
     // setEduLevel(``)
     // setEduName(``)
@@ -1152,6 +1152,11 @@ const EditPositionsPage = ({ location }) => {
                         onChange={newValue => {
                           setBirthDate(newValue)
                         }}
+                        onOpen={() => {
+                          if (birthDate === null) {
+                            setBirthDate(new Date())
+                          }
+                        }}
                         value={birthDate}
                         renderInput={params => {
                           return (
@@ -1277,6 +1282,11 @@ const EditPositionsPage = ({ location }) => {
                         label="* วันเริ่มทำสัญญา"
                         onChange={newValue => {
                           setStartDate(newValue)
+                        }}
+                        onOpen={() => {
+                          if (startDate === null) {
+                            setStartDate(new Date())
+                          }
                         }}
                         value={startDate}
                         renderInput={params => (
@@ -1558,6 +1568,11 @@ const EditPositionsPage = ({ location }) => {
                         onChange={newValue => {
                           setCurrentContactStart(newValue)
                         }}
+                        onOpen={() => {
+                          if (currentContactStart === null) {
+                            setCurrentContactStart(new Date())
+                          }
+                        }}
                         value={currentContactStart}
                         renderInput={params => (
                           <TextField
@@ -1582,6 +1597,11 @@ const EditPositionsPage = ({ location }) => {
                         label="* วันที่สิ้นสุดสัญญาปัจจุบัน"
                         onChange={newValue => {
                           setCurrentContactEnd(newValue)
+                        }}
+                        onOpen={() => {
+                          if (currentContactEnd === null) {
+                            setCurrentContactEnd(new Date())
+                          }
                         }}
                         value={currentContactEnd}
                         renderInput={params => (
@@ -1827,7 +1847,7 @@ const EditPositionsPage = ({ location }) => {
                         fullWidth
                         color="primary"
                         type="reset"
-                        onClick={() => clearInput()}
+                        onClick={() => reloadInput()}
                       >
                         <FontAwesomeIcon
                           icon={faRedoAlt}
