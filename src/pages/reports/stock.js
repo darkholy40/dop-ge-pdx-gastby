@@ -14,6 +14,7 @@ import { Form, Flex } from "../../components/Styles"
 import renderDivision from "../../functions/renderDivision"
 import renderThaiDate from "../../functions/renderThaiDate"
 import renderNumberAsText from "../../functions/renderNumberAsText"
+import renderPositionStatus from "../../functions/renderPositionStatus"
 
 const Container = styled.div`
   width: 100%;
@@ -80,6 +81,8 @@ const StockPage = () => {
                 ScoreKPI
                 ScoreCompetence
                 StatusDisability
+                type
+                skills
               }
               position_type {
                 type
@@ -88,6 +91,7 @@ const StockPage = () => {
               }
               isOpen
               isSouth
+              have_a_budget
               staff_created
               staff_updated
               published_at
@@ -122,8 +126,8 @@ const StockPage = () => {
                 ชื่อจังหวัด: "xxx",
                 "สถานภาพของตำแหน่ง ":
                   position.person !== null
-                    ? `ตำแหน่งที่มีคนครอง`
-                    : `ตำแหน่งว่าง`,
+                    ? renderPositionStatus(position.person.type)
+                    : renderPositionStatus(`-`, position.have_a_budget),
                 "ชื่อคำนำหน้าชื่อ ":
                   position.person !== null ? position.person.Prename : ``,
                 ชื่อผู้ครองตำแหน่ง:
@@ -143,7 +147,8 @@ const StockPage = () => {
                     : ``,
                 ชื่อระดับการศึกษา:
                   position.person !== null ? position.person.Edu_Level : ``,
-                ทักษะประสบการณ์: "xxx",
+                ทักษะประสบการณ์:
+                  position.person !== null ? position.person.skills || `-` : ``,
                 "ชื่อวุฒิการศึกษา(ในตำแหน่ง)":
                   position.person !== null ? position.person.Edu_Name : ``,
                 "ชื่อสถาบันการศึกษาที่สำเร็จการศึกษา(ในตำแหน่ง)":

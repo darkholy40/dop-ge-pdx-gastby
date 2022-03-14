@@ -135,6 +135,7 @@ const EditPositionsPage = ({ location }) => {
   const [scoreKPI, setScoreKPI] = useState(``)
   const [scoreCompetence, setScoreCompetence] = useState(``)
   const [statusDisability, setStatusDisability] = useState(``)
+  const [skills, setSkills] = useState(``)
   const [firstStrike, setFirstStrike] = useState(false)
 
   const search = location.search.split("id=")
@@ -203,6 +204,7 @@ const EditPositionsPage = ({ location }) => {
               ScoreKPI
               ScoreCompetence
               StatusDisability
+              skills
               staff_created
               staff_updated
               type
@@ -484,6 +486,7 @@ const EditPositionsPage = ({ location }) => {
                 ScoreKPI: "${scoreKPI}",
                 ScoreCompetence: "${scoreCompetence}",
                 StatusDisability: "${statusDisability}",
+                skills: "${skills}",
                 staff_created: "${userInfo.id}",
                 staff_updated: "",
                 type: "${jobType}",
@@ -721,6 +724,7 @@ const EditPositionsPage = ({ location }) => {
     setScoreKPI(data.person.ScoreKPI)
     setScoreCompetence(data.person.ScoreCompetence)
     setStatusDisability(data.person.StatusDisability)
+    setSkills(data.person.skills)
   }
 
   const clearInput = () => {
@@ -1583,6 +1587,18 @@ const EditPositionsPage = ({ location }) => {
                         variant="outlined"
                         onChange={e => setStatusDisability(e.target.value)}
                         value={statusDisability}
+                      />
+                    </Grid>
+                  </Grid>
+                  <Grid container spacing={2} sx={{ marginBottom: `1rem` }}>
+                    <Grid item xs={12}>
+                      <TextField
+                        sx={textfieldProps}
+                        id="skills"
+                        label="ทักษะประสบการณ์"
+                        variant="outlined"
+                        onChange={e => setSkills(e.target.value)}
+                        value={skills}
                       />
                     </Grid>
                   </Grid>

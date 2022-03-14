@@ -135,6 +135,7 @@ const AddPositionsPage = () => {
   const [scoreKPI, setScoreKPI] = useState(``)
   const [scoreCompetence, setScoreCompetence] = useState(``)
   const [statusDisability, setStatusDisability] = useState(``)
+  const [skills, setSkills] = useState(``)
 
   const getPositions = useCallback(async () => {
     const client = new ApolloClient({
@@ -316,6 +317,7 @@ const AddPositionsPage = () => {
                 ScoreKPI: "${scoreKPI}",
                 ScoreCompetence: "${scoreCompetence}",
                 StatusDisability: "${statusDisability}",
+                skills: "${skills}",
                 staff_created: "${userInfo.id}",
                 staff_updated: "",
                 type: "${jobType}",
@@ -498,6 +500,7 @@ const AddPositionsPage = () => {
     setScoreKPI(``)
     setScoreCompetence(``)
     setStatusDisability(``)
+    setSkills(``)
   }
 
   useEffect(() => {
@@ -1269,6 +1272,18 @@ const AddPositionsPage = () => {
                 />
               </Grid>
             </Grid>
+            <Grid container spacing={2} sx={{ marginBottom: `1rem` }}>
+              <Grid item xs={12}>
+                <TextField
+                  sx={textfieldProps}
+                  id="skills"
+                  label="ทักษะประสบการณ์"
+                  variant="outlined"
+                  onChange={e => setSkills(e.target.value)}
+                  value={skills}
+                />
+              </Grid>
+            </Grid>
 
             <Grid container spacing={2} sx={{ marginBottom: `1rem` }}>
               <Grid item xs={12}>
@@ -1350,7 +1365,8 @@ const AddPositionsPage = () => {
                     percentSalary === `` &&
                     scoreKPI === `` &&
                     scoreCompetence === `` &&
-                    statusDisability === ``
+                    statusDisability === `` &&
+                    skills === ``
                   }
                 >
                   <FontAwesomeIcon icon={faTimes} style={{ marginRight: 5 }} />
