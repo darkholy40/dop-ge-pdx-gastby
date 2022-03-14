@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from "react"
+import React, { useCallback, useEffect, useState } from "react"
 import { navigate } from "gatsby"
 import { useSelector, useDispatch } from "react-redux"
-import { Button, TextField, Alert } from "@mui/material"
+import { Button, TextField, Alert, Divider } from "@mui/material"
+import styled from "styled-components"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faSave, faChevronLeft } from "@fortawesome/free-solid-svg-icons"
 import { ApolloClient, InMemoryCache, gql } from "@apollo/client"
@@ -11,6 +12,20 @@ import Seo from "../../components/Seo"
 import Breadcrumbs from "../../components/Breadcrumbs"
 import PageNotFound from "../../components/PageNotFound"
 import { Form } from "../../components/Styles"
+import renderDivision from "../../functions/renderDivision"
+
+const Line = styled.div`
+  margin-bottom: 1rem;
+  display: flex;
+  flex-direction: column;
+`
+const Label = styled.span`
+  font-size: 0.75rem;
+  color: rgba(0, 0, 0, 0.5);
+  margin-bottom: 0.5rem;
+`
+
+const Text = styled.span``
 
 const ResignationPage = ({ location }) => {
   const { token, userInfo, url } = useSelector(state => state)
@@ -23,8 +38,62 @@ const ResignationPage = ({ location }) => {
   const [input, setInput] = useState({
     note: ``,
   })
+  const [personData, setPersonData] = useState(null)
   const search = location.search.split("id=")
   const id = search[1] || `0`
+
+  const getPerson = useCallback(async () => {
+    const client = new ApolloClient({
+      uri: `${url}/graphql`,
+      cache: new InMemoryCache(),
+    })
+
+    dispatch({
+      type: `SET_BACKDROP_OPEN`,
+      backdropOpen: true,
+    })
+
+    try {
+      const res = await client.query({
+        query: gql`
+          query Positions {
+            positions(where: {
+              person: "${id}"
+            }) {
+              _id
+              number
+              person {
+                _id
+                Prename
+                Name
+                Surname
+              }
+              position_type {
+                type
+                name
+              }
+              division {
+                _id
+                division1
+                division2
+                division3
+              }
+            }
+          }
+        `,
+      })
+
+      setPersonData(res.data.positions[0])
+    } catch {
+      console.log(`network error - can't get person data.`)
+      getPerson()
+    }
+
+    dispatch({
+      type: `SET_BACKDROP_OPEN`,
+      backdropOpen: false,
+    })
+  }, [id, url, dispatch])
 
   const goSaveResignation = async () => {
     const client = new ApolloClient({
@@ -214,6 +283,10 @@ const ResignationPage = ({ location }) => {
     })
   }, [dispatch])
 
+  useEffect(() => {
+    getPerson()
+  }, [getPerson])
+
   return (
     <Layout>
       {token !== `` ? (
@@ -233,61 +306,97 @@ const ResignationPage = ({ location }) => {
             current="กำลังพลลาออก"
           />
 
-          <Form
-            onSubmit={e => {
-              e.preventDefault()
-              goSaveResignation()
-            }}
-          >
-            <TextField
-              sx={{ marginBottom: `1rem` }}
-              multiline
-              id="resignation-note"
-              label="สาเหตุการลาออก"
-              variant="outlined"
-              onChange={e => {
-                setInput({
-                  ...input,
-                  note: e.target.value,
-                })
-              }}
-              value={input.note}
-              disabled={isError.type === `id-notfound`}
-            />
-
-            <Button
-              color="primary"
-              variant="contained"
-              type="submit"
-              disabled={input.note === `` || isError.type === `id-notfound`}
-            >
-              <FontAwesomeIcon icon={faSave} style={{ marginRight: 5 }} />
-              บันทึก
-            </Button>
-            {isError.type === `id-notfound` && (
-              <>
-                <Alert
-                  sx={{ marginTop: `1rem`, animation: `fadein 0.3s` }}
-                  severity="error"
-                >
-                  {isError.text}
-                </Alert>
+          {personData !== null ? (
+            <>
+              <Form
+                onSubmit={e => {
+                  e.preventDefault()
+                }}
+              >
+                <Line>
+                  <Label>ชื่อ</Label>
+                  <Text>
+                    {personData.person.Prename} {personData.person.Name}{" "}
+                    {personData.person.Surname}
+                  </Text>
+                </Line>
+                <Line>
+                  <Label>ชื่อตำแหน่งในสายงาน</Label>
+                  <Text>{personData.position_type.name}</Text>
+                </Line>
+                <Line>
+                  <Label>ชื่อประเภทกลุ่มงาน</Label>
+                  <Text>{personData.position_type.type}</Text>
+                </Line>
+                <Line>
+                  <Label>เลขที่ตำแหน่ง</Label>
+                  <Text>{personData.number}</Text>
+                </Line>
+                <Line>
+                  <Label>สังกัด</Label>
+                  <Text>{renderDivision(personData.division)}</Text>
+                </Line>
+              </Form>
+              <Divider style={{ margin: `0 auto 1rem`, width: `100%` }} />
+              <Form
+                onSubmit={e => {
+                  e.preventDefault()
+                  goSaveResignation()
+                }}
+              >
+                <TextField
+                  sx={{ marginBottom: `1rem` }}
+                  multiline
+                  id="resignation-note"
+                  label="สาเหตุการลาออก"
+                  variant="outlined"
+                  onChange={e => {
+                    setInput({
+                      ...input,
+                      note: e.target.value,
+                    })
+                  }}
+                  value={input.note}
+                  disabled={isError.type === `id-notfound`}
+                />
 
                 <Button
-                  sx={{ marginTop: `3rem` }}
                   color="primary"
-                  variant="outlined"
-                  onClick={() => navigate(`/people/list`)}
+                  variant="contained"
+                  type="submit"
+                  disabled={input.note === `` || isError.type === `id-notfound`}
                 >
-                  <FontAwesomeIcon
-                    icon={faChevronLeft}
-                    style={{ marginRight: 5 }}
-                  />
-                  กลับไปหน้าค้นหากำลังพล
+                  <FontAwesomeIcon icon={faSave} style={{ marginRight: 5 }} />
+                  บันทึก
                 </Button>
-              </>
-            )}
-          </Form>
+                {isError.type === `id-notfound` && (
+                  <>
+                    <Alert
+                      sx={{ marginTop: `1rem`, animation: `fadein 0.3s` }}
+                      severity="error"
+                    >
+                      {isError.text}
+                    </Alert>
+
+                    <Button
+                      sx={{ marginTop: `3rem` }}
+                      color="primary"
+                      variant="outlined"
+                      onClick={() => navigate(`/people/list`)}
+                    >
+                      <FontAwesomeIcon
+                        icon={faChevronLeft}
+                        style={{ marginRight: 5 }}
+                      />
+                      กลับไปหน้าค้นหากำลังพล
+                    </Button>
+                  </>
+                )}
+              </Form>
+            </>
+          ) : (
+            <></>
+          )}
         </>
       ) : (
         <PageNotFound />
