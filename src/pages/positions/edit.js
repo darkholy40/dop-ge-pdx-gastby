@@ -32,6 +32,7 @@ const EditPositionsPage = ({ location }) => {
     unit: null,
     posOpen: false,
     posSouth: false,
+    haveABudget: true,
   })
   const search = location.search.split("id=")
   const id = search[1] || `0`
@@ -79,6 +80,7 @@ const EditPositionsPage = ({ location }) => {
               number
               isOpen
               isSouth
+              have_a_budget
               staff_created
               staff_updated
               published_at
@@ -104,6 +106,7 @@ const EditPositionsPage = ({ location }) => {
           unit: units.find(elem => elem._id === thisPosition.division._id),
           posOpen: thisPosition.isOpen,
           posSouth: thisPosition.isSouth,
+          haveABudget: thisPosition.have_a_budget,
         })
         setCount(prev => prev + 1)
       } else {
@@ -213,6 +216,7 @@ const EditPositionsPage = ({ location }) => {
                   number: "${addPositionFilter.posNumber}",
                   isOpen: ${addPositionFilter.posOpen},
                   isSouth: ${addPositionFilter.posSouth},
+                  have_a_budget: ${addPositionFilter.haveABudget},
                   staff_updated: "${userInfo._id}",
                   ${
                     userInfo.role.name === `Administrator`
@@ -512,6 +516,29 @@ const EditPositionsPage = ({ location }) => {
                       {isError.text}
                     </Alert>
                   )}
+                  <Flex>
+                    <Checkbox
+                      onChange={(_, newValue) => {
+                        setAddPositionFilter({
+                          ...addPositionFilter,
+                          haveABudget: newValue,
+                        })
+                      }}
+                      checked={addPositionFilter.haveABudget}
+                    />
+                    <div
+                      role="presentation"
+                      style={{ cursor: `pointer`, userSelect: `none` }}
+                      onClick={() => {
+                        setAddPositionFilter({
+                          ...addPositionFilter,
+                          haveABudget: !addPositionFilter.haveABudget,
+                        })
+                      }}
+                    >
+                      มีงบประมาณ
+                    </div>
+                  </Flex>
                   <Flex>
                     <Checkbox
                       onChange={(_, newValue) => {

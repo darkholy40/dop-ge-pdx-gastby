@@ -31,6 +31,7 @@ const AddPositionsPage = () => {
     unit: null,
     posOpen: false,
     posSouth: false,
+    haveABudget: true,
   })
 
   const goAdd = async () => {
@@ -116,6 +117,7 @@ const AddPositionsPage = () => {
                   number: "${addPositionFilter.posNumber}",
                   isOpen: ${addPositionFilter.posOpen},
                   isSouth: ${addPositionFilter.posSouth},
+                  have_a_budget: ${addPositionFilter.haveABudget},
                   staff_created: "${userInfo._id}",
                   staff_updated: "",
                   person: null,
@@ -404,6 +406,29 @@ const AddPositionsPage = () => {
                 {isError.text}
               </Alert>
             )}
+            <Flex>
+              <Checkbox
+                onChange={(_, newValue) => {
+                  setAddPositionFilter({
+                    ...addPositionFilter,
+                    haveABudget: newValue,
+                  })
+                }}
+                checked={addPositionFilter.haveABudget}
+              />
+              <div
+                role="presentation"
+                style={{ cursor: `pointer`, userSelect: `none` }}
+                onClick={() => {
+                  setAddPositionFilter({
+                    ...addPositionFilter,
+                    haveABudget: !addPositionFilter.haveABudget,
+                  })
+                }}
+              >
+                มีงบประมาณ
+              </div>
+            </Flex>
             <Flex>
               <Checkbox
                 onChange={(_, newValue) => {
