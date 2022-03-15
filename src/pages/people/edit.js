@@ -13,7 +13,7 @@ import Layout from "../../components/Layout"
 import Seo from "../../components/Seo"
 import Breadcrumbs from "../../components/Breadcrumbs"
 import PageNotFound from "../../components/PageNotFound"
-import { Flex, CheckCircleFlex } from "../../components/Styles"
+import { Flex, DisabledBlock, CheckCircleFlex } from "../../components/Styles"
 import {
   PhoneNumber,
   Currency,
@@ -421,13 +421,13 @@ const EditPositionsPage = ({ location }) => {
                 ID_Card: "${idCard}",
                 SID_Card: "${sidCard}",
                 Gender: "${gender}",
-                BirthDate: "${renderDateForGraphQL(birthDate)}",
+                BirthDate: ${renderDateForGraphQL(birthDate)},
                 MarriedStatus: "${marriedStatus}",
                 Telephone: "${telephone}",
                 Address: "${address}",
                 Emergency_Name: "${emergencyName}",
                 Emergency_Number: "${emergencyNumber}",
-                StartDate: "${renderDateForGraphQL(startDate)}",
+                StartDate: ${renderDateForGraphQL(startDate)},
                 Edu_Level: "${eduLevel}",
                 Edu_Name: "${eduName}",
                 Edu_Graduated: "${eduGraduated}",
@@ -439,10 +439,10 @@ const EditPositionsPage = ({ location }) => {
                 RewardType3: "${rewardType3}",
                 ContactCnt: "${contactCnt}",
                 Mission: "${mission}",
-                CurrentContactStart: "${renderDateForGraphQL(
+                CurrentContactStart: ${renderDateForGraphQL(
                   currentContactStart
-                )}",
-                CurrentContactEnd: "${renderDateForGraphQL(currentContactEnd)}",
+                )},
+                CurrentContactEnd: ${renderDateForGraphQL(currentContactEnd)},
                 Guilty: "${guilty}",
                 Punish: "${punish}",
                 Decoration: "${decoration}",
@@ -642,13 +642,13 @@ const EditPositionsPage = ({ location }) => {
     setPositionInput(data.position)
     setJobType(data.person.type)
     setGender(data.person.Gender)
-    setBirthDate(new Date(data.person.BirthDate))
+    setBirthDate(data.person.BirthDate)
     setMarriedStatus(data.person.MarriedStatus)
     setTelephone(data.person.Telephone)
     setAddress(data.person.Address)
     setEmergencyName(data.person.Emergency_Name)
     setEmergencyNumber(data.person.Emergency_Number)
-    setStartDate(new Date(data.person.StartDate))
+    setStartDate(data.person.StartDate)
     setEduLevel(data.person.Edu_Level)
     setEduName(data.person.Edu_Name)
     setEduGraduated(data.person.Edu_Graduated)
@@ -660,8 +660,8 @@ const EditPositionsPage = ({ location }) => {
     setRewardType3(data.person.RewardType3)
     setContactCnt(data.person.ContactCnt)
     setMission(data.person.Mission)
-    setCurrentContactStart(new Date(data.person.CurrentContactStart))
-    setCurrentContactEnd(new Date(data.person.CurrentContactEnd))
+    setCurrentContactStart(data.person.CurrentContactStart)
+    setCurrentContactEnd(data.person.CurrentContactEnd)
     setGuilty(data.person.Guilty)
     setPunish(data.person.Punish)
     setDecoration(data.person.Decoration)
@@ -731,6 +731,19 @@ const EditPositionsPage = ({ location }) => {
       getPositions()
     }
   }, [getPositions, token])
+
+  useEffect(() => {
+    if (jobType === `ลูกจ้างประจำ`) {
+      setMovementType(``)
+      setOutline(``)
+      setRewardType3(``)
+      setContactCnt(``)
+      setCurrentContactStart(null)
+      setCurrentContactEnd(null)
+    } else {
+      setDecoration(``)
+    }
+  }, [jobType])
 
   return (
     <Layout>
@@ -1393,76 +1406,86 @@ const EditPositionsPage = ({ location }) => {
                   <Divider style={{ margin: `1rem auto 2rem`, width: 360 }} />
                   <Grid container spacing={2} sx={{ marginBottom: `1rem` }}>
                     <Grid item xs={12} sm={6}>
-                      <Flex>
-                        <Autocomplete
-                          sx={{ width: `100%` }}
-                          id="MovementType"
-                          disablePortal
-                          options={[`การต่อสัญญา`, `การทำสัญญาครั้งแรก`]}
-                          noOptionsText={`ไม่พบข้อมูล`}
-                          getOptionLabel={option => option}
-                          isOptionEqualToValue={(option, value) => {
-                            return option === value
-                          }}
-                          onChange={(_, newValue) => {
-                            setMovementType(newValue !== null ? newValue : ``)
-                          }}
-                          value={movementType !== `` ? movementType : null}
-                          renderInput={params => (
-                            <TextField
-                              {...params}
-                              label="* ชื่อประเภทการเคลื่อนไหวล่าสุด"
-                              InputProps={{
-                                ...params.InputProps,
-                                sx: {
-                                  borderRadius: `5px 0 0 5px`,
-                                },
-                              }}
-                            />
-                          )}
-                        />
-                        <CheckCircleFlex>
-                          {renderCheckingIcon(movementType)}
-                        </CheckCircleFlex>
-                      </Flex>
+                      <DisabledBlock
+                        className={jobType === `ลูกจ้างประจำ` ? `disabled` : ``}
+                      >
+                        <Flex>
+                          <Autocomplete
+                            sx={{ width: `100%` }}
+                            id="MovementType"
+                            disablePortal
+                            options={[`การต่อสัญญา`, `การทำสัญญาครั้งแรก`]}
+                            noOptionsText={`ไม่พบข้อมูล`}
+                            getOptionLabel={option => option}
+                            isOptionEqualToValue={(option, value) => {
+                              return option === value
+                            }}
+                            onChange={(_, newValue) => {
+                              setMovementType(newValue !== null ? newValue : ``)
+                            }}
+                            value={movementType !== `` ? movementType : null}
+                            renderInput={params => (
+                              <TextField
+                                {...params}
+                                label="* ชื่อประเภทการเคลื่อนไหวล่าสุด"
+                                InputProps={{
+                                  ...params.InputProps,
+                                  sx: {
+                                    borderRadius: `5px 0 0 5px`,
+                                  },
+                                }}
+                              />
+                            )}
+                            disabled={jobType === `ลูกจ้างประจำ`}
+                          />
+                          <CheckCircleFlex>
+                            {renderCheckingIcon(movementType)}
+                          </CheckCircleFlex>
+                        </Flex>
+                      </DisabledBlock>
                     </Grid>
                     <Grid item xs={12} sm={6}>
-                      <Flex>
-                        <Autocomplete
-                          sx={{ width: `100%` }}
-                          id="Outline"
-                          disablePortal
-                          options={[
-                            `กรอบอัตรากำลัง 4 ปี`,
-                            `กรอบอัตรากำลังตามมติ ครม. 5 ต.ค. 47 (กลุ่ม 2)`,
-                            `กรอบอัตรากำลังตามประกาศ คพร. ข้อ 19`,
-                          ]}
-                          noOptionsText={`ไม่พบข้อมูล`}
-                          getOptionLabel={option => option}
-                          isOptionEqualToValue={(option, value) => {
-                            return option === value
-                          }}
-                          onChange={(_, newValue) => {
-                            setOutline(newValue !== null ? newValue : ``)
-                          }}
-                          value={outline !== `` ? outline : null}
-                          renderInput={params => (
-                            <TextField
-                              {...params}
-                              label="* กรอบอัตรากำลัง"
-                              InputProps={{
-                                ...params.InputProps,
-                                sx: {
-                                  borderRadius: `5px 0 0 5px`,
-                                },
-                              }}
-                            />
-                          )}
-                        />
-                        <CheckCircleFlex>
-                          {renderCheckingIcon(outline)}
-                        </CheckCircleFlex>
-                      </Flex>
+                      <DisabledBlock
+                        className={jobType === `ลูกจ้างประจำ` ? `disabled` : ``}
+                      >
+                        <Flex>
+                          <Autocomplete
+                            sx={{ width: `100%` }}
+                            id="Outline"
+                            disablePortal
+                            options={[
+                              `กรอบอัตรากำลัง 4 ปี`,
+                              `กรอบอัตรากำลังตามมติ ครม. 5 ต.ค. 47 (กลุ่ม 2)`,
+                              `กรอบอัตรากำลังตามประกาศ คพร. ข้อ 19`,
+                            ]}
+                            noOptionsText={`ไม่พบข้อมูล`}
+                            getOptionLabel={option => option}
+                            isOptionEqualToValue={(option, value) => {
+                              return option === value
+                            }}
+                            onChange={(_, newValue) => {
+                              setOutline(newValue !== null ? newValue : ``)
+                            }}
+                            value={outline !== `` ? outline : null}
+                            renderInput={params => (
+                              <TextField
+                                {...params}
+                                label="* กรอบอัตรากำลัง"
+                                InputProps={{
+                                  ...params.InputProps,
+                                  sx: {
+                                    borderRadius: `5px 0 0 5px`,
+                                  },
+                                }}
+                              />
+                            )}
+                            disabled={jobType === `ลูกจ้างประจำ`}
+                          />
+                          <CheckCircleFlex>
+                            {renderCheckingIcon(outline)}
+                          </CheckCircleFlex>
+                        </Flex>
+                      </DisabledBlock>
                     </Grid>
                   </Grid>
                   <Grid container spacing={2} sx={{ marginBottom: `1rem` }}>
@@ -1494,35 +1517,45 @@ const EditPositionsPage = ({ location }) => {
                       />
                     </Grid>
                     <Grid item xs={12} sm={4}>
-                      <TextField
-                        sx={textfieldProps}
-                        id="RewardType3"
-                        label="ค่าครองชีพชั่วคราว"
-                        variant="outlined"
-                        onChange={e => setRewardType3(e.target.value)}
-                        value={rewardType3}
-                        InputProps={{
-                          inputComponent: Currency,
-                        }}
-                      />
+                      <DisabledBlock
+                        className={jobType === `ลูกจ้างประจำ` ? `disabled` : ``}
+                      >
+                        <TextField
+                          sx={textfieldProps}
+                          id="RewardType3"
+                          label="ค่าครองชีพชั่วคราว"
+                          variant="outlined"
+                          onChange={e => setRewardType3(e.target.value)}
+                          value={rewardType3}
+                          InputProps={{
+                            inputComponent: Currency,
+                          }}
+                          disabled={jobType === `ลูกจ้างประจำ`}
+                        />
+                      </DisabledBlock>
                     </Grid>
                   </Grid>
                   <Grid container spacing={2} sx={{ marginBottom: `1rem` }}>
-                    <Grid item xs={12} sm={3}>
-                      <TextField
-                        sx={textfieldProps}
-                        id="ContactCnt"
-                        label="* จำนวนครั้งที่ทำสัญญา"
-                        variant="outlined"
-                        onChange={e => setContactCnt(e.target.value)}
-                        value={contactCnt}
-                        InputProps={{
-                          inputComponent: Integer,
-                          endAdornment: renderCheckingIcon(contactCnt),
-                        }}
-                      />
+                    <Grid item xs={12} sm={6}>
+                      <DisabledBlock
+                        className={jobType === `ลูกจ้างประจำ` ? `disabled` : ``}
+                      >
+                        <TextField
+                          sx={textfieldProps}
+                          id="ContactCnt"
+                          label="* จำนวนครั้งที่ทำสัญญา"
+                          variant="outlined"
+                          onChange={e => setContactCnt(e.target.value)}
+                          value={contactCnt}
+                          InputProps={{
+                            inputComponent: Integer,
+                            endAdornment: renderCheckingIcon(contactCnt),
+                          }}
+                          disabled={jobType === `ลูกจ้างประจำ`}
+                        />
+                      </DisabledBlock>
                     </Grid>
-                    <Grid item xs={12} sm={3}>
+                    <Grid item xs={12} sm={6}>
                       <Flex>
                         <Autocomplete
                           sx={{ width: `100%` }}
@@ -1560,65 +1593,75 @@ const EditPositionsPage = ({ location }) => {
                         </CheckCircleFlex>
                       </Flex>
                     </Grid>
-                    <Grid item xs={12} sm={3}>
-                      <MobileDatePicker
-                        {...datePickerProps}
-                        id="CurrentContactStart"
-                        label="* วันที่เริ่มสัญญาปัจจุบัน"
-                        onChange={newValue => {
-                          setCurrentContactStart(newValue)
-                        }}
-                        onOpen={() => {
-                          if (currentContactStart === null) {
-                            setCurrentContactStart(new Date())
-                          }
-                        }}
-                        value={currentContactStart}
-                        renderInput={params => (
-                          <TextField
-                            {...params}
-                            sx={textfieldProps}
-                            InputProps={{
-                              startAdornment: params.InputProps.endAdornment,
-                              endAdornment: renderCheckingIcon(
-                                currentContactStart === null
-                                  ? ``
-                                  : currentContactStart
-                              ),
-                            }}
-                          />
-                        )}
-                      />
+                    <Grid item xs={12} sm={6}>
+                      <DisabledBlock
+                        className={jobType === `ลูกจ้างประจำ` ? `disabled` : ``}
+                      >
+                        <MobileDatePicker
+                          {...datePickerProps}
+                          id="CurrentContactStart"
+                          label="* วันที่เริ่มสัญญาปัจจุบัน"
+                          onChange={newValue => {
+                            setCurrentContactStart(newValue)
+                          }}
+                          onOpen={() => {
+                            if (currentContactStart === null) {
+                              setCurrentContactStart(new Date())
+                            }
+                          }}
+                          value={currentContactStart}
+                          renderInput={params => (
+                            <TextField
+                              {...params}
+                              sx={textfieldProps}
+                              InputProps={{
+                                startAdornment: params.InputProps.endAdornment,
+                                endAdornment: renderCheckingIcon(
+                                  currentContactStart === null
+                                    ? ``
+                                    : currentContactStart
+                                ),
+                              }}
+                            />
+                          )}
+                          disabled={jobType === `ลูกจ้างประจำ`}
+                        />
+                      </DisabledBlock>
                     </Grid>
-                    <Grid item xs={12} sm={3}>
-                      <MobileDatePicker
-                        {...datePickerProps}
-                        id="CurrentContactEnd"
-                        label="* วันที่สิ้นสุดสัญญาปัจจุบัน"
-                        onChange={newValue => {
-                          setCurrentContactEnd(newValue)
-                        }}
-                        onOpen={() => {
-                          if (currentContactEnd === null) {
-                            setCurrentContactEnd(new Date())
-                          }
-                        }}
-                        value={currentContactEnd}
-                        renderInput={params => (
-                          <TextField
-                            {...params}
-                            sx={textfieldProps}
-                            InputProps={{
-                              startAdornment: params.InputProps.endAdornment,
-                              endAdornment: renderCheckingIcon(
-                                currentContactEnd === null
-                                  ? ``
-                                  : currentContactEnd
-                              ),
-                            }}
-                          />
-                        )}
-                      />
+                    <Grid item xs={12} sm={6}>
+                      <DisabledBlock
+                        className={jobType === `ลูกจ้างประจำ` ? `disabled` : ``}
+                      >
+                        <MobileDatePicker
+                          {...datePickerProps}
+                          id="CurrentContactEnd"
+                          label="* วันที่สิ้นสุดสัญญาปัจจุบัน"
+                          onChange={newValue => {
+                            setCurrentContactEnd(newValue)
+                          }}
+                          onOpen={() => {
+                            if (currentContactEnd === null) {
+                              setCurrentContactEnd(new Date())
+                            }
+                          }}
+                          value={currentContactEnd}
+                          renderInput={params => (
+                            <TextField
+                              {...params}
+                              sx={textfieldProps}
+                              InputProps={{
+                                startAdornment: params.InputProps.endAdornment,
+                                endAdornment: renderCheckingIcon(
+                                  currentContactEnd === null
+                                    ? ``
+                                    : currentContactEnd
+                                ),
+                              }}
+                            />
+                          )}
+                          disabled={jobType === `ลูกจ้างประจำ`}
+                        />
+                      </DisabledBlock>
                     </Grid>
                   </Grid>
                   <Divider style={{ margin: `1rem auto 2rem`, width: 360 }} />
@@ -1700,17 +1743,24 @@ const EditPositionsPage = ({ location }) => {
                     </Grid>
                   </Grid>
                   <Grid container spacing={2} sx={{ marginBottom: `1rem` }}>
-                    <Grid item xs={12} sm={6}>
-                      <TextField
-                        sx={textfieldProps}
-                        id="Decoration"
-                        label="เครื่องราชอิสริยาภรณ์สูงสุดที่ได้รับ"
-                        variant="outlined"
-                        onChange={e => setDecoration(e.target.value)}
-                        value={decoration}
-                      />
+                    <Grid item xs={12}>
+                      <DisabledBlock
+                        className={jobType !== `ลูกจ้างประจำ` ? `disabled` : ``}
+                      >
+                        <TextField
+                          sx={textfieldProps}
+                          id="Decoration"
+                          label="เครื่องราชอิสริยาภรณ์สูงสุดที่ได้รับ"
+                          variant="outlined"
+                          onChange={e => setDecoration(e.target.value)}
+                          value={decoration}
+                          disabled={jobType !== `ลูกจ้างประจำ`}
+                        />
+                      </DisabledBlock>
                     </Grid>
-                    <Grid item xs={12} sm={6}>
+                  </Grid>
+                  <Grid container spacing={2} sx={{ marginBottom: `1rem` }}>
+                    <Grid item xs={12} sm={3}>
                       <TextField
                         sx={textfieldProps}
                         id="PercentSalary"
@@ -1723,9 +1773,7 @@ const EditPositionsPage = ({ location }) => {
                         }}
                       />
                     </Grid>
-                  </Grid>
-                  <Grid container spacing={2} sx={{ marginBottom: `1rem` }}>
-                    <Grid item xs={12} sm={4}>
+                    <Grid item xs={12} sm={3}>
                       <TextField
                         sx={textfieldProps}
                         id="ScoreKPI"
@@ -1738,7 +1786,7 @@ const EditPositionsPage = ({ location }) => {
                         }}
                       />
                     </Grid>
-                    <Grid item xs={12} sm={4}>
+                    <Grid item xs={12} sm={3}>
                       <TextField
                         sx={textfieldProps}
                         id="ScoreCompetence"
@@ -1751,7 +1799,7 @@ const EditPositionsPage = ({ location }) => {
                         }}
                       />
                     </Grid>
-                    <Grid item xs={12} sm={4}>
+                    <Grid item xs={12} sm={3}>
                       <Flex>
                         <Autocomplete
                           sx={{ width: `100%` }}
@@ -1808,31 +1856,52 @@ const EditPositionsPage = ({ location }) => {
                         variant="contained"
                         type="submit"
                         disabled={
-                          name === `` ||
-                          surname === `` ||
-                          idCard === `` ||
-                          sidCard === `` ||
-                          positionInput === null ||
-                          jobType === null ||
-                          gender === `` ||
-                          birthDate === null ||
-                          marriedStatus === `` ||
-                          telephone === `` ||
-                          address === `` ||
-                          emergencyName === `` ||
-                          emergencyNumber === `` ||
-                          startDate === null ||
-                          eduLevel === `` ||
-                          eduName === `` ||
-                          eduGraduated === `` ||
-                          eduCountry === `` ||
-                          movementType === `` ||
-                          outline === `` ||
-                          rewardType1 === `` ||
-                          contactCnt === `` ||
-                          mission === `` ||
-                          currentContactStart === null ||
-                          currentContactEnd === null
+                          jobType !== `ลูกจ้างประจำ`
+                            ? name === `` ||
+                              surname === `` ||
+                              idCard === `` ||
+                              sidCard === `` ||
+                              positionInput === null ||
+                              jobType === null ||
+                              gender === `` ||
+                              birthDate === null ||
+                              marriedStatus === `` ||
+                              telephone === `` ||
+                              address === `` ||
+                              emergencyName === `` ||
+                              emergencyNumber === `` ||
+                              startDate === null ||
+                              eduLevel === `` ||
+                              eduName === `` ||
+                              eduGraduated === `` ||
+                              eduCountry === `` ||
+                              movementType === `` ||
+                              outline === `` ||
+                              rewardType1 === `` ||
+                              contactCnt === `` ||
+                              mission === `` ||
+                              currentContactStart === null ||
+                              currentContactEnd === null
+                            : name === `` ||
+                              surname === `` ||
+                              idCard === `` ||
+                              sidCard === `` ||
+                              positionInput === null ||
+                              jobType === null ||
+                              gender === `` ||
+                              birthDate === null ||
+                              marriedStatus === `` ||
+                              telephone === `` ||
+                              address === `` ||
+                              emergencyName === `` ||
+                              emergencyNumber === `` ||
+                              startDate === null ||
+                              eduLevel === `` ||
+                              eduName === `` ||
+                              eduGraduated === `` ||
+                              eduCountry === `` ||
+                              rewardType1 === `` ||
+                              mission === ``
                         }
                       >
                         <FontAwesomeIcon

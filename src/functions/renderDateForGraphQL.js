@@ -1,6 +1,12 @@
 const renderDateForGraphQL = date => {
   if (Object.prototype.toString.call(date) === "[object Date]") {
-    return date.toISOString().split("T")[0]
+    date.setHours(7, 0, 0, 0)
+
+    return `"${date.toISOString()}"`
+  } else {
+    if (date !== null) {
+      return `"${date}"`
+    }
   }
 
   return null

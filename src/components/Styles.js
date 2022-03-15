@@ -20,6 +20,15 @@ const Flex = styled.div`
   align-items: center;
 `
 
+const DisabledBlock = styled.div`
+  border-radius: 5px;
+
+  &.disabled {
+    opacity: 0.5;
+    background-color: rgba(0, 0, 0, 0.25);
+  }
+`
+
 const CheckCircleFlex = styled.div`
   border-radius: 0 5px 5px 0;
   border-top: 1px solid rgba(0, 0, 0, 0.24);
@@ -82,4 +91,11 @@ const ColorButton = styled.div`
   }
 `
 
-export { Form, SubmitButtonFlex, Flex, CheckCircleFlex, ColorButton }
+export {
+  Form,
+  SubmitButtonFlex,
+  Flex,
+  DisabledBlock,
+  CheckCircleFlex,
+  ColorButton,
+}
