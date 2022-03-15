@@ -281,10 +281,10 @@ const PeopleListPage = () => {
                           ลำดับ
                         </TableCell>
                         <TableCell sx={{ backgroundColor: primaryColor[200] }}>
-                          เลขที่ตำแหน่ง
+                          ชื่อ สกุล
                         </TableCell>
                         <TableCell sx={{ backgroundColor: primaryColor[200] }}>
-                          ชื่อ สกุล
+                          เลขที่ตำแหน่ง
                         </TableCell>
                         <TableCell sx={{ backgroundColor: primaryColor[200] }}>
                           กลุ่มงาน
@@ -317,11 +317,11 @@ const PeopleListPage = () => {
                           <TableCell component="th" scope="row" align="center">
                             {rowIndex + 1}
                           </TableCell>
-                          <TableCell align="left" sx={{ minWidth: 100 }}>
-                            {row.position.posNumber}
-                          </TableCell>
                           <TableCell align="left">
                             {`${row.Prename} ${row.Name} ${row.Surname}`}
+                          </TableCell>
+                          <TableCell align="left" sx={{ minWidth: 100 }}>
+                            {row.position.posNumber}
                           </TableCell>
                           <TableCell align="left">
                             {row.position.posType}
