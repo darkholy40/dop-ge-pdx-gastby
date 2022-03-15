@@ -393,10 +393,23 @@ const AddPositionsPage = () => {
               label="เลขที่ตำแหน่ง"
               variant="outlined"
               onChange={e => {
-                setAddPositionFilter({
-                  ...addPositionFilter,
-                  posNumber: e.target.value,
-                })
+                const newValue = e.target.value
+                const pattern = /[0-9]/g
+                const result = newValue.match(pattern)
+
+                if (result !== null) {
+                  const newPosNumber = result.toString().replaceAll(`,`, ``)
+
+                  setAddPositionFilter({
+                    ...addPositionFilter,
+                    posNumber: newPosNumber,
+                  })
+                } else {
+                  setAddPositionFilter({
+                    ...addPositionFilter,
+                    posNumber: ``,
+                  })
+                }
               }}
               value={addPositionFilter.posNumber}
               error={isError.status && isError.type === `posNumberIsExisted`}

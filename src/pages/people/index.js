@@ -206,13 +206,31 @@ const PositionsPage = () => {
               label="หมายเลขประจำตัวประชาชน (13 หลัก)"
               variant="outlined"
               onChange={e => {
-                dispatch({
-                  type: `SET_SEARCH_PERSON_FILTER`,
-                  searchPersonFilter: {
-                    ...searchPersonFilter,
-                    personId: e.target.value,
-                  },
-                })
+                const newValue = e.target.value
+                const pattern = /[0-9]/g
+                const result = newValue.match(pattern)
+
+                if (result !== null) {
+                  const newIdCard = result.toString().replaceAll(`,`, ``)
+
+                  if (newIdCard.length <= 13) {
+                    dispatch({
+                      type: `SET_SEARCH_PERSON_FILTER`,
+                      searchPersonFilter: {
+                        ...searchPersonFilter,
+                        personId: newIdCard,
+                      },
+                    })
+                  }
+                } else {
+                  dispatch({
+                    type: `SET_SEARCH_PERSON_FILTER`,
+                    searchPersonFilter: {
+                      ...searchPersonFilter,
+                      personId: ``,
+                    },
+                  })
+                }
               }}
               value={searchPersonFilter.personId}
             />
@@ -222,13 +240,31 @@ const PositionsPage = () => {
               label="หมายเลขประจำตัวข้าราชการกองทัพบก (10 หลัก)"
               variant="outlined"
               onChange={e => {
-                dispatch({
-                  type: `SET_SEARCH_PERSON_FILTER`,
-                  searchPersonFilter: {
-                    ...searchPersonFilter,
-                    personSid: e.target.value,
-                  },
-                })
+                const newValue = e.target.value
+                const pattern = /[0-9]/g
+                const result = newValue.match(pattern)
+
+                if (result !== null) {
+                  const newSidCard = result.toString().replaceAll(`,`, ``)
+
+                  if (newSidCard.length <= 10) {
+                    dispatch({
+                      type: `SET_SEARCH_PERSON_FILTER`,
+                      searchPersonFilter: {
+                        ...searchPersonFilter,
+                        personSid: newSidCard,
+                      },
+                    })
+                  }
+                } else {
+                  dispatch({
+                    type: `SET_SEARCH_PERSON_FILTER`,
+                    searchPersonFilter: {
+                      ...searchPersonFilter,
+                      personSid: ``,
+                    },
+                  })
+                }
               }}
               value={searchPersonFilter.personSid}
             />
@@ -238,13 +274,29 @@ const PositionsPage = () => {
               label="เลขที่ตำแหน่ง"
               variant="outlined"
               onChange={e => {
-                dispatch({
-                  type: `SET_SEARCH_PERSON_FILTER`,
-                  searchPersonFilter: {
-                    ...searchPersonFilter,
-                    posNumber: e.target.value,
-                  },
-                })
+                const newValue = e.target.value
+                const pattern = /[0-9]/g
+                const result = newValue.match(pattern)
+
+                if (result !== null) {
+                  const newPosNumber = result.toString().replaceAll(`,`, ``)
+
+                  dispatch({
+                    type: `SET_SEARCH_PERSON_FILTER`,
+                    searchPersonFilter: {
+                      ...searchPersonFilter,
+                      posNumber: newPosNumber,
+                    },
+                  })
+                } else {
+                  dispatch({
+                    type: `SET_SEARCH_PERSON_FILTER`,
+                    searchPersonFilter: {
+                      ...searchPersonFilter,
+                      posNumber: ``,
+                    },
+                  })
+                }
               }}
               value={searchPersonFilter.posNumber}
             />
