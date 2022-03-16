@@ -85,19 +85,9 @@ const PositionsPage = () => {
         })
       }
     } catch {
-      dispatch({
-        type: `SET_NOTIFICATION_DIALOG`,
-        notificationDialog: {
-          open: true,
-          title: `เชื่อมต่อฐานข้อมูลไม่สำเร็จ`,
-          description: `ไม่สามารถรับข้อมูลคลังตำแหน่งได้`,
-          variant: `error`,
-          confirmText: `เชื่อมต่ออีกครั้ง`,
-          callback: () => {
-            getPositions()
-          },
-        },
-      })
+      getPositions()
+
+      return 0
     }
 
     dispatch({

@@ -135,19 +135,9 @@ const AddPositionsPage = () => {
       const totalCount = res.data.positionsConnection.aggregate.count
       lap = Math.ceil(totalCount / 100)
     } catch {
-      dispatch({
-        type: `SET_NOTIFICATION_DIALOG`,
-        notificationDialog: {
-          open: true,
-          title: `เชื่อมต่อฐานข้อมูลไม่สำเร็จ`,
-          description: `ไม่สามารถรับข้อมูลคลังตำแหน่งได้`,
-          variant: `error`,
-          confirmText: `เชื่อมต่ออีกครั้ง`,
-          callback: () => {
-            getPositions()
-          },
-        },
-      })
+      getPositions()
+
+      return 0
     }
 
     if (lap > 0) {
@@ -223,7 +213,7 @@ const AddPositionsPage = () => {
         }
       }
     }
-  }, [url, userInfo, positionTypeSelect, positionNameSelect, dispatch])
+  }, [url, userInfo, positionTypeSelect, positionNameSelect])
 
   const goAdd = async () => {
     const client = new ApolloClient({
