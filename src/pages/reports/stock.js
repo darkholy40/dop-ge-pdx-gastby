@@ -156,9 +156,13 @@ const StockPage = () => {
                 ชื่อประเทศที่สำเร็จการศึกษา:
                   position.person !== null ? position.person.Edu_Country : ``,
                 ชื่อประเภทการเคลื่อนไหวล่าสุด:
-                  position.person !== null ? position.person.MovementType : ``,
+                  position.person !== null
+                    ? position.person.MovementType || `-`
+                    : ``,
                 กรอบอัตรากำลัง:
-                  position.person !== null ? position.person.Outline : ``,
+                  position.person !== null
+                    ? position.person.Outline || `-`
+                    : ``,
                 อัตรากำลังจังหวัดชายแดนภาคใต้: position.isSouth
                   ? `ใช่`
                   : `ไม่ใช่`,
@@ -182,11 +186,11 @@ const StockPage = () => {
                   position.person !== null ? position.person.Mission : ``,
                 วันที่เริ่มสัญญาปัจจุบัน:
                   position.person !== null
-                    ? renderThaiDate(position.person.CurrentContactStart)
+                    ? renderThaiDate(position.person.CurrentContactStart) || `-`
                     : ``,
                 วันที่สิ้นสุดสัญญาปัจจุบัน:
                   position.person !== null
-                    ? renderThaiDate(position.person.CurrentContactEnd)
+                    ? renderThaiDate(position.person.CurrentContactEnd) || `-`
                     : ``,
                 ความผิดทางวินัย:
                   position.person !== null

@@ -22,6 +22,7 @@ const Flex = styled.div`
 
 const DisabledBlock = styled.div`
   border-radius: 5px;
+  transition: background-color 0.3s;
 
   &.disabled {
     opacity: 0.5;
