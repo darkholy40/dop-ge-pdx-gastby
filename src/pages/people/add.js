@@ -243,13 +243,13 @@ const AddPositionsPage = () => {
                 ID_Card: "${idCard}",
                 SID_Card: "${sidCard}",
                 Gender: "${gender}",
-                BirthDate: "${renderDateForGraphQL(birthDate)}",
+                BirthDate: ${renderDateForGraphQL(birthDate)},
                 MarriedStatus: "${marriedStatus}",
                 Telephone: "${telephone}",
                 Address: "${address}",
                 Emergency_Name: "${emergencyName}",
                 Emergency_Number: "${emergencyNumber}",
-                StartDate: "${renderDateForGraphQL(startDate)}",
+                StartDate: ${renderDateForGraphQL(startDate)},
                 Edu_Level: "${eduLevel}",
                 Edu_Name: "${eduName}",
                 Edu_Graduated: "${eduGraduated}",
@@ -261,10 +261,10 @@ const AddPositionsPage = () => {
                 RewardType3: "${rewardType3}",
                 ContactCnt: "${contactCnt}",
                 Mission: "${mission}",
-                CurrentContactStart: "${renderDateForGraphQL(
+                CurrentContactStart: ${renderDateForGraphQL(
                   currentContactStart
-                )}",
-                CurrentContactEnd: "${renderDateForGraphQL(currentContactEnd)}",
+                )},
+                CurrentContactEnd: ${renderDateForGraphQL(currentContactEnd)},
                 Guilty: "${guilty}",
                 Punish: "${punish}",
                 Decoration: "${decoration}",
@@ -1099,6 +1099,7 @@ const AddPositionsPage = () => {
                       sx={{ width: `100%` }}
                       id="MovementType"
                       disablePortal
+                      freeSolo
                       options={[`การต่อสัญญา`, `การทำสัญญาครั้งแรก`]}
                       noOptionsText={`ไม่พบข้อมูล`}
                       getOptionLabel={option => option}
@@ -1118,6 +1119,7 @@ const AddPositionsPage = () => {
                             sx: {
                               borderRadius: `5px 0 0 5px`,
                             },
+                            onChange: e => setMovementType(e.target.value),
                           }}
                         />
                       )}

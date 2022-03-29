@@ -1404,6 +1404,7 @@ const EditPositionsPage = ({ location }) => {
                             sx={{ width: `100%` }}
                             id="MovementType"
                             disablePortal
+                            freeSolo
                             options={[`การต่อสัญญา`, `การทำสัญญาครั้งแรก`]}
                             noOptionsText={`ไม่พบข้อมูล`}
                             getOptionLabel={option => option}
@@ -1423,6 +1424,8 @@ const EditPositionsPage = ({ location }) => {
                                   sx: {
                                     borderRadius: `5px 0 0 5px`,
                                   },
+                                  onChange: e =>
+                                    setMovementType(e.target.value),
                                 }}
                               />
                             )}
