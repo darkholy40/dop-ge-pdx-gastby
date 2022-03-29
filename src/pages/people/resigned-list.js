@@ -189,7 +189,7 @@ const ResignedPeopleListPage = () => {
               resignationNote: thisPerson.resignationNote,
               staff_created: thisPerson.staff_created,
               staff_updated: thisPerson.staff_updated,
-              staff_updated_fullname: `${resUser.data.user.name} ${resUser.data.user.surname}`,
+              staff_updated_fullname: `${resUser.data.user.name} ${resUser.data.user.surname || ``}`,
               createdAt: thisPerson.createdAt,
               updatedAt: thisPerson.updatedAt,
               position: {
