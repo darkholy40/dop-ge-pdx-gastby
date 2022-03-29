@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from "react"
 import { useSelector, useDispatch } from "react-redux"
 import styled from "styled-components"
-import { TextField } from "@mui/material"
+import { TextField, Alert } from "@mui/material"
 import Autocomplete from "@mui/material/Autocomplete"
 import { ApolloClient, InMemoryCache, gql } from "@apollo/client"
 
@@ -29,7 +29,7 @@ const FlowOutPage = () => {
     unit: null,
   })
   const [data, setData] = useState([])
-  const [statusCode, setStatusCode] = useState(``)
+  const [statusCode, setStatusCode] = useState(`loading`)
 
   const getData = useCallback(async () => {
     const client = new ApolloClient({
@@ -106,6 +106,8 @@ const FlowOutPage = () => {
       })
 
       if (res) {
+        setStatusCode(``)
+
         let returnData = []
 
         if (res.data.people.length > 0) {
@@ -141,8 +143,26 @@ const FlowOutPage = () => {
       }
     } catch {
       setStatusCode(`connection`)
+
+      getData()
     }
   }, [url, input.unit])
+
+  const displayStatus = code => {
+    switch (code) {
+      case `0`:
+        return `ไม่มีข้อมูลสำหรับนำออก`
+
+      case `connection`:
+        return `การเชื่อมต่อไม่สำเร็จ กรุณาตรวจสอบการเชื่อมต่อของอุปกรณ์`
+
+      case `loading`:
+        return `กำลังโหลดข้อมูล...`
+
+      default:
+        return ``
+    }
+  }
 
   useEffect(() => {
     getData()
@@ -216,8 +236,15 @@ const FlowOutPage = () => {
                 apiData={data}
                 fileName="flow-out"
                 sheetName="FLOW-OUT"
-                statusCode={statusCode}
               />
+              {statusCode !== `` && (
+                <Alert
+                  sx={{ marginTop: `1rem`, animation: `fadein 0.3s` }}
+                  severity={statusCode === `loading` ? `info` : `error`}
+                >
+                  {displayStatus(statusCode)}
+                </Alert>
+              )}
             </Form>
           </Container>
         </>
