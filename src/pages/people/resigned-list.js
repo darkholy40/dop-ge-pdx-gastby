@@ -195,12 +195,25 @@ const ResignedPeopleListPage = () => {
               createdAt: thisPerson.createdAt,
               updatedAt: thisPerson.updatedAt,
               position: {
-                _id: thisPerson.position._id,
-                posName: thisPerson.position.position_type.name,
-                posType: thisPerson.position.position_type.type,
-                posNumber: thisPerson.position.number,
+                _id:
+                  thisPerson.position !== null ? thisPerson.position._id : ``,
+                posName:
+                  thisPerson.position !== null
+                    ? thisPerson.position.position_type.name
+                    : ``,
+                posType:
+                  thisPerson.position !== null
+                    ? thisPerson.position.position_type.type
+                    : ``,
+                posNumber:
+                  thisPerson.position !== null
+                    ? thisPerson.position.number
+                    : ``,
               },
-              division: thisPerson.position.division,
+              division:
+                thisPerson.position !== null
+                  ? thisPerson.position.division
+                  : null,
             },
           ]
         }

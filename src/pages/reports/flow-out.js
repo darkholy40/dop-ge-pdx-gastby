@@ -116,11 +116,24 @@ const FlowOutPage = () => {
               ...returnData,
               {
                 ชื่อกระทรวง: "กระทรวงกลาโหม",
-                ชื่อกรม: person.position.division.division1,
-                "ชื่อสำนัก/กอง": renderDivision(person.position.division),
-                เลขที่ตำแหน่ง: person.position.number,
-                ชื่อตำแหน่งในสายงาน: person.position.position_type.name,
-                ชื่อประเภทกลุ่มงาน: person.position.position_type.type,
+                ชื่อกรม:
+                  person.position !== null
+                    ? person.position.division.division1
+                    : ``,
+                "ชื่อสำนัก/กอง":
+                  person.position !== null
+                    ? renderDivision(person.position.division)
+                    : ``,
+                เลขที่ตำแหน่ง:
+                  person.position !== null ? person.position.number : ``,
+                ชื่อตำแหน่งในสายงาน:
+                  person.position !== null
+                    ? person.position.position_type.name
+                    : ``,
+                ชื่อประเภทกลุ่มงาน:
+                  person.position !== null
+                    ? person.position.position_type.type
+                    : ``,
                 "สังกัดราชการส่วนกลาง/ส่วนภูมิภาค": "xxx",
                 ชื่อจังหวัด: "xxx",
                 "ชื่อคำนำหน้าชื่อ ": person !== null ? person.Prename : ``,
