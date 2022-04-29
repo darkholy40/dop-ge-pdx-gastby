@@ -1,7 +1,13 @@
 import React, { useCallback, useEffect, useState } from "react"
 import { useSelector, useDispatch } from "react-redux"
 import styled from "styled-components"
-import { TextField, Alert } from "@mui/material"
+import {
+  TextField,
+  Alert,
+  Box,
+  Typography,
+  LinearProgress,
+} from "@mui/material"
 import Autocomplete from "@mui/material/Autocomplete"
 import { ApolloClient, InMemoryCache, gql } from "@apollo/client"
 
@@ -30,139 +36,180 @@ const FlowOutPage = () => {
   })
   const [data, setData] = useState([])
   const [statusCode, setStatusCode] = useState(`loading`)
+  const [percent, setPercent] = useState(0)
 
   const getData = useCallback(async () => {
+    setStatusCode(`loading`)
+    setPercent(0)
+
     const client = new ApolloClient({
       uri: `${url}/graphql`,
       cache: new InMemoryCache(),
     })
+    let lap = 0
 
     const condition =
       input.unit !== null
-        ? `(where: {
+        ? `where: {
           position: {
             division: "${input.unit._id}"
           }
-        })`
-        : `(where: {
+        }`
+        : `where: {
           position_null: false
-        })`
+        }`
 
     try {
       const res = await client.query({
         query: gql`
-          query People {
-            people${condition} {
-              _id
-              Prename
-              Name
-              Surname
-              ID_Card
-              Gender
-              BirthDate
-              StartDate
-              Edu_Level
-              Edu_Name
-              Edu_Graduated
-              Edu_Country
-              MovementType
-              Outline
-              RewardType1
-              RewardType2
-              RewardType3
-              ContactCnt
-              Mission
-              CurrentContactStart
-              CurrentContactEnd
-              Guilty
-              Punish
-              Decoration
-              PercentSalary
-              ScoreKPI
-              ScoreCompetence
-              StatusDisability
-              isResigned
-              resignationNote
-              position {
-                _id
-                number
-                position_type {
-                  type
-                  name
-                  order
-                }
-                isOpen
-                isSouth
-                division {
-                  _id
-                  division1
-                  division2
-                  division3
-                }
+          query PeopleCount {
+            peopleConnection(${condition}) {
+              aggregate {
+                count
+                totalCount
               }
             }
           }
         `,
       })
 
-      if (res) {
-        setStatusCode(``)
+      const totalCount = res.data.peopleConnection.aggregate.count
+      lap = Math.ceil(totalCount / 100)
+    } catch (error) {
+      console.log(error)
 
-        let returnData = []
+      setStatusCode(`connection`)
+      getData()
+      return 0
+    }
 
-        if (res.data.people.length > 0) {
-          for (let person of res.data.people) {
-            returnData = [
-              ...returnData,
-              {
-                ชื่อกระทรวง: "กระทรวงกลาโหม",
-                ชื่อกรม:
-                  person.position !== null
-                    ? person.position.division.division1
-                    : ``,
-                "ชื่อสำนัก/กอง":
-                  person.position !== null
-                    ? renderDivision(person.position.division)
-                    : ``,
-                เลขที่ตำแหน่ง:
-                  person.position !== null ? person.position.number : ``,
-                ชื่อตำแหน่งในสายงาน:
-                  person.position !== null
-                    ? person.position.position_type.name
-                    : ``,
-                ชื่อประเภทกลุ่มงาน:
-                  person.position !== null
-                    ? person.position.position_type.type
-                    : ``,
-                "สังกัดราชการส่วนกลาง/ส่วนภูมิภาค": "xxx",
-                ชื่อจังหวัด: "xxx",
-                "ชื่อคำนำหน้าชื่อ ": person !== null ? person.Prename : ``,
-                ชื่อผู้ครองตำแหน่ง: person !== null ? person.Name : ``,
-                นามสกุลผู้ครองตำแหน่ง: person !== null ? person.Surname : ``,
-                เลขประจำตัวประชาชน: person !== null ? person.ID_Card : ``,
-                เพศ: person !== null ? person.Gender : ``,
-                จำนวนครั้งที่ทำสัญญา:
-                  person !== null ? renderNumberAsText(person.ContactCnt) : ``,
-                ประเภทภารกิจ: person !== null ? person.Mission : ``,
-                สาเหตุการออก: person !== null ? person.resignationNote : ``,
-              },
-            ]
-          }
-        } else {
-          setStatusCode(`0`)
+    if (lap > 0) {
+      let returnData = []
+
+      for (let i = 0; i < lap; i++) {
+        const res = await client.query({
+          query: gql`
+            query People {
+              people(${condition}, limit: 100, start: ${i * 100}) {
+                _id
+                Prename
+                Name
+                Surname
+                ID_Card
+                Gender
+                BirthDate
+                StartDate
+                Edu_Level
+                Edu_Name
+                Edu_Graduated
+                Edu_Country
+                MovementType
+                Outline
+                RewardType1
+                RewardType2
+                RewardType3
+                ContactCnt
+                Mission
+                CurrentContactStart
+                CurrentContactEnd
+                Guilty
+                Punish
+                Decoration
+                PercentSalary
+                ScoreKPI
+                ScoreCompetence
+                StatusDisability
+                isResigned
+                resignationNote
+                position {
+                  _id
+                  number
+                  position_type {
+                    type
+                    name
+                    order
+                  }
+                  isOpen
+                  isSouth
+                  division {
+                    _id
+                    division1
+                    division2
+                    division3
+                  }
+                }
+              }
+            }
+          `,
+        })
+
+        for (let person of res.data.people) {
+          returnData = [...returnData, person]
         }
 
-        setData(returnData)
+        setPercent((i * 100) / lap)
       }
-    } catch {
-      setStatusCode(`connection`)
 
-      getData()
+      if (returnData.length > 0) {
+        let modifiedReturnData = []
+
+        for (let person of returnData) {
+          modifiedReturnData = [
+            ...modifiedReturnData,
+            {
+              ชื่อกระทรวง: "กระทรวงกลาโหม",
+              ชื่อกรม:
+                person.position !== null
+                  ? person.position.division.division1
+                  : ``,
+              "ชื่อสำนัก/กอง":
+                person.position !== null
+                  ? renderDivision(person.position.division)
+                  : ``,
+              เลขที่ตำแหน่ง:
+                person.position !== null ? person.position.number : ``,
+              ชื่อตำแหน่งในสายงาน:
+                person.position !== null
+                  ? person.position.position_type.name
+                  : ``,
+              ชื่อประเภทกลุ่มงาน:
+                person.position !== null
+                  ? person.position.position_type.type
+                  : ``,
+              "สังกัดราชการส่วนกลาง/ส่วนภูมิภาค": "xxx",
+              ชื่อจังหวัด: "xxx",
+              "ชื่อคำนำหน้าชื่อ ": person !== null ? person.Prename : ``,
+              ชื่อผู้ครองตำแหน่ง: person !== null ? person.Name : ``,
+              นามสกุลผู้ครองตำแหน่ง: person !== null ? person.Surname : ``,
+              เลขประจำตัวประชาชน: person !== null ? person.ID_Card : ``,
+              เพศ: person !== null ? person.Gender : ``,
+              จำนวนครั้งที่ทำสัญญา:
+                person !== null ? renderNumberAsText(person.ContactCnt) : ``,
+              ประเภทภารกิจ: person !== null ? person.Mission : ``,
+              สาเหตุการออก: person !== null ? person.resignationNote : ``,
+            },
+          ]
+        }
+
+        setData(modifiedReturnData)
+      }
+
+      setStatusCode(``)
+    } else {
+      setStatusCode(`0`)
     }
+
+    setPercent(100)
+    setTimeout(() => {
+      setPercent(0)
+    }, 300)
   }, [url, input.unit])
 
   const displayStatus = code => {
     switch (code) {
+      case ``:
+        return `การเตรียมข้อมูลนำออกสำเร็จ`
+
       case `0`:
         return `ไม่มีข้อมูลสำหรับนำออก`
 
@@ -174,6 +221,19 @@ const FlowOutPage = () => {
 
       default:
         return ``
+    }
+  }
+
+  const printSeverity = value => {
+    switch (value) {
+      case ``:
+        return `success`
+
+      case `loading`:
+        return `info`
+
+      default:
+        return `warning`
     }
   }
 
@@ -245,19 +305,42 @@ const FlowOutPage = () => {
                   )}
                 />
               </Flex>
+              <Alert
+                sx={{ marginBottom: `1rem`, animation: `fadein 0.3s` }}
+                severity={printSeverity(statusCode)}
+              >
+                {displayStatus(statusCode)}
+              </Alert>
+              <Box
+                sx={{
+                  display: `flex`,
+                  alignItems: `center`,
+                  marginBottom: `1rem`,
+                  opacity: statusCode === `loading` ? 1 : 0,
+                  transition: `opacity 0.3s`,
+                }}
+              >
+                <Box sx={{ width: `100%`, mr: 1 }}>
+                  <LinearProgress
+                    sx={{ height: `8px`, borderRadius: `8px` }}
+                    variant="determinate"
+                    value={percent}
+                  />
+                </Box>
+                <Box sx={{ minWidth: 35 }}>
+                  <Typography
+                    sx={{ transform: `skewX(-10deg)` }}
+                    variant="body2"
+                    color="text.secondary"
+                  >{`${percent.toFixed(2)}%`}</Typography>
+                </Box>
+              </Box>
               <ExportToExcel
                 apiData={data}
                 fileName="flow-out"
                 sheetName="FLOW-OUT"
+                disabled={statusCode !== ``}
               />
-              {statusCode !== `` && (
-                <Alert
-                  sx={{ marginTop: `1rem`, animation: `fadein 0.3s` }}
-                  severity={statusCode === `loading` ? `info` : `error`}
-                >
-                  {displayStatus(statusCode)}
-                </Alert>
-              )}
             </Form>
           </Container>
         </>

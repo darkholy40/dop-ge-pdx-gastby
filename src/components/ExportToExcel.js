@@ -5,7 +5,7 @@ import { Button } from "@mui/material"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faFileExcel } from "@fortawesome/free-solid-svg-icons"
 
-const ExportToExcel = ({ apiData, fileName, sheetName }) => {
+const ExportToExcel = ({ apiData, fileName, sheetName, disabled }) => {
   const fileExtension = ".xlsx"
 
   const exportToCSV = (apiData, fileName) => {
@@ -14,7 +14,7 @@ const ExportToExcel = ({ apiData, fileName, sheetName }) => {
     XLSX.writeFile(wb, fileName + fileExtension)
   }
 
-  return apiData.length > 0 ? (
+  return !disabled ? (
     <Button
       color="primary"
       variant="contained"
@@ -41,12 +41,14 @@ ExportToExcel.propTypes = {
   apiData: PropTypes.array.isRequired,
   fileName: PropTypes.string,
   sheetName: PropTypes.string,
+  disabled: PropTypes.bool,
 }
 
 ExportToExcel.defaultProps = {
   apiData: [],
   fileName: `myfile`,
   sheetName: `data`,
+  disabled: false,
 }
 
 export default ExportToExcel
