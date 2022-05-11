@@ -3,7 +3,7 @@ import { navigate } from "gatsby"
 import { useSelector, useDispatch } from "react-redux"
 import styled from "styled-components"
 import { Grid, Button, TextField, Divider } from "@mui/material"
-import MobileDatePicker from "@mui/lab/MobileDatePicker"
+import { MobileDatePicker } from "@mui/x-date-pickers/MobileDatePicker"
 import Autocomplete from "@mui/material/Autocomplete"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faSave, faTrash, faRedoAlt } from "@fortawesome/free-solid-svg-icons"
@@ -51,6 +51,8 @@ const datePickerProps = {
       marginLeft: 15,
     },
   },
+  views: [`year`, `month`, `day`],
+  openTo: `year`,
 }
 
 const EditPositionsPage = ({ location }) => {
@@ -1155,11 +1157,11 @@ const EditPositionsPage = ({ location }) => {
                         onChange={newValue => {
                           setBirthDate(newValue)
                         }}
-                        onOpen={() => {
-                          if (birthDate === null) {
-                            setBirthDate(new Date())
-                          }
-                        }}
+                        // onOpen={() => {
+                        //   if (birthDate === null) {
+                        //     setBirthDate(new Date())
+                        //   }
+                        // }}
                         value={birthDate}
                         renderInput={params => {
                           return (
@@ -1286,11 +1288,11 @@ const EditPositionsPage = ({ location }) => {
                         onChange={newValue => {
                           setStartDate(newValue)
                         }}
-                        onOpen={() => {
-                          if (startDate === null) {
-                            setStartDate(new Date())
-                          }
-                        }}
+                        // onOpen={() => {
+                        //   if (startDate === null) {
+                        //     setStartDate(new Date())
+                        //   }
+                        // }}
                         value={startDate}
                         renderInput={params => (
                           <TextField
@@ -1597,11 +1599,11 @@ const EditPositionsPage = ({ location }) => {
                           onChange={newValue => {
                             setCurrentContactStart(newValue)
                           }}
-                          onOpen={() => {
-                            if (currentContactStart === null) {
-                              setCurrentContactStart(new Date())
-                            }
-                          }}
+                          // onOpen={() => {
+                          //   if (currentContactStart === null) {
+                          //     setCurrentContactStart(new Date())
+                          //   }
+                          // }}
                           value={currentContactStart}
                           renderInput={params => (
                             <TextField
@@ -1632,11 +1634,11 @@ const EditPositionsPage = ({ location }) => {
                           onChange={newValue => {
                             setCurrentContactEnd(newValue)
                           }}
-                          onOpen={() => {
-                            if (currentContactEnd === null) {
-                              setCurrentContactEnd(new Date())
-                            }
-                          }}
+                          // onOpen={() => {
+                          //   if (currentContactEnd === null) {
+                          //     setCurrentContactEnd(new Date())
+                          //   }
+                          // }}
                           value={currentContactEnd}
                           renderInput={params => (
                             <TextField

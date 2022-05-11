@@ -428,7 +428,7 @@ const PeopleListPage = () => {
                       icon={faSignOutAlt}
                       style={{ marginRight: 5 }}
                     />
-                    ลาออก
+                    ปลดออก
                   </MenuItem>
                 </Menu>
               </>
