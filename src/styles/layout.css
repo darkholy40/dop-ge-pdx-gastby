@@ -13,6 +13,13 @@ body {
   font-family: var(--main-font-family);
 }
 
+select,
+option {
+  padding: 8px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
 .MuiDialogActions-root.MuiDialogActions-spacing
   > .MuiButton-root.MuiButton-text.MuiButton-textPrimary.MuiButton-sizeMedium.MuiButton-textSizeMedium.MuiButtonBase-root:nth-child(2) {
   display: none;
