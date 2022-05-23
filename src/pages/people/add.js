@@ -3,7 +3,7 @@ import { navigate } from "gatsby"
 import { useSelector, useDispatch } from "react-redux"
 import styled from "styled-components"
 import { Grid, Button, TextField, Divider } from "@mui/material"
-import { MobileDatePicker } from "@mui/x-date-pickers/MobileDatePicker"
+// import { MobileDatePicker } from "@mui/x-date-pickers/MobileDatePicker"
 import Autocomplete from "@mui/material/Autocomplete"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faPlus, faTimes } from "@fortawesome/free-solid-svg-icons"
@@ -20,6 +20,7 @@ import {
   Percent,
   Integer,
 } from "../../components/NumberFormatAndMask"
+import DatePicker from "../../components/DatePicker"
 import renderDateForGraphQL from "../../functions/renderDateForGraphQL"
 import renderDivision from "../../functions/renderDivision"
 import renderCheckingIcon from "../../functions/renderCheckingIcon"
@@ -35,25 +36,25 @@ const textfieldProps = {
   width: `100%`,
 }
 
-const datePickerProps = {
-  disableMaskedInput: true,
-  clearable: true,
-  clearText: "ล้าง",
-  okText: "ตกลง",
-  cancelText: "ยกเลิก",
-  todayText: "วันนี้",
-  inputFormat: "d MMMM yyyy",
-  showToolbar: false,
-  inputProps: {
-    readOnly: true,
-    placeholder: "",
-    style: {
-      marginLeft: 15,
-    },
-  },
-  views: [`year`, `month`, `day`],
-  openTo: `year`,
-}
+// const datePickerProps = {
+//   disableMaskedInput: true,
+//   clearable: true,
+//   clearText: "ล้าง",
+//   okText: "ตกลง",
+//   cancelText: "ยกเลิก",
+//   todayText: "วันนี้",
+//   inputFormat: "d MMMM yyyy",
+//   showToolbar: false,
+//   inputProps: {
+//     readOnly: true,
+//     placeholder: "",
+//     style: {
+//       marginLeft: 15,
+//     },
+//   },
+//   views: [`year`, `month`, `day`],
+//   openTo: `year`,
+// }
 
 const AddPositionsPage = () => {
   const { token, userInfo, url, positionTypes, positionNames } = useSelector(
@@ -851,7 +852,29 @@ const AddPositionsPage = () => {
                 </Flex>
               </Grid>
               <Grid item xs={12} sm={4}>
-                <MobileDatePicker
+                <DatePicker
+                  id="BirthDate"
+                  label="* วันเดือนปีเกิด"
+                  onChange={newValue => {
+                    setBirthDate(newValue)
+                  }}
+                  value={birthDate}
+                  renderInput={params => {
+                    return (
+                      <TextField
+                        {...params}
+                        sx={textfieldProps}
+                        InputProps={{
+                          startAdornment: params.InputProps.endAdornment,
+                          endAdornment: renderCheckingIcon(
+                            birthDate === null ? `` : birthDate
+                          ),
+                        }}
+                      />
+                    )
+                  }}
+                />
+                {/* <MobileDatePicker
                   {...datePickerProps}
                   id="BirthDate"
                   label="* วันเดือนปีเกิด"
@@ -878,7 +901,7 @@ const AddPositionsPage = () => {
                       />
                     )
                   }}
-                />
+                /> */}
               </Grid>
               <Grid item xs={12} sm={3}>
                 <Flex>
@@ -976,7 +999,29 @@ const AddPositionsPage = () => {
             <Divider style={{ margin: `1rem auto 2rem`, width: 360 }} />
             <Grid container spacing={2} sx={{ marginBottom: `1rem` }}>
               <Grid item xs={12}>
-                <MobileDatePicker
+                <DatePicker
+                  id="StartDate"
+                  label="* วันเริ่มทำสัญญา"
+                  onChange={newValue => {
+                    setStartDate(newValue)
+                  }}
+                  value={startDate}
+                  renderInput={params => {
+                    return (
+                      <TextField
+                        {...params}
+                        sx={textfieldProps}
+                        InputProps={{
+                          startAdornment: params.InputProps.endAdornment,
+                          endAdornment: renderCheckingIcon(
+                            startDate === null ? `` : startDate
+                          ),
+                        }}
+                      />
+                    )
+                  }}
+                />
+                {/* <MobileDatePicker
                   {...datePickerProps}
                   id="StartDate"
                   label="* วันเริ่มทำสัญญา"
@@ -1001,7 +1046,7 @@ const AddPositionsPage = () => {
                       }}
                     />
                   )}
-                />
+                /> */}
               </Grid>
             </Grid>
             <Grid container spacing={2} sx={{ marginBottom: `1rem` }}>
@@ -1286,7 +1331,33 @@ const AddPositionsPage = () => {
                 <DisabledBlock
                   className={jobType === `ลูกจ้างประจำ` ? `disabled` : ``}
                 >
-                  <MobileDatePicker
+                  <DatePicker
+                    id="CurrentContactStart"
+                    label="* วันที่เริ่มสัญญาปัจจุบัน"
+                    onChange={newValue => {
+                      setCurrentContactStart(newValue)
+                    }}
+                    value={currentContactStart}
+                    renderInput={params => {
+                      return (
+                        <TextField
+                          {...params}
+                          sx={textfieldProps}
+                          InputProps={{
+                            startAdornment: params.InputProps.endAdornment,
+                            endAdornment: renderCheckingIcon(
+                              currentContactStart === null
+                                ? ``
+                                : currentContactStart
+                            ),
+                          }}
+                        />
+                      )
+                    }}
+                    disabled={jobType === `ลูกจ้างประจำ`}
+                  />
+
+                  {/* <MobileDatePicker
                     {...datePickerProps}
                     id="CurrentContactStart"
                     label="* วันที่เริ่มสัญญาปัจจุบัน"
@@ -1314,14 +1385,40 @@ const AddPositionsPage = () => {
                       />
                     )}
                     disabled={jobType === `ลูกจ้างประจำ`}
-                  />
+                  /> */}
                 </DisabledBlock>
               </Grid>
               <Grid item xs={12} sm={6}>
                 <DisabledBlock
                   className={jobType === `ลูกจ้างประจำ` ? `disabled` : ``}
                 >
-                  <MobileDatePicker
+                  <DatePicker
+                    id="CurrentContactEnd"
+                    label="* วันที่สิ้นสุดสัญญาปัจจุบัน"
+                    onChange={newValue => {
+                      setCurrentContactEnd(newValue)
+                    }}
+                    value={currentContactEnd}
+                    renderInput={params => {
+                      return (
+                        <TextField
+                          {...params}
+                          sx={textfieldProps}
+                          InputProps={{
+                            startAdornment: params.InputProps.endAdornment,
+                            endAdornment: renderCheckingIcon(
+                              currentContactEnd === null
+                                ? ``
+                                : currentContactEnd
+                            ),
+                          }}
+                        />
+                      )
+                    }}
+                    disabled={jobType === `ลูกจ้างประจำ`}
+                  />
+
+                  {/* <MobileDatePicker
                     {...datePickerProps}
                     id="CurrentContactEnd"
                     label="* วันที่สิ้นสุดสัญญาปัจจุบัน"
@@ -1347,7 +1444,7 @@ const AddPositionsPage = () => {
                       />
                     )}
                     disabled={jobType === `ลูกจ้างประจำ`}
-                  />
+                  /> */}
                 </DisabledBlock>
               </Grid>
             </Grid>

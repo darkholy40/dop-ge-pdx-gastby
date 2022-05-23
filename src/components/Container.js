@@ -29,6 +29,29 @@ const GlobalStyles = createGlobalStyle`
       color: ${({ color }) => color[300]};
     }
   }
+
+  .react-datepicker__portal {
+    background-color: rgba(0, 0, 0, 0.5);
+
+    .react-datepicker {
+      box-shadow: 0px 11px 15px -7px rgb(0 0 0 / 20%), 0px 24px 38px 3px rgb(0 0 0 / 14%), 0px 9px 46px 8px rgb(0 0 0 / 12%);
+    }
+  }
+
+  .react-datepicker__today-button {
+    padding: 8px 0;
+    transition: 0.3s;
+
+    &:hover {
+      background-color: #ddd;
+      transition: 0.1s;
+    }
+
+    &:active {
+      background-color: #ccc;
+      transition: 0.1s;
+    }
+  }
 `
 
 const MainContainer = styled.div`
