@@ -14,7 +14,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import {
   faBars,
   faUserAlt,
-  faCog,
+  // faCog,
   faSignOutAlt,
 } from "@fortawesome/free-solid-svg-icons"
 import styled from "styled-components"
@@ -71,16 +71,12 @@ const Navbar = () => {
 
   const pages = [
     {
-      name: `home`,
-      desc: site.siteMetadata.title,
+      name: `people`,
+      desc: `ประวัติกำลังพล`,
     },
     {
       name: `positions`,
       desc: `คลังตำแหน่ง`,
-    },
-    {
-      name: `people`,
-      desc: `ประวัติกำลังพล`,
     },
     {
       name: `reports`,
@@ -147,6 +143,9 @@ const Navbar = () => {
             >
               <ColorButton primaryColor={primaryColor}>
                 <div className="row">
+                  <p style={{ margin: `8px 8px 16px` }}>
+                    {site.siteMetadata.title}
+                  </p>
                   {pages.map((page, pageIndex) => {
                     const menuList = () => (
                       <div
@@ -181,16 +180,12 @@ const Navbar = () => {
 
         <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
           <Flex primaryColor={primaryColor}>
-            <div
-              role="presentation"
-              className={currentPage === `${pages[0].name}` ? `active` : ``}
-              onClick={() => changePage(`${pages[0].name}`)}
-            >
-              {pages[0].desc}
-            </div>
+            <p style={{ margin: 0, padding: `4px 16px` }}>
+              {site.siteMetadata.title}
+            </p>
             {token !== `` && (
               <>
-                {pages.slice(1).map((page, pageIndex) => {
+                {pages.map((page, pageIndex) => {
                   const menuList = () => (
                     <div
                       key={`page_${pageIndex}`}
@@ -250,7 +245,7 @@ const Navbar = () => {
                 horizontal: "right",
               }}
             >
-              <MenuItem
+              {/* <MenuItem
                 onClick={() => {
                   setAnchorElMyInfo(null)
                   navigate(`/setting`)
@@ -262,7 +257,7 @@ const Navbar = () => {
                   style={{ fontSize: 20, marginRight: 5 }}
                 />
                 ตั้งค่า
-              </MenuItem>
+              </MenuItem> */}
               <MenuItem
                 onClick={() => {
                   setAnchorElMyInfo(null)

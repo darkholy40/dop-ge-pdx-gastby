@@ -1,4 +1,5 @@
 import React, { useEffect } from "react"
+import { navigate } from "gatsby"
 import { useSelector, useDispatch } from "react-redux"
 import styled from "styled-components"
 
@@ -24,6 +25,12 @@ const IndexPage = () => {
     })
   }, [dispatch])
 
+  useEffect(() => {
+    if (token !== ``) {
+      navigate(`/people`)
+    }
+  }, [token])
+
   return (
     <Layout>
       {token === `` ? (
@@ -34,10 +41,10 @@ const IndexPage = () => {
         </>
       ) : (
         <>
-          <Seo title="หน้าแรก" />
+          <Seo title="ระบบกำลังพาท่านไปยังหน้าจัดการประวัติกำลังพล" />
 
           <Container>
-            <p>ยินดีต้อนรับเข้าสู่ระบบพนักงานราชการและลูกจ้าง</p>
+            <p>ระบบกำลังพาท่านไปยังหน้าจัดการประวัติกำลังพล</p>
           </Container>
         </>
       )}

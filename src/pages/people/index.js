@@ -139,22 +139,29 @@ const PositionsPage = () => {
               </Alert>
             )}
 
-            <Button
-              sx={{
-                minWidth: 120,
-              }}
-              color="primary"
-              // variant="contained"
-              disabled={
-                isError.status === `disabled` || isError.status === `notfound`
-              }
-              onClick={() => {
-                navigate(`/people/add`)
-              }}
-            >
-              <FontAwesomeIcon icon={faPlusCircle} style={{ marginRight: 5 }} />
-              เพิ่มกำลังพล
-            </Button>
+            {userInfo.role.name !== `Administrator` ? (
+              <Button
+                sx={{
+                  minWidth: 120,
+                }}
+                color="primary"
+                // variant="contained"
+                disabled={
+                  isError.status === `disabled` || isError.status === `notfound`
+                }
+                onClick={() => {
+                  navigate(`/people/add`)
+                }}
+              >
+                <FontAwesomeIcon
+                  icon={faPlusCircle}
+                  style={{ marginRight: 5 }}
+                />
+                เพิ่มกำลังพล
+              </Button>
+            ) : (
+              <></>
+            )}
           </Oparator>
           <Divider style={{ marginTop: `1rem`, marginBottom: `1rem` }} />
           <Form onSubmit={e => e.preventDefault()}>
