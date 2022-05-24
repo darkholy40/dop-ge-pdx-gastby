@@ -13,6 +13,7 @@ import Breadcrumbs from "../../components/Breadcrumbs"
 import PageNotFound from "../../components/PageNotFound"
 import { Form, Flex, CheckCircleFlex } from "../../components/Styles"
 import renderCheckingIcon from "../../functions/renderCheckingIcon"
+import renderDivision from "../../functions/renderDivision"
 
 const EditPositionsPage = ({ location }) => {
   const { token, userInfo, url, positionTypes, positionNames, units } =
@@ -302,7 +303,14 @@ const EditPositionsPage = ({ location }) => {
             <Breadcrumbs
               previous={[
                 {
-                  name: `จัดการคลังตำแหน่ง`,
+                  name:
+                    userInfo.role.name !== `Administrator`
+                      ? `จัดการคลังตำแหน่ง (${
+                          userInfo.division !== null
+                            ? renderDivision(userInfo.division)
+                            : `-`
+                        })`
+                      : `จัดการคลังตำแหน่ง`,
                   link: `/positions`,
                 },
                 {

@@ -748,7 +748,14 @@ const EditPositionsPage = ({ location }) => {
               <Breadcrumbs
                 previous={[
                   {
-                    name: `จัดการคลังตำแหน่ง`,
+                    name:
+                      userInfo.role.name !== `Administrator`
+                        ? `จัดการคลังตำแหน่ง (${
+                            userInfo.division !== null
+                              ? renderDivision(userInfo.division)
+                              : `-`
+                          })`
+                        : `จัดการคลังตำแหน่ง`,
                     link: `/positions`,
                   },
                   {
@@ -762,7 +769,14 @@ const EditPositionsPage = ({ location }) => {
               <Breadcrumbs
                 previous={[
                   {
-                    name: `จัดการประวัติกำลังพล`,
+                    name:
+                      userInfo.role.name !== `Administrator`
+                        ? `จัดการประวัติกำลังพล (${
+                            userInfo.division !== null
+                              ? renderDivision(userInfo.division)
+                              : `-`
+                          })`
+                        : `จัดการประวัติกำลังพล`,
                     link: `/people`,
                   },
                   {

@@ -16,6 +16,7 @@ import Seo from "../../components/Seo"
 import Breadcrumbs from "../../components/Breadcrumbs"
 import PageNotFound from "../../components/PageNotFound"
 import { Form, SubmitButtonFlex, Flex } from "../../components/Styles"
+import renderDivision from "../../functions/renderDivision"
 
 const Oparator = styled.div`
   display: flex;
@@ -50,8 +51,28 @@ const PositionsPage = () => {
     <Layout>
       {token !== `` ? (
         <>
-          <Seo title="จัดการคลังตำแหน่ง" />
-          <Breadcrumbs current="จัดการคลังตำแหน่ง" />
+          <Seo
+            title={
+              userInfo.role.name !== `Administrator`
+                ? `จัดการคลังตำแหน่ง (${
+                    userInfo.division !== null
+                      ? renderDivision(userInfo.division)
+                      : `-`
+                  })`
+                : `จัดการคลังตำแหน่ง`
+            }
+          />
+          <Breadcrumbs
+            current={
+              userInfo.role.name !== `Administrator`
+                ? `จัดการคลังตำแหน่ง (${
+                    userInfo.division !== null
+                      ? renderDivision(userInfo.division)
+                      : `-`
+                  })`
+                : `จัดการคลังตำแหน่ง`
+            }
+          />
 
           <Oparator>
             <Button

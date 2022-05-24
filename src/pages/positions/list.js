@@ -262,7 +262,14 @@ const PositionsListPage = () => {
           <Breadcrumbs
             previous={[
               {
-                name: `จัดการคลังตำแหน่ง`,
+                name:
+                  userInfo.role.name !== `Administrator`
+                    ? `จัดการคลังตำแหน่ง (${
+                        userInfo.division !== null
+                          ? renderDivision(userInfo.division)
+                          : `-`
+                      })`
+                    : `จัดการคลังตำแหน่ง`,
                 link: `/positions`,
               },
             ]}

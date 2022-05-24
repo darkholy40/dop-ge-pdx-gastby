@@ -17,6 +17,7 @@ import Seo from "../../components/Seo"
 import Breadcrumbs from "../../components/Breadcrumbs"
 import PageNotFound from "../../components/PageNotFound"
 import { Form, SubmitButtonFlex, Flex } from "../../components/Styles"
+import renderDivision from "../../functions/renderDivision"
 
 const Oparator = styled.div`
   display: flex;
@@ -113,8 +114,28 @@ const PositionsPage = () => {
     <Layout>
       {token !== `` ? (
         <>
-          <Seo title="จัดการประวัติกำลังพล" />
-          <Breadcrumbs current="จัดการประวัติกำลังพล" />
+          <Seo
+            title={
+              userInfo.role.name !== `Administrator`
+                ? `จัดการประวัติกำลังพล (${
+                    userInfo.division !== null
+                      ? renderDivision(userInfo.division)
+                      : `-`
+                  })`
+                : `จัดการประวัติกำลังพล`
+            }
+          />
+          <Breadcrumbs
+            current={
+              userInfo.role.name !== `Administrator`
+                ? `จัดการประวัติกำลังพล (${
+                    userInfo.division !== null
+                      ? renderDivision(userInfo.division)
+                      : `-`
+                  })`
+                : `จัดการประวัติกำลังพล`
+            }
+          />
 
           <Oparator>
             {isError.status === `disabled` && (

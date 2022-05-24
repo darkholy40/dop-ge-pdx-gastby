@@ -257,7 +257,14 @@ const PeopleListPage = () => {
           <Breadcrumbs
             previous={[
               {
-                name: `จัดการประวัติกำลังพล`,
+                name:
+                  userInfo.role.name !== `Administrator`
+                    ? `จัดการประวัติกำลังพล (${
+                        userInfo.division !== null
+                          ? renderDivision(userInfo.division)
+                          : `-`
+                      })`
+                    : `จัดการประวัติกำลังพล`,
                 link: `/people`,
               },
             ]}
