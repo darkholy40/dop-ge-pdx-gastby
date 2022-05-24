@@ -14,6 +14,7 @@ import {
   MenuItem,
   Button,
   TablePagination,
+  Pagination,
 } from "@mui/material"
 import { green } from "@mui/material/colors"
 import { ApolloClient, InMemoryCache, gql } from "@apollo/client"
@@ -271,6 +272,25 @@ const PositionsListPage = () => {
           {!isError.status ? (
             posData.length > 0 && (
               <>
+                <Pagination
+                  sx={{
+                    marginBottom: `1rem`,
+                    ".MuiPagination-ul": {
+                      justifyContent: `flex-end`,
+                    },
+                  }}
+                  shape="rounded"
+                  count={Math.ceil(
+                    tableOption.totalRows / tableOption.rowsPerPage
+                  )}
+                  color="primary"
+                  onChange={(_, newPage) => {
+                    setTableOption(prev => ({
+                      ...prev,
+                      page: newPage - 1,
+                    }))
+                  }}
+                />
                 <TableContainer component={Paper}>
                   <Table
                     sx={{ minWidth: 300 }}

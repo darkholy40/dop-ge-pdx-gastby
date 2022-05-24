@@ -113,7 +113,7 @@ const MyDatePicker = props => {
       onChange={props.onChange}
       customInput={<CustomInput />}
       dateFormat="yyyy-MM-dd"
-      todayButton="วันนี้"
+      // todayButton="วันนี้"
       renderCustomHeader={({
         date,
         changeYear,
