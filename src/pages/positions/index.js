@@ -281,6 +281,7 @@ const PositionsPage = () => {
                   width: `100%`,
                 }}
                 color="error"
+                variant="outlined"
                 type="reset"
                 onClick={() => {
                   dispatch({

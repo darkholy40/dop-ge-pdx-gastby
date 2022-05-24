@@ -4,6 +4,7 @@ import { useSelector } from "react-redux"
 import styled, { createGlobalStyle } from "styled-components"
 import { Backdrop, CircularProgress } from "@mui/material"
 import { ThemeProvider, createTheme } from "@mui/material/styles"
+import { green } from "@mui/material/colors"
 // import AdapterDateFns from "@mui/lab/AdapterDateFns"
 // import LocalizationProvider from "@mui/lab/LocalizationProvider"
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns"
@@ -79,6 +80,9 @@ const Container = ({ children }) => {
       },
       secondary: {
         main: secondaryColor[500],
+      },
+      success: {
+        main: green[600],
       },
     },
   })

@@ -498,7 +498,7 @@ const AddPositionsPage = () => {
             </Flex>
 
             <Button
-              color="primary"
+              color="success"
               variant="contained"
               type="submit"
               disabled={

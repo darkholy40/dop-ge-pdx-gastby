@@ -6,7 +6,7 @@ import { Grid, Button, TextField, Divider } from "@mui/material"
 // import { MobileDatePicker } from "@mui/x-date-pickers/MobileDatePicker"
 import Autocomplete from "@mui/material/Autocomplete"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { faPlus, faTimes } from "@fortawesome/free-solid-svg-icons"
+import { faSave, faTimes } from "@fortawesome/free-solid-svg-icons"
 import { ApolloClient, InMemoryCache, gql } from "@apollo/client"
 
 import Layout from "../../components/Layout"
@@ -1636,10 +1636,11 @@ const AddPositionsPage = () => {
             </Grid>
 
             <Grid container spacing={2} sx={{ marginBottom: `1rem` }}>
-              <Grid item xs={12}>
+              <Grid item md={6} sm={12} xs={12} />
+              <Grid item md={3} sm={12} xs={12}>
                 <Button
                   fullWidth
-                  color="primary"
+                  color="success"
                   variant="contained"
                   type="submit"
                   disabled={
@@ -1691,14 +1692,15 @@ const AddPositionsPage = () => {
                         mission === ``
                   }
                 >
-                  <FontAwesomeIcon icon={faPlus} style={{ marginRight: 5 }} />
+                  <FontAwesomeIcon icon={faSave} style={{ marginRight: 5 }} />
                   เพิ่มรายการ
                 </Button>
               </Grid>
-              <Grid item xs={12}>
+              <Grid item md={3} sm={12} xs={12}>
                 <Button
                   fullWidth
                   color="error"
+                  variant="outlined"
                   type="reset"
                   onClick={() => clearInput()}
                   disabled={

@@ -610,7 +610,7 @@ const EditPositionsPage = ({ location }) => {
                   </Flex>
 
                   <Button
-                    color="primary"
+                    color="success"
                     variant="contained"
                     type="submit"
                     disabled={
@@ -635,7 +635,12 @@ const EditPositionsPage = ({ location }) => {
                     justifyContent: `end`,
                   }}
                 >
-                  <Button color="error" variant="outlined" onClick={() => {}}>
+                  <Button
+                    color="error"
+                    variant="outlined"
+                    onClick={() => {}}
+                    disabled
+                  >
                     <FontAwesomeIcon
                       icon={faTrash}
                       style={{ marginRight: 5 }}

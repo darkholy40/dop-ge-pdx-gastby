@@ -1959,10 +1959,11 @@ const EditPositionsPage = ({ location }) => {
                   </Grid>
 
                   <Grid container spacing={2} sx={{ marginBottom: `1rem` }}>
-                    <Grid item xs={12}>
+                    <Grid item md={6} sm={12} xs={12} />
+                    <Grid item md={3} sm={12} xs={12}>
                       <Button
                         fullWidth
-                        color="primary"
+                        color="success"
                         variant="contained"
                         type="submit"
                         disabled={
@@ -2021,10 +2022,11 @@ const EditPositionsPage = ({ location }) => {
                         บันทึก
                       </Button>
                     </Grid>
-                    <Grid item xs={12}>
+                    <Grid item md={3} sm={12} xs={12}>
                       <Button
                         fullWidth
                         color="primary"
+                        variant="outlined"
                         type="reset"
                         onClick={() => reloadInput()}
                       >
@@ -2044,7 +2046,12 @@ const EditPositionsPage = ({ location }) => {
                     justifyContent: `end`,
                   }}
                 >
-                  <Button color="error" variant="outlined" onClick={() => {}}>
+                  <Button
+                    color="error"
+                    variant="outlined"
+                    onClick={() => {}}
+                    disabled
+                  >
                     <FontAwesomeIcon
                       icon={faTrash}
                       style={{ marginRight: 5 }}
