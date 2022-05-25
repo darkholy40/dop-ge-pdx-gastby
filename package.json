@@ -10,7 +10,7 @@
   "scripts": {
     "dev": "npm run clean && gatsby develop --port 3000 --host 0.0.0.0 --open",
     "build": "gatsby build",
-    "serve": "npm run build && gatsby serve --port 5000 --host 0.0.0.0",
+    "serve": "npm run clean && npm run build && gatsby serve --port 5000 --host 0.0.0.0",
     "clean": "gatsby clean",
     "format": "prettier --write \"**/*.{js,jsx,ts,tsx,json,md,css}\""
   },
@@ -38,6 +38,7 @@
     "gatsby-source-filesystem": "^3.13.0",
     "gatsby-transformer-sharp": "^3.13.0",
     "graphql": "^15.6.0",
+    "jwt-decode": "^3.1.2",
     "prop-types": "^15.7.2",
     "react": "^17.0.2",
     "react-datepicker": "^4.8.0",

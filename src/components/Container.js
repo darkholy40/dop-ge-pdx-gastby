@@ -11,6 +11,7 @@ import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns"
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider"
 import thLocale from "date-fns/locale/th"
 
+import Jwt from "./jwt"
 import Navbar from "./Navbar"
 import StaticData from "./StaticData"
 import NotificationDialog from "./NotificationDialog"
@@ -91,6 +92,7 @@ const Container = ({ children }) => {
     <ThemeProvider theme={muiTheme}>
       <LocalizationProvider dateAdapter={AdapterDateFns} locale={thLocale}>
         <GlobalStyles color={primaryColor} />
+        <Jwt />
         <Navbar />
         <StaticData />
         <MainContainer>

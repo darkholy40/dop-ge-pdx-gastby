@@ -77,7 +77,9 @@ const PositionsPage = () => {
       if (totalCount > 0) {
         setIsError({
           status: ``,
-          text: `มีตำแหน่งว่าง ${totalCount} ตำแหน่ง`,
+          text: `มีตำแหน่งว่าง${
+            userInfo.role.name === `Administrator` ? `ทั้ง ทบ.` : ``
+          } ${totalCount} ตำแหน่ง`,
         })
       } else {
         setIsError({
