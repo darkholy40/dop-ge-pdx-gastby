@@ -19,7 +19,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons"
 import styled from "styled-components"
 
-import { ColorButton } from "./Styles"
+import { ColorButton } from "./styles"
 
 const Flex = styled.div`
   display: flex;

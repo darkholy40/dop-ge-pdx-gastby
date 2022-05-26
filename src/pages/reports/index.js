@@ -3,11 +3,11 @@ import { navigate } from "gatsby"
 import { useSelector, useDispatch } from "react-redux"
 import styled from "styled-components"
 
-import Layout from "../../components/Layout"
-import Seo from "../../components/Seo"
-import Breadcrumbs from "../../components/Breadcrumbs"
-import PageNotFound from "../../components/PageNotFound"
-import { ColorButton } from "../../components/Styles"
+import Layout from "../../components/layout"
+import Seo from "../../components/seo"
+import Breadcrumbs from "../../components/breadcrumbs"
+import PageNotFound from "../../components/page-not-found"
+import { ColorButton } from "../../components/styles"
 
 const Container = styled.div`
   width: 100%;

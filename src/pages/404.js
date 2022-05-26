@@ -1,7 +1,7 @@
 import * as React from "react"
 
-import Layout from "../components/Layout"
-import PageNotFound from "../components/PageNotFound"
+import Layout from "../components/layout"
+import PageNotFound from "../components/page-not-found"
 
 const NotFoundPage = () => {
   return (

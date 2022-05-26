@@ -12,10 +12,10 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider"
 import thLocale from "date-fns/locale/th"
 
 import Jwt from "./jwt"
-import Navbar from "./Navbar"
-import StaticData from "./StaticData"
-import NotificationDialog from "./NotificationDialog"
-import Footer from "./Footer"
+import Navbar from "./navbar"
+import StaticData from "./static-data"
+import NotificationDialog from "./notification-dialog"
+import Footer from "./footer"
 
 const GlobalStyles = createGlobalStyle`
   a {

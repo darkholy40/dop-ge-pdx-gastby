@@ -11,11 +11,11 @@ import {
   faTimes,
 } from "@fortawesome/free-solid-svg-icons"
 
-import Layout from "../../components/Layout"
-import Seo from "../../components/Seo"
-import Breadcrumbs from "../../components/Breadcrumbs"
-import PageNotFound from "../../components/PageNotFound"
-import { Form, SubmitButtonFlex, Flex } from "../../components/Styles"
+import Layout from "../../components/layout"
+import Seo from "../../components/seo"
+import Breadcrumbs from "../../components/breadcrumbs"
+import PageNotFound from "../../components/page-not-found"
+import { Form, SubmitButtonFlex, Flex } from "../../components/styles"
 import renderDivision from "../../functions/renderDivision"
 
 const Oparator = styled.div`

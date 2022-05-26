@@ -3,7 +3,7 @@ import { Provider } from "react-redux"
 import { PersistGate } from "redux-persist/integration/react"
 
 import configureStore from "./src/state/store"
-import Container from "./src/components/Container"
+import Container from "./src/components/container"
 import "./src/styles/layout.css"
 
 // eslint-disable-next-line react/display-name, react/prop-types

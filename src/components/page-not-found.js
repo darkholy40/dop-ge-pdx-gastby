@@ -7,7 +7,7 @@ import styled from "styled-components"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faFile, faChevronLeft } from "@fortawesome/free-solid-svg-icons"
 
-import Seo from "../components/Seo"
+import Seo from "../components/seo"
 
 const Flex = styled.div`
   margin-top: 50px;

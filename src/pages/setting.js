@@ -2,10 +2,10 @@ import React, { useEffect, useState } from "react"
 import { useSelector, useDispatch } from "react-redux"
 import styled from "styled-components"
 
-import Layout from "../components/Layout"
-import Seo from "../components/Seo"
-import Breadcrumbs from "../components/Breadcrumbs"
-import PageNotFound from "../components/PageNotFound"
+import Layout from "../components/layout"
+import Seo from "../components/seo"
+import Breadcrumbs from "../components/breadcrumbs"
+import PageNotFound from "../components/page-not-found"
 import renderDivision from "../functions/renderDivision"
 
 const Container = styled.div`

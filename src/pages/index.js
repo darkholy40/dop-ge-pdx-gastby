@@ -3,9 +3,9 @@ import { navigate } from "gatsby"
 import { useSelector, useDispatch } from "react-redux"
 import styled from "styled-components"
 
-import Layout from "../components/Layout"
-import Seo from "../components/Seo"
-import Login from "../components/Login"
+import Layout from "../components/layout"
+import Seo from "../components/seo"
+import Login from "../components/login"
 
 const Container = styled.div`
   width: 100%;
