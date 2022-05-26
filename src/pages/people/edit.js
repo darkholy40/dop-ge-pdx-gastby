@@ -744,7 +744,7 @@ const EditPositionsPage = ({ location }) => {
         isError.type !== `notFound` ? (
           <>
             <Seo title="แก้ไขประวัติกำลังพล" />
-            {redirectPage === `/positions/list` ? (
+            {redirectPage === `/positions/list/` ? (
               <Breadcrumbs
                 previous={[
                   {
@@ -756,11 +756,11 @@ const EditPositionsPage = ({ location }) => {
                               : `-`
                           })`
                         : `จัดการคลังตำแหน่ง`,
-                    link: `/positions`,
+                    link: `/positions/`,
                   },
                   {
                     name: `ค้นหาคลังตำแหน่ง`,
-                    link: `/positions/list`,
+                    link: `/positions/list/`,
                   },
                 ]}
                 current="แก้ไขประวัติกำลังพล"
@@ -777,11 +777,11 @@ const EditPositionsPage = ({ location }) => {
                               : `-`
                           })`
                         : `จัดการประวัติกำลังพล`,
-                    link: `/people`,
+                    link: `/people/`,
                   },
                   {
                     name: `ค้นหากำลังพล`,
-                    link: `/people/list`,
+                    link: `/people/list/`,
                   },
                 ]}
                 current="แก้ไขประวัติกำลังพล"
@@ -2065,7 +2065,7 @@ const EditPositionsPage = ({ location }) => {
         ) : (
           <PageNotFound
             desc="ไม่พบ url ที่เรียกหรือเนื้อหาในส่วนนี้ได้ถูกลบออกจากระบบ"
-            link="/people/list"
+            link="/people/list/"
             buttonText="กลับไปหน้าค้นหากำลังพล"
           />
         )

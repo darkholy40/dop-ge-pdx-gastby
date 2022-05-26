@@ -27,7 +27,7 @@ const IndexPage = () => {
 
   useEffect(() => {
     if (token !== ``) {
-      navigate(`/people`)
+      navigate(`/people/`)
     }
   }, [token])
 

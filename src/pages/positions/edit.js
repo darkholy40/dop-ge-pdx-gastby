@@ -254,7 +254,7 @@ const EditPositionsPage = ({ location }) => {
             variant: `success`,
             confirmText: `ตกลง`,
             callback: () => {
-              navigate(`/positions/list`)
+              navigate(`/positions/list/`)
             },
           },
         })
@@ -311,11 +311,11 @@ const EditPositionsPage = ({ location }) => {
                             : `-`
                         })`
                       : `จัดการคลังตำแหน่ง`,
-                  link: `/positions`,
+                  link: `/positions/`,
                 },
                 {
                   name: `ค้นหาคลังตำแหน่ง`,
-                  link: `/positions/list`,
+                  link: `/positions/list/`,
                 },
               ]}
               current="แก้ไขคลังตำแหน่ง"
@@ -654,7 +654,7 @@ const EditPositionsPage = ({ location }) => {
         ) : (
           <PageNotFound
             desc="ไม่พบ url ที่เรียกหรือเนื้อหาในส่วนนี้ได้ถูกลบออกจากระบบ"
-            link="/positions/list"
+            link="/positions/list/"
             buttonText="กลับไปหน้าค้นหาคลังตำแหน่ง"
           />
         )

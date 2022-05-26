@@ -79,7 +79,7 @@ const PositionsPage = () => {
               color="primary"
               // variant="contained"
               onClick={() => {
-                navigate(`/positions/add`)
+                navigate(`/positions/add/`)
               }}
             >
               <FontAwesomeIcon icon={faPlusCircle} style={{ marginRight: 5 }} />
@@ -270,7 +270,7 @@ const PositionsPage = () => {
                       currentPage: 0,
                     },
                   })
-                  navigate(`/positions/list`)
+                  navigate(`/positions/list/`)
                 }}
               >
                 <FontAwesomeIcon icon={faSearch} style={{ marginRight: 5 }} />

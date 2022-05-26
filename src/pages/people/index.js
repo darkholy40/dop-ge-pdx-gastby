@@ -173,7 +173,7 @@ const PositionsPage = () => {
                   isError.status === `disabled` || isError.status === `notfound`
                 }
                 onClick={() => {
-                  navigate(`/people/add`)
+                  navigate(`/people/add/`)
                 }}
               >
                 <FontAwesomeIcon
@@ -419,8 +419,8 @@ const PositionsPage = () => {
                 onClick={() =>
                   navigate(
                     !searchPersonFilter.isResigned
-                      ? `/people/list`
-                      : `/people/resigned-list`
+                      ? `/people/list/`
+                      : `/people/resigned-list/`
                   )
                 }
               >

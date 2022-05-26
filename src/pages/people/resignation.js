@@ -265,7 +265,7 @@ const ResignationPage = ({ location }) => {
             variant: `success`,
             confirmText: `ตกลง`,
             callback: () => {
-              navigate(`/people/list`)
+              navigate(`/people/list/`)
             },
           },
         })
@@ -305,11 +305,11 @@ const ResignationPage = ({ location }) => {
                           : `-`
                       })`
                     : `จัดการประวัติกำลังพล`,
-                link: `/people`,
+                link: `/people/`,
               },
               {
                 name: `ค้นหากำลังพล`,
-                link: `/people/list`,
+                link: `/people/list/`,
               },
             ]}
             current="กำลังพลลาออก"
@@ -423,7 +423,7 @@ const ResignationPage = ({ location }) => {
                       sx={{ marginTop: `3rem` }}
                       color="primary"
                       variant="outlined"
-                      onClick={() => navigate(`/people/list`)}
+                      onClick={() => navigate(`/people/list/`)}
                     >
                       <FontAwesomeIcon
                         icon={faChevronLeft}

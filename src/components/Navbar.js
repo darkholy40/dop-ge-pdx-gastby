@@ -14,7 +14,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import {
   faBars,
   faUserAlt,
-  // faCog,
+  faCog,
   faSignOutAlt,
 } from "@fortawesome/free-solid-svg-icons"
 import styled from "styled-components"
@@ -90,7 +90,7 @@ const Navbar = () => {
       if (getPage === `home`) {
         navigate(`/`)
       } else {
-        navigate(`/${getPage}`)
+        navigate(`/${getPage}/`)
       }
     }
   }
@@ -245,10 +245,10 @@ const Navbar = () => {
                 horizontal: "right",
               }}
             >
-              {/* <MenuItem
+              <MenuItem
                 onClick={() => {
                   setAnchorElMyInfo(null)
-                  navigate(`/setting`)
+                  navigate(`/setting/`)
                 }}
                 disableRipple
               >
@@ -257,7 +257,7 @@ const Navbar = () => {
                   style={{ fontSize: 20, marginRight: 5 }}
                 />
                 ตั้งค่า
-              </MenuItem> */}
+              </MenuItem>
               <MenuItem
                 onClick={() => {
                   setAnchorElMyInfo(null)

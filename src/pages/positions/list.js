@@ -244,7 +244,7 @@ const PositionsListPage = () => {
 
     dispatch({
       type: `SET_REDIRECT_PAGE`,
-      redirectPage: `/positions/list`,
+      redirectPage: `/positions/list/`,
     })
   }, [dispatch])
 
@@ -270,7 +270,7 @@ const PositionsListPage = () => {
                           : `-`
                       })`
                     : `จัดการคลังตำแหน่ง`,
-                link: `/positions`,
+                link: `/positions/`,
               },
             ]}
             current="ค้นหาคลังตำแหน่ง"
@@ -376,7 +376,7 @@ const PositionsListPage = () => {
                           <TableCell align="left">
                             {row.person._id !== `` ? (
                               <Link
-                                to={`/people/edit?id=${row.person._id}`}
+                                to={`/people/edit/?id=${row.person._id}`}
                               >{`${row.person.prename} ${row.person.name} ${row.person.surname}`}</Link>
                             ) : (
                               <span>-</span>
@@ -481,7 +481,7 @@ const PositionsListPage = () => {
                     onClick={() => {
                       setAnchorEl(null)
 
-                      navigate(`/positions/edit?id=${currentRow._id}`)
+                      navigate(`/positions/edit/?id=${currentRow._id}`)
                     }}
                     disableRipple
                   >
@@ -500,7 +500,7 @@ const PositionsListPage = () => {
                   <Button
                     color="primary"
                     variant="outlined"
-                    onClick={() => navigate(`/positions`)}
+                    onClick={() => navigate(`/positions/`)}
                   >
                     <FontAwesomeIcon
                       icon={faChevronLeft}

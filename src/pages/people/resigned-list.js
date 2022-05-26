@@ -262,7 +262,7 @@ const ResignedPeopleListPage = () => {
 
     dispatch({
       type: `SET_REDIRECT_PAGE`,
-      redirectPage: `/people/list`,
+      redirectPage: `/people/list/`,
     })
   }, [dispatch])
 
@@ -288,7 +288,7 @@ const ResignedPeopleListPage = () => {
                           : `-`
                       })`
                     : `จัดการประวัติกำลังพล`,
-                link: `/people`,
+                link: `/people/`,
               },
             ]}
             current="ค้นหากำลังพลที่ลาออกแล้ว"
@@ -419,7 +419,7 @@ const ResignedPeopleListPage = () => {
                   <Button
                     color="primary"
                     variant="outlined"
-                    onClick={() => navigate(`/people`)}
+                    onClick={() => navigate(`/people/`)}
                   >
                     <FontAwesomeIcon
                       icon={faChevronLeft}

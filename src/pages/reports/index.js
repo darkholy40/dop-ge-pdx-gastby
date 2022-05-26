@@ -43,7 +43,7 @@ const IndexPage = () => {
               <div className="row">
                 <div
                   role="presentation"
-                  onClick={() => navigate(`/reports/stock`)}
+                  onClick={() => navigate(`/reports/stock/`)}
                 >
                   รายชื่อพนักงานราชการและตำแหน่งว่าง (Stock)
                 </div>
@@ -57,7 +57,7 @@ const IndexPage = () => {
               <div className="row">
                 <div
                   role="presentation"
-                  onClick={() => navigate(`/reports/flow-out`)}
+                  onClick={() => navigate(`/reports/flow-out/`)}
                 >
                   รายชื่อพนักงานราชการที่ออกในปีงบประมาณที่ผ่านมา (Flow-Out)
                 </div>

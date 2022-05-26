@@ -207,7 +207,7 @@ const AddPositionsPage = () => {
                           : `-`
                       })`
                     : `จัดการคลังตำแหน่ง`,
-                link: `/positions`,
+                link: `/positions/`,
               },
             ]}
             current="เพิ่มคลังตำแหน่ง"

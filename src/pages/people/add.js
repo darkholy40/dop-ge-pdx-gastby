@@ -354,7 +354,7 @@ const AddPositionsPage = () => {
             variant: `success`,
             confirmText: `ตกลง`,
             callback: () => {
-              navigate(`/people`)
+              navigate(`/people/`)
             },
           },
         })
@@ -484,7 +484,7 @@ const AddPositionsPage = () => {
                           : `-`
                       })`
                     : `จัดการประวัติกำลังพล`,
-                link: `/people`,
+                link: `/people/`,
               },
             ]}
             current="เพิ่มประวัติกำลังพล"

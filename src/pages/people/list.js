@@ -239,7 +239,7 @@ const PeopleListPage = () => {
 
     dispatch({
       type: `SET_REDIRECT_PAGE`,
-      redirectPage: `/people/list`,
+      redirectPage: `/people/list/`,
     })
   }, [dispatch])
 
@@ -265,7 +265,7 @@ const PeopleListPage = () => {
                           : `-`
                       })`
                     : `จัดการประวัติกำลังพล`,
-                link: `/people`,
+                link: `/people/`,
               },
             ]}
             current="ค้นหากำลังพล"
@@ -436,7 +436,7 @@ const PeopleListPage = () => {
                     onClick={() => {
                       setAnchorEl(null)
 
-                      navigate(`/people/edit?id=${currentRow._id}`)
+                      navigate(`/people/edit/?id=${currentRow._id}`)
                     }}
                     disableRipple
                   >
@@ -447,7 +447,7 @@ const PeopleListPage = () => {
                     onClick={() => {
                       setAnchorEl(null)
 
-                      navigate(`/people/resignation?id=${currentRow._id}`)
+                      navigate(`/people/resignation/?id=${currentRow._id}`)
                     }}
                     disableRipple
                   >
@@ -469,7 +469,7 @@ const PeopleListPage = () => {
                   <Button
                     color="primary"
                     variant="outlined"
-                    onClick={() => navigate(`/people`)}
+                    onClick={() => navigate(`/people/`)}
                   >
                     <FontAwesomeIcon
                       icon={faChevronLeft}
