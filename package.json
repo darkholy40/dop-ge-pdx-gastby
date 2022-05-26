@@ -9,8 +9,8 @@
   ],
   "scripts": {
     "dev": "npm run clean && gatsby develop --port 3000 --host 0.0.0.0 --open",
-    "build": "gatsby build",
-    "serve": "npm run clean && npm run build && gatsby serve --port 5000 --host 0.0.0.0",
+    "build": "gatsby build --prefix-paths",
+    "serve": "npm run clean && npm run build && gatsby serve --prefix-paths --port 5000 --host 0.0.0.0",
     "clean": "gatsby clean",
     "format": "prettier --write \"**/*.{js,jsx,ts,tsx,json,md,css}\""
   },

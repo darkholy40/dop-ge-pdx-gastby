@@ -1,4 +1,5 @@
 module.exports = {
+  pathPrefix: `/app`,
   siteMetadata: {
     title: "GE-PDX",
     description: "GE-PDX",
