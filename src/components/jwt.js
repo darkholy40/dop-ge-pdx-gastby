@@ -3,9 +3,42 @@ import { navigate } from "gatsby"
 import { useSelector, useDispatch } from "react-redux"
 import jwt_decode from "jwt-decode"
 
+import useInterval from "../functions/use-interval"
+
 const Jwt = () => {
   const dispatch = useDispatch()
   const { token } = useSelector(state => state)
+  const [isExpired, setIsExpired] = React.useState(false)
+
+  const fetchSessionTimer = React.useCallback(() => {
+    if (token !== ``) {
+      const decoded = jwt_decode(token)
+      const difference = decoded.exp * 1000 - Date.now()
+
+      const hours = Math.floor(difference / 1000 / 60 / 60)
+      const minutes = Math.floor((difference / 1000 / 60) % 60)
+      const seconds = Math.floor((difference / 1000) % 60)
+
+      // console.log({
+      //   hr: `${hours}`,
+      //   min: minutes < 10 ? `0${minutes}` : `${minutes}`,
+      //   sec: seconds < 10 ? `0${seconds}` : `${seconds}`,
+      // })
+
+      if (hours === 0 && minutes === 0 && seconds === 0) {
+        setIsExpired(true)
+      }
+
+      dispatch({
+        type: `SET_SESSION_TIMER`,
+        sessionTimer: {
+          hr: `${hours}`,
+          min: minutes < 10 ? `0${minutes}` : `${minutes}`,
+          sec: seconds < 10 ? `0${seconds}` : `${seconds}`,
+        },
+      })
+    }
+  }, [token, dispatch])
 
   React.useEffect(() => {
     if (token !== ``) {
@@ -20,7 +53,7 @@ const Jwt = () => {
       //   expired: expired,
       // })
 
-      if (expired) {
+      if (expired || isExpired) {
         navigate(`/`)
 
         dispatch({
@@ -39,9 +72,31 @@ const Jwt = () => {
           type: `SET_TOKEN`,
           token: ``,
         })
+
+        dispatch({
+          type: `SET_SESSION_TIMER`,
+          sessionTimer: {
+            hr: `08`,
+            min: `00`,
+            sec: `00`,
+          },
+        })
+
+        setIsExpired(false)
       }
     }
-  }, [token, dispatch])
+  }, [token, isExpired, dispatch])
+
+  React.useEffect(() => {
+    fetchSessionTimer()
+  }, [fetchSessionTimer])
+
+  useInterval(
+    () => {
+      fetchSessionTimer()
+    },
+    token !== `` ? 1000 : null
+  )
 
   return <></>
 }

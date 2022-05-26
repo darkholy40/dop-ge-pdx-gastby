@@ -9,7 +9,8 @@ import PageNotFound from "../components/PageNotFound"
 import renderDivision from "../functions/renderDivision"
 
 const Container = styled.div`
-  border: 1px solid rgba(0, 0, 0, 0.12);
+  // border: 1px solid rgba(0, 0, 0, 0.12);
+  box-shadow: rgb(0 0 0 / 24%) 0px 1px 2px;
   border-radius: 8px;
   padding: 16px 24px;
   width: 100%;
@@ -24,20 +25,44 @@ const Flex = styled.div`
 `
 
 const Left = styled.div`
-  width: 45%;
-  text-align: right;
+  width: 100%;
+  max-width: 300px;
+
+  p {
+    text-align: right;
+    margin: 0;
+    font-weight: bold;
+    font-style: italic;
+  }
 `
 
 const Right = styled.div`
-  width: 55%;
+  width: 100%;
   margin-left: 1.5rem;
-  word-break: break-word;
+
+  p {
+    word-break: break-word;
+    margin: 0;
+  }
 `
 
 const SettingPage = () => {
-  const { token, userInfo } = useSelector(state => state)
+  const { token, userInfo, sessionTimer } = useSelector(state => state)
   const dispatch = useDispatch()
   const [rows, setRows] = useState([])
+
+  const renderRole = getRole => {
+    switch (getRole) {
+      case `Administrator`:
+        return `ผู้ดูแลระบบ (ส่วนกลาง)`
+
+      case `Authenticated`:
+        return `ผู้ใช้งาน (ระดับหน่วย)`
+
+      default:
+        return ``
+    }
+  }
 
   useEffect(() => {
     dispatch({
@@ -47,16 +72,12 @@ const SettingPage = () => {
   }, [dispatch])
 
   useEffect(() => {
-    console.log(userInfo)
+    // console.log(userInfo)
 
     let users = [
       {
-        title: `ชื่อ`,
-        desc: userInfo.name,
-      },
-      {
-        title: `สกุล`,
-        desc: userInfo.surname,
+        title: `ชื่อ - สกุล`,
+        desc: `${userInfo.name} ${userInfo.surname}`,
       },
       {
         title: `ชื่อผู้ใช้`,
@@ -68,16 +89,16 @@ const SettingPage = () => {
           userInfo.division !== null ? renderDivision(userInfo.division) : `-`,
       },
       {
-        title: `Role`,
-        desc: userInfo.role.name,
+        title: `ระดับผู้ใช้งาน`,
+        desc: renderRole(userInfo.role.name),
       },
       {
-        title: `Token`,
-        desc: token,
+        title: `ระยะเวลาเซสชัน`,
+        desc: `8 ชม. (คงเหลือ ${sessionTimer.hr}:${sessionTimer.min}:${sessionTimer.sec})`,
       },
     ]
     setRows(users)
-  }, [userInfo, token])
+  }, [userInfo, token, sessionTimer])
 
   return (
     <Layout>
@@ -89,8 +110,12 @@ const SettingPage = () => {
           <Container>
             {rows.map(row => (
               <Flex key={row.title}>
-                <Left>{row.title}</Left>
-                <Right>{row.desc}</Right>
+                <Left>
+                  <p>{row.title}</p>
+                </Left>
+                <Right>
+                  <p>{row.desc}</p>
+                </Right>
               </Flex>
             ))}
           </Container>

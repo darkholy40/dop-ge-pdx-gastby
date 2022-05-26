@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import { useStaticQuery, graphql, navigate } from "gatsby"
 import { useSelector, useDispatch } from "react-redux"
 import {
@@ -50,11 +50,32 @@ const Flex = styled.div`
   }
 `
 
+const SessionTimer = styled.div`
+  position: absolute;
+  top: 3.5rem;
+  right: 1.5rem;
+  color: #000;
+  padding: 5px 10px;
+  border-radius: 8px;
+  box-shadow: rgb(0 0 0 / 10%) 0px 10px 24px;
+  opacity: 0;
+  transition: 0.75s ease-in;
+
+  &.active {
+    opacity: 0.25;
+
+    &:hover {
+      background-color: #fff;
+      transition: 0.025s ease-in;
+      opacity: 1;
+    }
+  }
+`
+
 const Navbar = () => {
   const dispatch = useDispatch()
-  const { currentPage, token, userInfo, primaryColor } = useSelector(
-    state => state
-  )
+  const { currentPage, token, userInfo, primaryColor, sessionTimer } =
+    useSelector(state => state)
   const { site } = useStaticQuery(
     graphql`
       query {
@@ -68,6 +89,7 @@ const Navbar = () => {
   )
   const [anchorElMenu, setAnchorElMenu] = useState(null)
   const [anchorElMyInfo, setAnchorElMyInfo] = useState(null)
+  const [sessionTimerClassname, setSessionTimerClassname] = useState(``)
 
   const pages = [
     {
@@ -101,8 +123,33 @@ const Navbar = () => {
       token: ``,
     })
 
+    dispatch({
+      type: `SET_SESSION_TIMER`,
+      sessionTimer: {
+        hr: `08`,
+        min: `00`,
+        sec: `00`,
+      },
+    })
+
     navigate(`/`)
   }
+
+  const displaySessionTimer = () => {
+    if (sessionTimer.hr > 0) {
+      return `${sessionTimer.hr} ชม. ${sessionTimer.min} นาที`
+    }
+
+    return `${sessionTimer.min}:${sessionTimer.sec} นาที`
+  }
+
+  useEffect(() => {
+    if (token !== ``) {
+      setSessionTimerClassname(`active`)
+    } else {
+      setSessionTimerClassname(``)
+    }
+  }, [token])
 
   return (
     <AppBar>
@@ -224,6 +271,9 @@ const Navbar = () => {
               />
               <span>{userInfo.name}</span>
             </Button>
+            <SessionTimer className={sessionTimerClassname}>
+              เซสชันคงเหลือ {displaySessionTimer()}
+            </SessionTimer>
 
             <Menu
               sx={{

@@ -7,6 +7,11 @@ import {
 } from "@mui/material/colors"
 
 const initialState = {
+  sessionTimer: {
+    hr: `08`,
+    min: `00`,
+    sec: `00`,
+  },
   positionTypes: [],
   positionNames: [],
   units: [],
@@ -65,6 +70,12 @@ const initialState = {
 
 const reducer = (state = initialState, action) => {
   switch (action.type) {
+    case `SET_SESSION_TIMER`:
+      return {
+        ...state,
+        sessionTimer: action.sessionTimer,
+      }
+
     case `CHANGE_LANG`:
       return {
         ...state,
@@ -148,6 +159,7 @@ const persistConfig = {
   key: `gepdx`,
   storage: storage,
   whitelist: [
+    `sessionTimer`,
     `lang`,
     `token`,
     `userInfo`,

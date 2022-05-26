@@ -87,6 +87,7 @@ const MyDatePicker = props => {
         endAdornment: renderCheckingIcon(
           props.value === null ? `` : props.value
         ),
+        disabled: props.disabled,
       }}
       value={renderThaiText(value)}
       onClick={onClick}
@@ -97,8 +98,9 @@ const MyDatePicker = props => {
   useEffect(() => {
     let arr = []
     const minYear = 1907
+    const thisYear = new Date().getFullYear()
 
-    for (let i = 0; i < new Date().getFullYear() - minYear + 10; i++) {
+    for (let i = 0; i < thisYear - minYear + 10; i++) {
       arr = [...arr, minYear + i]
     }
 

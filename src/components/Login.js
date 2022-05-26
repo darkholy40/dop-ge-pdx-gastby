@@ -75,7 +75,7 @@ const IndexPage = () => {
         password: passwordInput,
       })
 
-      console.log(res)
+      // console.log(res)
 
       switch (res.status) {
         case 200:
