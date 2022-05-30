@@ -11,6 +11,7 @@ import {
   Paper,
   Button,
   TablePagination,
+  Pagination,
 } from "@mui/material"
 import { ApolloClient, InMemoryCache, gql } from "@apollo/client"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
@@ -297,6 +298,25 @@ const ResignedPeopleListPage = () => {
           {!isError.status ? (
             peopleData.length > 0 && (
               <>
+                <Pagination
+                  sx={{
+                    marginBottom: `1rem`,
+                    ".MuiPagination-ul": {
+                      justifyContent: `flex-end`,
+                    },
+                  }}
+                  shape="rounded"
+                  count={Math.ceil(
+                    tableOption.totalRows / tableOption.rowsPerPage
+                  )}
+                  color="primary"
+                  onChange={(_, newPage) => {
+                    setTableOption(prev => ({
+                      ...prev,
+                      page: newPage - 1,
+                    }))
+                  }}
+                />
                 <TableContainer component={Paper}>
                   <Table
                     sx={{ minWidth: 300 }}

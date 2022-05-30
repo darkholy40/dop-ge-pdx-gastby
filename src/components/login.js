@@ -49,7 +49,7 @@ const LogoContainer = styled.div`
 
 const IndexPage = () => {
   const dispatch = useDispatch()
-  const { url, userInfo } = useSelector(state => state)
+  const { url, userInfo, primaryColor } = useSelector(state => state)
   const [usernameInput, setUsernameInput] = useState(userInfo.username)
   const [passwordInput, setPasswordInput] = useState(``)
   const [isLoading, setIsLoading] = useState(false)
@@ -131,7 +131,16 @@ const IndexPage = () => {
 
   return (
     <>
-      <Title>ลงชื่อเข้าใช้งานระบบ</Title>
+      <Title
+        style={{
+          fontSize: `2rem`,
+          fontWeight: `bold`,
+          color: primaryColor[700],
+        }}
+      >
+        ระบบพนักงานราชการและลูกจ้าง
+      </Title>
+      <Title style={{ fontStyle: `italic` }}>ลงชื่อเข้าใช้งานระบบ</Title>
       <form
         style={{
           maxWidth: `960px`,

@@ -18,9 +18,29 @@ option {
   padding: 8px;
   border-radius: 8px;
   cursor: pointer;
+  font-family: var(--main-font-family);
 }
 
 .MuiDialogActions-root.MuiDialogActions-spacing
   > .MuiButton-root.MuiButton-text.MuiButton-textPrimary.MuiButton-sizeMedium.MuiButton-textSizeMedium.MuiButtonBase-root:nth-child(2) {
   display: none;
+}
+
+.MuiInputLabel-root.MuiInputLabel-formControl,
+.MuiOutlinedInput-input.MuiInputBase-input,
+.MuiButton-root.MuiButtonBase-root,
+.MuiAlert-message,
+.MuiTypography-root.MuiTypography-h6,
+.MuiMenuItem-root.MuiButtonBase-root,
+.MuiAutocomplete-root,
+.MuiAutocomplete-option,
+.MuiTableCell-root.MuiTableCell-head,
+.MuiTableCell-root.MuiTableCell-body,
+.MuiTablePagination-root > .MuiToolbar-root > .MuiTablePagination-selectLabel,
+.MuiTablePagination-root > .MuiToolbar-root > .MuiInputBase-root,
+.MuiTablePagination-root > .MuiToolbar-root > .MuiTablePagination-displayedRows,
+.MuiPagination-root .MuiButtonBase-root,
+.react-datepicker__day-name,
+.react-datepicker__week {
+  font-family: var(--main-font-family);
 }

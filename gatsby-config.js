@@ -25,5 +25,12 @@ module.exports = {
       },
       __key: "images",
     },
+    {
+      resolve: `gatsby-plugin-google-fonts`,
+      options: {
+        fonts: [`Kanit\:400,600`],
+        display: `swap`,
+      },
+    },
   ],
 }
