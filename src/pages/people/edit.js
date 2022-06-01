@@ -607,7 +607,7 @@ const EditPositionsPage = ({ location }) => {
           notificationDialog: {
             open: true,
             title: `บันทึกรายการสำเร็จ`,
-            description: `แก้ไขรายการกำลังพลสำเร็จ`,
+            description: `แก้ไขข้อมูลกำลังพลสำเร็จ`,
             variant: `success`,
             confirmText: `ตกลง`,
             callback: () => {

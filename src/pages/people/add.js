@@ -6,7 +6,7 @@ import { Grid, Button, TextField, Divider } from "@mui/material"
 // import { MobileDatePicker } from "@mui/x-date-pickers/MobileDatePicker"
 import Autocomplete from "@mui/material/Autocomplete"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { faSave, faTimes } from "@fortawesome/free-solid-svg-icons"
+import { faPlus, faTimes } from "@fortawesome/free-solid-svg-icons"
 import { ApolloClient, InMemoryCache, gql } from "@apollo/client"
 
 import Layout from "../../components/layout"
@@ -1692,7 +1692,7 @@ const AddPositionsPage = () => {
                         mission === ``
                   }
                 >
-                  <FontAwesomeIcon icon={faSave} style={{ marginRight: 5 }} />
+                  <FontAwesomeIcon icon={faPlus} style={{ marginRight: 5 }} />
                   เพิ่มรายการ
                 </Button>
               </Grid>

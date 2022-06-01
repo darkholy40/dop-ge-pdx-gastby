@@ -261,7 +261,7 @@ const ResignationPage = ({ location }) => {
           notificationDialog: {
             open: true,
             title: `บันทึกรายการสำเร็จ`,
-            description: `แก้ไขรายการกำลังพลสำเร็จ`,
+            description: `ปลดกำลังพลสำเร็จ`,
             variant: `success`,
             confirmText: `ตกลง`,
             callback: () => {
@@ -402,7 +402,7 @@ const ResignationPage = ({ location }) => {
                 </Flex>
 
                 <Button
-                  color="primary"
+                  color="success"
                   variant="contained"
                   type="submit"
                   disabled={input.note === `` || isError.type === `id-notfound`}
