@@ -136,11 +136,19 @@ const Navbar = () => {
   }
 
   const displaySessionTimer = () => {
-    if (sessionTimer.hr > 0) {
-      return `${sessionTimer.hr} ชม. ${sessionTimer.min} นาที`
+    if (parseInt(sessionTimer.hr) > 0) {
+      return `${parseInt(sessionTimer.hr)} ชม. ${parseInt(
+        sessionTimer.min
+      )} นาที`
     }
 
-    return `${sessionTimer.min}:${sessionTimer.sec} นาที`
+    if (parseInt(sessionTimer.min) > 0) {
+      return `${parseInt(sessionTimer.min)} นาที ${parseInt(
+        sessionTimer.sec
+      )} วินาที`
+    }
+
+    return `${parseInt(sessionTimer.sec)} วินาที`
   }
 
   useEffect(() => {
