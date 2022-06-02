@@ -16,7 +16,6 @@ import {
   TablePagination,
   Pagination,
 } from "@mui/material"
-import { ApolloClient, InMemoryCache, gql } from "@apollo/client"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import {
   // faCheckCircle,
@@ -26,6 +25,8 @@ import {
   faChevronLeft,
 } from "@fortawesome/free-solid-svg-icons"
 
+import { client, gql } from "../../components/apollo-client"
+
 import Layout from "../../components/layout"
 import Seo from "../../components/seo"
 import Breadcrumbs from "../../components/breadcrumbs"
@@ -34,8 +35,9 @@ import Warning from "../../components/warning"
 import renderDivision from "../../functions/renderDivision"
 
 const PeopleListPage = () => {
-  const { token, userInfo, url, primaryColor, searchPersonFilter } =
-    useSelector(state => state)
+  const { token, userInfo, primaryColor, searchPersonFilter } = useSelector(
+    state => state
+  )
   const dispatch = useDispatch()
   const [peopleData, setPeopleData] = useState([])
   const [isError, setIsError] = useState({
@@ -51,10 +53,6 @@ const PeopleListPage = () => {
   })
 
   const getPosition = useCallback(async () => {
-    const client = new ApolloClient({
-      uri: `${url}/graphql`,
-      cache: new InMemoryCache(),
-    })
     let filter = ``
     let role = ``
     let returnData = []
@@ -116,7 +114,7 @@ const PeopleListPage = () => {
     }`
 
     try {
-      const total = await client.query({
+      const total = await client(token).query({
         query: gql`
           query PositionsCount {
             positionsConnection(where: ${whereCondition}) {
@@ -135,7 +133,7 @@ const PeopleListPage = () => {
       }))
 
       if (total.data.positionsConnection.aggregate.totalCount > 0) {
-        const res = await client.query({
+        const res = await client(token).query({
           query: gql`
             query Positions {
               positions(where: ${whereCondition}, start: ${parseInt(
@@ -223,7 +221,7 @@ const PeopleListPage = () => {
       backdropOpen: false,
     })
   }, [
-    url,
+    token,
     userInfo,
     searchPersonFilter,
     dispatch,

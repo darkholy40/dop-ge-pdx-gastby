@@ -49,7 +49,7 @@ const LogoContainer = styled.div`
 
 const IndexPage = () => {
   const dispatch = useDispatch()
-  const { url, userInfo, primaryColor } = useSelector(state => state)
+  const { userInfo, primaryColor } = useSelector(state => state)
   const [usernameInput, setUsernameInput] = useState(userInfo.username)
   const [passwordInput, setPasswordInput] = useState(``)
   const [isLoading, setIsLoading] = useState(false)
@@ -70,7 +70,7 @@ const IndexPage = () => {
     })
 
     try {
-      const res = await axios.post(`${url}/auth/local`, {
+      const res = await axios.post(`${process.env.GEPDX_API_URL}/auth/local`, {
         identifier: usernameInput,
         password: passwordInput,
       })
@@ -101,8 +101,7 @@ const IndexPage = () => {
           break
       }
     } catch (error) {
-      console.log(error)
-
+      // console.log(error)
       const status = error.response !== undefined ? error.response.status : 0
 
       switch (status) {

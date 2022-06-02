@@ -10,6 +10,7 @@ import {
   faSearch,
   faTimes,
 } from "@fortawesome/free-solid-svg-icons"
+
 import { client, gql } from "../../components/apollo-client"
 
 import Layout from "../../components/layout"

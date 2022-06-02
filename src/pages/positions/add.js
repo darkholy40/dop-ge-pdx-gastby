@@ -5,7 +5,8 @@ import { Button, TextField, Checkbox, Alert } from "@mui/material"
 import Autocomplete from "@mui/material/Autocomplete"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faPlus } from "@fortawesome/free-solid-svg-icons"
-import { ApolloClient, InMemoryCache, gql } from "@apollo/client"
+
+import { client, gql } from "../../components/apollo-client"
 
 import Layout from "../../components/layout"
 import Seo from "../../components/seo"
@@ -16,8 +17,9 @@ import renderCheckingIcon from "../../functions/renderCheckingIcon"
 import renderDivision from "../../functions/renderDivision"
 
 const AddPositionsPage = () => {
-  const { token, userInfo, url, positionTypes, positionNames, units } =
-    useSelector(state => state)
+  const { token, userInfo, positionTypes, positionNames, units } = useSelector(
+    state => state
+  )
   const dispatch = useDispatch()
   const [isError, setIsError] = useState({
     status: false,
@@ -36,10 +38,6 @@ const AddPositionsPage = () => {
   })
 
   const goAdd = async () => {
-    const client = new ApolloClient({
-      uri: `${url}/graphql`,
-      cache: new InMemoryCache(),
-    })
     let posNumberIsExisted = false
 
     setIsError({
@@ -53,7 +51,7 @@ const AddPositionsPage = () => {
     })
 
     try {
-      const res = await client.query({
+      const res = await client(token).query({
         query: gql`
           query Positions {
             positions(where: {
@@ -109,7 +107,7 @@ const AddPositionsPage = () => {
 
     if (!posNumberIsExisted) {
       try {
-        await client.mutate({
+        await client(token).mutate({
           mutation: gql`
             mutation CreatePosition {
               createPosition(input: {

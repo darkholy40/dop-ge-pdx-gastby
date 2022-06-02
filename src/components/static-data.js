@@ -1,9 +1,10 @@
 import React, { useCallback, useEffect, useState } from "react"
 import { useSelector, useDispatch } from "react-redux"
-import { ApolloClient, InMemoryCache, gql } from "@apollo/client"
+
+import { client, gql } from "./apollo-client"
 
 const StaticData = () => {
-  const { token, url } = useSelector(state => state)
+  const { token } = useSelector(state => state)
   const dispatch = useDispatch()
   const [isFetchingComplete, setIsFetchingComplete] = useState({
     positionTypes: false,
@@ -12,14 +13,9 @@ const StaticData = () => {
   })
 
   const getPositionTypes = useCallback(async () => {
-    const client = new ApolloClient({
-      uri: `${url}/graphql`,
-      cache: new InMemoryCache(),
-    })
-
     try {
       // รายชื่อ กลุ่มงาน
-      const res = await client.query({
+      const res = await client(token).query({
         query: gql`
           query PositionTypes {
             positionTypes(where: { order: 1 }) {
@@ -56,17 +52,13 @@ const StaticData = () => {
 
       getPositionTypes()
     }
-  }, [url, dispatch])
+  }, [token, dispatch])
 
   const getPositionName = useCallback(async () => {
-    const client = new ApolloClient({
-      uri: `${url}/graphql`,
-      cache: new InMemoryCache(),
-    })
     let lap = 0
 
     try {
-      const res = await client.query({
+      const res = await client(token).query({
         query: gql`
           query PositionTypesCount {
             positionTypesConnection {
@@ -90,7 +82,7 @@ const StaticData = () => {
     if (lap > 0) {
       let returnData = []
       for (let i = 0; i < lap; i++) {
-        const res = await client.query({
+        const res = await client(token).query({
           query: gql`
             query PositionNames {
               positionTypes(limit: 100, start: ${i * 100}) {
@@ -117,17 +109,13 @@ const StaticData = () => {
         positionNames: true,
       }))
     }
-  }, [url, dispatch])
+  }, [token, dispatch])
 
   const getUnits = useCallback(async () => {
-    const client = new ApolloClient({
-      uri: `${url}/graphql`,
-      cache: new InMemoryCache(),
-    })
     let lap = 0
 
     try {
-      const res = await client.query({
+      const res = await client(token).query({
         query: gql`
           query DivisionsCount {
             divisionsConnection {
@@ -151,7 +139,7 @@ const StaticData = () => {
     if (lap > 0) {
       let returnData = []
       for (let i = 0; i < lap; i++) {
-        const res = await client.query({
+        const res = await client(token).query({
           query: gql`
             query Divisions {
               divisions(limit: 100, start: ${i * 100}) {
@@ -178,7 +166,7 @@ const StaticData = () => {
         units: true,
       }))
     }
-  }, [url, dispatch])
+  }, [token, dispatch])
 
   useEffect(() => {
     if (token !== `` && !isFetchingComplete.positionTypes) {

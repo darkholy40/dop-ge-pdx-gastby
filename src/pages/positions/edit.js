@@ -5,7 +5,8 @@ import { Button, TextField, Checkbox, Divider, Alert } from "@mui/material"
 import Autocomplete from "@mui/material/Autocomplete"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faSave, faTrash } from "@fortawesome/free-solid-svg-icons"
-import { ApolloClient, InMemoryCache, gql } from "@apollo/client"
+
+import { client, gql } from "../../components/apollo-client"
 
 import Layout from "../../components/layout"
 import Seo from "../../components/seo"
@@ -16,8 +17,9 @@ import renderCheckingIcon from "../../functions/renderCheckingIcon"
 import renderDivision from "../../functions/renderDivision"
 
 const EditPositionsPage = ({ location }) => {
-  const { token, userInfo, url, positionTypes, positionNames, units } =
-    useSelector(state => state)
+  const { token, userInfo, positionTypes, positionNames, units } = useSelector(
+    state => state
+  )
   const dispatch = useDispatch()
   const [count, setCount] = useState(0)
   const [currentPosNumber, setCurrentPosNumber] = useState(``)
@@ -48,11 +50,6 @@ const EditPositionsPage = ({ location }) => {
   // }, [addPositionFilter])
 
   const getPosition = useCallback(async () => {
-    const client = new ApolloClient({
-      uri: `${url}/graphql`,
-      cache: new InMemoryCache(),
-    })
-
     if (id === `0`) {
       setIsError({
         type: `notFound`,
@@ -68,7 +65,7 @@ const EditPositionsPage = ({ location }) => {
     })
 
     try {
-      const res = await client.query({
+      const res = await client(token).query({
         query: gql`
           query Position {
             position(id: "${id}") {
@@ -129,13 +126,9 @@ const EditPositionsPage = ({ location }) => {
       type: `SET_BACKDROP_OPEN`,
       backdropOpen: false,
     })
-  }, [url, dispatch, id, units])
+  }, [token, dispatch, id, units])
 
   const goEdit = async () => {
-    const client = new ApolloClient({
-      uri: `${url}/graphql`,
-      cache: new InMemoryCache(),
-    })
     let posNumberIsExisted = false
 
     setIsError({
@@ -149,7 +142,7 @@ const EditPositionsPage = ({ location }) => {
 
     if (currentPosNumber !== addPositionFilter.posNumber) {
       try {
-        const res = await client.query({
+        const res = await client(token).query({
           query: gql`
             query Positions {
               positions(where: {
@@ -205,7 +198,7 @@ const EditPositionsPage = ({ location }) => {
 
     if (!posNumberIsExisted) {
       try {
-        await client.mutate({
+        await client(token).mutate({
           mutation: gql`
             mutation UpdatePosition {
               updatePosition(input: {
@@ -653,7 +646,7 @@ const EditPositionsPage = ({ location }) => {
           </>
         ) : (
           <PageNotFound
-            desc="ไม่พบ url ที่เรียกหรือเนื้อหาในส่วนนี้ได้ถูกลบออกจากระบบ"
+            desc="ไม่พบ url ที่ท่านเรียกหรือเนื้อหาในส่วนนี้ได้ถูกลบออกจากระบบ"
             link="/positions/list/"
             buttonText="กลับไปหน้าค้นหาคลังตำแหน่ง"
           />

@@ -7,7 +7,8 @@ import { Grid, Button, TextField, Divider } from "@mui/material"
 import Autocomplete from "@mui/material/Autocomplete"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faPlus, faTimes } from "@fortawesome/free-solid-svg-icons"
-import { ApolloClient, InMemoryCache, gql } from "@apollo/client"
+
+import { client, gql } from "../../components/apollo-client"
 
 import Layout from "../../components/layout"
 import Seo from "../../components/seo"
@@ -57,7 +58,7 @@ const textfieldProps = {
 // }
 
 const AddPositionsPage = () => {
-  const { token, userInfo, url, positionTypes, positionNames } = useSelector(
+  const { token, userInfo, positionTypes, positionNames } = useSelector(
     state => state
   )
   const dispatch = useDispatch()
@@ -106,10 +107,6 @@ const AddPositionsPage = () => {
   const [skills, setSkills] = useState(``)
 
   const getPositions = useCallback(async () => {
-    const client = new ApolloClient({
-      uri: `${url}/graphql`,
-      cache: new InMemoryCache(),
-    })
     let role = ``
     let lap = 0
 
@@ -118,7 +115,7 @@ const AddPositionsPage = () => {
     }
 
     try {
-      const res = await client.query({
+      const res = await client(token).query({
         query: gql`
           query PositionsCount {
             positionsConnection(where: {
@@ -146,7 +143,7 @@ const AddPositionsPage = () => {
     if (lap > 0) {
       let returnData = []
       for (let i = 0; i < lap; i++) {
-        const res = await client.query({
+        const res = await client(token).query({
           query: gql`
             query Positions {
               positions(where: {
@@ -216,13 +213,9 @@ const AddPositionsPage = () => {
         }
       }
     }
-  }, [url, userInfo, positionTypeSelect, positionNameSelect])
+  }, [token, userInfo, positionTypeSelect, positionNameSelect])
 
   const goAdd = async () => {
-    const client = new ApolloClient({
-      uri: `${url}/graphql`,
-      cache: new InMemoryCache(),
-    })
     let getPersonID = ``
 
     setIsError({
@@ -235,7 +228,7 @@ const AddPositionsPage = () => {
     })
 
     try {
-      const res = await client.mutate({
+      const res = await client(token).mutate({
         mutation: gql`
           mutation CreatePerson {
             createPerson(input: {
@@ -323,7 +316,7 @@ const AddPositionsPage = () => {
 
     if (getPersonID !== ``) {
       try {
-        await client.mutate({
+        await client(token).mutate({
           mutation: gql`
             mutation UpdatePosition {
               updatePosition(input: {
@@ -372,7 +365,7 @@ const AddPositionsPage = () => {
         })
 
         // สั่งลบ getPersonID ที่เพิ่มไปก่อนหน้าออก
-        await client.mutate({
+        await client(token).mutate({
           mutation: gql`
             mutation DeletePerson {
               deletePerson(input: {

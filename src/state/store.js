@@ -18,7 +18,6 @@ const initialState = {
   primaryColor: primaryColor,
   secondaryColor: secondaryColor,
   lang: `th`,
-  url: process.env.GEPDX_API_URL,
   backdropOpen: false,
   currentPage: `home`,
   token: ``,

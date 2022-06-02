@@ -9,7 +9,8 @@ import {
   LinearProgress,
 } from "@mui/material"
 import Autocomplete from "@mui/material/Autocomplete"
-import { ApolloClient, InMemoryCache, gql } from "@apollo/client"
+
+import { client, gql } from "../../components/apollo-client"
 
 import Layout from "../../components/layout"
 import Seo from "../../components/seo"
@@ -30,7 +31,7 @@ const Container = styled.div`
 `
 
 const StockPage = () => {
-  const { token, url, userInfo, units } = useSelector(state => state)
+  const { token, userInfo, units } = useSelector(state => state)
   const dispatch = useDispatch()
   const [input, setInput] = useState({
     unit: null,
@@ -43,10 +44,6 @@ const StockPage = () => {
     setStatusCode(`loading`)
     setPercent(0)
 
-    const client = new ApolloClient({
-      uri: `${url}/graphql`,
-      cache: new InMemoryCache(),
-    })
     let lap = 0
 
     const condition =
@@ -57,7 +54,7 @@ const StockPage = () => {
         : ``
 
     try {
-      const res = await client.query({
+      const res = await client(token).query({
         query: gql`
           query PositionsCount {
             positionsConnection${condition !== `` ? `(${condition})` : ``} {
@@ -84,7 +81,7 @@ const StockPage = () => {
       let returnData = []
 
       for (let i = 0; i < lap; i++) {
-        const res = await client.query({
+        const res = await client(token).query({
           query: gql`
             query Positions {
               positions(${condition}, limit: 100, start: ${i * 100}) {
@@ -278,7 +275,7 @@ const StockPage = () => {
     setTimeout(() => {
       setPercent(0)
     }, 300)
-  }, [url, input.unit])
+  }, [token, input.unit])
 
   const displayStatus = code => {
     switch (code) {

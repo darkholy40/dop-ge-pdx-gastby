@@ -7,7 +7,8 @@ import { Grid, Button, TextField, Divider } from "@mui/material"
 import Autocomplete from "@mui/material/Autocomplete"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faSave, faTrash, faRedoAlt } from "@fortawesome/free-solid-svg-icons"
-import { ApolloClient, InMemoryCache, gql } from "@apollo/client"
+
+import { client, gql } from "../../components/apollo-client"
 
 import Layout from "../../components/layout"
 import Seo from "../../components/seo"
@@ -57,7 +58,7 @@ const textfieldProps = {
 // }
 
 const EditPositionsPage = ({ location }) => {
-  const { token, userInfo, url, positionTypes, positionNames, redirectPage } =
+  const { token, userInfo, positionTypes, positionNames, redirectPage } =
     useSelector(state => state)
   const dispatch = useDispatch()
   const [positions, setPositions] = useState([])
@@ -109,10 +110,6 @@ const EditPositionsPage = ({ location }) => {
   const id = search[1] || `0`
 
   const getPerson = useCallback(async () => {
-    const client = new ApolloClient({
-      uri: `${url}/graphql`,
-      cache: new InMemoryCache(),
-    })
     let returnData = {
       person: null,
       position: null,
@@ -133,7 +130,7 @@ const EditPositionsPage = ({ location }) => {
     })
 
     try {
-      const res = await client.query({
+      const res = await client(token).query({
         query: gql`
           query Person {
             person(id: "${id}") {
@@ -198,7 +195,7 @@ const EditPositionsPage = ({ location }) => {
     }
 
     try {
-      const res = await client.query({
+      const res = await client(token).query({
         query: gql`
           query Position {
             positions(where: {
@@ -250,13 +247,9 @@ const EditPositionsPage = ({ location }) => {
       type: `SET_BACKDROP_OPEN`,
       backdropOpen: false,
     })
-  }, [url, id, dispatch])
+  }, [token, id, dispatch])
 
   const getPositions = useCallback(async () => {
-    const client = new ApolloClient({
-      uri: `${url}/graphql`,
-      cache: new InMemoryCache(),
-    })
     let role = ``
     let lap = 0
 
@@ -269,7 +262,7 @@ const EditPositionsPage = ({ location }) => {
     }
 
     try {
-      const res = await client.query({
+      const res = await client(token).query({
         query: gql`
           query PositionsCount {
             positionsConnection(where: {
@@ -304,7 +297,7 @@ const EditPositionsPage = ({ location }) => {
     if (lap > 0) {
       let returnData = []
       for (let i = 0; i < lap; i++) {
-        const res = await client.query({
+        const res = await client(token).query({
           query: gql`
             query Positions {
               positions(where: {
@@ -381,13 +374,9 @@ const EditPositionsPage = ({ location }) => {
         }
       }
     }
-  }, [url, userInfo, positionTypeSelect, positionNameSelect, id])
+  }, [token, userInfo, positionTypeSelect, positionNameSelect, id])
 
   const goEdit = async () => {
-    const client = new ApolloClient({
-      uri: `${url}/graphql`,
-      cache: new InMemoryCache(),
-    })
     let getPersonID = ``
 
     setIsError({
@@ -400,7 +389,7 @@ const EditPositionsPage = ({ location }) => {
     })
 
     try {
-      const res = await client.mutate({
+      const res = await client(token).mutate({
         mutation: gql`
           mutation UpdatePerson {
             updatePerson(input: {
@@ -487,7 +476,7 @@ const EditPositionsPage = ({ location }) => {
     if (getPersonID !== ``) {
       // get position id เดิม
       try {
-        const res = await client.query({
+        const res = await client(token).query({
           query: gql`
             query Positions {
               positions(where: { person: "${getPersonID}" }) {
@@ -517,7 +506,7 @@ const EditPositionsPage = ({ location }) => {
       if (oldPositionId !== ``) {
         // ลบ person_id เดิมออกจาก position table
         try {
-          await client.mutate({
+          await client(token).mutate({
             mutation: gql`
               mutation UpdatePosition {
                 updatePosition(input: {
@@ -560,7 +549,7 @@ const EditPositionsPage = ({ location }) => {
       if (check.pass1) {
         // บันทึก person_id ใหม่ลงใน position table
         try {
-          await client.mutate({
+          await client(token).mutate({
             mutation: gql`
               mutation UpdatePosition {
                 updatePosition(input: {
@@ -2062,7 +2051,7 @@ const EditPositionsPage = ({ location }) => {
           </>
         ) : (
           <PageNotFound
-            desc="ไม่พบ url ที่เรียกหรือเนื้อหาในส่วนนี้ได้ถูกลบออกจากระบบ"
+            desc="ไม่พบ url ที่ท่านเรียกหรือเนื้อหาในส่วนนี้ได้ถูกลบออกจากระบบ"
             link="/people/list/"
             buttonText="กลับไปหน้าค้นหากำลังพล"
           />

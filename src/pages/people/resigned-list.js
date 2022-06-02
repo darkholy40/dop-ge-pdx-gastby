@@ -13,9 +13,10 @@ import {
   TablePagination,
   Pagination,
 } from "@mui/material"
-import { ApolloClient, InMemoryCache, gql } from "@apollo/client"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faChevronLeft } from "@fortawesome/free-solid-svg-icons"
+
+import { client, gql } from "../../components/apollo-client"
 
 import Layout from "../../components/layout"
 import Seo from "../../components/seo"
@@ -25,8 +26,9 @@ import Warning from "../../components/warning"
 import renderDivision from "../../functions/renderDivision"
 
 const ResignedPeopleListPage = () => {
-  const { token, userInfo, url, primaryColor, searchPersonFilter } =
-    useSelector(state => state)
+  const { token, userInfo, primaryColor, searchPersonFilter } = useSelector(
+    state => state
+  )
   const dispatch = useDispatch()
   const [peopleData, setPeopleData] = useState([])
   const [isError, setIsError] = useState({
@@ -40,10 +42,6 @@ const ResignedPeopleListPage = () => {
   })
 
   const getPosition = useCallback(async () => {
-    const client = new ApolloClient({
-      uri: `${url}/graphql`,
-      cache: new InMemoryCache(),
-    })
     let filter = ``
     let role = ``
     let returnData = []
@@ -108,7 +106,7 @@ const ResignedPeopleListPage = () => {
     })
 
     try {
-      const total = await client.query({
+      const total = await client(token).query({
         query: gql`
           query PersonCount {
             peopleConnection(where: ${whereCondition}) {
@@ -127,7 +125,7 @@ const ResignedPeopleListPage = () => {
       }))
 
       if (total.data.peopleConnection.aggregate.totalCount > 0) {
-        const res = await client.query({
+        const res = await client(token).query({
           query: gql`
             query Person {
               people(where: ${whereCondition}, start: ${parseInt(
@@ -165,7 +163,7 @@ const ResignedPeopleListPage = () => {
         })
 
         for (let thisPerson of res.data.people) {
-          const resUser = await client.query({
+          const resUser = await client(token).query({
             query: gql`
               query User {
                 user(id: "${thisPerson.staff_updated}") {
@@ -247,7 +245,7 @@ const ResignedPeopleListPage = () => {
       backdropOpen: false,
     })
   }, [
-    url,
+    token,
     userInfo,
     searchPersonFilter,
     dispatch,

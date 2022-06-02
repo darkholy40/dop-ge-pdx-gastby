@@ -6,7 +6,8 @@ import Autocomplete from "@mui/material/Autocomplete"
 import styled from "styled-components"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faSave, faChevronLeft } from "@fortawesome/free-solid-svg-icons"
-import { ApolloClient, InMemoryCache, gql } from "@apollo/client"
+
+import { client, gql } from "../../components/apollo-client"
 
 import Layout from "../../components/layout"
 import Seo from "../../components/seo"
@@ -30,7 +31,7 @@ const Label = styled.span`
 const Text = styled.span``
 
 const ResignationPage = ({ location }) => {
-  const { token, userInfo, url } = useSelector(state => state)
+  const { token, userInfo } = useSelector(state => state)
   const dispatch = useDispatch()
   const [isError, setIsError] = useState({
     status: false,
@@ -45,18 +46,13 @@ const ResignationPage = ({ location }) => {
   const id = search[1] || `0`
 
   const getPerson = useCallback(async () => {
-    const client = new ApolloClient({
-      uri: `${url}/graphql`,
-      cache: new InMemoryCache(),
-    })
-
     dispatch({
       type: `SET_BACKDROP_OPEN`,
       backdropOpen: true,
     })
 
     try {
-      const res = await client.query({
+      const res = await client(token).query({
         query: gql`
           query Positions {
             positions(where: {
@@ -95,13 +91,9 @@ const ResignationPage = ({ location }) => {
       type: `SET_BACKDROP_OPEN`,
       backdropOpen: false,
     })
-  }, [id, url, dispatch])
+  }, [id, token, dispatch])
 
   const goSaveResignation = async () => {
-    const client = new ApolloClient({
-      uri: `${url}/graphql`,
-      cache: new InMemoryCache(),
-    })
     let getPersonID = ``
     setIsError({
       status: false,
@@ -114,7 +106,7 @@ const ResignationPage = ({ location }) => {
     })
 
     try {
-      const resPosition = await client.query({
+      const resPosition = await client(token).query({
         query: gql`
           query Position {
             positions(where: {
@@ -129,7 +121,7 @@ const ResignationPage = ({ location }) => {
       const positionId = resPosition.data.positions[0]._id
 
       if (positionId !== undefined) {
-        const res = await client.mutate({
+        const res = await client(token).mutate({
           mutation: gql`
             mutation UpdatePerson {
               updatePerson(input: {
@@ -185,7 +177,7 @@ const ResignationPage = ({ location }) => {
     if (getPersonID !== ``) {
       // get position id เดิม
       try {
-        const res = await client.query({
+        const res = await client(token).query({
           query: gql`
             query Positions {
               positions(where: { person: "${getPersonID}" }) {
@@ -215,7 +207,7 @@ const ResignationPage = ({ location }) => {
       if (oldPositionId !== ``) {
         // ลบ person_id เดิมออกจาก position table
         try {
-          await client.mutate({
+          await client(token).mutate({
             mutation: gql`
               mutation UpdatePosition {
                 updatePosition(input: {

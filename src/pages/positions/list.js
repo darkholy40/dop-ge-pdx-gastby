@@ -17,7 +17,6 @@ import {
   Pagination,
 } from "@mui/material"
 import { green } from "@mui/material/colors"
-import { ApolloClient, InMemoryCache, gql } from "@apollo/client"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import {
   faCheckCircle,
@@ -25,6 +24,8 @@ import {
   faPen,
   faChevronLeft,
 } from "@fortawesome/free-solid-svg-icons"
+
+import { client, gql } from "../../components/apollo-client"
 
 import Layout from "../../components/layout"
 import Seo from "../../components/seo"
@@ -34,8 +35,9 @@ import Warning from "../../components/warning"
 import renderDivision from "../../functions/renderDivision"
 
 const PositionsListPage = () => {
-  const { token, userInfo, url, primaryColor, searchPositionFilter } =
-    useSelector(state => state)
+  const { token, userInfo, primaryColor, searchPositionFilter } = useSelector(
+    state => state
+  )
   const dispatch = useDispatch()
   const [posData, setPosData] = useState([])
   const [isError, setIsError] = useState({
@@ -51,10 +53,6 @@ const PositionsListPage = () => {
   })
 
   const getPosition = useCallback(async () => {
-    const client = new ApolloClient({
-      uri: `${url}/graphql`,
-      cache: new InMemoryCache(),
-    })
     let filter = ``
     let whereCondition = ``
     let returnData = []
@@ -88,7 +86,7 @@ const PositionsListPage = () => {
     })
 
     try {
-      const total = await client.query({
+      const total = await client(token).query({
         query: gql`
           query PositionsCount {
             positionsConnection(${whereCondition}) {
@@ -107,7 +105,7 @@ const PositionsListPage = () => {
       }))
 
       if (total.data.positionsConnection.aggregate.totalCount > 0) {
-        const res = await client.query({
+        const res = await client(token).query({
           query: gql`
             query Position {
               positions(${whereCondition}, limit: ${
@@ -152,7 +150,7 @@ const PositionsListPage = () => {
             surname: ``,
           }
           if (thisPos.person !== null) {
-            const resPerson = await client.query({
+            const resPerson = await client(token).query({
               query: gql`
                 query Person {
                   person(id: "${thisPos.person._id}") {
@@ -228,7 +226,7 @@ const PositionsListPage = () => {
       backdropOpen: false,
     })
   }, [
-    url,
+    token,
     userInfo,
     searchPositionFilter,
     dispatch,
