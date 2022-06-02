@@ -10,7 +10,7 @@ import {
   faSearch,
   faTimes,
 } from "@fortawesome/free-solid-svg-icons"
-import { ApolloClient, InMemoryCache, gql } from "@apollo/client"
+import { client, gql } from "../../components/apollo-client"
 
 import Layout from "../../components/layout"
 import Seo from "../../components/seo"
@@ -30,7 +30,7 @@ const Oparator = styled.div`
 `
 
 const PositionsPage = () => {
-  const { token, url, userInfo, searchPersonFilter, units } = useSelector(
+  const { token, userInfo, searchPersonFilter, units } = useSelector(
     state => state
   )
   const dispatch = useDispatch()
@@ -40,10 +40,6 @@ const PositionsPage = () => {
   })
 
   const getPositions = useCallback(async () => {
-    const client = new ApolloClient({
-      uri: `${url}/graphql`,
-      cache: new InMemoryCache(),
-    })
     let role = ``
 
     if (userInfo.role.name !== `Administrator`) {
@@ -56,7 +52,7 @@ const PositionsPage = () => {
     })
 
     try {
-      const res = await client.query({
+      const res = await client(token).query({
         query: gql`
           query PositionsCount {
             positionsConnection(where: {
@@ -97,7 +93,7 @@ const PositionsPage = () => {
       type: `SET_BACKDROP_OPEN`,
       backdropOpen: false,
     })
-  }, [url, userInfo, dispatch])
+  }, [token, userInfo, dispatch])
 
   useEffect(() => {
     dispatch({
