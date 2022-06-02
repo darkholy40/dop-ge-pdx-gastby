@@ -1063,7 +1063,6 @@ const AddPositionsPage = () => {
                     sx={{ width: `100%` }}
                     id="Edu_Level"
                     disablePortal
-                    freeSolo
                     options={[
                       `มัธยมศึกษา`,
                       `เทียบเท่าประกาศนียบัตรวิชาชีพ`,
@@ -1153,7 +1152,6 @@ const AddPositionsPage = () => {
                       sx={{ width: `100%` }}
                       id="MovementType"
                       disablePortal
-                      freeSolo
                       options={[`การต่อสัญญา`, `การทำสัญญาครั้งแรก`]}
                       noOptionsText={`ไม่พบข้อมูล`}
                       getOptionLabel={option => option}

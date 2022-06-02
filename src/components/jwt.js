@@ -54,8 +54,6 @@ const Jwt = () => {
       // })
 
       if (expired || isExpired) {
-        navigate(`/`)
-
         dispatch({
           type: `SET_NOTIFICATION_DIALOG`,
           notificationDialog: {
@@ -64,7 +62,9 @@ const Jwt = () => {
             description: `กรุณายืนยันตัวตนเพื่อเข้าใช้งานระบบอีกครั้ง`,
             variant: `error`,
             confirmText: `ตกลง`,
-            callback: () => {},
+            callback: () => {
+              navigate(`/`)
+            },
           },
         })
 
