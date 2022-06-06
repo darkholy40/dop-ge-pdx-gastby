@@ -18,10 +18,10 @@ import Breadcrumbs from "../../components/breadcrumbs"
 import PageNotFound from "../../components/page-not-found"
 import ExportToExcel from "../../components/export-to-excel"
 import { Form, Flex } from "../../components/styles"
-import renderDivision from "../../functions/renderDivision"
-import renderThaiDate from "../../functions/renderThaiDate"
-import renderNumberAsText from "../../functions/renderNumberAsText"
-import renderPositionStatus from "../../functions/renderPositionStatus"
+import renderDivision from "../../functions/render-division"
+import renderThaiDate from "../../functions/render-thai-date"
+import renderNumberAsText from "../../functions/render-number-as-text"
+import renderPositionStatus from "../../functions/render-position-status"
 
 const Container = styled.div`
   width: 100%;

@@ -13,8 +13,8 @@ import Seo from "../../components/seo"
 import Breadcrumbs from "../../components/breadcrumbs"
 import PageNotFound from "../../components/page-not-found"
 import { Form, Flex, CheckCircleFlex } from "../../components/styles"
-import renderCheckingIcon from "../../functions/renderCheckingIcon"
-import renderDivision from "../../functions/renderDivision"
+import renderCheckingIcon from "../../functions/render-checking-icon"
+import renderDivision from "../../functions/render-division"
 
 const EditPositionsPage = ({ location }) => {
   const { token, userInfo, positionTypes, positionNames, units } = useSelector(

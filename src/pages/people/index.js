@@ -18,7 +18,7 @@ import Seo from "../../components/seo"
 import Breadcrumbs from "../../components/breadcrumbs"
 import PageNotFound from "../../components/page-not-found"
 import { Form, SubmitButtonFlex, Flex } from "../../components/styles"
-import renderDivision from "../../functions/renderDivision"
+import renderDivision from "../../functions/render-division"
 
 const Oparator = styled.div`
   display: flex;

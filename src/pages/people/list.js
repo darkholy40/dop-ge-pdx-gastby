@@ -32,7 +32,7 @@ import Seo from "../../components/seo"
 import Breadcrumbs from "../../components/breadcrumbs"
 import PageNotFound from "../../components/page-not-found"
 import Warning from "../../components/warning"
-import renderDivision from "../../functions/renderDivision"
+import renderDivision from "../../functions/render-division"
 
 const PeopleListPage = () => {
   const { token, userInfo, primaryColor, searchPersonFilter } = useSelector(

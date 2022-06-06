@@ -22,9 +22,9 @@ import {
   Integer,
 } from "../../components/number-format-and-mask"
 import DatePicker from "../../components/date-picker"
-import renderDateForGraphQL from "../../functions/renderDateForGraphQL"
-import renderDivision from "../../functions/renderDivision"
-import renderCheckingIcon from "../../functions/renderCheckingIcon"
+import renderDateForGraphQL from "../../functions/render-date-for-graphql"
+import renderDivision from "../../functions/render-division"
+import renderCheckingIcon from "../../functions/render-checking-icon"
 
 const Form = styled.form`
   display: flex;

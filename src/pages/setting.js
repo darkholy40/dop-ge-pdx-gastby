@@ -6,7 +6,7 @@ import Layout from "../components/layout"
 import Seo from "../components/seo"
 import Breadcrumbs from "../components/breadcrumbs"
 import PageNotFound from "../components/page-not-found"
-import renderDivision from "../functions/renderDivision"
+import renderDivision from "../functions/render-division"
 
 const Container = styled.div`
   // border: 1px solid rgba(0, 0, 0, 0.12);

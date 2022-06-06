@@ -14,8 +14,8 @@ import Seo from "../../components/seo"
 import Breadcrumbs from "../../components/breadcrumbs"
 import PageNotFound from "../../components/page-not-found"
 import { Form, Flex, CheckCircleFlex } from "../../components/styles"
-import renderDivision from "../../functions/renderDivision"
-import renderCheckingIcon from "../../functions/renderCheckingIcon"
+import renderDivision from "../../functions/render-division"
+import renderCheckingIcon from "../../functions/render-checking-icon"
 
 const Line = styled.div`
   margin-bottom: 1rem;

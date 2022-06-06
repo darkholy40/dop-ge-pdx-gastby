@@ -8,7 +8,7 @@ import {
   faChevronRight,
 } from "@fortawesome/free-solid-svg-icons"
 
-import renderCheckingIcon from "../functions/renderCheckingIcon"
+import renderCheckingIcon from "../functions/render-checking-icon"
 
 import "react-datepicker/dist/react-datepicker.css"
 
