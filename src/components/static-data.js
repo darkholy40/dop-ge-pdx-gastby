@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from "react"
 import { useSelector, useDispatch } from "react-redux"
 
-import { client, gql } from "./apollo-client"
+import { client, gql } from "../functions/apollo-client"
 
 const StaticData = () => {
   const { token } = useSelector(state => state)

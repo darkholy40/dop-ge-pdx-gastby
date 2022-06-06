@@ -25,7 +25,7 @@ import {
   faChevronLeft,
 } from "@fortawesome/free-solid-svg-icons"
 
-import { client, gql } from "../../components/apollo-client"
+import { client, gql } from "../../functions/apollo-client"
 
 import Layout from "../../components/layout"
 import Seo from "../../components/seo"
