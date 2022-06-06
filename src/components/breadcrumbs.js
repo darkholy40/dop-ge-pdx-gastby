@@ -7,9 +7,9 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faChevronRight } from "@fortawesome/free-solid-svg-icons"
 
 const Flex = styled.div`
-  font-size: 1.25rem;
   display: flex;
   flex-direction: row;
+  flex-wrap: wrap;
   width: 100%;
   margin-bottom: 2rem;
 
@@ -35,10 +35,20 @@ const Previous = styled.div`
 `
 
 const Text = styled.div`
+  font-size: 1.25rem;
   transform: skewX(10deg);
 
   + svg {
+    font-size: 1rem;
     transform: skewX(10deg);
+  }
+
+  @media (max-width: 599px) {
+    font-size: 1rem;
+
+    + svg {
+      font-size: 0.75rem;
+    }
   }
 `
 
@@ -59,7 +69,7 @@ const Breadcrumbs = ({ previous, current }) => {
             </Text>
             <FontAwesomeIcon
               icon={faChevronRight}
-              style={{ fontSize: `1rem`, marginLeft: 7, marginRight: 7 }}
+              style={{ marginLeft: 7, marginRight: 7 }}
             />
           </Previous>
         )
