@@ -64,10 +64,29 @@ const SessionTimer = styled.div`
   &.active {
     opacity: 0.25;
 
-    &:hover {
-      background-color: #fff;
-      transition: 0.025s ease-in;
-      opacity: 1;
+    @media (hover: hover) {
+      &:hover {
+        background-color: #fff;
+        transition: 0.025s ease-in;
+        opacity: 1;
+      }
+    }
+  }
+
+  > span.l {
+    margin-right: 5px;
+  }
+
+  @media (max-width: 599px) {
+    display: flex;
+    flex-direction: column;
+
+    > span {
+      &.l {
+        font-size: 0.5rem;
+      }
+
+      font-size: 0.75rem;
     }
   }
 `
@@ -280,7 +299,8 @@ const Navbar = () => {
               <span>{userInfo.name}</span>
             </Button>
             <SessionTimer className={sessionTimerClassname}>
-              เซสชันคงเหลือ {displaySessionTimer()}
+              <span className="l">เซสชันคงเหลือ</span>
+              <span className="r">{displaySessionTimer()}</span>
             </SessionTimer>
 
             <Menu
