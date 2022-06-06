@@ -163,9 +163,10 @@ const PositionsPage = () => {
               <Button
                 sx={{
                   minWidth: 120,
+                  whiteSpace: `nowrap`
                 }}
-                color="primary"
-                // variant="contained"
+                color="success"
+                variant="outlined"
                 disabled={
                   isError.status === `disabled` || isError.status === `notfound`
                 }
