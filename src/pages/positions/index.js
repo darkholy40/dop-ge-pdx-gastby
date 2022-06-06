@@ -76,8 +76,8 @@ const PositionsPage = () => {
 
           <Oparator>
             <Button
-              color="primary"
-              // variant="contained"
+              color="success"
+              variant="outlined"
               onClick={() => {
                 navigate(`/positions/add/`)
               }}
