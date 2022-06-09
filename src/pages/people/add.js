@@ -1094,7 +1094,6 @@ const AddPositionsPage = () => {
                           sx: {
                             borderRadius: `5px 0 0 5px`,
                           },
-                          onChange: e => setEduLevel(e.target.value),
                         }}
                       />
                     )}
@@ -1176,7 +1175,6 @@ const AddPositionsPage = () => {
                             sx: {
                               borderRadius: `5px 0 0 5px`,
                             },
-                            onChange: e => setMovementType(e.target.value),
                           }}
                         />
                       )}
