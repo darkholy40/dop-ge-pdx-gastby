@@ -134,8 +134,20 @@ const AddPositionsPage = () => {
 
       const totalCount = res.data.positionsConnection.aggregate.count
       lap = Math.ceil(totalCount / 100)
-    } catch {
-      getPositions()
+    } catch (error) {
+      if (error.message === `Failed to fetch`) {
+        dispatch({
+          type: `SET_NOTIFICATION_DIALOG`,
+          notificationDialog: {
+            open: true,
+            title: `การเชื่อมต่อไม่เสถียร`,
+            description: `ไม่สามารถเชื่อมต่อฐานข้อมูลได้`,
+            variant: `error`,
+            confirmText: `ลองอีกครั้ง`,
+            callback: () => getPositions(),
+          },
+        })
+      }
 
       return 0
     }
@@ -213,7 +225,7 @@ const AddPositionsPage = () => {
         }
       }
     }
-  }, [token, userInfo, positionTypeSelect, positionNameSelect])
+  }, [token, userInfo, positionTypeSelect, positionNameSelect, dispatch])
 
   const goAdd = async () => {
     let getPersonID = ``

@@ -82,9 +82,20 @@ const ResignationPage = ({ location }) => {
       })
 
       setPersonData(res.data.positions[0])
-    } catch {
-      console.log(`network error - can't get person data.`)
-      getPerson()
+    } catch (error) {
+      if (error.message === `Failed to fetch`) {
+        dispatch({
+          type: `SET_NOTIFICATION_DIALOG`,
+          notificationDialog: {
+            open: true,
+            title: `การเชื่อมต่อไม่เสถียร`,
+            description: `ไม่สามารถเชื่อมต่อฐานข้อมูลได้`,
+            variant: `error`,
+            confirmText: `ลองอีกครั้ง`,
+            callback: () => getPerson(),
+          },
+        })
+      }
     }
 
     dispatch({

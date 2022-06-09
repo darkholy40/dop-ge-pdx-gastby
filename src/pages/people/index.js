@@ -84,8 +84,20 @@ const PositionsPage = () => {
           text: `ไม่มีตำแหน่งว่าง`,
         })
       }
-    } catch {
-      getPositions()
+    } catch (error) {
+      if (error.message === `Failed to fetch`) {
+        dispatch({
+          type: `SET_NOTIFICATION_DIALOG`,
+          notificationDialog: {
+            open: true,
+            title: `การเชื่อมต่อไม่เสถียร`,
+            description: `ไม่สามารถเชื่อมต่อฐานข้อมูลได้`,
+            variant: `error`,
+            confirmText: `ลองอีกครั้ง`,
+            callback: () => getPositions(),
+          },
+        })
+      }
 
       return 0
     }

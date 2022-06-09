@@ -48,9 +48,21 @@ const StaticData = () => {
         positionTypes: true,
       }))
     } catch (error) {
-      console.log(error)
+      // console.log(error.message)
 
-      getPositionTypes()
+      if (error.message === `Failed to fetch`) {
+        dispatch({
+          type: `SET_NOTIFICATION_DIALOG`,
+          notificationDialog: {
+            open: true,
+            title: `การเชื่อมต่อไม่เสถียร`,
+            description: `ไม่สามารถเชื่อมต่อฐานข้อมูลได้`,
+            variant: `error`,
+            confirmText: `ลองอีกครั้ง`,
+            callback: () => getPositionTypes(),
+          },
+        })
+      }
     }
   }, [token, dispatch])
 
@@ -74,9 +86,21 @@ const StaticData = () => {
       const totalCount = res.data.positionTypesConnection.aggregate.totalCount
       lap = Math.ceil(totalCount / 100)
     } catch (error) {
-      console.log(error)
+      // console.log(error.message)
 
-      getPositionName()
+      if (error.message === `Failed to fetch`) {
+        dispatch({
+          type: `SET_NOTIFICATION_DIALOG`,
+          notificationDialog: {
+            open: true,
+            title: `การเชื่อมต่อไม่เสถียร`,
+            description: `ไม่สามารถเชื่อมต่อฐานข้อมูลได้`,
+            variant: `error`,
+            confirmText: `ลองอีกครั้ง`,
+            callback: () => getPositionName(),
+          },
+        })
+      }
     }
 
     if (lap > 0) {
@@ -131,9 +155,21 @@ const StaticData = () => {
       const totalCount = res.data.divisionsConnection.aggregate.totalCount
       lap = Math.ceil(totalCount / 100)
     } catch (error) {
-      console.log(error)
+      // console.log(error.message)
 
-      getUnits()
+      if (error.message === `Failed to fetch`) {
+        dispatch({
+          type: `SET_NOTIFICATION_DIALOG`,
+          notificationDialog: {
+            open: true,
+            title: `การเชื่อมต่อไม่เสถียร`,
+            description: `ไม่สามารถเชื่อมต่อฐานข้อมูลได้`,
+            variant: `error`,
+            confirmText: `ลองอีกครั้ง`,
+            callback: () => getUnits(),
+          },
+        })
+      }
     }
 
     if (lap > 0) {
