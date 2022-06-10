@@ -453,7 +453,7 @@ const PeopleListPage = () => {
                       icon={faSignOutAlt}
                       style={{ marginRight: 5 }}
                     />
-                    ปลดออก
+                    จำหน่ายสูญเสีย
                   </MenuItem>
                 </Menu>
               </>

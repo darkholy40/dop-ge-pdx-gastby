@@ -81,7 +81,15 @@ const ResignationPage = ({ location }) => {
         `,
       })
 
-      setPersonData(res.data.positions[0])
+      if (res.data.positions.length > 0) {
+        setPersonData(res.data.positions[0])
+      } else {
+        setIsError({
+          status: true,
+          type: `id-notfound`,
+          text: `ไม่พบข้อมูลกำลังพลรายการนี้ หรือข้อมูลถูกลบออกจากระบบแล้ว`,
+        })
+      }
     } catch (error) {
       if (error.message === `Failed to fetch`) {
         dispatch({
@@ -164,7 +172,7 @@ const ResignationPage = ({ location }) => {
       setIsError({
         status: true,
         type: `id-notfound`,
-        text: `ไม่พบกำลังพลรายการนี้ หรือข้อมูลถูกลบออกจากระบบแล้ว`,
+        text: `ไม่พบข้อมูลกำลังพลรายการนี้ หรือข้อมูลถูกลบออกจากระบบแล้ว`,
       })
 
       dispatch({
@@ -172,7 +180,7 @@ const ResignationPage = ({ location }) => {
         notificationDialog: {
           open: true,
           title: `บันทึกรายการไม่สำเร็จ`,
-          description: `ไม่พบกำลังพลรายการนี้ หรือข้อมูลถูกลบออกจากระบบแล้ว`,
+          description: `ไม่พบข้อมูลกำลังพลรายการนี้ หรือข้อมูลถูกลบออกจากระบบแล้ว`,
           variant: `error`,
           confirmText: `ตกลง`,
           callback: () => {},
@@ -264,7 +272,7 @@ const ResignationPage = ({ location }) => {
           notificationDialog: {
             open: true,
             title: `บันทึกรายการสำเร็จ`,
-            description: `ปลดกำลังพลสำเร็จ`,
+            description: `จำหน่ายสูญเสียกำลังพลสำเร็จ`,
             variant: `success`,
             confirmText: `ตกลง`,
             callback: () => {
@@ -296,7 +304,7 @@ const ResignationPage = ({ location }) => {
     <Layout>
       {token !== `` ? (
         <>
-          <Seo title="กำลังพลลาออก" />
+          <Seo title="จำหน่ายสูยเสีย" />
           <Breadcrumbs
             previous={[
               {
@@ -315,10 +323,10 @@ const ResignationPage = ({ location }) => {
                 link: `/people/list/`,
               },
             ]}
-            current="กำลังพลลาออก"
+            current="จำหน่ายสูยเสีย"
           />
 
-          {personData !== null ? (
+          {personData !== null && (
             <>
               <Form
                 onSubmit={e => {
@@ -413,33 +421,32 @@ const ResignationPage = ({ location }) => {
                   <FontAwesomeIcon icon={faSave} style={{ marginRight: 5 }} />
                   บันทึก
                 </Button>
-                {isError.type === `id-notfound` && (
-                  <>
-                    <Alert
-                      sx={{ marginTop: `1rem`, animation: `fadein 0.3s` }}
-                      severity="error"
-                    >
-                      {isError.text}
-                    </Alert>
-
-                    <Button
-                      sx={{ marginTop: `3rem` }}
-                      color="primary"
-                      variant="outlined"
-                      onClick={() => navigate(`/people/list/`)}
-                    >
-                      <FontAwesomeIcon
-                        icon={faChevronLeft}
-                        style={{ marginRight: 5 }}
-                      />
-                      กลับไปหน้าค้นหากำลังพล
-                    </Button>
-                  </>
-                )}
               </Form>
             </>
-          ) : (
-            <></>
+          )}
+
+          {isError.type === `id-notfound` && (
+            <Form>
+              <Alert
+                sx={{ marginTop: `1rem`, animation: `fadein 0.3s` }}
+                severity="error"
+              >
+                {isError.text}
+              </Alert>
+
+              <Button
+                sx={{ marginTop: `3rem` }}
+                color="primary"
+                variant="outlined"
+                onClick={() => navigate(`/people/list/`)}
+              >
+                <FontAwesomeIcon
+                  icon={faChevronLeft}
+                  style={{ marginRight: 5 }}
+                />
+                กลับไปหน้าค้นหากำลังพล
+              </Button>
+            </Form>
           )}
         </>
       ) : (

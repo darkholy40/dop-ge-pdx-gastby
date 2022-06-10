@@ -25,10 +25,6 @@ const Jwt = () => {
       //   sec: seconds < 10 ? `0${seconds}` : `${seconds}`,
       // })
 
-      if (hours <= 0 && minutes <= 0 && seconds <= 0) {
-        setIsExpired(true)
-      }
-
       dispatch({
         type: `SET_SESSION_TIMER`,
         sessionTimer: {
@@ -37,6 +33,10 @@ const Jwt = () => {
           sec: seconds < 10 ? `0${seconds}` : `${seconds}`,
         },
       })
+
+      if (hours <= 0 && minutes <= 0 && seconds <= 0) {
+        setIsExpired(true)
+      }
     }
   }, [token, dispatch])
 
@@ -64,6 +64,17 @@ const Jwt = () => {
             confirmText: `ตกลง`,
             callback: () => {
               navigate(`/`)
+
+              setIsExpired(false)
+
+              dispatch({
+                type: `SET_SESSION_TIMER`,
+                sessionTimer: {
+                  hr: `08`,
+                  min: `00`,
+                  sec: `00`,
+                },
+              })
             },
           },
         })
@@ -72,17 +83,6 @@ const Jwt = () => {
           type: `SET_TOKEN`,
           token: ``,
         })
-
-        dispatch({
-          type: `SET_SESSION_TIMER`,
-          sessionTimer: {
-            hr: `08`,
-            min: `00`,
-            sec: `00`,
-          },
-        })
-
-        setIsExpired(false)
       }
     }
   }, [token, isExpired, dispatch])
