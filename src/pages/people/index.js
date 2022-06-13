@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useState } from "react"
 import { navigate } from "gatsby"
 import { useSelector, useDispatch } from "react-redux"
 import styled from "styled-components"
-import { Button, Alert, TextField, Divider, Checkbox } from "@mui/material"
+import { Button, Alert, TextField, Divider, Switch } from "@mui/material"
 import Autocomplete from "@mui/material/Autocomplete"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import {
@@ -17,7 +17,12 @@ import Layout from "../../components/layout"
 import Seo from "../../components/seo"
 import Breadcrumbs from "../../components/breadcrumbs"
 import PageNotFound from "../../components/page-not-found"
-import { Form, SubmitButtonFlex, Flex } from "../../components/styles"
+import {
+  Form,
+  SubmitButtonFlex,
+  Flex,
+  TextFieldWall,
+} from "../../components/styles"
 import renderDivision from "../../functions/render-division"
 
 const Oparator = styled.div`
@@ -31,9 +36,8 @@ const Oparator = styled.div`
 `
 
 const PositionsPage = () => {
-  const { token, userInfo, searchPersonFilter, units } = useSelector(
-    state => state
-  )
+  const { token, userInfo, searchPersonFilter, units, primaryColor } =
+    useSelector(state => state)
   const dispatch = useDispatch()
   const [isError, setIsError] = useState({
     status: `disabled`,
@@ -171,30 +175,23 @@ const PositionsPage = () => {
               </Alert>
             )}
 
-            {userInfo.role.name !== `Administrator` ? (
-              <Button
-                sx={{
-                  minWidth: 120,
-                  whiteSpace: `nowrap`,
-                }}
-                color="success"
-                variant="outlined"
-                disabled={
-                  isError.status === `disabled` || isError.status === `notfound`
-                }
-                onClick={() => {
-                  navigate(`/people/add/`)
-                }}
-              >
-                <FontAwesomeIcon
-                  icon={faPlusCircle}
-                  style={{ marginRight: 5 }}
-                />
-                เพิ่มกำลังพล
-              </Button>
-            ) : (
-              <></>
-            )}
+            <Button
+              sx={{
+                minWidth: 120,
+                whiteSpace: `nowrap`,
+              }}
+              color="success"
+              variant="outlined"
+              disabled={
+                isError.status === `disabled` || isError.status === `notfound`
+              }
+              onClick={() => {
+                navigate(`/people/add/`)
+              }}
+            >
+              <FontAwesomeIcon icon={faPlusCircle} style={{ marginRight: 5 }} />
+              เพิ่มกำลังพล
+            </Button>
           </Oparator>
           <Divider style={{ marginTop: `1rem`, marginBottom: `1rem` }} />
           <Form onSubmit={e => e.preventDefault()}>
@@ -389,35 +386,37 @@ const PositionsPage = () => {
                 />
               </Flex>
             )}
-            <Flex style={{ marginBottom: `1rem` }}>
-              <Checkbox
-                onChange={(_, newValue) => {
-                  dispatch({
-                    type: `SET_SEARCH_PERSON_FILTER`,
-                    searchPersonFilter: {
-                      ...searchPersonFilter,
-                      isResigned: newValue,
-                    },
-                  })
-                }}
-                checked={searchPersonFilter.isResigned}
-              />
-              <div
-                role="presentation"
-                style={{ cursor: `pointer`, userSelect: `none` }}
-                onClick={() =>
-                  dispatch({
-                    type: `SET_SEARCH_PERSON_FILTER`,
-                    searchPersonFilter: {
-                      ...searchPersonFilter,
-                      isResigned: !searchPersonFilter.isResigned,
-                    },
-                  })
-                }
-              >
-                ที่ลาออกแล้ว
-              </div>
-            </Flex>
+            <TextFieldWall
+              style={{
+                padding: `6px 12px`,
+                marginBottom: `1rem`,
+                cursor: `pointer`,
+                userSelect: `none`,
+                backgroundColor: searchPersonFilter.isResigned
+                  ? primaryColor[50]
+                  : `rgba(0, 0, 0, 0)`,
+                border: searchPersonFilter.isResigned
+                  ? `1px solid ${primaryColor[500]}`
+                  : `1px solid rgba(0, 0, 0, 0.24)`,
+              }}
+              role="presentation"
+              onClick={() =>
+                dispatch({
+                  type: `SET_SEARCH_PERSON_FILTER`,
+                  searchPersonFilter: {
+                    ...searchPersonFilter,
+                    isResigned: !searchPersonFilter.isResigned,
+                  },
+                })
+              }
+            >
+              <Flex style={{ width: `100%`, justifyContent: `space-between` }}>
+                <div style={{ color: `rgba(0, 0, 0, 0.6)` }}>
+                  ที่จำหน่ายสูญเสีย
+                </div>
+                <Switch checked={searchPersonFilter.isResigned} />
+              </Flex>
+            </TextFieldWall>
             <SubmitButtonFlex>
               <Button
                 style={{

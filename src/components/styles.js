@@ -30,6 +30,15 @@ const DisabledBlock = styled.div`
   }
 `
 
+const TextFieldWall = styled.div`
+  border-radius: 5px;
+  border: 1px solid rgba(0, 0, 0, 0.24);
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`
+
 const CheckCircleFlex = styled.div`
   border-radius: 0 5px 5px 0;
   border-top: 1px solid rgba(0, 0, 0, 0.24);
@@ -97,6 +106,7 @@ export {
   SubmitButtonFlex,
   Flex,
   DisabledBlock,
+  TextFieldWall,
   CheckCircleFlex,
   ColorButton,
 }
