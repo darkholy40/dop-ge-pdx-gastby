@@ -14,6 +14,7 @@ import Layout from "../../components/layout"
 import Seo from "../../components/seo"
 import Breadcrumbs from "../../components/breadcrumbs"
 import PageNotFound from "../../components/page-not-found"
+import PercentDialog from "../../components/percent-dialog"
 import { Flex, DisabledBlock, CheckCircleFlex } from "../../components/styles"
 import {
   PhoneNumber,
@@ -105,6 +106,11 @@ const EditPositionsPage = ({ location }) => {
   const [statusDisability, setStatusDisability] = useState(``)
   const [skills, setSkills] = useState(``)
   const [firstStrike, setFirstStrike] = useState(false)
+  const [percentDialog, setPercentDialog] = useState({
+    open: false,
+    title: `กำลังโหลดข้อมูลคลังตำแหน่งที่ว่างทั้งหมด`,
+    percent: 0,
+  })
 
   const search = location.search.split("id=")
   const id = search[1] || `0`
@@ -253,6 +259,11 @@ const EditPositionsPage = ({ location }) => {
     let role = ``
     let lap = 0
 
+    setPercentDialog(prev => ({
+      ...prev,
+      open: true,
+    }))
+
     if (id === `0`) {
       return 0
     }
@@ -353,30 +364,13 @@ const EditPositionsPage = ({ location }) => {
           returnData = [...returnData, position]
         }
 
+        setPercentDialog(prev => ({
+          ...prev,
+          percent: (i * 100) / lap,
+        }))
+
         if (returnData.length > 0) {
-          let returnPosition = returnData
-
-          if (positionTypeSelect !== ``) {
-            returnPosition = returnData.filter(
-              elem => elem.position_type.type === positionTypeSelect
-            )
-          }
-
-          if (positionNameSelect !== ``) {
-            returnPosition = returnData.filter(
-              elem =>
-                elem.position_type.type === positionTypeSelect &&
-                elem.position_type.name === positionNameSelect
-            )
-          }
-
-          setPositions(returnPosition)
-          if (returnPosition.length === 0) {
-            setIsError({
-              status: `notfound`,
-              text: `ไม่พบข้อมูล`,
-            })
-          }
+          setPositions(returnData)
         } else {
           setPositions([])
           setIsError({
@@ -386,7 +380,13 @@ const EditPositionsPage = ({ location }) => {
         }
       }
     }
-  }, [token, userInfo, positionTypeSelect, positionNameSelect, id, dispatch])
+
+    setPercentDialog(prev => ({
+      ...prev,
+      open: false,
+      percent: 100,
+    }))
+  }, [token, userInfo, id, dispatch])
 
   const goEdit = async () => {
     let getPersonID = ``
@@ -705,6 +705,26 @@ const EditPositionsPage = ({ location }) => {
     // setScoreKPI(``)
     // setScoreCompetence(``)
     // setStatusDisability(``)
+  }
+
+  const renderFilterPositions = getPositions => {
+    let returnPositions = getPositions
+
+    if (positionTypeSelect !== ``) {
+      returnPositions = getPositions.filter(
+        elem => elem.position_type.type === positionTypeSelect
+      )
+    }
+
+    if (positionNameSelect !== ``) {
+      returnPositions = getPositions.filter(
+        elem =>
+          elem.position_type.type === positionTypeSelect &&
+          elem.position_type.name === positionNameSelect
+      )
+    }
+
+    return returnPositions
   }
 
   useEffect(() => {
@@ -1041,7 +1061,7 @@ const EditPositionsPage = ({ location }) => {
                           sx={{ width: `100%` }}
                           id="position-number"
                           disablePortal
-                          options={positions}
+                          options={renderFilterPositions(positions)}
                           noOptionsText={
                             positions.length === 0
                               ? isError.status === `notfound`
@@ -2035,6 +2055,11 @@ const EditPositionsPage = ({ location }) => {
                     </Grid>
                   </Grid>
                 </Form>
+                <PercentDialog
+                  open={percentDialog.open}
+                  title={percentDialog.title}
+                  percent={percentDialog.percent}
+                />
 
                 <Divider style={{ marginTop: `1rem`, marginBottom: `1rem` }} />
                 <Flex
