@@ -280,6 +280,24 @@ const ResignationPage = ({ location }) => {
             },
           },
         })
+
+        client(token).mutate({
+          mutation: gql`
+            mutation CreateLog {
+              createLog(input: {
+                data: {
+                  action: "action",
+                  description: "people -> resignation -> save -> ${getPersonID}",
+                  users_permissions_user: "${userInfo._id}",
+                }
+              }) {
+                log {
+                  _id
+                }
+              }
+            }
+          `,
+        })
       }
     }
 

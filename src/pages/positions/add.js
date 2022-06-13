@@ -107,7 +107,7 @@ const AddPositionsPage = () => {
 
     if (!posNumberIsExisted) {
       try {
-        await client(token).mutate({
+        const res = await client(token).mutate({
           mutation: gql`
             mutation CreatePosition {
               createPosition(input: {
@@ -144,7 +144,9 @@ const AddPositionsPage = () => {
             }
           `,
         })
+
         // console.log(res)
+        const createdPositionId = res.data.createPosition.position._id
 
         dispatch({
           type: `SET_NOTIFICATION_DIALOG`,
@@ -158,6 +160,24 @@ const AddPositionsPage = () => {
               navigate(`/positions`)
             },
           },
+        })
+
+        client(token).mutate({
+          mutation: gql`
+            mutation CreateLog {
+              createLog(input: {
+                data: {
+                  action: "action",
+                  description: "positions -> create -> ${createdPositionId}",
+                  users_permissions_user: "${userInfo._id}",
+                }
+              }) {
+                log {
+                  _id
+                }
+              }
+            }
+          `,
         })
       } catch (error) {
         dispatch({

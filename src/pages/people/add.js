@@ -363,6 +363,24 @@ const AddPositionsPage = () => {
             },
           },
         })
+
+        client(token).mutate({
+          mutation: gql`
+            mutation CreateLog {
+              createLog(input: {
+                data: {
+                  action: "action",
+                  description: "people -> create -> ${getPersonID}",
+                  users_permissions_user: "${userInfo._id}",
+                }
+              }) {
+                log {
+                  _id
+                }
+              }
+            }
+          `,
+        })
       } catch (error) {
         dispatch({
           type: `SET_NOTIFICATION_DIALOG`,
