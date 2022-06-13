@@ -294,7 +294,16 @@ const PositionsListPage = () => {
                       ...prev,
                       page: newPage - 1,
                     }))
+
+                    dispatch({
+                      type: `SET_SEARCH_POSITION_FILTER`,
+                      searchPositionFilter: {
+                        ...searchPositionFilter,
+                        currentPage: newPage - 1,
+                      },
+                    })
                   }}
+                  page={tableOption.page + 1}
                 />
                 <TableContainer component={Paper}>
                   <Table

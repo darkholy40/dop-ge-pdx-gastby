@@ -313,7 +313,16 @@ const ResignedPeopleListPage = () => {
                       ...prev,
                       page: newPage - 1,
                     }))
+
+                    dispatch({
+                      type: `SET_SEARCH_PERSON_FILTER`,
+                      searchPersonFilter: {
+                        ...searchPersonFilter,
+                        currentPage: newPage - 1,
+                      },
+                    })
                   }}
+                  page={tableOption.page + 1}
                 />
                 <TableContainer component={Paper}>
                   <Table
