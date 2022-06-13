@@ -114,15 +114,27 @@ const Navbar = () => {
     {
       name: `people`,
       desc: `ประวัติกำลังพล`,
+      role: ``,
     },
     {
       name: `positions`,
       desc: `คลังตำแหน่ง`,
+      role: ``,
     },
     {
       name: `reports`,
       desc: `ออกรายงาน`,
       role: `administrator`,
+    },
+    {
+      name: `user-management`,
+      desc: `จัดการผู้ใช้งาน`,
+      role: `super administrator`,
+    },
+    {
+      name: `activities`,
+      desc: `ประวัติการใช้งานระบบ`,
+      role: `super administrator`,
     },
   ]
 
@@ -237,13 +249,24 @@ const Navbar = () => {
                       </div>
                     )
 
-                    if (userInfo.role.name !== `Administrator`) {
-                      if (page.role !== `administrator`) {
-                        return menuList()
-                      }
-                      return null
-                    } else {
-                      return menuList()
+                    switch (userInfo.role.name) {
+                      case `Super Administrator`:
+                        if (page.role === `super administrator`) {
+                          return menuList()
+                        }
+                        return ``
+
+                      case `Administrator`:
+                        if (page.role === `administrator` || page.role === ``) {
+                          return menuList()
+                        }
+                        return ``
+
+                      default:
+                        if (page.role === ``) {
+                          return menuList()
+                        }
+                        return ``
                     }
                   })}
                 </div>
@@ -271,13 +294,24 @@ const Navbar = () => {
                     </div>
                   )
 
-                  if (userInfo.role.name !== `Administrator`) {
-                    if (page.role !== `administrator`) {
-                      return menuList()
-                    }
-                    return null
-                  } else {
-                    return menuList()
+                  switch (userInfo.role.name) {
+                    case `Super Administrator`:
+                      if (page.role === `super administrator`) {
+                        return menuList()
+                      }
+                      return ``
+
+                    case `Administrator`:
+                      if (page.role === `administrator` || page.role === ``) {
+                        return menuList()
+                      }
+                      return ``
+
+                    default:
+                      if (page.role === ``) {
+                        return menuList()
+                      }
+                      return ``
                   }
                 })}
               </>

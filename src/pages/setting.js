@@ -52,6 +52,9 @@ const SettingPage = () => {
 
   const renderRole = getRole => {
     switch (getRole) {
+      case `Super Administrator`:
+        return `ผู้ดูแลระบบ (จัดการผู้ใช้งาน)`
+
       case `Administrator`:
         return `ผู้ดูแลระบบ (ส่วนกลาง)`
 

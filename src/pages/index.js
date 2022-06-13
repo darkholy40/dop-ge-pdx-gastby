@@ -18,7 +18,7 @@ const Container = styled.div`
 `
 
 const IndexPage = () => {
-  const { token } = useSelector(state => state)
+  const { token, userInfo } = useSelector(state => state)
   const dispatch = useDispatch()
 
   useEffect(() => {
@@ -30,9 +30,15 @@ const IndexPage = () => {
 
   useEffect(() => {
     if (token !== ``) {
-      navigate(`/people/`)
+      setTimeout(() => {
+        if (userInfo.role.name === `Super Administrator`) {
+          navigate(`/user-management/`)
+        } else {
+          navigate(`/people/`)
+        }
+      }, 500)
     }
-  }, [token])
+  }, [token, userInfo, dispatch])
 
   return (
     <Layout>
