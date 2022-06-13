@@ -6,6 +6,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faUser, faLock } from "@fortawesome/free-solid-svg-icons"
 import axios from "axios"
 
+import { client, gql } from "../functions/apollo-client"
+
 import Image from "./image"
 
 const Title = styled.p`
@@ -81,6 +83,24 @@ const IndexPage = () => {
         case 200:
           // use setTimeout() to prevent "Can't perform a React state update on an unmounted component"
           setTimeout(() => {
+            client(res.data.jwt).mutate({
+              mutation: gql`
+                mutation CreateLog {
+                  createLog(input: {
+                    data: {
+                      action: "auth",
+                      description: "login",
+                      users_permissions_user: "${res.data.user._id}",
+                    }
+                  }) {
+                    log {
+                      _id
+                    }
+                  }
+                }
+              `,
+            })
+
             dispatch({
               type: `SET_TOKEN`,
               token: res.data.jwt,

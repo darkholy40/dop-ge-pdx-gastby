@@ -251,6 +251,24 @@ const EditPositionsPage = ({ location }) => {
             },
           },
         })
+
+        client(token).mutate({
+          mutation: gql`
+            mutation CreateLog {
+              createLog(input: {
+                data: {
+                  action: "action",
+                  description: "positions -> save -> ${id}",
+                  users_permissions_user: "${userInfo._id}",
+                }
+              }) {
+                log {
+                  _id
+                }
+              }
+            }
+          `,
+        })
       } catch (error) {
         console.log(error)
 
@@ -282,6 +300,28 @@ const EditPositionsPage = ({ location }) => {
   }, [dispatch])
 
   useEffect(() => {
+    if (token !== `` && userInfo._id !== ``) {
+      client(token).mutate({
+        mutation: gql`
+          mutation CreateLog {
+            createLog(input: {
+              data: {
+                action: "view",
+                description: "positions -> edit -> ${id}",
+                users_permissions_user: "${userInfo._id}",
+              }
+            }) {
+              log {
+                _id
+              }
+            }
+          }
+        `,
+      })
+    }
+  }, [token, userInfo, id])
+
+  useEffect(() => {
     if (token !== ``) {
       getPosition()
     }
@@ -289,7 +329,9 @@ const EditPositionsPage = ({ location }) => {
 
   return (
     <Layout>
-      {token !== `` ? (
+      {token !== `` &&
+      (userInfo.role.name === `Administrator` ||
+        userInfo.role.name === `Authenticated`) ? (
         isError.type !== `notFound` ? (
           <>
             <Seo title="แก้ไขคลังตำแหน่ง" />

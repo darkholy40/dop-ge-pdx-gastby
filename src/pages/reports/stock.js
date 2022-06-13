@@ -320,6 +320,28 @@ const StockPage = () => {
     })
   }, [dispatch])
 
+  useEffect(() => {
+    if (token !== `` && userInfo._id !== ``) {
+      client(token).mutate({
+        mutation: gql`
+          mutation CreateLog {
+            createLog(input: {
+              data: {
+                action: "view",
+                description: "reports -> stock",
+                users_permissions_user: "${userInfo._id}",
+              }
+            }) {
+              log {
+                _id
+              }
+            }
+          }
+        `,
+      })
+    }
+  }, [token, userInfo])
+
   return (
     <Layout>
       {token !== `` && userInfo.role.name === `Administrator` ? (
@@ -415,6 +437,29 @@ const StockPage = () => {
                 fileName="stock"
                 sheetName="STOCK"
                 disabled={statusCode !== ``}
+                callback={() =>
+                  client(token).mutate({
+                    mutation: gql`
+                      mutation CreateLog {
+                        createLog(input: {
+                          data: {
+                            action: "action",
+                            description: "download -> stock -> ${
+                              input.unit !== null
+                                ? renderDivision(input.unit)
+                                : `ทั้งหมด`
+                            }",
+                            users_permissions_user: "${userInfo._id}",
+                          }
+                        }) {
+                          log {
+                            _id
+                          }
+                        }
+                      }
+                    `,
+                  })
+                }
               />
             </Form>
           </Container>

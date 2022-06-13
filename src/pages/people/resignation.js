@@ -297,12 +297,36 @@ const ResignationPage = ({ location }) => {
   }, [dispatch])
 
   useEffect(() => {
+    if (token !== `` && userInfo._id !== ``) {
+      client(token).mutate({
+        mutation: gql`
+          mutation CreateLog {
+            createLog(input: {
+              data: {
+                action: "view",
+                description: "people -> resignation -> ${id}",
+                users_permissions_user: "${userInfo._id}",
+              }
+            }) {
+              log {
+                _id
+              }
+            }
+          }
+        `,
+      })
+    }
+  }, [token, userInfo, id])
+
+  useEffect(() => {
     getPerson()
   }, [getPerson])
 
   return (
     <Layout>
-      {token !== `` ? (
+      {token !== `` &&
+      (userInfo.role.name === `Administrator` ||
+        userInfo.role.name === `Authenticated`) ? (
         <>
           <Seo title="จำหน่ายสูยเสีย" />
           <Breadcrumbs

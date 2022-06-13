@@ -189,9 +189,33 @@ const AddPositionsPage = () => {
     })
   }, [dispatch])
 
+  useEffect(() => {
+    if (token !== `` && userInfo._id !== ``) {
+      client(token).mutate({
+        mutation: gql`
+          mutation CreateLog {
+            createLog(input: {
+              data: {
+                action: "view",
+                description: "positions -> add",
+                users_permissions_user: "${userInfo._id}",
+              }
+            }) {
+              log {
+                _id
+              }
+            }
+          }
+        `,
+      })
+    }
+  }, [token, userInfo])
+
   return (
     <Layout>
-      {token !== `` ? (
+      {token !== `` &&
+      (userInfo.role.name === `Administrator` ||
+        userInfo.role.name === `Authenticated`) ? (
         <>
           <Seo title="เพิ่มคลังตำแหน่ง" />
           <Breadcrumbs

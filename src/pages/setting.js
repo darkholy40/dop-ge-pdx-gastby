@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react"
 import { useSelector, useDispatch } from "react-redux"
 import styled from "styled-components"
 
+import { client, gql } from "../functions/apollo-client"
+
 import Layout from "../components/layout"
 import Seo from "../components/seo"
 import Breadcrumbs from "../components/breadcrumbs"
@@ -74,6 +76,28 @@ const SettingPage = () => {
   }, [dispatch])
 
   useEffect(() => {
+    if (token !== `` && userInfo._id !== ``) {
+      client(token).mutate({
+        mutation: gql`
+          mutation CreateLog {
+            createLog(input: {
+              data: {
+                action: "view",
+                description: "setting",
+                users_permissions_user: "${userInfo._id}",
+              }
+            }) {
+              log {
+                _id
+              }
+            }
+          }
+        `,
+      })
+    }
+  }, [token, userInfo])
+
+  useEffect(() => {
     // console.log(userInfo)
 
     let users = [
@@ -97,6 +121,10 @@ const SettingPage = () => {
       {
         title: `ระยะเวลาเซสชัน`,
         desc: `8 ชม. (คงเหลือ ${sessionTimer.hr}:${sessionTimer.min}:${sessionTimer.sec})`,
+      },
+      {
+        title: `Token`,
+        desc: token,
       },
     ]
     setRows(users)

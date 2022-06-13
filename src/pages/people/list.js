@@ -242,6 +242,28 @@ const PeopleListPage = () => {
   }, [dispatch])
 
   useEffect(() => {
+    if (token !== `` && userInfo._id !== ``) {
+      client(token).mutate({
+        mutation: gql`
+          mutation CreateLog {
+            createLog(input: {
+              data: {
+                action: "view",
+                description: "people -> list",
+                users_permissions_user: "${userInfo._id}",
+              }
+            }) {
+              log {
+                _id
+              }
+            }
+          }
+        `,
+      })
+    }
+  }, [token, userInfo])
+
+  useEffect(() => {
     if (token !== ``) {
       getPosition()
     }
@@ -249,7 +271,9 @@ const PeopleListPage = () => {
 
   return (
     <Layout>
-      {token !== `` ? (
+      {token !== `` &&
+      (userInfo.role.name === `Administrator` ||
+        userInfo.role.name === `Authenticated`) ? (
         <>
           <Seo title="ค้นหากำลังพล" />
           <Breadcrumbs

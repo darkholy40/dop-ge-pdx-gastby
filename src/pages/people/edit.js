@@ -616,6 +616,24 @@ const EditPositionsPage = ({ location }) => {
             },
           },
         })
+
+        client(token).mutate({
+          mutation: gql`
+            mutation CreateLog {
+              createLog(input: {
+                data: {
+                  action: "action",
+                  description: "people -> save -> ${id}",
+                  users_permissions_user: "${userInfo._id}",
+                }
+              }) {
+                log {
+                  _id
+                }
+              }
+            }
+          `,
+        })
       }
     }
 
@@ -735,6 +753,28 @@ const EditPositionsPage = ({ location }) => {
   }, [dispatch])
 
   useEffect(() => {
+    if (token !== `` && userInfo._id !== ``) {
+      client(token).mutate({
+        mutation: gql`
+          mutation CreateLog {
+            createLog(input: {
+              data: {
+                action: "view",
+                description: "people -> edit -> ${id}",
+                users_permissions_user: "${userInfo._id}",
+              }
+            }) {
+              log {
+                _id
+              }
+            }
+          }
+        `,
+      })
+    }
+  }, [token, userInfo, id])
+
+  useEffect(() => {
     if (token !== ``) {
       getPerson()
     }
@@ -761,7 +801,9 @@ const EditPositionsPage = ({ location }) => {
 
   return (
     <Layout>
-      {token !== `` ? (
+      {token !== `` &&
+      (userInfo.role.name === `Administrator` ||
+        userInfo.role.name === `Authenticated`) ? (
         isError.type !== `notFound` ? (
           <>
             <Seo title="แก้ไขประวัติกำลังพล" />

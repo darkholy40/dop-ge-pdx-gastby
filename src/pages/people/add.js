@@ -475,6 +475,28 @@ const AddPositionsPage = () => {
   }, [dispatch])
 
   useEffect(() => {
+    if (token !== `` && userInfo._id !== ``) {
+      client(token).mutate({
+        mutation: gql`
+          mutation CreateLog {
+            createLog(input: {
+              data: {
+                action: "view",
+                description: "people -> add",
+                users_permissions_user: "${userInfo._id}",
+              }
+            }) {
+              log {
+                _id
+              }
+            }
+          }
+        `,
+      })
+    }
+  }, [token, userInfo])
+
+  useEffect(() => {
     if (token !== ``) {
       getPositions()
     }
@@ -495,7 +517,9 @@ const AddPositionsPage = () => {
 
   return (
     <Layout>
-      {token !== `` ? (
+      {token !== `` &&
+      (userInfo.role.name === `Administrator` ||
+        userInfo.role.name === `Authenticated`) ? (
         <>
           <Seo title="เพิ่มประวัติกำลังพล" />
           <Breadcrumbs

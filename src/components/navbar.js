@@ -19,6 +19,8 @@ import {
 } from "@fortawesome/free-solid-svg-icons"
 import styled from "styled-components"
 
+import { client, gql } from "../functions/apollo-client"
+
 import { ColorButton } from "./styles"
 
 const Flex = styled.div`
@@ -149,6 +151,24 @@ const Navbar = () => {
   }
 
   const goLogout = () => {
+    client(token).mutate({
+      mutation: gql`
+        mutation CreateLog {
+          createLog(input: {
+            data: {
+              action: "auth",
+              description: "logout",
+              users_permissions_user: "${userInfo._id}",
+            }
+          }) {
+            log {
+              _id
+            }
+          }
+        }
+      `,
+    })
+
     dispatch({
       type: `SET_TOKEN`,
       token: ``,

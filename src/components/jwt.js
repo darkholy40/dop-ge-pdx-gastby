@@ -3,11 +3,13 @@ import { navigate } from "gatsby"
 import { useSelector, useDispatch } from "react-redux"
 import jwt_decode from "jwt-decode"
 
+import { client, gql } from "../functions/apollo-client"
+
 import useInterval from "../functions/use-interval"
 
 const Jwt = () => {
   const dispatch = useDispatch()
-  const { token } = useSelector(state => state)
+  const { token, userInfo } = useSelector(state => state)
   const [isExpired, setIsExpired] = React.useState(false)
 
   const fetchSessionTimer = React.useCallback(() => {
@@ -79,13 +81,31 @@ const Jwt = () => {
           },
         })
 
+        client(token).mutate({
+          mutation: gql`
+            mutation CreateLog {
+              createLog(input: {
+                data: {
+                  action: "auth",
+                  description: "token expired",
+                  users_permissions_user: "${userInfo._id}",
+                }
+              }) {
+                log {
+                  _id
+                }
+              }
+            }
+          `,
+        })
+
         dispatch({
           type: `SET_TOKEN`,
           token: ``,
         })
       }
     }
-  }, [token, isExpired, dispatch])
+  }, [token, userInfo._id, isExpired, dispatch])
 
   React.useEffect(() => {
     fetchSessionTimer()

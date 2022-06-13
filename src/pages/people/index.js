@@ -120,6 +120,34 @@ const PositionsPage = () => {
   }, [dispatch])
 
   useEffect(() => {
+    // Prevent saving a log when switch user to super admin
+    if (
+      token !== `` &&
+      userInfo._id !== `` &&
+      (userInfo.role.name === `Administrator` ||
+        userInfo.role.name === `Authenticated`)
+    ) {
+      client(token).mutate({
+        mutation: gql`
+          mutation CreateLog {
+            createLog(input: {
+              data: {
+                action: "view",
+                description: "people",
+                users_permissions_user: "${userInfo._id}",
+              }
+            }) {
+              log {
+                _id
+              }
+            }
+          }
+        `,
+      })
+    }
+  }, [token, userInfo])
+
+  useEffect(() => {
     if (token !== ``) {
       getPositions()
     }
@@ -127,7 +155,9 @@ const PositionsPage = () => {
 
   return (
     <Layout>
-      {token !== `` ? (
+      {token !== `` &&
+      (userInfo.role.name === `Administrator` ||
+        userInfo.role.name === `Authenticated`) ? (
         <>
           <Seo
             title={

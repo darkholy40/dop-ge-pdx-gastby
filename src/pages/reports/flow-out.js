@@ -245,6 +245,28 @@ const FlowOutPage = () => {
     })
   }, [dispatch])
 
+  useEffect(() => {
+    if (token !== `` && userInfo._id !== ``) {
+      client(token).mutate({
+        mutation: gql`
+          mutation CreateLog {
+            createLog(input: {
+              data: {
+                action: "view",
+                description: "reports -> flow-out",
+                users_permissions_user: "${userInfo._id}",
+              }
+            }) {
+              log {
+                _id
+              }
+            }
+          }
+        `,
+      })
+    }
+  }, [token, userInfo])
+
   return (
     <Layout>
       {token !== `` && userInfo.role.name === `Administrator` ? (
@@ -337,6 +359,29 @@ const FlowOutPage = () => {
                 fileName="flow-out"
                 sheetName="FLOW-OUT"
                 disabled={statusCode !== ``}
+                callback={() =>
+                  client(token).mutate({
+                    mutation: gql`
+                      mutation CreateLog {
+                        createLog(input: {
+                          data: {
+                            action: "action",
+                            description: "download -> flowout -> ${
+                              input.unit !== null
+                                ? renderDivision(input.unit)
+                                : `ทั้งหมด`
+                            }",
+                            users_permissions_user: "${userInfo._id}",
+                          }
+                        }) {
+                          log {
+                            _id
+                          }
+                        }
+                      }
+                    `,
+                  })
+                }
               />
             </Form>
           </Container>
