@@ -132,7 +132,7 @@ const PeopleListPage = () => {
         totalRows: total.data.positionsConnection.aggregate.count,
       }))
 
-      if (total.data.positionsConnection.aggregate.totalCount > 0) {
+      if (total.data.positionsConnection.aggregate.count > 0) {
         const res = await client(token).query({
           query: gql`
             query Positions {

@@ -124,7 +124,7 @@ const ResignedPeopleListPage = () => {
         totalRows: total.data.peopleConnection.aggregate.count,
       }))
 
-      if (total.data.peopleConnection.aggregate.totalCount > 0) {
+      if (total.data.peopleConnection.aggregate.count > 0) {
         const res = await client(token).query({
           query: gql`
             query Person {
