@@ -433,7 +433,7 @@ const ResignationPage = ({ location }) => {
                     renderInput={params => (
                       <TextField
                         {...params}
-                        label="* สาเหตุการลาออก"
+                        label="* สาเหตุการออก"
                         InputProps={{
                           ...params.InputProps,
                           sx: {

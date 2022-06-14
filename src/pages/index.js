@@ -3,6 +3,7 @@ import { navigate } from "gatsby"
 import { useSelector, useDispatch } from "react-redux"
 import styled from "styled-components"
 import { CircularProgress } from "@mui/material"
+import { grey } from "@mui/material/colors"
 
 import Layout from "../components/layout"
 import Seo from "../components/seo"
@@ -31,11 +32,7 @@ const IndexPage = () => {
   useEffect(() => {
     if (token !== ``) {
       setTimeout(() => {
-        if (userInfo.role.name === `Super Administrator`) {
-          navigate(`/user-management/`)
-        } else {
-          navigate(`/people/`)
-        }
+        navigate(`/landing/`)
       }, 500)
     }
   }, [token, userInfo, dispatch])
@@ -45,16 +42,25 @@ const IndexPage = () => {
       {token === `` ? (
         <>
           <Seo title="ลงชื่อเข้าใช้งานระบบ" />
-
           <Login />
         </>
       ) : (
         <>
-          <Seo title="ระบบกำลังนำท่านไปยังหน้าจัดการประวัติกำลังพล" />
-
+          <Seo
+            title={`ระบบกำลังนำท่านไปยังหน้า${
+              userInfo.role.name === `Super Administrator`
+                ? `จัดการผู้ใช้งาน`
+                : `จัดการประวัติกำลังพล`
+            }`}
+          />
           <Container>
             <CircularProgress color="primary" size="5rem" thickness={5} />
-            <p>ระบบกำลังนำท่านไปยังหน้าจัดการประวัติกำลังพล</p>
+            <p style={{ color: grey[700] }}>
+              ระบบกำลังนำท่านไปยังหน้า
+              {userInfo.role.name === `Super Administrator`
+                ? `จัดการผู้ใช้งาน`
+                : `จัดการประวัติกำลังพล`}
+            </p>
           </Container>
         </>
       )}
