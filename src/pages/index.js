@@ -30,11 +30,19 @@ const IndexPage = () => {
   }, [dispatch])
 
   useEffect(() => {
-    if (token !== ``) {
-      setTimeout(() => {
-        navigate(`/landing/`)
-      }, 500)
+    const goNavigate = async () => {
+      if (token !== ``) {
+        if (userInfo.role.name === `Super Administrator`) {
+          await navigate(`/user-management/`)
+        } else {
+          await navigate(`/people/`)
+        }
+      } else {
+        await navigate(`/`)
+      }
     }
+
+    goNavigate()
   }, [token, userInfo, dispatch])
 
   return (

@@ -150,40 +150,47 @@ const Navbar = () => {
     }
   }
 
-  const goLogout = () => {
-    client(token).mutate({
-      mutation: gql`
-        mutation CreateLog {
-          createLog(input: {
-            data: {
-              action: "auth",
-              description: "logout",
-              users_permissions_user: "${userInfo._id}",
-            }
-          }) {
-            log {
-              _id
+  const goLogout = async () => {
+    const clearSession = async () => {
+      dispatch({
+        type: `SET_TOKEN`,
+        token: ``,
+      })
+
+      dispatch({
+        type: `SET_SESSION_TIMER`,
+        sessionTimer: {
+          hr: `08`,
+          min: `00`,
+          sec: `00`,
+        },
+      })
+    }
+
+    await clearSession()
+    await navigate(`/`)
+
+    try {
+      await client(token).mutate({
+        mutation: gql`
+          mutation CreateLog {
+            createLog(input: {
+              data: {
+                action: "auth",
+                description: "logout",
+                users_permissions_user: "${userInfo._id}",
+              }
+            }) {
+              log {
+                _id
+              }
             }
           }
-        }
-      `,
-    })
-
-    dispatch({
-      type: `SET_TOKEN`,
-      token: ``,
-    })
-
-    dispatch({
-      type: `SET_SESSION_TIMER`,
-      sessionTimer: {
-        hr: `08`,
-        min: `00`,
-        sec: `00`,
-      },
-    })
-
-    navigate(`/`)
+        `,
+      })
+    } catch (error) {
+      console.log(error.message)
+    }
   }
 
   const displaySessionTimer = () => {

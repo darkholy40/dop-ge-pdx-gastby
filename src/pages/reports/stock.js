@@ -70,11 +70,13 @@ const StockPage = () => {
       const totalCount = res.data.positionsConnection.aggregate.count
       lap = Math.ceil(totalCount / 100)
     } catch (error) {
-      console.log(error)
+      console.log(error.message)
 
-      setStatusCode(`connection`)
-      getData()
-      return 0
+      if (error.message === `Failed to fetch`) {
+        setStatusCode(`connection`)
+        getData()
+        return 0
+      }
     }
 
     if (lap > 0) {

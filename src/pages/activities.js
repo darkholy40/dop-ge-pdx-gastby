@@ -10,9 +10,15 @@ import {
   Paper,
   TablePagination,
   Pagination,
+  Button,
 } from "@mui/material"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { faCircle, faEye, faPlay } from "@fortawesome/free-solid-svg-icons"
+import {
+  faCircle,
+  faEye,
+  faPlay,
+  faRedo,
+} from "@fortawesome/free-solid-svg-icons"
 import { green, grey, blue, red } from "@mui/material/colors"
 
 import { client, gql } from "../functions/apollo-client"
@@ -21,6 +27,7 @@ import Layout from "../components/layout"
 import Seo from "../components/seo"
 import Breadcrumbs from "../components/breadcrumbs"
 import PageNotFound from "../components/page-not-found"
+import Warning from "../components/warning"
 import renderTableDate from "../functions/render-table-date"
 
 const Activities = () => {
@@ -336,7 +343,22 @@ const Activities = () => {
               </>
             )
           ) : (
-            <>ยังไม่มีข้อมูล</>
+            <>
+              <Warning
+                text={isError.text}
+                variant={isError.text === `ไม่พบข้อมูล` ? `notfound` : ``}
+                button={
+                  <Button
+                    color="primary"
+                    variant="outlined"
+                    onClick={() => window.location.reload()}
+                  >
+                    <FontAwesomeIcon icon={faRedo} style={{ marginRight: 5 }} />
+                    <span>โหลดหน้านี้อีกครั้ง</span>
+                  </Button>
+                }
+              />
+            </>
           )}
         </>
       ) : (
