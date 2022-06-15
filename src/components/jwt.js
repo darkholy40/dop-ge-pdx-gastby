@@ -81,7 +81,7 @@ const Jwt = () => {
           },
         })
 
-        client(token).mutate({
+        client().mutate({
           mutation: gql`
             mutation CreateLog {
               createLog(input: {
