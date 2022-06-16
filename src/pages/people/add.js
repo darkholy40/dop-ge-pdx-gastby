@@ -15,7 +15,12 @@ import Seo from "../../components/seo"
 import Breadcrumbs from "../../components/breadcrumbs"
 import PageNotFound from "../../components/page-not-found"
 import PercentDialog from "../../components/percent-dialog"
-import { Flex, DisabledBlock, CheckCircleFlex } from "../../components/styles"
+import {
+  Flex,
+  DisabledBlock,
+  CheckCircleFlex,
+  TextFieldWall,
+} from "../../components/styles"
 import {
   PhoneNumber,
   Currency,
@@ -26,6 +31,7 @@ import DatePicker from "../../components/date-picker"
 import renderDateForGraphQL from "../../functions/render-date-for-graphql"
 import renderDivision from "../../functions/render-division"
 import renderCheckingIcon from "../../functions/render-checking-icon"
+import renderAgeFromDifferentDateRange from "../../functions/render-age-from-different-date-range"
 
 const Form = styled.form`
   display: flex;
@@ -926,56 +932,45 @@ const AddPositionsPage = () => {
                 </Flex>
               </Grid>
               <Grid item xs={12} sm={4}>
-                <DatePicker
-                  id="BirthDate"
-                  label="* วันเดือนปีเกิด"
-                  onChange={newValue => {
-                    setBirthDate(newValue)
-                  }}
-                  value={birthDate}
-                  renderInput={params => {
-                    return (
-                      <TextField
-                        {...params}
-                        sx={textfieldProps}
-                        InputProps={{
-                          startAdornment: params.InputProps.endAdornment,
-                          endAdornment: renderCheckingIcon(
-                            birthDate === null ? `` : birthDate
-                          ),
-                        }}
-                      />
-                    )
-                  }}
-                />
-                {/* <MobileDatePicker
-                  {...datePickerProps}
-                  id="BirthDate"
-                  label="* วันเดือนปีเกิด"
-                  onChange={newValue => {
-                    setBirthDate(newValue)
-                  }}
-                  // onOpen={() => {
-                  //   if (birthDate === null) {
-                  //     setBirthDate(new Date())
-                  //   }
-                  // }}
-                  value={birthDate}
-                  renderInput={params => {
-                    return (
-                      <TextField
-                        {...params}
-                        sx={textfieldProps}
-                        InputProps={{
-                          startAdornment: params.InputProps.endAdornment,
-                          endAdornment: renderCheckingIcon(
-                            birthDate === null ? `` : birthDate
-                          ),
-                        }}
-                      />
-                    )
-                  }}
-                /> */}
+                <div style={{ display: `inline-flex`, width: `100%` }}>
+                  <div style={{ width: `100%` }}>
+                    <DatePicker
+                      maxDate={new Date()}
+                      id="BirthDate"
+                      label="* วันเดือนปีเกิด"
+                      onChange={newValue => {
+                        setBirthDate(newValue)
+                      }}
+                      value={birthDate}
+                      renderInput={params => {
+                        return (
+                          <TextField
+                            {...params}
+                            sx={textfieldProps}
+                            InputProps={{
+                              startAdornment: params.InputProps.endAdornment,
+                              endAdornment: renderCheckingIcon(
+                                birthDate === null ? `` : birthDate
+                              ),
+                            }}
+                          />
+                        )
+                      }}
+                    />
+                  </div>
+                  <TextFieldWall
+                    style={{
+                      height: 34,
+                      minWidth: 18,
+                      whiteSpace: `nowrap`,
+                      backgroundColor: `rgba(0, 0, 0, 0.15)`,
+                    }}
+                  >
+                    {birthDate !== null
+                      ? `${renderAgeFromDifferentDateRange(birthDate)} ปี`
+                      : ``}
+                  </TextFieldWall>
+                </div>
               </Grid>
               <Grid item xs={12} sm={3}>
                 <Flex>
