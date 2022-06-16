@@ -34,6 +34,7 @@ import renderCheckingIcon from "../../functions/render-checking-icon"
 import renderAgeFromDifferentDateRange from "../../functions/render-age-from-different-date-range"
 import countries from "../../static/countries"
 import educationLevels from "../../static/education-levels"
+import educationNames from "../../static/education-names"
 import educationalInstitutions from "../../static/educational-institutions"
 
 const Form = styled.form`
@@ -1475,17 +1476,38 @@ const EditPositionsPage = ({ location }) => {
                       </Flex>
                     </Grid>
                     <Grid item xs={12} sm={6}>
-                      <TextField
-                        sx={textfieldProps}
-                        id="Edu_Name"
-                        label="* ชื่อวุฒิการศึกษา"
-                        variant="outlined"
-                        onChange={e => setEduName(e.target.value)}
-                        value={eduName}
-                        InputProps={{
-                          endAdornment: renderCheckingIcon(eduName),
-                        }}
-                      />
+                      <Flex>
+                        <Autocomplete
+                          sx={{ width: `100%` }}
+                          id="Edu_Name"
+                          disablePortal
+                          options={educationNames}
+                          noOptionsText={`ไม่พบข้อมูล`}
+                          getOptionLabel={option => option}
+                          isOptionEqualToValue={(option, value) => {
+                            return option === value
+                          }}
+                          onChange={(_, newValue) => {
+                            setEduName(newValue !== null ? newValue : ``)
+                          }}
+                          value={eduName !== `` ? eduName : null}
+                          renderInput={params => (
+                            <TextField
+                              {...params}
+                              label="* ชื่อวุฒิการศึกษา"
+                              InputProps={{
+                                ...params.InputProps,
+                                sx: {
+                                  borderRadius: `5px 0 0 5px`,
+                                },
+                              }}
+                            />
+                          )}
+                        />
+                        <CheckCircleFlex>
+                          {renderCheckingIcon(eduName)}
+                        </CheckCircleFlex>
+                      </Flex>
                     </Grid>
                   </Grid>
                   <Grid container spacing={2} sx={{ marginBottom: `1rem` }}>
