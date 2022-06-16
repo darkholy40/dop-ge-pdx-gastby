@@ -24,6 +24,7 @@ import {
   TextFieldWall,
 } from "../../components/styles"
 import renderDivision from "../../functions/render-division"
+import checkPid from "../../functions/check-pid"
 
 const Oparator = styled.div`
   display: flex;
@@ -307,6 +308,10 @@ const PositionsPage = () => {
                     }
                   }}
                   value={searchPersonFilter.personId}
+                  error={
+                    searchPersonFilter.personId.length === 13 &&
+                    !checkPid(searchPersonFilter.personId)
+                  }
                 />
                 <TextField
                   sx={{ marginBottom: `1rem` }}
@@ -563,6 +568,10 @@ const PositionsPage = () => {
                           ? `/people/list/`
                           : `/people/resigned-list/`
                       )
+                    }
+                    disabled={
+                      searchPersonFilter.personId.length === 13 &&
+                      !checkPid(searchPersonFilter.personId)
                     }
                   >
                     <FontAwesomeIcon

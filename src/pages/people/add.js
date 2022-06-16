@@ -32,6 +32,7 @@ import renderDateForGraphQL from "../../functions/render-date-for-graphql"
 import renderDivision from "../../functions/render-division"
 import renderCheckingIcon from "../../functions/render-checking-icon"
 import renderAgeFromDifferentDateRange from "../../functions/render-age-from-different-date-range"
+import checkPid from "../../functions/check-pid"
 import countries from "../../static/countries"
 import educationLevels from "../../static/education-levels"
 import educationNames from "../../static/education-names"
@@ -672,9 +673,10 @@ const AddPositionsPage = () => {
                     }
                   }}
                   value={idCard}
+                  error={idCard.length === 13 && !checkPid(idCard)}
                   InputProps={{
                     endAdornment: renderCheckingIcon(
-                      idCard.length === 13 ? idCard : ``
+                      idCard.length === 13 && checkPid(idCard) ? idCard : ``
                     ),
                   }}
                 />
@@ -1773,7 +1775,7 @@ const AddPositionsPage = () => {
                     jobType !== `ลูกจ้างประจำ`
                       ? name === `` ||
                         surname === `` ||
-                        idCard === `` ||
+                        !checkPid(idCard) ||
                         sidCard === `` ||
                         positionInput === null ||
                         jobType === null ||
@@ -1798,7 +1800,7 @@ const AddPositionsPage = () => {
                         currentContactEnd === null
                       : name === `` ||
                         surname === `` ||
-                        idCard === `` ||
+                        !checkPid(idCard) ||
                         sidCard === `` ||
                         positionInput === null ||
                         jobType === null ||
