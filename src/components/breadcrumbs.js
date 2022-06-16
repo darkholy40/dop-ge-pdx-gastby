@@ -76,21 +76,19 @@ const Breadcrumbs = ({ previous, current }) => {
       )}
       {previous.map((item, index) => {
         return (
-          <>
-            <Previous key={`pre_bread_${index}`}>
-              <Text
-                className="previous"
-                role="presentation"
-                onClick={() => navigate(`${item.link}`)}
-              >
-                {item.name}
-              </Text>
-              <FontAwesomeIcon
-                icon={faChevronRight}
-                style={{ marginLeft: 7, marginRight: 7 }}
-              />
-            </Previous>
-          </>
+          <Previous key={`pre_bread_${index}`}>
+            <Text
+              className="previous"
+              role="presentation"
+              onClick={() => navigate(`${item.link}`)}
+            >
+              {item.name}
+            </Text>
+            <FontAwesomeIcon
+              icon={faChevronRight}
+              style={{ marginLeft: 7, marginRight: 7 }}
+            />
+          </Previous>
         )
       })}
       <Text>{current}</Text>

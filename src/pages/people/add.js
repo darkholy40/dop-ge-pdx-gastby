@@ -32,6 +32,9 @@ import renderDateForGraphQL from "../../functions/render-date-for-graphql"
 import renderDivision from "../../functions/render-division"
 import renderCheckingIcon from "../../functions/render-checking-icon"
 import renderAgeFromDifferentDateRange from "../../functions/render-age-from-different-date-range"
+import countries from "../../static/countries"
+import educationLevels from "../../static/education-levels"
+import educationalInstitutions from "../../static/educational-institutions"
 
 const Form = styled.form`
   display: flex;
@@ -1133,14 +1136,7 @@ const AddPositionsPage = () => {
                     sx={{ width: `100%` }}
                     id="Edu_Level"
                     disablePortal
-                    options={[
-                      `มัธยมศึกษา`,
-                      `เทียบเท่าประกาศนียบัตรวิชาชีพ`,
-                      `ปริญญาตรีหรือเทียบเท่า`,
-                      `ปริญญาโทหรือเทียบเท่า`,
-                      `ปริญญาเอกหรือเทียบเท่า`,
-                      `ทักษะประสบการณ์ที่ใช้แทนวุฒิการศึกษา`,
-                    ]}
+                    options={educationLevels}
                     noOptionsText={`ไม่พบข้อมูล`}
                     getOptionLabel={option => option}
                     isOptionEqualToValue={(option, value) => {
@@ -1184,30 +1180,72 @@ const AddPositionsPage = () => {
             </Grid>
             <Grid container spacing={2} sx={{ marginBottom: `1rem` }}>
               <Grid item xs={12} sm={6}>
-                <TextField
-                  sx={textfieldProps}
-                  id="Edu_Graduated"
-                  label="* ชื่อสถาบันที่สำเร็จการศึกษา"
-                  variant="outlined"
-                  onChange={e => setEduGraduated(e.target.value)}
-                  value={eduGraduated}
-                  InputProps={{
-                    endAdornment: renderCheckingIcon(eduGraduated),
-                  }}
-                />
+                <Flex>
+                  <Autocomplete
+                    sx={{ width: `100%` }}
+                    id="Edu_Graduated"
+                    disablePortal
+                    options={educationalInstitutions}
+                    noOptionsText={`ไม่พบข้อมูล`}
+                    getOptionLabel={option => option}
+                    isOptionEqualToValue={(option, value) => {
+                      return option === value
+                    }}
+                    onChange={(_, newValue) => {
+                      setEduGraduated(newValue !== null ? newValue : ``)
+                    }}
+                    value={eduGraduated !== `` ? eduGraduated : null}
+                    renderInput={params => (
+                      <TextField
+                        {...params}
+                        label="* ชื่อสถาบันที่สำเร็จการศึกษา"
+                        InputProps={{
+                          ...params.InputProps,
+                          sx: {
+                            borderRadius: `5px 0 0 5px`,
+                          },
+                        }}
+                      />
+                    )}
+                  />
+                  <CheckCircleFlex>
+                    {renderCheckingIcon(eduGraduated)}
+                  </CheckCircleFlex>
+                </Flex>
               </Grid>
               <Grid item xs={12} sm={6}>
-                <TextField
-                  sx={textfieldProps}
-                  id="Edu_Country"
-                  label="* ชื่อประเทศ"
-                  variant="outlined"
-                  onChange={e => setEduCountry(e.target.value)}
-                  value={eduCountry}
-                  InputProps={{
-                    endAdornment: renderCheckingIcon(eduCountry),
-                  }}
-                />
+                <Flex>
+                  <Autocomplete
+                    sx={{ width: `100%` }}
+                    id="Edu_Country"
+                    disablePortal
+                    options={countries}
+                    noOptionsText={`ไม่พบข้อมูล`}
+                    getOptionLabel={option => option}
+                    isOptionEqualToValue={(option, value) => {
+                      return option === value
+                    }}
+                    onChange={(_, newValue) => {
+                      setEduCountry(newValue !== null ? newValue : ``)
+                    }}
+                    value={eduCountry !== `` ? eduCountry : null}
+                    renderInput={params => (
+                      <TextField
+                        {...params}
+                        label="* ชื่อประเทศ"
+                        InputProps={{
+                          ...params.InputProps,
+                          sx: {
+                            borderRadius: `5px 0 0 5px`,
+                          },
+                        }}
+                      />
+                    )}
+                  />
+                  <CheckCircleFlex>
+                    {renderCheckingIcon(eduCountry)}
+                  </CheckCircleFlex>
+                </Flex>
               </Grid>
             </Grid>
             <Divider style={{ margin: `1rem auto 2rem`, width: 360 }} />
