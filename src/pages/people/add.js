@@ -329,7 +329,7 @@ const AddPositionsPage = () => {
         type: `SET_NOTIFICATION_DIALOG`,
         notificationDialog: {
           open: true,
-          title: `เพิ่มรายการไม่สำเร็จ`,
+          title: `การเพิ่มข้อมูลไม่สำเร็จ`,
           description: `[Error001] - ไม่สามารถเพิ่มรายการกำลังพลได้`,
           variant: `error`,
           confirmText: `ลองอีกครั้ง`,
@@ -368,8 +368,8 @@ const AddPositionsPage = () => {
           type: `SET_NOTIFICATION_DIALOG`,
           notificationDialog: {
             open: true,
-            title: `เพิ่มรายการสำเร็จ`,
-            description: `เพิ่มรายการกำลังพลสำเร็จ`,
+            title: `การเพิ่มข้อมูล`,
+            description: `เพิ่มข้อมูลกำลังพลสำเร็จ`,
             variant: `success`,
             confirmText: `ตกลง`,
             callback: () => {
@@ -400,7 +400,7 @@ const AddPositionsPage = () => {
           type: `SET_NOTIFICATION_DIALOG`,
           notificationDialog: {
             open: true,
-            title: `เพิ่มรายการไม่สำเร็จ`,
+            title: `การเพิ่มข้อมูลไม่สำเร็จ`,
             description: `[Error002] - ไม่สามารถเพิ่มรายการกำลังพลได้`,
             variant: `error`,
             confirmText: `ลองอีกครั้ง`,

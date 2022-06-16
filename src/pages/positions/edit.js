@@ -242,8 +242,8 @@ const EditPositionsPage = ({ location }) => {
           type: `SET_NOTIFICATION_DIALOG`,
           notificationDialog: {
             open: true,
-            title: `บันทึกรายการสำเร็จ`,
-            description: `แก้ไขรายการคลังตำแหน่งสำเร็จ`,
+            title: `การบันทึกข้อมูล`,
+            description: `แก้ไขข้อมูลคลังตำแหน่งสำเร็จ`,
             variant: `success`,
             confirmText: `ตกลง`,
             callback: () => {
@@ -276,7 +276,7 @@ const EditPositionsPage = ({ location }) => {
           type: `SET_NOTIFICATION_DIALOG`,
           notificationDialog: {
             open: true,
-            title: `บันทึกรายการไม่สำเร็จ`,
+            title: `การบันทึกข้อมูลไม่สำเร็จ`,
             description: `ไม่สามารถแก้ไขรายการคลังตำแหน่งได้`,
             variant: `error`,
             confirmText: `ตกลง`,
@@ -363,6 +363,7 @@ const EditPositionsPage = ({ location }) => {
                     e.preventDefault()
                     goEdit()
                   }}
+                  style={{ maxWidth: 400 }}
                 >
                   <Flex style={{ marginBottom: `1rem` }}>
                     <Autocomplete

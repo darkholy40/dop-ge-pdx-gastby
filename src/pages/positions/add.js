@@ -152,8 +152,8 @@ const AddPositionsPage = () => {
           type: `SET_NOTIFICATION_DIALOG`,
           notificationDialog: {
             open: true,
-            title: `เพิ่มรายการสำเร็จ`,
-            description: `เพิ่มรายการคลังตำแหน่งสำเร็จ`,
+            title: `การเพิ่มข้อมูล`,
+            description: `เพิ่มข้อมูลคลังตำแหน่งสำเร็จ`,
             variant: `success`,
             confirmText: `ตกลง`,
             callback: () => {
@@ -260,6 +260,7 @@ const AddPositionsPage = () => {
               e.preventDefault()
               goAdd()
             }}
+            style={{ maxWidth: 400 }}
           >
             <Flex style={{ marginBottom: `1rem` }}>
               <Autocomplete

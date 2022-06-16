@@ -4,13 +4,19 @@ import { blue } from "@mui/material/colors"
 const Form = styled.form`
   display: flex;
   flex-direction: column;
-  max-width: 400px;
   margin: auto;
+  max-width: 800px;
 `
 
 const SubmitButtonFlex = styled.div`
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
+
+  .MuiButton-root {
+    width: 100px;
+    height: 100px;
+    border-radius: 100%;
+  }
 `
 
 const Flex = styled.div`

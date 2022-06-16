@@ -482,7 +482,7 @@ const EditPositionsPage = ({ location }) => {
         type: `SET_NOTIFICATION_DIALOG`,
         notificationDialog: {
           open: true,
-          title: `บันทึกรายการไม่สำเร็จ`,
+          title: `การบันทึกข้อมูลไม่สำเร็จ`,
           description: `[Error001] - ไม่สามารถแก้ไขรายการกำลังพลได้`,
           variant: `error`,
           confirmText: `ลองอีกครั้ง`,
@@ -520,7 +520,7 @@ const EditPositionsPage = ({ location }) => {
           type: `SET_NOTIFICATION_DIALOG`,
           notificationDialog: {
             open: true,
-            title: `บันทึกรายการไม่สำเร็จ`,
+            title: `การบันทึกข้อมูลไม่สำเร็จ`,
             description: `[Error002] - ไม่สามารถแก้ไขรายการกำลังพลได้`,
             variant: `error`,
             confirmText: `ลองอีกครั้ง`,
@@ -560,7 +560,7 @@ const EditPositionsPage = ({ location }) => {
             type: `SET_NOTIFICATION_DIALOG`,
             notificationDialog: {
               open: true,
-              title: `บันทึกรายการไม่สำเร็จ`,
+              title: `การบันทึกข้อมูลไม่สำเร็จ`,
               description: `[Error003] - ไม่สามารถแก้ไขรายการกำลังพลได้`,
               variant: `error`,
               confirmText: `ลองอีกครั้ง`,
@@ -603,7 +603,7 @@ const EditPositionsPage = ({ location }) => {
             type: `SET_NOTIFICATION_DIALOG`,
             notificationDialog: {
               open: true,
-              title: `บันทึกรายการไม่สำเร็จ`,
+              title: `การบันทึกข้อมูลไม่สำเร็จ`,
               description: `[Error004] - ไม่สามารถแก้ไขรายการกำลังพลได้`,
               variant: `error`,
               confirmText: `ลองอีกครั้ง`,
@@ -621,7 +621,7 @@ const EditPositionsPage = ({ location }) => {
           type: `SET_NOTIFICATION_DIALOG`,
           notificationDialog: {
             open: true,
-            title: `บันทึกรายการสำเร็จ`,
+            title: `การบันทึกข้อมูล`,
             description: `แก้ไขข้อมูลกำลังพลสำเร็จ`,
             variant: `success`,
             confirmText: `ตกลง`,

@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useState } from "react"
 import { navigate } from "gatsby"
 import { useSelector, useDispatch } from "react-redux"
 import styled from "styled-components"
-import { Button, Alert, TextField, Divider, Switch } from "@mui/material"
+import { Grid, Button, Alert, TextField, Divider, Switch } from "@mui/material"
 import Autocomplete from "@mui/material/Autocomplete"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import {
@@ -225,218 +225,141 @@ const PositionsPage = () => {
           </Oparator>
           <Divider style={{ marginTop: `1rem`, marginBottom: `1rem` }} />
           <Form onSubmit={e => e.preventDefault()}>
-            <TextField
-              sx={{ marginBottom: `1rem` }}
-              id="person-name"
-              label="ชื่อ"
-              variant="outlined"
-              onChange={e => {
-                dispatch({
-                  type: `SET_SEARCH_PERSON_FILTER`,
-                  searchPersonFilter: {
-                    ...searchPersonFilter,
-                    personName: e.target.value,
-                  },
-                })
+            <Grid
+              container
+              spacing={2}
+              sx={{
+                alignItems: `center`,
+                justifyContent: `center`,
               }}
-              value={searchPersonFilter.personName}
-            />
-            <TextField
-              sx={{ marginBottom: `1rem` }}
-              id="person-surname"
-              label="สกุล"
-              variant="outlined"
-              onChange={e => {
-                dispatch({
-                  type: `SET_SEARCH_PERSON_FILTER`,
-                  searchPersonFilter: {
-                    ...searchPersonFilter,
-                    personSurname: e.target.value,
-                  },
-                })
-              }}
-              value={searchPersonFilter.personSurname}
-            />
-            <TextField
-              sx={{ marginBottom: `1rem` }}
-              id="person-id"
-              label="หมายเลขประจำตัวประชาชน (13 หลัก)"
-              variant="outlined"
-              onChange={e => {
-                const newValue = e.target.value
-                const pattern = /[0-9]/g
-                const result = newValue.match(pattern)
-
-                if (result !== null) {
-                  const newIdCard = result.toString().replaceAll(`,`, ``)
-
-                  if (newIdCard.length <= 13) {
-                    dispatch({
-                      type: `SET_SEARCH_PERSON_FILTER`,
-                      searchPersonFilter: {
-                        ...searchPersonFilter,
-                        personId: newIdCard,
-                      },
-                    })
-                  }
-                } else {
-                  dispatch({
-                    type: `SET_SEARCH_PERSON_FILTER`,
-                    searchPersonFilter: {
-                      ...searchPersonFilter,
-                      personId: ``,
-                    },
-                  })
-                }
-              }}
-              value={searchPersonFilter.personId}
-            />
-            <TextField
-              sx={{ marginBottom: `1rem` }}
-              id="person-sid"
-              label="หมายเลขประจำตัวข้าราชการกองทัพบก (10 หลัก)"
-              variant="outlined"
-              onChange={e => {
-                const newValue = e.target.value
-                const pattern = /[0-9]/g
-                const result = newValue.match(pattern)
-
-                if (result !== null) {
-                  const newSidCard = result.toString().replaceAll(`,`, ``)
-
-                  if (newSidCard.length <= 10) {
-                    dispatch({
-                      type: `SET_SEARCH_PERSON_FILTER`,
-                      searchPersonFilter: {
-                        ...searchPersonFilter,
-                        personSid: newSidCard,
-                      },
-                    })
-                  }
-                } else {
-                  dispatch({
-                    type: `SET_SEARCH_PERSON_FILTER`,
-                    searchPersonFilter: {
-                      ...searchPersonFilter,
-                      personSid: ``,
-                    },
-                  })
-                }
-              }}
-              value={searchPersonFilter.personSid}
-            />
-            <TextField
-              sx={{ marginBottom: `1rem` }}
-              id="pos-number"
-              label="เลขที่ตำแหน่ง"
-              variant="outlined"
-              onChange={e => {
-                const newValue = e.target.value
-                const pattern = /[0-9]/g
-                const result = newValue.match(pattern)
-
-                if (result !== null) {
-                  const newPosNumber = result.toString().replaceAll(`,`, ``)
-
-                  dispatch({
-                    type: `SET_SEARCH_PERSON_FILTER`,
-                    searchPersonFilter: {
-                      ...searchPersonFilter,
-                      posNumber: newPosNumber,
-                    },
-                  })
-                } else {
-                  dispatch({
-                    type: `SET_SEARCH_PERSON_FILTER`,
-                    searchPersonFilter: {
-                      ...searchPersonFilter,
-                      posNumber: ``,
-                    },
-                  })
-                }
-              }}
-              value={searchPersonFilter.posNumber}
-            />
-            <Flex style={{ marginBottom: `1rem` }}>
-              <Autocomplete
-                sx={{ width: `100%` }}
-                id="person-type"
-                disablePortal
-                options={[`พนักงานราชการ`, `ลูกจ้างประจำ`]}
-                noOptionsText={`ไม่พบข้อมูล`}
-                getOptionLabel={option => option}
-                isOptionEqualToValue={(option, value) => {
-                  return option === value
+            >
+              <Grid
+                item
+                xs={12}
+                sm={6}
+                style={{
+                  display: `flex`,
+                  flexDirection: `column`,
                 }}
-                onChange={(_, newValue) => {
-                  if (newValue !== null) {
+              >
+                <TextField
+                  sx={{ marginBottom: `1rem` }}
+                  id="person-name"
+                  label="ชื่อ"
+                  variant="outlined"
+                  onChange={e => {
                     dispatch({
                       type: `SET_SEARCH_PERSON_FILTER`,
                       searchPersonFilter: {
                         ...searchPersonFilter,
-                        personType: newValue,
+                        personName: e.target.value,
                       },
                     })
-                  } else {
+                  }}
+                  value={searchPersonFilter.personName}
+                />
+                <TextField
+                  sx={{ marginBottom: `1rem` }}
+                  id="person-surname"
+                  label="สกุล"
+                  variant="outlined"
+                  onChange={e => {
                     dispatch({
                       type: `SET_SEARCH_PERSON_FILTER`,
                       searchPersonFilter: {
                         ...searchPersonFilter,
-                        personType: ``,
+                        personSurname: e.target.value,
                       },
                     })
-                  }
-                }}
-                value={
-                  searchPersonFilter.personType !== ``
-                    ? searchPersonFilter.personType
-                    : null
-                }
-                renderInput={params => (
-                  <TextField
-                    {...params}
-                    label="ประเภท"
-                    InputProps={{
-                      ...params.InputProps,
-                    }}
-                  />
-                )}
-              />
-            </Flex>
-            {userInfo.role.name === `Administrator` && (
-              <Flex style={{ marginBottom: `1rem` }}>
-                <Autocomplete
-                  sx={{ width: `100%` }}
-                  id="position-name"
-                  disablePortal
-                  options={units}
-                  noOptionsText={`ไม่พบข้อมูล`}
-                  getOptionLabel={option => {
-                    let label = ``
-
-                    if (option.division1) {
-                      label = option.division1
-                    }
-
-                    if (option.division2) {
-                      label = option.division2
-                    }
-
-                    if (option.division3) {
-                      label = option.division3
-                    }
-                    return label
                   }}
-                  isOptionEqualToValue={(option, value) => {
-                    return option === value
-                  }}
-                  onChange={(_, newValue) => {
-                    if (newValue !== null) {
+                  value={searchPersonFilter.personSurname}
+                />
+                <TextField
+                  sx={{ marginBottom: `1rem` }}
+                  id="person-id"
+                  label="หมายเลขประจำตัวประชาชน (13 หลัก)"
+                  variant="outlined"
+                  onChange={e => {
+                    const newValue = e.target.value
+                    const pattern = /[0-9]/g
+                    const result = newValue.match(pattern)
+
+                    if (result !== null) {
+                      const newIdCard = result.toString().replaceAll(`,`, ``)
+
+                      if (newIdCard.length <= 13) {
+                        dispatch({
+                          type: `SET_SEARCH_PERSON_FILTER`,
+                          searchPersonFilter: {
+                            ...searchPersonFilter,
+                            personId: newIdCard,
+                          },
+                        })
+                      }
+                    } else {
                       dispatch({
                         type: `SET_SEARCH_PERSON_FILTER`,
                         searchPersonFilter: {
                           ...searchPersonFilter,
-                          unit: newValue,
+                          personId: ``,
+                        },
+                      })
+                    }
+                  }}
+                  value={searchPersonFilter.personId}
+                />
+                <TextField
+                  sx={{ marginBottom: `1rem` }}
+                  id="person-sid"
+                  label="หมายเลขประจำตัวข้าราชการกองทัพบก (10 หลัก)"
+                  variant="outlined"
+                  onChange={e => {
+                    const newValue = e.target.value
+                    const pattern = /[0-9]/g
+                    const result = newValue.match(pattern)
+
+                    if (result !== null) {
+                      const newSidCard = result.toString().replaceAll(`,`, ``)
+
+                      if (newSidCard.length <= 10) {
+                        dispatch({
+                          type: `SET_SEARCH_PERSON_FILTER`,
+                          searchPersonFilter: {
+                            ...searchPersonFilter,
+                            personSid: newSidCard,
+                          },
+                        })
+                      }
+                    } else {
+                      dispatch({
+                        type: `SET_SEARCH_PERSON_FILTER`,
+                        searchPersonFilter: {
+                          ...searchPersonFilter,
+                          personSid: ``,
+                        },
+                      })
+                    }
+                  }}
+                  value={searchPersonFilter.personSid}
+                />
+                <TextField
+                  sx={{ marginBottom: `1rem` }}
+                  id="pos-number"
+                  label="เลขที่ตำแหน่ง"
+                  variant="outlined"
+                  onChange={e => {
+                    const newValue = e.target.value
+                    const pattern = /[0-9]/g
+                    const result = newValue.match(pattern)
+
+                    if (result !== null) {
+                      const newPosNumber = result.toString().replaceAll(`,`, ``)
+
+                      dispatch({
+                        type: `SET_SEARCH_PERSON_FILTER`,
+                        searchPersonFilter: {
+                          ...searchPersonFilter,
+                          posNumber: newPosNumber,
                         },
                       })
                     } else {
@@ -444,113 +367,213 @@ const PositionsPage = () => {
                         type: `SET_SEARCH_PERSON_FILTER`,
                         searchPersonFilter: {
                           ...searchPersonFilter,
-                          unit: null,
+                          posNumber: ``,
                         },
                       })
                     }
                   }}
-                  value={searchPersonFilter.unit}
-                  renderInput={params => (
-                    <TextField
-                      {...params}
-                      label="สังกัด"
-                      InputProps={{
-                        ...params.InputProps,
-                      }}
-                    />
-                  )}
+                  value={searchPersonFilter.posNumber}
                 />
-              </Flex>
-            )}
-            <Divider style={{ margin: `0 auto 1rem auto`, width: 300 }} />
-            <TextFieldWall
-              style={{
-                padding: `6px 12px`,
-                marginBottom: `1rem`,
-                cursor: `pointer`,
-                userSelect: `none`,
-                backgroundColor: searchPersonFilter.isResigned
-                  ? primaryColor[50]
-                  : `rgba(0, 0, 0, 0)`,
-                border: searchPersonFilter.isResigned
-                  ? `1px solid ${primaryColor[500]}`
-                  : `1px solid rgba(0, 0, 0, 0.24)`,
-              }}
-              role="presentation"
-              onClick={() =>
-                dispatch({
-                  type: `SET_SEARCH_PERSON_FILTER`,
-                  searchPersonFilter: {
-                    ...searchPersonFilter,
-                    isResigned: !searchPersonFilter.isResigned,
-                  },
-                })
-              }
-            >
-              <Flex style={{ width: `100%`, justifyContent: `space-between` }}>
-                <div style={{ color: `rgba(0, 0, 0, 0.6)` }}>
-                  ที่จำหน่ายสูญเสีย
-                </div>
-                <Switch checked={searchPersonFilter.isResigned} />
-              </Flex>
-            </TextFieldWall>
-            <SubmitButtonFlex>
-              <Button
-                style={{
-                  width: `100%`,
-                  marginRight: 10,
-                }}
-                color="primary"
-                variant="contained"
-                onClick={() =>
-                  navigate(
-                    !searchPersonFilter.isResigned
-                      ? `/people/list/`
-                      : `/people/resigned-list/`
-                  )
-                }
-              >
-                <FontAwesomeIcon icon={faSearch} style={{ marginRight: 5 }} />
-                ค้นหา
-              </Button>
-              <Button
-                style={{
-                  width: `100%`,
-                }}
-                color="error"
-                variant="outlined"
-                type="reset"
-                onClick={() => {
-                  dispatch({
-                    type: `SET_SEARCH_PERSON_FILTER`,
-                    searchPersonFilter: {
-                      ...searchPersonFilter,
-                      personName: ``,
-                      personSurname: ``,
-                      personId: ``,
-                      personSid: ``,
-                      personType: ``,
-                      posNumber: ``,
-                      unit: null,
-                      isResigned: false,
-                    },
-                  })
-                }}
-                disabled={
-                  searchPersonFilter.personName === `` &&
-                  searchPersonFilter.personSurname === `` &&
-                  searchPersonFilter.personId === `` &&
-                  searchPersonFilter.personSid === `` &&
-                  searchPersonFilter.personType === `` &&
-                  searchPersonFilter.posNumber === `` &&
-                  searchPersonFilter.unit === null &&
-                  searchPersonFilter.isResigned === false
-                }
-              >
-                <FontAwesomeIcon icon={faTimes} style={{ marginRight: 5 }} />
-                ล้าง
-              </Button>
-            </SubmitButtonFlex>
+                <Flex style={{ marginBottom: `1rem` }}>
+                  <Autocomplete
+                    sx={{ width: `100%` }}
+                    id="person-type"
+                    disablePortal
+                    options={[`พนักงานราชการ`, `ลูกจ้างประจำ`]}
+                    noOptionsText={`ไม่พบข้อมูล`}
+                    getOptionLabel={option => option}
+                    isOptionEqualToValue={(option, value) => {
+                      return option === value
+                    }}
+                    onChange={(_, newValue) => {
+                      if (newValue !== null) {
+                        dispatch({
+                          type: `SET_SEARCH_PERSON_FILTER`,
+                          searchPersonFilter: {
+                            ...searchPersonFilter,
+                            personType: newValue,
+                          },
+                        })
+                      } else {
+                        dispatch({
+                          type: `SET_SEARCH_PERSON_FILTER`,
+                          searchPersonFilter: {
+                            ...searchPersonFilter,
+                            personType: ``,
+                          },
+                        })
+                      }
+                    }}
+                    value={
+                      searchPersonFilter.personType !== ``
+                        ? searchPersonFilter.personType
+                        : null
+                    }
+                    renderInput={params => (
+                      <TextField
+                        {...params}
+                        label="ประเภท"
+                        InputProps={{
+                          ...params.InputProps,
+                        }}
+                      />
+                    )}
+                  />
+                </Flex>
+                {userInfo.role.name === `Administrator` && (
+                  <Flex style={{ marginBottom: `1rem` }}>
+                    <Autocomplete
+                      sx={{ width: `100%` }}
+                      id="position-name"
+                      disablePortal
+                      options={units}
+                      noOptionsText={`ไม่พบข้อมูล`}
+                      getOptionLabel={option => {
+                        let label = ``
+
+                        if (option.division1) {
+                          label = option.division1
+                        }
+
+                        if (option.division2) {
+                          label = option.division2
+                        }
+
+                        if (option.division3) {
+                          label = option.division3
+                        }
+                        return label
+                      }}
+                      isOptionEqualToValue={(option, value) => {
+                        return option === value
+                      }}
+                      onChange={(_, newValue) => {
+                        if (newValue !== null) {
+                          dispatch({
+                            type: `SET_SEARCH_PERSON_FILTER`,
+                            searchPersonFilter: {
+                              ...searchPersonFilter,
+                              unit: newValue,
+                            },
+                          })
+                        } else {
+                          dispatch({
+                            type: `SET_SEARCH_PERSON_FILTER`,
+                            searchPersonFilter: {
+                              ...searchPersonFilter,
+                              unit: null,
+                            },
+                          })
+                        }
+                      }}
+                      value={searchPersonFilter.unit}
+                      renderInput={params => (
+                        <TextField
+                          {...params}
+                          label="สังกัด"
+                          InputProps={{
+                            ...params.InputProps,
+                          }}
+                        />
+                      )}
+                    />
+                  </Flex>
+                )}
+                <Divider style={{ margin: `0 auto 1rem auto`, width: 300 }} />
+                <TextFieldWall
+                  style={{
+                    padding: `6px 12px`,
+                    marginBottom: `1rem`,
+                    cursor: `pointer`,
+                    userSelect: `none`,
+                    backgroundColor: searchPersonFilter.isResigned
+                      ? primaryColor[50]
+                      : `rgba(0, 0, 0, 0)`,
+                    border: searchPersonFilter.isResigned
+                      ? `1px solid ${primaryColor[500]}`
+                      : `1px solid rgba(0, 0, 0, 0.24)`,
+                  }}
+                  role="presentation"
+                  onClick={() =>
+                    dispatch({
+                      type: `SET_SEARCH_PERSON_FILTER`,
+                      searchPersonFilter: {
+                        ...searchPersonFilter,
+                        isResigned: !searchPersonFilter.isResigned,
+                      },
+                    })
+                  }
+                >
+                  <Flex
+                    style={{ width: `100%`, justifyContent: `space-between` }}
+                  >
+                    <div style={{ color: `rgba(0, 0, 0, 0.6)` }}>
+                      ที่จำหน่ายสูญเสีย
+                    </div>
+                    <Switch checked={searchPersonFilter.isResigned} />
+                  </Flex>
+                </TextFieldWall>
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <SubmitButtonFlex>
+                  <Button
+                    style={{ marginRight: 10 }}
+                    color="error"
+                    variant="outlined"
+                    type="reset"
+                    onClick={() => {
+                      dispatch({
+                        type: `SET_SEARCH_PERSON_FILTER`,
+                        searchPersonFilter: {
+                          ...searchPersonFilter,
+                          personName: ``,
+                          personSurname: ``,
+                          personId: ``,
+                          personSid: ``,
+                          personType: ``,
+                          posNumber: ``,
+                          unit: null,
+                          isResigned: false,
+                        },
+                      })
+                    }}
+                    disabled={
+                      searchPersonFilter.personName === `` &&
+                      searchPersonFilter.personSurname === `` &&
+                      searchPersonFilter.personId === `` &&
+                      searchPersonFilter.personSid === `` &&
+                      searchPersonFilter.personType === `` &&
+                      searchPersonFilter.posNumber === `` &&
+                      searchPersonFilter.unit === null &&
+                      searchPersonFilter.isResigned === false
+                    }
+                  >
+                    <FontAwesomeIcon
+                      icon={faTimes}
+                      style={{ marginRight: 5 }}
+                    />
+                    ล้าง
+                  </Button>
+                  <Button
+                    color="primary"
+                    variant="contained"
+                    onClick={() =>
+                      navigate(
+                        !searchPersonFilter.isResigned
+                          ? `/people/list/`
+                          : `/people/resigned-list/`
+                      )
+                    }
+                  >
+                    <FontAwesomeIcon
+                      icon={faSearch}
+                      style={{ marginRight: 5 }}
+                    />
+                    ค้นหา
+                  </Button>
+                </SubmitButtonFlex>
+              </Grid>
+            </Grid>
           </Form>
         </>
       ) : (

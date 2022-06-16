@@ -179,7 +179,7 @@ const ResignationPage = ({ location }) => {
         type: `SET_NOTIFICATION_DIALOG`,
         notificationDialog: {
           open: true,
-          title: `บันทึกรายการไม่สำเร็จ`,
+          title: `การบันทึกข้อมูลไม่สำเร็จ`,
           description: `ไม่พบข้อมูลกำลังพลรายการนี้ หรือข้อมูลถูกลบออกจากระบบแล้ว`,
           variant: `error`,
           confirmText: `ตกลง`,
@@ -214,7 +214,7 @@ const ResignationPage = ({ location }) => {
           type: `SET_NOTIFICATION_DIALOG`,
           notificationDialog: {
             open: true,
-            title: `บันทึกรายการไม่สำเร็จ`,
+            title: `การบันทึกข้อมูลไม่สำเร็จ`,
             description: `[Error002] - ไม่สามารถแก้ไขรายการกำลังพลได้`,
             variant: `error`,
             confirmText: `ลองอีกครั้ง`,
@@ -254,7 +254,7 @@ const ResignationPage = ({ location }) => {
             type: `SET_NOTIFICATION_DIALOG`,
             notificationDialog: {
               open: true,
-              title: `บันทึกรายการไม่สำเร็จ`,
+              title: `การบันทึกข้อมูลไม่สำเร็จ`,
               description: `[Error003] - ไม่สามารถแก้ไขรายการกำลังพลได้`,
               variant: `error`,
               confirmText: `ลองอีกครั้ง`,
@@ -271,7 +271,7 @@ const ResignationPage = ({ location }) => {
           type: `SET_NOTIFICATION_DIALOG`,
           notificationDialog: {
             open: true,
-            title: `บันทึกรายการสำเร็จ`,
+            title: `การบันทึกข้อมูล`,
             description: `จำหน่ายสูญเสียกำลังพลสำเร็จ`,
             variant: `success`,
             confirmText: `ตกลง`,
@@ -346,7 +346,7 @@ const ResignationPage = ({ location }) => {
       (userInfo.role.name === `Administrator` ||
         userInfo.role.name === `Authenticated`) ? (
         <>
-          <Seo title="จำหน่ายสูยเสีย" />
+          <Seo title="จำหน่ายสูญเสีย" />
           <Breadcrumbs
             previous={[
               {
@@ -365,7 +365,7 @@ const ResignationPage = ({ location }) => {
                 link: `/people/list/`,
               },
             ]}
-            current="จำหน่ายสูยเสีย"
+            current="จำหน่ายสูญเสีย"
           />
 
           {personData !== null && (
@@ -374,6 +374,7 @@ const ResignationPage = ({ location }) => {
                 onSubmit={e => {
                   e.preventDefault()
                 }}
+                style={{ maxWidth: 400 }}
               >
                 <Line>
                   <Label>ชื่อ</Label>
@@ -405,6 +406,7 @@ const ResignationPage = ({ location }) => {
                   e.preventDefault()
                   goSaveResignation()
                 }}
+                style={{ maxWidth: 400 }}
               >
                 <Flex style={{ marginBottom: `1rem` }}>
                   <Autocomplete
