@@ -51,6 +51,7 @@ const initialState = {
     personSurname: ``,
     personId: ``,
     personSid: ``,
+    personType: ``,
     posNumber: ``,
     unit: null,
     isResigned: false,

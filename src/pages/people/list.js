@@ -61,7 +61,8 @@ const PeopleListPage = () => {
       searchPersonFilter.personName !== `` ||
       searchPersonFilter.personSurname !== `` ||
       searchPersonFilter.personId !== `` ||
-      searchPersonFilter.personSid !== ``
+      searchPersonFilter.personSid !== `` ||
+      searchPersonFilter.personType !== ``
     ) {
       filter = `${
         searchPersonFilter.personName !== ``
@@ -81,6 +82,10 @@ const PeopleListPage = () => {
       ${
         searchPersonFilter.personSid !== ``
           ? `SID_Card: "${searchPersonFilter.personSid}"`
+          : ``
+      }${
+        searchPersonFilter.personType !== ``
+          ? `type: "${searchPersonFilter.personType}"`
           : ``
       }`
     }
@@ -158,6 +163,7 @@ const PeopleListPage = () => {
                   Surname
                   ID_Card
                   SID_Card
+                  type
                   staff_created
                   staff_updated
                   createdAt
@@ -178,6 +184,7 @@ const PeopleListPage = () => {
               Surname: thisPosition.person.Surname,
               ID_Card: thisPosition.person.ID_Card,
               SID_Card: thisPosition.person.SID_Card,
+              type: thisPosition.person.type,
               staff_created: thisPosition.person.staff_created,
               staff_updated: thisPosition.person.staff_updated,
               createdAt: thisPosition.person.createdAt,
@@ -351,6 +358,9 @@ const PeopleListPage = () => {
                           ตำแหน่งในสายงาน
                         </TableCell>
                         <TableCell sx={{ backgroundColor: primaryColor[200] }}>
+                          ประเภท
+                        </TableCell>
+                        <TableCell sx={{ backgroundColor: primaryColor[200] }}>
                           สังกัด
                         </TableCell>
                         <TableCell
@@ -387,6 +397,7 @@ const PeopleListPage = () => {
                           <TableCell align="left">
                             {row.position.posName}
                           </TableCell>
+                          <TableCell align="left">{row.type}</TableCell>
                           <TableCell align="left">
                             {renderDivision(row.division)}
                           </TableCell>

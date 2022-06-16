@@ -357,6 +357,48 @@ const PositionsPage = () => {
               }}
               value={searchPersonFilter.posNumber}
             />
+            <Flex style={{ marginBottom: `1rem` }}>
+              <Autocomplete
+                sx={{ width: `100%` }}
+                id="person-type"
+                disablePortal
+                options={[`พนักงานราชการ`, `ลูกจ้างประจำ`]}
+                noOptionsText={`ไม่พบข้อมูล`}
+                getOptionLabel={option => option}
+                isOptionEqualToValue={(option, value) => {
+                  return option === value
+                }}
+                onChange={(_, newValue) => {
+                  if (newValue !== null) {
+                    dispatch({
+                      type: `SET_SEARCH_PERSON_FILTER`,
+                      searchPersonFilter: {
+                        ...searchPersonFilter,
+                        personType: newValue,
+                      },
+                    })
+                  } else {
+                    dispatch({
+                      type: `SET_SEARCH_PERSON_FILTER`,
+                      searchPersonFilter: {
+                        ...searchPersonFilter,
+                        personType: ``,
+                      },
+                    })
+                  }
+                }}
+                value={searchPersonFilter.personType}
+                renderInput={params => (
+                  <TextField
+                    {...params}
+                    label="ประเภท"
+                    InputProps={{
+                      ...params.InputProps,
+                    }}
+                  />
+                )}
+              />
+            </Flex>
             {userInfo.role.name === `Administrator` && (
               <Flex style={{ marginBottom: `1rem` }}>
                 <Autocomplete
@@ -416,6 +458,7 @@ const PositionsPage = () => {
                 />
               </Flex>
             )}
+            <Divider style={{ margin: `0 auto 1rem auto`, width: 300 }} />
             <TextFieldWall
               style={{
                 padding: `6px 12px`,
@@ -482,6 +525,7 @@ const PositionsPage = () => {
                       personSurname: ``,
                       personId: ``,
                       personSid: ``,
+                      personType: ``,
                       posNumber: ``,
                       unit: null,
                       isResigned: false,
@@ -493,6 +537,7 @@ const PositionsPage = () => {
                   searchPersonFilter.personSurname === `` &&
                   searchPersonFilter.personId === `` &&
                   searchPersonFilter.personSid === `` &&
+                  searchPersonFilter.personType === `` &&
                   searchPersonFilter.posNumber === `` &&
                   searchPersonFilter.unit === null &&
                   searchPersonFilter.isResigned === false

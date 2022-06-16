@@ -2,7 +2,7 @@ import React, { useEffect } from "react"
 import { navigate } from "gatsby"
 import { useSelector, useDispatch } from "react-redux"
 import styled from "styled-components"
-import { Button, TextField } from "@mui/material"
+import { Button, TextField, Divider } from "@mui/material"
 import Autocomplete from "@mui/material/Autocomplete"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import {
@@ -25,7 +25,6 @@ const Oparator = styled.div`
   flex-direction: row-reverse;
   justify-content: space-between;
   align-items: center;
-  max-width: 400px;
   margin-left: auto;
   margin-right: auto;
   margin-bottom: 1rem;
@@ -112,6 +111,7 @@ const PositionsPage = () => {
               เพิ่มคลังตำแหน่ง
             </Button>
           </Oparator>
+          <Divider style={{ marginTop: `1rem`, marginBottom: `1rem` }} />
           <Form onSubmit={e => e.preventDefault()}>
             <Flex style={{ marginBottom: `1rem` }}>
               <Autocomplete
