@@ -225,6 +225,14 @@ const PositionsListPage = () => {
       type: `SET_BACKDROP_OPEN`,
       backdropOpen: false,
     })
+
+    setTimeout(() => {
+      window.scrollTo({
+        top: 0,
+        left: 0,
+        behavior: "smooth",
+      })
+    }, 200)
   }, [
     token,
     userInfo,

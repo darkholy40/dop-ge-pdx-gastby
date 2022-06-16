@@ -387,7 +387,11 @@ const PositionsPage = () => {
                     })
                   }
                 }}
-                value={searchPersonFilter.personType}
+                value={
+                  searchPersonFilter.personType !== ``
+                    ? searchPersonFilter.personType
+                    : null
+                }
                 renderInput={params => (
                   <TextField
                     {...params}

@@ -9,7 +9,7 @@ import useInterval from "../functions/use-interval"
 
 const Jwt = () => {
   const dispatch = useDispatch()
-  const { token, userInfo } = useSelector(state => state)
+  const { token, userInfo, currentPage } = useSelector(state => state)
   const [isExpired, setIsExpired] = React.useState(false)
 
   const fetchSessionTimer = React.useCallback(() => {
@@ -115,7 +115,7 @@ const Jwt = () => {
     () => {
       fetchSessionTimer()
     },
-    token !== `` ? 1000 : null
+    token !== `` && currentPage === `setting` ? 1000 : null
   )
 
   return <></>

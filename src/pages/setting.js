@@ -9,6 +9,7 @@ import Seo from "../components/seo"
 import Breadcrumbs from "../components/breadcrumbs"
 import PageNotFound from "../components/page-not-found"
 import renderDivision from "../functions/render-division"
+import displaySessionTimer from "../functions/display-session-timer"
 
 const Container = styled.div`
   // border: 1px solid rgba(0, 0, 0, 0.12);
@@ -120,12 +121,13 @@ const SettingPage = () => {
       },
       {
         title: `ระยะเวลาเซสชัน`,
-        desc: `8 ชม. (คงเหลือ ${sessionTimer.hr}:${sessionTimer.min}:${sessionTimer.sec})`,
+        // desc: `8 ชม. (คงเหลือ ${sessionTimer.hr}:${sessionTimer.min}:${sessionTimer.sec})`,
+        desc: `8 ชม. (คงเหลือ ${displaySessionTimer(sessionTimer)})`,
       },
-      {
-        title: `Token`,
-        desc: token,
-      },
+      // {
+      //   title: `Token`,
+      //   desc: token,
+      // },
     ]
     setRows(users)
   }, [userInfo, token, sessionTimer])
