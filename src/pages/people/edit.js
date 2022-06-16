@@ -690,8 +690,10 @@ const EditPositionsPage = ({ location }) => {
     setRewardType3(data.person.RewardType3)
     setContactCnt(data.person.ContactCnt)
     setMission(data.person.Mission)
-    setCurrentContactStart(new Date(data.person.CurrentContactStart))
-    setCurrentContactEnd(new Date(data.person.CurrentContactEnd))
+    if (data.person.type === `พนักงานราชการ`) {
+      setCurrentContactStart(new Date(data.person.CurrentContactStart))
+      setCurrentContactEnd(new Date(data.person.CurrentContactEnd))
+    }
     setGuilty(data.person.Guilty)
     setPunish(data.person.Punish)
     setDecoration(data.person.Decoration)
