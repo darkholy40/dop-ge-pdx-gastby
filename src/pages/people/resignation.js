@@ -190,7 +190,7 @@ const ResignationPage = ({ location }) => {
           `,
         })
 
-        console.log(res.data)
+        // console.log(res.data)
 
         if (res) {
           getPersonID = res.data.updatePerson.person._id
