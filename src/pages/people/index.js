@@ -51,7 +51,7 @@ const PositionsPage = () => {
     if (
       token !== `` &&
       userInfo._id !== `` &&
-      (roles[userInfo.role.name].level < 3)
+      roles[userInfo.role.name].level < 3
     ) {
       client(token).mutate({
         mutation: gql`
@@ -215,7 +215,7 @@ const PositionsPage = () => {
 
   return (
     <Layout>
-      {token !== `` && roles[userInfo.role.name].level <= 3 ? (
+      {token !== `` && roles[userInfo.role.name].level >= 1 ? (
         <>
           <Seo
             title={

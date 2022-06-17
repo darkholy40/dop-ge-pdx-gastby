@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react"
+import React, { useEffect, useState, useCallback } from "react"
 import { useSelector, useDispatch } from "react-redux"
 import styled from "styled-components"
 
@@ -53,6 +53,28 @@ const SettingPage = () => {
   const dispatch = useDispatch()
   const [rows, setRows] = useState([])
 
+  const savePageView = useCallback(() => {
+    if (token !== `` && userInfo._id !== ``) {
+      client(token).mutate({
+        mutation: gql`
+          mutation CreateLog {
+            createLog(input: {
+              data: {
+                action: "view",
+                description: "setting",
+                users_permissions_user: "${userInfo._id}",
+              }
+            }) {
+              log {
+                _id
+              }
+            }
+          }
+        `,
+      })
+    }
+  }, [token, userInfo])
+
   const renderRole = getRole => {
     switch (getRole) {
       case `SuperAdministrator`:
@@ -77,26 +99,8 @@ const SettingPage = () => {
   }, [dispatch])
 
   useEffect(() => {
-    if (token !== `` && userInfo._id !== ``) {
-      client(token).mutate({
-        mutation: gql`
-          mutation CreateLog {
-            createLog(input: {
-              data: {
-                action: "view",
-                description: "setting",
-                users_permissions_user: "${userInfo._id}",
-              }
-            }) {
-              log {
-                _id
-              }
-            }
-          }
-        `,
-      })
-    }
-  }, [token, userInfo])
+    savePageView()
+  }, [savePageView])
 
   useEffect(() => {
     // console.log(userInfo)

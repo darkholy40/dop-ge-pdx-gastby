@@ -50,9 +50,7 @@ const IndexPage = () => {
         </>
       ) : (
         <>
-          <Seo
-            title={`ระบบกำลังนำท่านไปยังหน้าจัดการประวัติกำลังพล`}
-          />
+          <Seo title={`ระบบกำลังนำท่านไปยังหน้าจัดการประวัติกำลังพล`} />
           <Container>
             <CircularProgress color="primary" size="5rem" thickness={5} />
             <p style={{ color: grey[700] }}>

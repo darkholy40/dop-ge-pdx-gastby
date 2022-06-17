@@ -50,6 +50,33 @@ const EditPositionsPage = ({ location }) => {
   //   console.log(addPositionFilter)
   // }, [addPositionFilter])
 
+  const savePageView = useCallback(() => {
+    // Prevent saving a log when switch user to super admin
+    if (
+      token !== `` &&
+      userInfo._id !== `` &&
+      roles[userInfo.role.name].level < 3
+    ) {
+      client(token).mutate({
+        mutation: gql`
+          mutation CreateLog {
+            createLog(input: {
+              data: {
+                action: "view",
+                description: "positions -> edit -> ${id}",
+                users_permissions_user: "${userInfo._id}",
+              }
+            }) {
+              log {
+                _id
+              }
+            }
+          }
+        `,
+      })
+    }
+  }, [token, userInfo, id])
+
   const getPosition = useCallback(async () => {
     if (id === `0`) {
       setIsError({
@@ -301,26 +328,8 @@ const EditPositionsPage = ({ location }) => {
   }, [dispatch])
 
   useEffect(() => {
-    if (token !== `` && userInfo._id !== ``) {
-      client(token).mutate({
-        mutation: gql`
-          mutation CreateLog {
-            createLog(input: {
-              data: {
-                action: "view",
-                description: "positions -> edit -> ${id}",
-                users_permissions_user: "${userInfo._id}",
-              }
-            }) {
-              log {
-                _id
-              }
-            }
-          }
-        `,
-      })
-    }
-  }, [token, userInfo, id])
+    savePageView()
+  }, [savePageView])
 
   useEffect(() => {
     if (token !== ``) {
@@ -330,7 +339,7 @@ const EditPositionsPage = ({ location }) => {
 
   return (
     <Layout>
-      {token !== `` && roles[userInfo.role.name].level <= 3 ? (
+      {token !== `` && roles[userInfo.role.name].level >= 1 ? (
         isError.type !== `notFound` ? (
           <>
             <Seo title="แก้ไขคลังตำแหน่ง" />

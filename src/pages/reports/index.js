@@ -28,7 +28,7 @@ const IndexPage = () => {
     if (
       token !== `` &&
       userInfo._id !== `` &&
-      (roles[userInfo.role.name].level < 3)
+      roles[userInfo.role.name].level < 3
     ) {
       client(token).mutate({
         mutation: gql`
@@ -63,7 +63,7 @@ const IndexPage = () => {
 
   return (
     <Layout>
-      {token !== `` && (roles[userInfo.role.name].level <= 3 && roles[userInfo.role.name].level > 1) ? (
+      {token !== `` && roles[userInfo.role.name].level >= 2 ? (
         <>
           <Seo title="ออกรายงาน" />
           <Breadcrumbs current="ออกรายงาน" />

@@ -41,6 +41,33 @@ const StockPage = () => {
   const [statusCode, setStatusCode] = useState(`loading`)
   const [percent, setPercent] = useState(0)
 
+  const savePageView = useCallback(() => {
+    // Prevent saving a log when switch user to super admin
+    if (
+      token !== `` &&
+      userInfo._id !== `` &&
+      roles[userInfo.role.name].level < 3
+    ) {
+      client(token).mutate({
+        mutation: gql`
+          mutation CreateLog {
+            createLog(input: {
+              data: {
+                action: "view",
+                description: "reports -> stock",
+                users_permissions_user: "${userInfo._id}",
+              }
+            }) {
+              log {
+                _id
+              }
+            }
+          }
+        `,
+      })
+    }
+  }, [token, userInfo])
+
   const getData = useCallback(async () => {
     setStatusCode(`loading`)
     setPercent(0)
@@ -322,30 +349,12 @@ const StockPage = () => {
   }, [dispatch])
 
   useEffect(() => {
-    if (token !== `` && userInfo._id !== ``) {
-      client(token).mutate({
-        mutation: gql`
-          mutation CreateLog {
-            createLog(input: {
-              data: {
-                action: "view",
-                description: "reports -> stock",
-                users_permissions_user: "${userInfo._id}",
-              }
-            }) {
-              log {
-                _id
-              }
-            }
-          }
-        `,
-      })
-    }
-  }, [token, userInfo])
+    savePageView()
+  }, [savePageView])
 
   return (
     <Layout>
-      {token !== `` && (roles[userInfo.role.name].level <= 3 && roles[userInfo.role.name].level > 1) ? (
+      {token !== `` && roles[userInfo.role.name].level >= 2 ? (
         <>
           <Seo title="รายชื่อพนักงานราชการและตำแหน่งว่าง" />
           <Breadcrumbs

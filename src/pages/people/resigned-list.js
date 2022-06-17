@@ -42,6 +42,33 @@ const ResignedPeopleListPage = () => {
     rowsPerPage: 10,
   })
 
+  const savePageView = useCallback(() => {
+    // Prevent saving a log when switch user to super admin
+    if (
+      token !== `` &&
+      userInfo._id !== `` &&
+      roles[userInfo.role.name].level < 3
+    ) {
+      client(token).mutate({
+        mutation: gql`
+          mutation CreateLog {
+            createLog(input: {
+              data: {
+                action: "view",
+                description: "people -> resigned-list",
+                users_permissions_user: "${userInfo._id}",
+              }
+            }) {
+              log {
+                _id
+              }
+            }
+          }
+        `,
+      })
+    }
+  }, [token, userInfo])
+
   const getPosition = useCallback(async () => {
     let filter = ``
     let role = ``
@@ -267,26 +294,8 @@ const ResignedPeopleListPage = () => {
   }, [dispatch])
 
   useEffect(() => {
-    if (token !== `` && userInfo._id !== ``) {
-      client(token).mutate({
-        mutation: gql`
-          mutation CreateLog {
-            createLog(input: {
-              data: {
-                action: "view",
-                description: "people -> resigned-list",
-                users_permissions_user: "${userInfo._id}",
-              }
-            }) {
-              log {
-                _id
-              }
-            }
-          }
-        `,
-      })
-    }
-  }, [token, userInfo])
+    savePageView()
+  }, [savePageView])
 
   useEffect(() => {
     if (token !== ``) {
@@ -296,7 +305,7 @@ const ResignedPeopleListPage = () => {
 
   return (
     <Layout>
-      {token !== `` && roles[userInfo.role.name].level <= 3 ? (
+      {token !== `` && roles[userInfo.role.name].level >= 1 ? (
         <>
           <Seo title="ค้นหากำลังพลที่ลาออกแล้ว" />
           <Breadcrumbs
