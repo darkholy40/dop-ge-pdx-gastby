@@ -285,7 +285,7 @@ const FlowOutPage = () => {
           />
 
           <Container>
-            <Form onSubmit={e => e.preventDefault()} style={{ width: `100%` }}>
+            <Form onSubmit={e => e.preventDefault()} style={{ width: `400px` }}>
               <p>
                 ข้อมูลนำออก:{" "}
                 {input.unit !== null ? renderDivision(input.unit) : `ทั้งหมด`}
@@ -343,12 +343,16 @@ const FlowOutPage = () => {
               >
                 <Box sx={{ width: `100%`, mr: 1 }}>
                   <LinearProgress
-                    sx={{ height: `8px`, borderRadius: `8px` }}
+                    sx={{
+                      height: `8px`,
+                      borderRadius: `8px`,
+                      ".MuiLinearProgress-bar": { borderRadius: `8px` },
+                    }}
                     variant="determinate"
                     value={percent}
                   />
                 </Box>
-                <Box sx={{ minWidth: 35 }}>
+                <Box sx={{ minWidth: 50 }}>
                   <Typography
                     sx={{ transform: `skewX(-10deg)` }}
                     variant="body2"

@@ -322,18 +322,20 @@ const PositionsListPage = () => {
                   )}
                   color="primary"
                   onChange={(_, newPage) => {
-                    setTableOption(prev => ({
-                      ...prev,
-                      page: newPage - 1,
-                    }))
+                    if (newPage !== null) {
+                      setTableOption(prev => ({
+                        ...prev,
+                        page: newPage - 1,
+                      }))
 
-                    dispatch({
-                      type: `SET_SEARCH_POSITION_FILTER`,
-                      searchPositionFilter: {
-                        ...searchPositionFilter,
-                        currentPage: newPage - 1,
-                      },
-                    })
+                      dispatch({
+                        type: `SET_SEARCH_POSITION_FILTER`,
+                        searchPositionFilter: {
+                          ...searchPositionFilter,
+                          currentPage: newPage - 1,
+                        },
+                      })
+                    }
                   }}
                   page={tableOption.page + 1}
                 />

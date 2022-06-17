@@ -12,6 +12,7 @@ import {
   Pagination,
   Button,
 } from "@mui/material"
+import styled from "styled-components"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import {
   faCircle,
@@ -29,6 +30,13 @@ import Breadcrumbs from "../components/breadcrumbs"
 import PageNotFound from "../components/page-not-found"
 import Warning from "../components/warning"
 import renderTableDate from "../functions/render-table-date"
+
+const Oparator = styled.div`
+  display: flex;
+  flex-direction: row-reverse;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+`
 
 const Activities = () => {
   const { token, userInfo, primaryColor } = useSelector(state => state)
@@ -233,6 +241,18 @@ const Activities = () => {
           {!isError.status ? (
             logsData.length > 0 && (
               <>
+                <Oparator>
+                  <Button
+                    style={{
+                      borderRadius: `100px`,
+                    }}
+                    color="primary"
+                    variant="outlined"
+                    onClick={() => getLogs()}
+                  >
+                    <FontAwesomeIcon icon={faRedo} style={{ fontSize: 16 }} />
+                  </Button>
+                </Oparator>
                 <Pagination
                   sx={{
                     marginBottom: `1rem`,
@@ -246,10 +266,12 @@ const Activities = () => {
                   )}
                   color="primary"
                   onChange={(_, newPage) => {
-                    setTableOption(prev => ({
-                      ...prev,
-                      page: newPage - 1,
-                    }))
+                    if (newPage !== null) {
+                      setTableOption(prev => ({
+                        ...prev,
+                        page: newPage - 1,
+                      }))
+                    }
                   }}
                   page={tableOption.page + 1}
                 />

@@ -227,6 +227,14 @@ const PeopleListPage = () => {
       type: `SET_BACKDROP_OPEN`,
       backdropOpen: false,
     })
+
+    setTimeout(() => {
+      window.scrollTo({
+        top: 0,
+        left: 0,
+        behavior: "smooth",
+      })
+    }, 200)
   }, [
     token,
     userInfo,
@@ -316,18 +324,20 @@ const PeopleListPage = () => {
                   )}
                   color="primary"
                   onChange={(_, newPage) => {
-                    setTableOption(prev => ({
-                      ...prev,
-                      page: newPage - 1,
-                    }))
+                    if (newPage !== null) {
+                      setTableOption(prev => ({
+                        ...prev,
+                        page: newPage - 1,
+                      }))
 
-                    dispatch({
-                      type: `SET_SEARCH_PERSON_FILTER`,
-                      searchPersonFilter: {
-                        ...searchPersonFilter,
-                        currentPage: newPage - 1,
-                      },
-                    })
+                      dispatch({
+                        type: `SET_SEARCH_PERSON_FILTER`,
+                        searchPersonFilter: {
+                          ...searchPersonFilter,
+                          currentPage: newPage - 1,
+                        },
+                      })
+                    }
                   }}
                   page={tableOption.page + 1}
                 />
