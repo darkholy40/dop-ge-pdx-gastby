@@ -174,7 +174,7 @@ const Navbar = () => {
             <Menu
               sx={{
                 ".MuiList-root.MuiList-padding.MuiMenu-list": {
-                  minWidth: 180,
+                  minWidth: 300,
                 },
               }}
               anchorEl={anchorElMenu}
@@ -301,7 +301,7 @@ const Navbar = () => {
             <Menu
               sx={{
                 ".MuiList-root.MuiList-padding.MuiMenu-list": {
-                  minWidth: 180,
+                  minWidth: 200,
                 },
               }}
               anchorEl={anchorElMyInfo}
