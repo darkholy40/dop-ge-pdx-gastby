@@ -82,6 +82,11 @@ const IndexPage = () => {
       switch (res.status) {
         case 200:
           // use setTimeout() to prevent "Can't perform a React state update on an unmounted component"
+          setIsError({
+            status: false,
+            text: `pass`,
+          })
+
           setTimeout(() => {
             client(res.data.jwt).mutate({
               mutation: gql`
@@ -101,14 +106,17 @@ const IndexPage = () => {
               `,
             })
 
+            const userData = res.data.user
+            const token = res.data.jwt
+
             dispatch({
               type: `SET_TOKEN`,
-              token: res.data.jwt,
+              token: token,
             })
 
             dispatch({
               type: `SET_USER_INFO`,
-              userInfo: res.data.user,
+              userInfo: userData,
             })
           }, 0)
           break
@@ -196,7 +204,7 @@ const IndexPage = () => {
                 }}
                 value={usernameInput}
                 onChange={e => setUsernameInput(e.target.value)}
-                disabled={isLoading}
+                disabled={isLoading || isError.text === `pass`}
               />
               <TextField
                 style={{
@@ -217,7 +225,7 @@ const IndexPage = () => {
                 }}
                 value={passwordInput}
                 onChange={e => setPasswordInput(e.target.value)}
-                disabled={isLoading}
+                disabled={isLoading || isError.text === `pass`}
               />
               <Button
                 style={{
@@ -228,10 +236,13 @@ const IndexPage = () => {
                 variant="contained"
                 size="large"
                 disabled={
-                  usernameInput === `` || passwordInput === `` || isLoading
+                  usernameInput === `` ||
+                  passwordInput === `` ||
+                  isLoading ||
+                  isError.text === `pass`
                 }
               >
-                {!isLoading ? (
+                {!isLoading && isError.text !== `pass` ? (
                   <span>เข้าสู่ระบบ</span>
                 ) : (
                   <span>กำลังเข้าสู่ระบบ...</span>

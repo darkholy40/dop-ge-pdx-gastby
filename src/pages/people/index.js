@@ -45,12 +45,99 @@ const PositionsPage = () => {
     text: `กำลังตรวจสอบคลังตำแหน่ง...`,
   })
 
+  const savePageView = useCallback(() => {
+    // Prevent saving a log when switch user to super admin
+    if (
+      token !== `` &&
+      userInfo._id !== `` &&
+      (userInfo.role.name === `Administrator` ||
+        userInfo.role.name === `Authenticated`)
+    ) {
+      client(token).mutate({
+        mutation: gql`
+          mutation CreateLog {
+            createLog(input: {
+              data: {
+                action: "view",
+                description: "people",
+                users_permissions_user: "${userInfo._id}",
+              }
+            }) {
+              log {
+                _id
+              }
+            }
+          }
+        `,
+      })
+    }
+  }, [token, userInfo])
+
   const getPositions = useCallback(async () => {
     let role = ``
 
     if (userInfo.role.name !== `Administrator`) {
+      if (userInfo.division === null) {
+        const clearSession = async () => {
+          dispatch({
+            type: `SET_TOKEN`,
+            token: ``,
+          })
+
+          dispatch({
+            type: `SET_SESSION_TIMER`,
+            sessionTimer: {
+              hr: `08`,
+              min: `00`,
+              sec: `00`,
+            },
+          })
+        }
+
+        await clearSession()
+        await navigate(`/`)
+
+        dispatch({
+          type: `SET_NOTIFICATION_DIALOG`,
+          notificationDialog: {
+            open: true,
+            title: `บัญชีผู้ใช้งานมีปัญหา`,
+            description: `กรุณาติดต่อเจ้าหน้าที่ผู้ดูแลระบบ`,
+            variant: `error`,
+            confirmText: `ตกลง`,
+            callback: () => {},
+          },
+        })
+
+        try {
+          await client(token).mutate({
+            mutation: gql`
+              mutation CreateLog {
+                createLog(input: {
+                  data: {
+                    action: "auth",
+                    description: "division is null",
+                    users_permissions_user: "${userInfo._id}",
+                  }
+                }) {
+                  log {
+                    _id
+                  }
+                }
+              }
+            `,
+          })
+        } catch (error) {
+          console.log(error.message)
+        }
+
+        return 0
+      }
+
       role = `division: "${userInfo.division._id}"`
     }
+
+    savePageView()
 
     dispatch({
       type: `SET_BACKDROP_OPEN`,
@@ -111,7 +198,7 @@ const PositionsPage = () => {
       type: `SET_BACKDROP_OPEN`,
       backdropOpen: false,
     })
-  }, [token, userInfo, dispatch])
+  }, [token, userInfo, savePageView, dispatch])
 
   useEffect(() => {
     dispatch({
@@ -119,34 +206,6 @@ const PositionsPage = () => {
       currentPage: `people`,
     })
   }, [dispatch])
-
-  useEffect(() => {
-    // Prevent saving a log when switch user to super admin
-    if (
-      token !== `` &&
-      userInfo._id !== `` &&
-      (userInfo.role.name === `Administrator` ||
-        userInfo.role.name === `Authenticated`)
-    ) {
-      client(token).mutate({
-        mutation: gql`
-          mutation CreateLog {
-            createLog(input: {
-              data: {
-                action: "view",
-                description: "people",
-                users_permissions_user: "${userInfo._id}",
-              }
-            }) {
-              log {
-                _id
-              }
-            }
-          }
-        `,
-      })
-    }
-  }, [token, userInfo])
 
   useEffect(() => {
     if (token !== ``) {

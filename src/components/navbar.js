@@ -101,13 +101,13 @@ const Navbar = () => {
   ]
 
   const changePage = getPage => {
-    if (getPage !== currentPage) {
-      if (getPage === `home`) {
-        navigate(`/`)
-      } else {
-        navigate(`/${getPage}/`)
-      }
+    // if (getPage !== currentPage) {
+    if (getPage === `home`) {
+      navigate(`/`)
+    } else {
+      navigate(`/${getPage}/`)
     }
+    // }
   }
 
   const goLogout = async () => {
