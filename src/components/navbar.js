@@ -23,6 +23,7 @@ import { client, gql } from "../functions/apollo-client"
 
 // import SessionTimer from "./session-timer"
 import { ColorButton } from "./styles"
+import roles from "../static/roles"
 
 const Flex = styled.div`
   display: flex;
@@ -76,27 +77,27 @@ const Navbar = () => {
     {
       name: `people`,
       desc: `ประวัติกำลังพล`,
-      role: ``,
+      role: roles.Authenticated,
     },
     {
       name: `positions`,
       desc: `คลังตำแหน่ง`,
-      role: ``,
+      role: roles.Authenticated,
     },
     {
       name: `reports`,
       desc: `ออกรายงาน`,
-      role: `administrator`,
+      role: roles.Administrator,
     },
     {
       name: `user-management`,
       desc: `จัดการผู้ใช้งาน`,
-      role: `super administrator`,
+      role: roles.SuperAdministrator,
     },
     {
       name: `activities`,
       desc: `ประวัติการใช้งานระบบ`,
-      role: `super administrator`,
+      role: roles.SuperAdministrator,
     },
   ]
 
@@ -213,20 +214,20 @@ const Navbar = () => {
                     )
 
                     switch (userInfo.role.name) {
-                      case `Super Administrator`:
-                        if (page.role === `super administrator`) {
+                      case `SuperAdministrator`:
+                        if (page.role.level <= 3) {
                           return menuList()
                         }
                         return ``
 
                       case `Administrator`:
-                        if (page.role === `administrator` || page.role === ``) {
+                        if (page.role.level <= 2) {
                           return menuList()
                         }
                         return ``
 
                       default:
-                        if (page.role === ``) {
+                        if (page.role.level <= 1) {
                           return menuList()
                         }
                         return ``
@@ -258,20 +259,20 @@ const Navbar = () => {
                   )
 
                   switch (userInfo.role.name) {
-                    case `Super Administrator`:
-                      if (page.role === `super administrator`) {
+                    case `SuperAdministrator`:
+                      if (page.role.level <= 3) {
                         return menuList()
                       }
                       return ``
 
                     case `Administrator`:
-                      if (page.role === `administrator` || page.role === ``) {
+                      if (page.role.level <= 2) {
                         return menuList()
                       }
                       return ``
 
                     default:
-                      if (page.role === ``) {
+                      if (page.role.level <= 1) {
                         return menuList()
                       }
                       return ``

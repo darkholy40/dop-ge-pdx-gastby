@@ -1,4 +1,4 @@
-import React, { useEffect } from "react"
+import React, { useCallback, useEffect } from "react"
 import { navigate } from "gatsby"
 import { useSelector, useDispatch } from "react-redux"
 import styled from "styled-components"
@@ -10,6 +10,7 @@ import Seo from "../../components/seo"
 import Breadcrumbs from "../../components/breadcrumbs"
 import PageNotFound from "../../components/page-not-found"
 import { ColorButton } from "../../components/styles"
+import roles from "../../static/roles"
 
 const Container = styled.div`
   width: 100%;
@@ -22,15 +23,13 @@ const IndexPage = () => {
   const { token, primaryColor, userInfo } = useSelector(state => state)
   const dispatch = useDispatch()
 
-  useEffect(() => {
-    dispatch({
-      type: `SET_CURRENT_PAGE`,
-      currentPage: `reports`,
-    })
-  }, [dispatch])
-
-  useEffect(() => {
-    if (token !== `` && userInfo._id !== ``) {
+  const savePageView = useCallback(() => {
+    // Prevent saving a log when switch user to super admin
+    if (
+      token !== `` &&
+      userInfo._id !== `` &&
+      (roles[userInfo.role.name].level < 3)
+    ) {
       client(token).mutate({
         mutation: gql`
           mutation CreateLog {
@@ -51,9 +50,20 @@ const IndexPage = () => {
     }
   }, [token, userInfo])
 
+  useEffect(() => {
+    dispatch({
+      type: `SET_CURRENT_PAGE`,
+      currentPage: `reports`,
+    })
+  }, [dispatch])
+
+  useEffect(() => {
+    savePageView()
+  }, [savePageView])
+
   return (
     <Layout>
-      {token !== `` && userInfo.role.name === `Administrator` ? (
+      {token !== `` && (roles[userInfo.role.name].level <= 3 && roles[userInfo.role.name].level > 1) ? (
         <>
           <Seo title="ออกรายงาน" />
           <Breadcrumbs current="ออกรายงาน" />

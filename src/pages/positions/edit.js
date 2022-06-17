@@ -15,6 +15,7 @@ import PageNotFound from "../../components/page-not-found"
 import { Form, Flex, CheckCircleFlex } from "../../components/styles"
 import renderCheckingIcon from "../../functions/render-checking-icon"
 import renderDivision from "../../functions/render-division"
+import roles from "../../static/roles"
 
 const EditPositionsPage = ({ location }) => {
   const { token, userInfo, positionTypes, positionNames, units } = useSelector(
@@ -213,7 +214,7 @@ const EditPositionsPage = ({ location }) => {
                   have_a_budget: ${addPositionFilter.haveABudget},
                   staff_updated: "${userInfo._id}",
                   ${
-                    userInfo.role.name === `Administrator`
+                    roles[userInfo.role.name].level > 1
                       ? `division: "${addPositionFilter.unit._id}"`
                       : ``
                   }
@@ -329,9 +330,7 @@ const EditPositionsPage = ({ location }) => {
 
   return (
     <Layout>
-      {token !== `` &&
-      (userInfo.role.name === `Administrator` ||
-        userInfo.role.name === `Authenticated`) ? (
+      {token !== `` && roles[userInfo.role.name].level <= 3 ? (
         isError.type !== `notFound` ? (
           <>
             <Seo title="แก้ไขคลังตำแหน่ง" />
@@ -339,7 +338,7 @@ const EditPositionsPage = ({ location }) => {
               previous={[
                 {
                   name:
-                    userInfo.role.name !== `Administrator`
+                    roles[userInfo.role.name].level <= 1
                       ? `จัดการคลังตำแหน่ง (${
                           userInfo.division !== null
                             ? renderDivision(userInfo.division)
@@ -479,7 +478,7 @@ const EditPositionsPage = ({ location }) => {
                     </CheckCircleFlex>
                   </Flex>
 
-                  {userInfo.role.name === `Administrator` && (
+                  {roles[userInfo.role.name].level > 1 && (
                     <Flex style={{ marginBottom: `1rem` }}>
                       <Autocomplete
                         sx={{ width: `100%` }}
@@ -650,7 +649,7 @@ const EditPositionsPage = ({ location }) => {
                     variant="contained"
                     type="submit"
                     disabled={
-                      userInfo.role.name === `Administrator`
+                      roles[userInfo.role.name].level > 1
                         ? addPositionFilter.posName === `` ||
                           addPositionFilter.posType === `` ||
                           addPositionFilter.posNumber === `` ||

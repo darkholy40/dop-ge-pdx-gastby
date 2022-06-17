@@ -20,6 +20,7 @@ import ExportToExcel from "../../components/export-to-excel"
 import { Form, Flex } from "../../components/styles"
 import renderDivision from "../../functions/render-division"
 import renderNumberAsText from "../../functions/render-number-as-text"
+import roles from "../../static/roles"
 
 const Container = styled.div`
   width: 100%;
@@ -271,7 +272,7 @@ const FlowOutPage = () => {
 
   return (
     <Layout>
-      {token !== `` && userInfo.role.name === `Administrator` ? (
+      {token !== `` && (roles[userInfo.role.name].level <= 3 && roles[userInfo.role.name].level > 1) ? (
         <>
           <Seo title="รายชื่อพนักงานราชการที่ออกในปีงบประมาณที่ผ่านมา" />
           <Breadcrumbs

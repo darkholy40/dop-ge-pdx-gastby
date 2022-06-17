@@ -5,6 +5,7 @@ import Layout from "../components/layout"
 import Seo from "../components/seo"
 import Breadcrumbs from "../components/breadcrumbs"
 import PageNotFound from "../components/page-not-found"
+import roles from "../static/roles"
 
 const UserManagement = () => {
   const { token, userInfo } = useSelector(state => state)
@@ -19,7 +20,7 @@ const UserManagement = () => {
 
   return (
     <Layout>
-      {token !== `` && userInfo.role.name === `Super Administrator` ? (
+      {token !== `` && roles[userInfo.role.name].level >= 3 ? (
         <>
           <Seo title="จัดการผู้ใช้งาน" />
           <Breadcrumbs current="จัดการผู้ใช้งาน" />

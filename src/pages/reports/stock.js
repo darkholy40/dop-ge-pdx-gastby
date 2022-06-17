@@ -22,6 +22,7 @@ import renderDivision from "../../functions/render-division"
 import renderThaiDate from "../../functions/render-thai-date"
 import renderNumberAsText from "../../functions/render-number-as-text"
 import renderPositionStatus from "../../functions/render-position-status"
+import roles from "../../static/roles"
 
 const Container = styled.div`
   width: 100%;
@@ -242,9 +243,7 @@ const StockPage = () => {
                   ? renderNumberAsText(position.person.Punish)
                   : ``,
               เครื่องราชอิสริยาภรณ์สูงสุดที่ได้รับ:
-                position.person !== null
-                  ? renderNumberAsText(position.person.Decoration)
-                  : ``,
+                position.person !== null ? position.person.Decoration : ``,
               ร้อยละที่ได้รับการเลื่อนเงินเดือน:
                 position.person !== null
                   ? renderNumberAsText(position.person.PercentSalary, 2)
@@ -346,7 +345,7 @@ const StockPage = () => {
 
   return (
     <Layout>
-      {token !== `` && userInfo.role.name === `Administrator` ? (
+      {token !== `` && (roles[userInfo.role.name].level <= 3 && roles[userInfo.role.name].level > 1) ? (
         <>
           <Seo title="รายชื่อพนักงานราชการและตำแหน่งว่าง" />
           <Breadcrumbs

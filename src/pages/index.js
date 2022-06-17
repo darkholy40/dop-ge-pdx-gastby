@@ -32,11 +32,7 @@ const IndexPage = () => {
   useEffect(() => {
     const goNavigate = async () => {
       if (token !== ``) {
-        if (userInfo.role.name === `Super Administrator`) {
-          await navigate(`/user-management/`)
-        } else {
-          await navigate(`/people/`)
-        }
+        await navigate(`/people/`)
       } else {
         await navigate(`/`)
       }
@@ -55,19 +51,12 @@ const IndexPage = () => {
       ) : (
         <>
           <Seo
-            title={`ระบบกำลังนำท่านไปยังหน้า${
-              userInfo.role.name === `Super Administrator`
-                ? `จัดการผู้ใช้งาน`
-                : `จัดการประวัติกำลังพล`
-            }`}
+            title={`ระบบกำลังนำท่านไปยังหน้าจัดการประวัติกำลังพล`}
           />
           <Container>
             <CircularProgress color="primary" size="5rem" thickness={5} />
             <p style={{ color: grey[700] }}>
-              ระบบกำลังนำท่านไปยังหน้า
-              {userInfo.role.name === `Super Administrator`
-                ? `จัดการผู้ใช้งาน`
-                : `จัดการประวัติกำลังพล`}
+              ระบบกำลังนำท่านไปยังหน้าจัดการประวัติกำลังพล
             </p>
           </Container>
         </>

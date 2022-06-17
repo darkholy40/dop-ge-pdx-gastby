@@ -16,6 +16,7 @@ import PageNotFound from "../../components/page-not-found"
 import { Form, Flex, CheckCircleFlex } from "../../components/styles"
 import renderDivision from "../../functions/render-division"
 import renderCheckingIcon from "../../functions/render-checking-icon"
+import roles from "../../static/roles"
 
 const Line = styled.div`
   margin-bottom: 1rem;
@@ -342,16 +343,14 @@ const ResignationPage = ({ location }) => {
 
   return (
     <Layout>
-      {token !== `` &&
-      (userInfo.role.name === `Administrator` ||
-        userInfo.role.name === `Authenticated`) ? (
+      {token !== `` && roles[userInfo.role.name].level <= 3 ? (
         <>
           <Seo title="จำหน่ายสูญเสีย" />
           <Breadcrumbs
             previous={[
               {
                 name:
-                  userInfo.role.name !== `Administrator`
+                  roles[userInfo.role.name].level <= 1
                     ? `จัดการประวัติกำลังพล (${
                         userInfo.division !== null
                           ? renderDivision(userInfo.division)

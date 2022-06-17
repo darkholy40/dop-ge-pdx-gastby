@@ -33,6 +33,7 @@ import renderDivision from "../../functions/render-division"
 import renderCheckingIcon from "../../functions/render-checking-icon"
 import renderAgeFromDifferentDateRange from "../../functions/render-age-from-different-date-range"
 import checkPid from "../../functions/check-pid"
+import roles from "../../static/roles"
 import countries from "../../static/countries"
 import educationLevels from "../../static/education-levels"
 import educationNames from "../../static/education-names"
@@ -132,7 +133,7 @@ const AddPositionsPage = () => {
       open: true,
     }))
 
-    if (userInfo.role.name !== `Administrator`) {
+    if (roles[userInfo.role.name].level <= 1) {
       role = `division: "${userInfo.division._id}"`
     }
 
@@ -554,16 +555,14 @@ const AddPositionsPage = () => {
 
   return (
     <Layout>
-      {token !== `` &&
-      (userInfo.role.name === `Administrator` ||
-        userInfo.role.name === `Authenticated`) ? (
+      {token !== `` && roles[userInfo.role.name].level <= 3 ? (
         <>
           <Seo title="เพิ่มประวัติกำลังพล" />
           <Breadcrumbs
             previous={[
               {
                 name:
-                  userInfo.role.name !== `Administrator`
+                  roles[userInfo.role.name].level <= 1
                     ? `จัดการประวัติกำลังพล (${
                         userInfo.division !== null
                           ? renderDivision(userInfo.division)
@@ -834,7 +833,7 @@ const AddPositionsPage = () => {
                     getOptionLabel={option => {
                       let returnLabel = option.number
 
-                      if (userInfo.role.name === `Administrator`) {
+                      if (roles[userInfo.role.name].level > 1) {
                         returnLabel = `${option.number} (${renderDivision(
                           option.division
                         )})`

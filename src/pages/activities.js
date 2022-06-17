@@ -30,6 +30,7 @@ import Breadcrumbs from "../components/breadcrumbs"
 import PageNotFound from "../components/page-not-found"
 import Warning from "../components/warning"
 import renderTableDate from "../functions/render-table-date"
+import roles from "../static/roles"
 
 const Oparator = styled.div`
   display: flex;
@@ -233,7 +234,7 @@ const Activities = () => {
 
   return (
     <Layout>
-      {token !== `` && userInfo.role.name === `Super Administrator` ? (
+      {token !== `` && roles[userInfo.role.name].level >= 3 ? (
         <>
           <Seo title="ประวัติการใช้งานระบบ" />
           <Breadcrumbs current="ประวัติการใช้งานระบบ" />

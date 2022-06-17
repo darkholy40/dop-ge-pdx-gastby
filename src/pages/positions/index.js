@@ -1,4 +1,4 @@
-import React, { useEffect } from "react"
+import React, { useCallback, useEffect } from "react"
 import { navigate } from "gatsby"
 import { useSelector, useDispatch } from "react-redux"
 import styled from "styled-components"
@@ -19,6 +19,7 @@ import Breadcrumbs from "../../components/breadcrumbs"
 import PageNotFound from "../../components/page-not-found"
 import { Form, SubmitButtonFlex, Flex } from "../../components/styles"
 import renderDivision from "../../functions/render-division"
+import roles from "../../static/roles"
 
 const Oparator = styled.div`
   display: flex;
@@ -41,15 +42,13 @@ const PositionsPage = () => {
   } = useSelector(state => state)
   const dispatch = useDispatch()
 
-  useEffect(() => {
-    dispatch({
-      type: `SET_CURRENT_PAGE`,
-      currentPage: `positions`,
-    })
-  }, [dispatch])
-
-  useEffect(() => {
-    if (token !== `` && userInfo._id !== ``) {
+  const savePageView = useCallback(() => {
+    // Prevent saving a log when switch user to super admin
+    if (
+      token !== `` &&
+      userInfo._id !== `` &&
+      (roles[userInfo.role.name].level < 3)
+    ) {
       client(token).mutate({
         mutation: gql`
           mutation CreateLog {
@@ -70,15 +69,24 @@ const PositionsPage = () => {
     }
   }, [token, userInfo])
 
+  useEffect(() => {
+    dispatch({
+      type: `SET_CURRENT_PAGE`,
+      currentPage: `positions`,
+    })
+  }, [dispatch])
+
+  useEffect(() => {
+    savePageView()
+  }, [savePageView])
+
   return (
     <Layout>
-      {token !== `` &&
-      (userInfo.role.name === `Administrator` ||
-        userInfo.role.name === `Authenticated`) ? (
+      {token !== `` && roles[userInfo.role.name].level <= 3 ? (
         <>
           <Seo
             title={
-              userInfo.role.name !== `Administrator`
+              roles[userInfo.role.name].level <= 1
                 ? `จัดการคลังตำแหน่ง (${
                     userInfo.division !== null
                       ? renderDivision(userInfo.division)
@@ -89,7 +97,7 @@ const PositionsPage = () => {
           />
           <Breadcrumbs
             current={
-              userInfo.role.name !== `Administrator`
+              roles[userInfo.role.name].level <= 1
                 ? `จัดการคลังตำแหน่ง (${
                     userInfo.division !== null
                       ? renderDivision(userInfo.division)
@@ -237,7 +245,7 @@ const PositionsPage = () => {
                   />
                 </Flex>
 
-                {userInfo.role.name === `Administrator` && (
+                {roles[userInfo.role.name].level > 1 && (
                   <Flex style={{ marginBottom: `1rem` }}>
                     <Autocomplete
                       sx={{ width: `100%` }}

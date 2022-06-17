@@ -15,6 +15,7 @@ import PageNotFound from "../../components/page-not-found"
 import { Form, Flex, CheckCircleFlex } from "../../components/styles"
 import renderCheckingIcon from "../../functions/render-checking-icon"
 import renderDivision from "../../functions/render-division"
+import roles from "../../static/roles"
 
 const AddPositionsPage = () => {
   const { token, userInfo, positionTypes, positionNames, units } = useSelector(
@@ -121,7 +122,7 @@ const AddPositionsPage = () => {
                   staff_updated: "",
                   person: null,
                   division: "${
-                    userInfo.role.name === `Administrator`
+                    roles[userInfo.role.name].level > 1
                       ? `${addPositionFilter.unit._id}`
                       : `${userInfo.division._id}`
                   }"
@@ -233,16 +234,14 @@ const AddPositionsPage = () => {
 
   return (
     <Layout>
-      {token !== `` &&
-      (userInfo.role.name === `Administrator` ||
-        userInfo.role.name === `Authenticated`) ? (
+      {token !== `` && roles[userInfo.role.name].level <= 3 ? (
         <>
           <Seo title="เพิ่มคลังตำแหน่ง" />
           <Breadcrumbs
             previous={[
               {
                 name:
-                  userInfo.role.name !== `Administrator`
+                  roles[userInfo.role.name].level <= 1
                     ? `จัดการคลังตำแหน่ง (${
                         userInfo.division !== null
                           ? renderDivision(userInfo.division)
@@ -376,7 +375,7 @@ const AddPositionsPage = () => {
               </CheckCircleFlex>
             </Flex>
 
-            {userInfo.role.name === `Administrator` && (
+            {roles[userInfo.role.name].level > 1 && (
               <Flex style={{ marginBottom: `1rem` }}>
                 <Autocomplete
                   sx={{ width: `100%` }}
@@ -545,7 +544,7 @@ const AddPositionsPage = () => {
               variant="contained"
               type="submit"
               disabled={
-                userInfo.role.name === `Administrator`
+                roles[userInfo.role.name].level > 1
                   ? addPositionFilter.posName === `` ||
                     addPositionFilter.posType === `` ||
                     addPositionFilter.posNumber === `` ||
