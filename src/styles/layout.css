@@ -41,6 +41,7 @@ option {
 .MuiTablePagination-root > .MuiToolbar-root > .MuiTablePagination-displayedRows,
 .MuiPagination-root .MuiButtonBase-root,
 .MuiAutocomplete-noOptions,
+.MuiFormHelperText-root,
 .react-datepicker__day-name,
 .react-datepicker__week {
   font-family: var(--main-font-family);

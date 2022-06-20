@@ -1,21 +1,40 @@
 import React from "react"
 import PropTypes from "prop-types"
 import NumberFormat from "react-number-format"
-import { IMaskInput } from "react-imask"
+// import { IMaskInput } from "react-imask"
 
 const PhoneNumber = React.forwardRef((props, ref) => {
   const { onChange, ...other } = props
+  // return (
+  //   <IMaskInput
+  //     {...other}
+  //     mask="000-000-0000"
+  //     // mask="(#00) 000-0000"
+  //     // definitions={{
+  //     //   '#': /[1-9]/,
+  //     // }}
+  //     inputRef={ref}
+  //     onAccept={value => onChange({ target: { id: props.id, value } })}
+  //     overwrite
+  //   />
+  // )
+
   return (
-    <IMaskInput
+    <NumberFormat
       {...other}
-      mask="000-000-0000"
-      // mask="(#00) 000-0000"
-      // definitions={{
-      //   '#': /[1-9]/,
-      // }}
-      inputRef={ref}
-      onAccept={value => onChange({ target: { id: props.id, value } })}
-      overwrite
+      getInputRef={ref}
+      onValueChange={values => {
+        onChange({
+          target: {
+            id: props.id,
+            value: values.value,
+          },
+        })
+      }}
+      isNumericString
+      decimalScale={0}
+      allowLeadingZeros
+      allowNegative={false}
     />
   )
 })
@@ -93,6 +112,7 @@ const Integer = React.forwardRef((props, ref) => {
       }}
       isNumericString
       decimalScale={0}
+      allowNegative={false}
     />
   )
 })

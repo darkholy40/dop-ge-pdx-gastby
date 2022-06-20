@@ -33,6 +33,7 @@ import renderDivision from "../../functions/render-division"
 import renderCheckingIcon from "../../functions/render-checking-icon"
 import renderAgeFromDifferentDateRange from "../../functions/render-age-from-different-date-range"
 import checkPid from "../../functions/check-pid"
+import uniqByKeepFirst from "../../functions/uniq-by-keep-first"
 import roles from "../../static/roles"
 import countries from "../../static/countries"
 import educationLevels from "../../static/education-levels"
@@ -77,8 +78,14 @@ const AddPositionsPage = () => {
   const dispatch = useDispatch()
   const [positions, setPositions] = useState([])
   const [isError, setIsError] = useState({
-    status: ``,
-    text: ``,
+    main: {
+      status: ``,
+      text: ``,
+    },
+    location: {
+      status: ``,
+      text: ``,
+    },
   })
   const [prename, setPrename] = useState(``)
   const [name, setName] = useState(``)
@@ -93,6 +100,12 @@ const AddPositionsPage = () => {
   const [birthDate, setBirthDate] = useState(null)
   const [marriedStatus, setMarriedStatus] = useState(``)
   const [telephone, setTelephone] = useState(``)
+  const [locationSelect, setLocationSelect] = useState({
+    province: null,
+    district: null,
+    subdistrict: null,
+  })
+  const [locationData, setLocationData] = useState([])
   const [address, setAddress] = useState(``)
   const [emergencyName, setEmergencyName] = useState(``)
   const [emergencyNumber, setEmergencyNumber] = useState(``)
@@ -251,10 +264,13 @@ const AddPositionsPage = () => {
           setPositions(returnData)
         } else {
           setPositions([])
-          setIsError({
-            status: `notfound`,
-            text: `ไม่พบข้อมูล`,
-          })
+          setIsError(prev => ({
+            ...prev,
+            main: {
+              status: `notfound`,
+              text: `ไม่พบข้อมูล`,
+            },
+          }))
         }
       }
     }
@@ -274,13 +290,98 @@ const AddPositionsPage = () => {
     }, 200)
   }, [token, userInfo, dispatch])
 
+  const getLocations = useCallback(async () => {
+    let lap = 0
+
+    setIsError(prev => ({
+      ...prev,
+      location: {
+        status: ``,
+        text: ``,
+      },
+    }))
+
+    try {
+      const res = await client(token).query({
+        query: gql`
+          query LocationsCount {
+            locationsConnection {
+              aggregate {
+                totalCount
+              }
+            }
+          }
+        `,
+      })
+
+      const totalCount = res.data.locationsConnection.aggregate.totalCount
+      lap = Math.ceil(totalCount / 100)
+    } catch (error) {
+      // console.log(error.message)
+
+      if (error.message === `Failed to fetch`) {
+        setIsError(prev => ({
+          ...prev,
+          location: {
+            status: `notfound`,
+            text: `ไม่พบข้อมูล`,
+          },
+        }))
+
+        dispatch({
+          type: `SET_NOTIFICATION_DIALOG`,
+          notificationDialog: {
+            open: true,
+            title: `การเชื่อมต่อไม่เสถียร`,
+            description: `ไม่สามารถเชื่อมต่อฐานข้อมูลได้`,
+            variant: `error`,
+            confirmText: `ลองอีกครั้ง`,
+            callback: () => getLocations(),
+          },
+        })
+      }
+    }
+
+    if (lap > 0) {
+      let returnData = []
+      for (let i = 0; i < lap; i++) {
+        const res = await client(token).query({
+          query: gql`
+            query Locations {
+              locations(limit: 100, start: ${i * 100}) {
+                _id
+                province
+                district
+                subdistrict
+                zipcode
+              }
+            }
+          `,
+        })
+
+        for (let location of res.data.locations) {
+          returnData = [...returnData, location]
+        }
+      }
+
+      setLocationData(returnData)
+      // console.log(uniqByKeepFirst(returnData, it => it.province))
+      // console.log(uniqByKeepFirst(returnData, it => it.district))
+      // console.log(uniqByKeepFirst(returnData, it => it.subdistrict))
+      // console.log(uniqByKeepFirst(returnData, it => it.zipcode))
+    }
+  }, [token, dispatch])
+
   const goAdd = async () => {
     let getPersonID = ``
 
-    setIsError({
-      status: ``,
-      text: ``,
-    })
+    setIsError(prev => ({
+      ...prev,
+      main: {
+        status: ``,
+        text: ``,
+      },
+    }))
     dispatch({
       type: `SET_BACKDROP_OPEN`,
       backdropOpen: true,
@@ -334,6 +435,7 @@ const AddPositionsPage = () => {
                 isResigned: false,
                 resignationNote: "",
                 position: null,
+                location: "${locationSelect.subdistrict._id}",
               }
             }) {
               person {
@@ -343,7 +445,7 @@ const AddPositionsPage = () => {
           }
         `,
       })
-      console.log(res)
+      // console.log(res)
       // {
       //   "data": {
       //     "createPerson": {
@@ -485,6 +587,11 @@ const AddPositionsPage = () => {
     setBirthDate(null)
     setMarriedStatus(``)
     setTelephone(``)
+    setLocationSelect({
+      province: null,
+      district: null,
+      subdistrict: null,
+    })
     setAddress(``)
     setEmergencyName(``)
     setEmergencyNumber(``)
@@ -546,8 +653,9 @@ const AddPositionsPage = () => {
   useEffect(() => {
     if (token !== ``) {
       getPositions()
+      getLocations()
     }
-  }, [getPositions, token])
+  }, [getPositions, getLocations, token])
 
   useEffect(() => {
     if (jobType === `ลูกจ้างประจำ`) {
@@ -682,6 +790,11 @@ const AddPositionsPage = () => {
                   }}
                   value={idCard}
                   error={idCard.length === 13 && !checkPid(idCard)}
+                  helperText={
+                    idCard.length === 13 && !checkPid(idCard)
+                      ? `หมายเลขประจำตัวประชาชนไม่ถูกต้อง`
+                      : ``
+                  }
                   InputProps={{
                     endAdornment: renderCheckingIcon(
                       idCard.length === 13 && checkPid(idCard) ? idCard : ``
@@ -834,9 +947,9 @@ const AddPositionsPage = () => {
                     options={renderFilterPositions(positions)}
                     noOptionsText={
                       positions.length === 0
-                        ? isError.status === `notfound`
+                        ? isError.main.status === `notfound`
                           ? `ไม่มีตำแหน่งว่าง`
-                          : `กำลังเชื่อมต่อฐานข้อมูล...`
+                          : `กำลังโหลดข้อมูล...`
                         : `ไม่พบข้อมูล`
                     }
                     getOptionLabel={option => {
@@ -1043,12 +1156,188 @@ const AddPositionsPage = () => {
                 />
               </Grid>
             </Grid>
+            <Divider style={{ margin: `1rem auto 2rem`, width: 360 }} />
+            <Grid container spacing={2} sx={{ marginBottom: `1rem` }}>
+              <Grid item xs={12} sm={3}>
+                <Flex>
+                  <Autocomplete
+                    sx={{ width: `100%` }}
+                    id="Province"
+                    disablePortal
+                    options={uniqByKeepFirst(locationData, it => it.province)}
+                    noOptionsText={
+                      locationData.length === 0
+                        ? isError.location.status === `notfound`
+                          ? `ไม่มีตำแหน่งว่าง`
+                          : `กำลังโหลดข้อมูล...`
+                        : `ไม่พบข้อมูล`
+                    }
+                    getOptionLabel={option => option.province}
+                    isOptionEqualToValue={(option, value) => {
+                      return option === value
+                    }}
+                    onChange={(_, newValue) => {
+                      setLocationSelect({
+                        ...locationSelect,
+                        province: newValue,
+                        district: null,
+                        subdistrict: null,
+                      })
+                    }}
+                    value={locationSelect.province}
+                    renderInput={params => (
+                      <TextField
+                        {...params}
+                        label="* จังหวัด"
+                        InputProps={{
+                          ...params.InputProps,
+                          sx: {
+                            borderRadius: `5px 0 0 5px`,
+                          },
+                        }}
+                      />
+                    )}
+                  />
+                  <CheckCircleFlex>
+                    {renderCheckingIcon(locationSelect.province)}
+                  </CheckCircleFlex>
+                </Flex>
+              </Grid>
+              <Grid item xs={12} sm={3}>
+                <DisabledBlock
+                  className={locationSelect.province === null ? `disabled` : ``}
+                >
+                  <Flex>
+                    <Autocomplete
+                      sx={{ width: `100%` }}
+                      id="District"
+                      disablePortal
+                      disabled={locationSelect.province === null}
+                      options={
+                        locationSelect.province !== null
+                          ? uniqByKeepFirst(
+                              locationData,
+                              it => it.district
+                            ).filter(
+                              elem =>
+                                elem.province ===
+                                locationSelect.province.province
+                            )
+                          : []
+                      }
+                      noOptionsText={`ไม่พบข้อมูล`}
+                      getOptionLabel={option => option.district}
+                      isOptionEqualToValue={(option, value) => {
+                        return option === value
+                      }}
+                      onChange={(_, newValue) => {
+                        setLocationSelect({
+                          ...locationSelect,
+                          district: newValue,
+                          subdistrict: null,
+                        })
+                      }}
+                      value={locationSelect.district}
+                      renderInput={params => (
+                        <TextField
+                          {...params}
+                          label="* อำเภอ"
+                          InputProps={{
+                            ...params.InputProps,
+                            sx: {
+                              borderRadius: `5px 0 0 5px`,
+                            },
+                          }}
+                        />
+                      )}
+                    />
+                    <CheckCircleFlex>
+                      {renderCheckingIcon(locationSelect.district)}
+                    </CheckCircleFlex>
+                  </Flex>
+                </DisabledBlock>
+              </Grid>
+              <Grid item xs={12} sm={3}>
+                <DisabledBlock
+                  className={locationSelect.district === null ? `disabled` : ``}
+                >
+                  <Flex>
+                    <Autocomplete
+                      sx={{ width: `100%` }}
+                      id="Sub-district"
+                      disablePortal
+                      disabled={locationSelect.district === null}
+                      options={
+                        locationSelect.district !== null
+                          ? locationData.filter(
+                              elem =>
+                                elem.province ===
+                                  locationSelect.province.province &&
+                                elem.district ===
+                                  locationSelect.district.district
+                            )
+                          : []
+                      }
+                      noOptionsText={`ไม่พบข้อมูล`}
+                      getOptionLabel={option => option.subdistrict}
+                      isOptionEqualToValue={(option, value) => {
+                        return option === value
+                      }}
+                      onChange={(_, newValue) => {
+                        setLocationSelect({
+                          ...locationSelect,
+                          subdistrict: newValue,
+                        })
+                      }}
+                      value={locationSelect.subdistrict}
+                      renderInput={params => (
+                        <TextField
+                          {...params}
+                          label="* ตำบล"
+                          InputProps={{
+                            ...params.InputProps,
+                            sx: {
+                              borderRadius: `5px 0 0 5px`,
+                            },
+                          }}
+                        />
+                      )}
+                    />
+                    <CheckCircleFlex>
+                      {renderCheckingIcon(locationSelect.subdistrict)}
+                    </CheckCircleFlex>
+                  </Flex>
+                </DisabledBlock>
+              </Grid>
+              <Grid item xs={12} sm={3}>
+                <DisabledBlock
+                  className={
+                    locationSelect.subdistrict === null ? `disabled` : ``
+                  }
+                >
+                  <TextField
+                    sx={textfieldProps}
+                    id="Zipcode"
+                    label="* รหัสไปรษณีย์"
+                    variant="outlined"
+                    value={
+                      locationSelect.subdistrict !== null
+                        ? locationSelect.subdistrict.zipcode
+                        : ``
+                    }
+                    InputProps={{
+                      disabled: true,
+                    }}
+                  />
+                </DisabledBlock>
+              </Grid>
+            </Grid>
             <Grid container spacing={2} sx={{ marginBottom: `1rem` }}>
               <Grid item xs={12}>
                 <TextField
                   sx={textfieldProps}
                   id="Address"
-                  label="* ที่อยู่"
+                  label="* รายละเอียดที่อยู่"
                   variant="outlined"
                   onChange={e => setAddress(e.target.value)}
                   value={address}
@@ -1058,6 +1347,7 @@ const AddPositionsPage = () => {
                 />
               </Grid>
             </Grid>
+            <Divider style={{ margin: `1rem auto 2rem`, width: 360 }} />
             <Grid container spacing={2} sx={{ marginBottom: `1rem` }}>
               <Grid item xs={12} sm={6}>
                 <TextField
@@ -1791,6 +2081,9 @@ const AddPositionsPage = () => {
                         birthDate === null ||
                         marriedStatus === `` ||
                         telephone === `` ||
+                        locationSelect.province === null ||
+                        locationSelect.district === null ||
+                        locationSelect.subdistrict === null ||
                         address === `` ||
                         emergencyName === `` ||
                         emergencyNumber === `` ||
@@ -1816,6 +2109,9 @@ const AddPositionsPage = () => {
                         birthDate === null ||
                         marriedStatus === `` ||
                         telephone === `` ||
+                        locationSelect.province === null ||
+                        locationSelect.district === null ||
+                        locationSelect.subdistrict === null ||
                         address === `` ||
                         emergencyName === `` ||
                         emergencyNumber === `` ||
@@ -1851,6 +2147,9 @@ const AddPositionsPage = () => {
                     birthDate === null &&
                     marriedStatus === `` &&
                     telephone === `` &&
+                    locationSelect.province === null &&
+                    locationSelect.district === null &&
+                    locationSelect.subdistrict === null &&
                     address === `` &&
                     emergencyName === `` &&
                     emergencyNumber === `` &&

@@ -6,22 +6,26 @@ import { faCheckCircle as faFilledCheckCircle } from "@fortawesome/free-solid-sv
 import { faCheckCircle } from "@fortawesome/free-regular-svg-icons"
 
 const renderCheckingIcon = value => {
-  if (value === ``) {
-    return (
-      <InputAdornment position="end">
-        <FontAwesomeIcon icon={faCheckCircle} />
-      </InputAdornment>
-    )
-  }
+  switch (value) {
+    case ``:
+    case null:
+    case undefined:
+      return (
+        <InputAdornment position="end">
+          <FontAwesomeIcon icon={faCheckCircle} />
+        </InputAdornment>
+      )
 
-  return (
-    <InputAdornment position="end">
-      <FontAwesomeIcon
-        icon={faFilledCheckCircle}
-        style={{ color: green[500] }}
-      />
-    </InputAdornment>
-  )
+    default:
+      return (
+        <InputAdornment position="end">
+          <FontAwesomeIcon
+            icon={faFilledCheckCircle}
+            style={{ color: green[500] }}
+          />
+        </InputAdornment>
+      )
+  }
 }
 
 export default renderCheckingIcon
