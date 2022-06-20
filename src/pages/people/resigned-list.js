@@ -130,7 +130,10 @@ const ResignedPeopleListPage = () => {
 
     dispatch({
       type: `SET_BACKDROP_OPEN`,
-      backdropOpen: true,
+      backdropDialog: {
+        open: true,
+        title: ``,
+      },
     })
 
     try {
@@ -270,7 +273,10 @@ const ResignedPeopleListPage = () => {
 
     dispatch({
       type: `SET_BACKDROP_OPEN`,
-      backdropOpen: false,
+      backdropDialog: {
+        open: false,
+        title: ``,
+      },
     })
   }, [
     token,

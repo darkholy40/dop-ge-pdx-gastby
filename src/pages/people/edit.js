@@ -185,7 +185,10 @@ const EditPositionsPage = ({ location }) => {
 
     dispatch({
       type: `SET_BACKDROP_OPEN`,
-      backdropOpen: true,
+      backdropDialog: {
+        open: true,
+        title: ``,
+      },
     })
 
     try {
@@ -312,7 +315,10 @@ const EditPositionsPage = ({ location }) => {
     setFirstStrike(true)
     dispatch({
       type: `SET_BACKDROP_OPEN`,
-      backdropOpen: false,
+      backdropDialog: {
+        open: false,
+        title: ``,
+      },
     })
   }, [token, id, dispatch])
 
@@ -462,7 +468,10 @@ const EditPositionsPage = ({ location }) => {
 
     dispatch({
       type: `SET_BACKDROP_OPEN`,
-      backdropOpen: true,
+      backdropDialog: {
+        open: true,
+        title: `กำลังโหลดข้อมูลพื้นที่`,
+      },
     })
 
     setIsError(prev => ({
@@ -541,7 +550,10 @@ const EditPositionsPage = ({ location }) => {
 
     dispatch({
       type: `SET_BACKDROP_OPEN`,
-      backdropOpen: false,
+      backdropDialog: {
+        open: false,
+        title: `กำลังโหลดข้อมูลพื้นที่`,
+      },
     })
   }, [token, dispatch])
 
@@ -554,7 +566,10 @@ const EditPositionsPage = ({ location }) => {
     })
     dispatch({
       type: `SET_BACKDROP_OPEN`,
-      backdropOpen: true,
+      backdropDialog: {
+        open: true,
+        title: ``,
+      },
     })
 
     try {
@@ -797,7 +812,10 @@ const EditPositionsPage = ({ location }) => {
 
     dispatch({
       type: `SET_BACKDROP_OPEN`,
-      backdropOpen: false,
+      backdropDialog: {
+        open: false,
+        title: ``,
+      },
     })
   }
 
@@ -844,8 +862,39 @@ const EditPositionsPage = ({ location }) => {
     setSkills(data.person.skills)
   }
 
+  const fetchLocationInput = useCallback(() => {
+    if (locationData.length > 0) {
+      if (locationSelectFromDb !== null) {
+        setLocationSelect(prev => ({
+          ...prev,
+          province: uniqByKeepFirst(locationData, it => it.province).find(
+            elem => elem.province === locationSelectFromDb.province
+          ),
+          district: uniqByKeepFirst(locationData, it => it.district).find(
+            elem =>
+              elem.province === locationSelectFromDb.province &&
+              elem.district === locationSelectFromDb.district
+          ),
+          subdistrict: locationData.find(
+            elem =>
+              elem.province === locationSelectFromDb.province &&
+              elem.district === locationSelectFromDb.district &&
+              elem.subdistrict === locationSelectFromDb.subdistrict
+          ),
+        }))
+      } else {
+        setLocationSelect({
+          province: null,
+          district: null,
+          subdistrict: null,
+        })
+      }
+    }
+  }, [locationData, locationSelectFromDb])
+
   const reloadInput = () => {
     getPerson()
+    fetchLocationInput()
   }
 
   const renderFilterPositions = getPositions => {
@@ -891,36 +940,8 @@ const EditPositionsPage = ({ location }) => {
   }, [getLocations, getPerson, token])
 
   useEffect(() => {
-    console.log(locationSelectFromDb)
-
-    if (locationData.length > 0 && locationSelectFromDb !== null) {
-      setLocationSelect(prev => ({
-        ...prev,
-        province: uniqByKeepFirst(locationData, it => it.province).find(
-          elem => elem.province === locationSelectFromDb.province
-        ),
-      }))
-
-      setLocationSelect(prev => ({
-        ...prev,
-        district: uniqByKeepFirst(locationData, it => it.district).find(
-          elem =>
-            elem.province === locationSelectFromDb.province &&
-            elem.district === locationSelectFromDb.district
-        ),
-      }))
-
-      setLocationSelect(prev => ({
-        ...prev,
-        subdistrict: locationData.find(
-          elem =>
-            elem.province === locationSelectFromDb.province &&
-            elem.district === locationSelectFromDb.district &&
-            elem.subdistrict === locationSelectFromDb.subdistrict
-        ),
-      }))
-    }
-  }, [locationData, locationSelectFromDb])
+    fetchLocationInput()
+  }, [fetchLocationInput])
 
   useEffect(() => {
     if (token !== ``) {
@@ -1641,7 +1662,7 @@ const EditPositionsPage = ({ location }) => {
                         <TextField
                           sx={textfieldProps}
                           id="Zipcode"
-                          label="* รหัสไปรษณีย์"
+                          label="รหัสไปรษณีย์"
                           variant="outlined"
                           value={
                             locationSelect.subdistrict !== null

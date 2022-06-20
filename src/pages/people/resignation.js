@@ -76,7 +76,10 @@ const ResignationPage = ({ location }) => {
   const getPerson = useCallback(async () => {
     dispatch({
       type: `SET_BACKDROP_OPEN`,
-      backdropOpen: true,
+      backdropDialog: {
+        open: true,
+        title: ``,
+      },
     })
 
     try {
@@ -136,7 +139,10 @@ const ResignationPage = ({ location }) => {
 
     dispatch({
       type: `SET_BACKDROP_OPEN`,
-      backdropOpen: false,
+      backdropDialog: {
+        open: false,
+        title: ``,
+      },
     })
   }, [id, token, dispatch])
 
@@ -149,7 +155,10 @@ const ResignationPage = ({ location }) => {
     })
     dispatch({
       type: `SET_BACKDROP_OPEN`,
-      backdropOpen: true,
+      backdropDialog: {
+        open: true,
+        title: ``,
+      },
     })
 
     try {
@@ -331,7 +340,10 @@ const ResignationPage = ({ location }) => {
 
     dispatch({
       type: `SET_BACKDROP_OPEN`,
-      backdropOpen: false,
+      backdropDialog: {
+        open: false,
+        title: ``,
+      },
     })
   }
 

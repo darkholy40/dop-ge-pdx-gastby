@@ -89,7 +89,10 @@ const EditPositionsPage = ({ location }) => {
 
     dispatch({
       type: `SET_BACKDROP_OPEN`,
-      backdropOpen: true,
+      backdropDialog: {
+        open: true,
+        title: ``,
+      },
     })
 
     try {
@@ -152,7 +155,10 @@ const EditPositionsPage = ({ location }) => {
 
     dispatch({
       type: `SET_BACKDROP_OPEN`,
-      backdropOpen: false,
+      backdropDialog: {
+        open: false,
+        title: ``,
+      },
     })
   }, [token, dispatch, id, units])
 
@@ -165,7 +171,10 @@ const EditPositionsPage = ({ location }) => {
     })
     dispatch({
       type: `SET_BACKDROP_OPEN`,
-      backdropOpen: true,
+      backdropDialog: {
+        open: true,
+        title: ``,
+      },
     })
 
     if (currentPosNumber !== addPositionFilter.posNumber) {
@@ -217,7 +226,10 @@ const EditPositionsPage = ({ location }) => {
 
         dispatch({
           type: `SET_BACKDROP_OPEN`,
-          backdropOpen: false,
+          backdropDialog: {
+            open: false,
+            title: ``,
+          },
         })
 
         return 0
@@ -316,7 +328,10 @@ const EditPositionsPage = ({ location }) => {
 
     dispatch({
       type: `SET_BACKDROP_OPEN`,
-      backdropOpen: false,
+      backdropDialog: {
+        open: false,
+        title: ``,
+      },
     })
   }
 

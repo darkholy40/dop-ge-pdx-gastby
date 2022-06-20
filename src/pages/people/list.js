@@ -131,7 +131,10 @@ const PeopleListPage = () => {
 
     dispatch({
       type: `SET_BACKDROP_OPEN`,
-      backdropOpen: true,
+      backdropDialog: {
+        open: true,
+        title: ``,
+      },
     })
 
     const whereCondition = `{
@@ -253,7 +256,10 @@ const PeopleListPage = () => {
 
     dispatch({
       type: `SET_BACKDROP_OPEN`,
-      backdropOpen: false,
+      backdropDialog: {
+        open: false,
+        title: ``,
+      },
     })
 
     // setTimeout(() => {

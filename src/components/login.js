@@ -68,7 +68,10 @@ const IndexPage = () => {
     setIsLoading(true)
     dispatch({
       type: `SET_BACKDROP_OPEN`,
-      backdropOpen: true,
+      backdropDialog: {
+        open: true,
+        title: ``,
+      },
     })
 
     try {
@@ -152,7 +155,10 @@ const IndexPage = () => {
     setIsLoading(false)
     dispatch({
       type: `SET_BACKDROP_OPEN`,
-      backdropOpen: false,
+      backdropDialog: {
+        open: false,
+        title: ``,
+      },
     })
   }
 

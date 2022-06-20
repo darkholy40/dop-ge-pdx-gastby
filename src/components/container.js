@@ -70,7 +70,7 @@ const Row = styled.div`
 `
 
 const Container = ({ children }) => {
-  const { primaryColor, secondaryColor, backdropOpen } = useSelector(
+  const { primaryColor, secondaryColor, backdropDialog } = useSelector(
     state => state
   )
   const muiTheme = createTheme({
@@ -99,12 +99,38 @@ const Container = ({ children }) => {
           <Row>{children}</Row>
           <Backdrop
             sx={{
-              color: primaryColor[200],
+              color: primaryColor[500],
               zIndex: theme => theme.zIndex.drawer + 1,
             }}
-            open={backdropOpen}
+            open={backdropDialog.open}
           >
-            <CircularProgress color="inherit" size="5rem" thickness={5} />
+            <div
+              style={{
+                display: `flex`,
+                alignItems: `center`,
+                justifyContent: `center`,
+                flexDirection: `column`,
+                backgroundColor: `rgba(255, 255, 255, 0.8)`,
+                padding: `2rem`,
+                borderRadius: `1.5rem`,
+                maxWidth: 360,
+              }}
+            >
+              <CircularProgress color="inherit" size="5rem" thickness={5} />
+              {backdropDialog.title !== `` && (
+                <p
+                  style={{
+                    color: `#000`,
+                    fontSize: `1.25rem`,
+                    marginBottom: 0,
+                    width: `100%`,
+                    overflowX: `auto`,
+                  }}
+                >
+                  {backdropDialog.title}
+                </p>
+              )}
+            </div>
           </Backdrop>
         </MainContainer>
         <NotificationDialog />

@@ -293,6 +293,14 @@ const AddPositionsPage = () => {
   const getLocations = useCallback(async () => {
     let lap = 0
 
+    dispatch({
+      type: `SET_BACKDROP_OPEN`,
+      backdropDialog: {
+        open: true,
+        title: `กำลังโหลดข้อมูลพื้นที่`,
+      },
+    })
+
     setIsError(prev => ({
       ...prev,
       location: {
@@ -370,6 +378,14 @@ const AddPositionsPage = () => {
       // console.log(uniqByKeepFirst(returnData, it => it.subdistrict))
       // console.log(uniqByKeepFirst(returnData, it => it.zipcode))
     }
+
+    dispatch({
+      type: `SET_BACKDROP_OPEN`,
+      backdropDialog: {
+        open: false,
+        title: `กำลังโหลดข้อมูลพื้นที่`,
+      },
+    })
   }, [token, dispatch])
 
   const goAdd = async () => {
@@ -384,7 +400,10 @@ const AddPositionsPage = () => {
     }))
     dispatch({
       type: `SET_BACKDROP_OPEN`,
-      backdropOpen: true,
+      backdropDialog: {
+        open: true,
+        title: ``,
+      },
     })
 
     try {
@@ -569,7 +588,10 @@ const AddPositionsPage = () => {
 
     dispatch({
       type: `SET_BACKDROP_OPEN`,
-      backdropOpen: false,
+      backdropDialog: {
+        open: false,
+        title: ``,
+      },
     })
   }
 
@@ -1318,7 +1340,7 @@ const AddPositionsPage = () => {
                   <TextField
                     sx={textfieldProps}
                     id="Zipcode"
-                    label="* รหัสไปรษณีย์"
+                    label="รหัสไปรษณีย์"
                     variant="outlined"
                     value={
                       locationSelect.subdistrict !== null

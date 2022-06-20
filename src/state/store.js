@@ -18,7 +18,10 @@ const initialState = {
   primaryColor: primaryColor,
   secondaryColor: secondaryColor,
   lang: `th`,
-  backdropOpen: false,
+  backdropDialog: {
+    open: false,
+    title: ``,
+  },
   currentPage: `home`,
   token: ``,
   userInfo: {
@@ -89,7 +92,7 @@ const reducer = (state = initialState, action) => {
     case `SET_BACKDROP_OPEN`:
       return {
         ...state,
-        backdropOpen: action.backdropOpen,
+        backdropDialog: action.backdropDialog,
       }
 
     case `SET_CURRENT_PAGE`:

@@ -75,7 +75,10 @@ const AddPositionsPage = () => {
     })
     dispatch({
       type: `SET_BACKDROP_OPEN`,
-      backdropOpen: true,
+      backdropDialog: {
+        open: true,
+        title: ``,
+      },
     })
 
     try {
@@ -127,7 +130,10 @@ const AddPositionsPage = () => {
 
       dispatch({
         type: `SET_BACKDROP_OPEN`,
-        backdropOpen: false,
+        backdropDialog: {
+          open: false,
+          title: ``,
+        },
       })
 
       return 0
@@ -226,7 +232,10 @@ const AddPositionsPage = () => {
 
     dispatch({
       type: `SET_BACKDROP_OPEN`,
-      backdropOpen: false,
+      backdropDialog: {
+        open: false,
+        title: ``,
+      },
     })
   }
 
