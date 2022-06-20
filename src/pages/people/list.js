@@ -169,9 +169,9 @@ const PeopleListPage = () => {
         const res = await client(token).query({
           query: gql`
             query Positions {
-              positions(where: ${whereCondition}, start: ${parseInt(
-            tableOption.rowsPerPage * tableOption.page
-          )}) {
+              positions(where: ${whereCondition}, limit: ${
+            tableOption.rowsPerPage
+          }, start: ${parseInt(tableOption.rowsPerPage * tableOption.page)}) {
                 _id
                 position_type {
                   type
