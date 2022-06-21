@@ -55,7 +55,7 @@ const Text = styled.div`
 `
 
 const Breadcrumbs = ({ previous, current }) => {
-  const { primaryColor } = useSelector(state => state)
+  const { primaryColor } = useSelector(({ mainReducer }) => mainReducer)
 
   return (
     <Flex primaryColor={primaryColor}>

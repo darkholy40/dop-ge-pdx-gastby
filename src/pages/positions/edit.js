@@ -18,8 +18,9 @@ import renderDivision from "../../functions/render-division"
 import roles from "../../static/roles"
 
 const EditPositionsPage = ({ location }) => {
-  const { token, userInfo, positionTypes, positionNames, units } = useSelector(
-    state => state
+  const { token, userInfo } = useSelector(({ mainReducer }) => mainReducer)
+  const { positionTypes, positionNames, units } = useSelector(
+    ({ staticReducer }) => staticReducer
   )
   const dispatch = useDispatch()
   const [count, setCount] = useState(0)

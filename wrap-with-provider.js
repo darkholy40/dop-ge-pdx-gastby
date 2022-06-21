@@ -12,6 +12,15 @@ const RootElement = ({ element }) => {
   // - there is fresh store for each SSR page
   // - it will be called only once in browser, when React mounts
   const { store, persistor } = configureStore()
+
+  if (typeof window === "undefined") {
+    return (
+      <Provider store={store}>
+        <Container>{element}</Container>
+      </Provider>
+    )
+  }
+
   return (
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>

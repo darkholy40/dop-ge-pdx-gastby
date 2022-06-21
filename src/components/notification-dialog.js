@@ -24,7 +24,7 @@ const Flex = styled.div`
 
 const NotificationDialog = () => {
   const dispatch = useDispatch()
-  const { notificationDialog } = useSelector(state => state)
+  const { notificationDialog } = useSelector(({ mainReducer }) => mainReducer)
 
   const open = notificationDialog.open || false
   const title = notificationDialog.title || ``

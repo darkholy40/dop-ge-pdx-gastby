@@ -57,7 +57,7 @@ const Flex = styled.div`
 const Navbar = () => {
   const dispatch = useDispatch()
   const { currentPage, token, userInfo, primaryColor } = useSelector(
-    state => state
+    ({ mainReducer }) => mainReducer
   )
   const { site } = useStaticQuery(
     graphql`

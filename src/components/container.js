@@ -71,7 +71,7 @@ const Row = styled.div`
 
 const Container = ({ children }) => {
   const { primaryColor, secondaryColor, backdropDialog } = useSelector(
-    state => state
+    ({ mainReducer }) => mainReducer
   )
   const muiTheme = createTheme({
     palette: {

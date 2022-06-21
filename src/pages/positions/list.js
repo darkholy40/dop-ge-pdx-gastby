@@ -37,7 +37,7 @@ import roles from "../../static/roles"
 
 const PositionsListPage = () => {
   const { token, userInfo, primaryColor, searchPositionFilter } = useSelector(
-    state => state
+    ({ mainReducer }) => mainReducer
   )
   const dispatch = useDispatch()
   const [posData, setPosData] = useState([])

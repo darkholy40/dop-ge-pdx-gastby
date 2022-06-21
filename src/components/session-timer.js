@@ -46,7 +46,7 @@ const Timer = styled.div`
 `
 
 const SessionTimer = () => {
-  const { token, sessionTimer } = useSelector(state => state)
+  const { token, sessionTimer } = useSelector(({ mainReducer }) => mainReducer)
   const [sessionTimerClassname, setSessionTimerClassname] = useState(``)
 
   useEffect(() => {

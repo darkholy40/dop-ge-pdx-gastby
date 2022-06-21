@@ -8,7 +8,7 @@ import PageNotFound from "../components/page-not-found"
 import roles from "../static/roles"
 
 const UserManagement = () => {
-  const { token, userInfo } = useSelector(state => state)
+  const { token, userInfo } = useSelector(({ mainReducer }) => mainReducer)
   const dispatch = useDispatch()
 
   React.useEffect(() => {

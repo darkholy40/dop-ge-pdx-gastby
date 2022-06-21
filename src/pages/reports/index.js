@@ -20,7 +20,9 @@ const Container = styled.div`
 `
 
 const IndexPage = () => {
-  const { token, primaryColor, userInfo } = useSelector(state => state)
+  const { token, primaryColor, userInfo } = useSelector(
+    ({ mainReducer }) => mainReducer
+  )
   const dispatch = useDispatch()
 
   const savePageView = useCallback(() => {

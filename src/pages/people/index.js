@@ -38,8 +38,10 @@ const Oparator = styled.div`
 `
 
 const PositionsPage = () => {
-  const { token, userInfo, searchPersonFilter, units, primaryColor } =
-    useSelector(state => state)
+  const { token, userInfo, searchPersonFilter, primaryColor } = useSelector(
+    ({ mainReducer }) => mainReducer
+  )
+  const { units } = useSelector(({ staticReducer }) => staticReducer)
   const dispatch = useDispatch()
   const [isError, setIsError] = useState({
     status: `disabled`,

@@ -32,7 +32,9 @@ const Container = styled.div`
 `
 
 const StockPage = () => {
-  const { token, userInfo, units } = useSelector(state => state)
+  const { token, userInfo, units } = useSelector(
+    ({ mainReducer }) => mainReducer
+  )
   const dispatch = useDispatch()
   const [input, setInput] = useState({
     unit: null,

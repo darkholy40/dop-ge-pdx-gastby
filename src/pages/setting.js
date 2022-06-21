@@ -49,7 +49,9 @@ const Right = styled.div`
 `
 
 const SettingPage = () => {
-  const { token, userInfo, sessionTimer } = useSelector(state => state)
+  const { token, userInfo, sessionTimer } = useSelector(
+    ({ mainReducer }) => mainReducer
+  )
   const dispatch = useDispatch()
   const [rows, setRows] = useState([])
 
@@ -128,10 +130,10 @@ const SettingPage = () => {
         // desc: `8 ชม. (คงเหลือ ${sessionTimer.hr}:${sessionTimer.min}:${sessionTimer.sec})`,
         desc: `8 ชม. (คงเหลือ ${displaySessionTimer(sessionTimer)})`,
       },
-      // {
-      //   title: `Token`,
-      //   desc: token,
-      // },
+      {
+        title: `Token`,
+        desc: token,
+      },
     ]
     setRows(users)
   }, [userInfo, token, sessionTimer])

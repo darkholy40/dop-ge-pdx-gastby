@@ -76,8 +76,9 @@ const textfieldProps = {
 // }
 
 const AddPositionsPage = () => {
-  const { token, userInfo, positionTypes, positionNames } = useSelector(
-    state => state
+  const { token, userInfo } = useSelector(({ mainReducer }) => mainReducer)
+  const { positionTypes, positionNames } = useSelector(
+    ({ staticReducer }) => staticReducer
   )
   const dispatch = useDispatch()
   const [positions, setPositions] = useState([])

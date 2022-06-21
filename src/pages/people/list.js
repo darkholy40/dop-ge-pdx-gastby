@@ -37,7 +37,7 @@ import roles from "../../static/roles"
 
 const PeopleListPage = () => {
   const { token, userInfo, primaryColor, searchPersonFilter } = useSelector(
-    state => state
+    ({ mainReducer }) => mainReducer
   )
   const dispatch = useDispatch()
   const [peopleData, setPeopleData] = useState([])

@@ -28,7 +28,7 @@ import roles from "../../static/roles"
 
 const ResignedPeopleListPage = () => {
   const { token, userInfo, primaryColor, searchPersonFilter } = useSelector(
-    state => state
+    ({ mainReducer }) => mainReducer
   )
   const dispatch = useDispatch()
   const [peopleData, setPeopleData] = useState([])

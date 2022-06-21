@@ -12,7 +12,7 @@ import { Helmet } from "react-helmet"
 import { useStaticQuery, graphql } from "gatsby"
 
 const SEO = ({ description, meta, title }) => {
-  const { lang } = useSelector(state => state)
+  const { lang } = useSelector(({ mainReducer }) => mainReducer)
   const { site } = useStaticQuery(
     graphql`
       query {

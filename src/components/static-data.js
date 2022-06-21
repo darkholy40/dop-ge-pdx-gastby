@@ -4,7 +4,7 @@ import { useSelector, useDispatch } from "react-redux"
 import { client, gql } from "../functions/apollo-client"
 
 const StaticData = () => {
-  const { token } = useSelector(state => state)
+  const { token } = useSelector(({ mainReducer }) => mainReducer)
   const dispatch = useDispatch()
   const [isFetchingComplete, setIsFetchingComplete] = useState({
     positionTypes: false,

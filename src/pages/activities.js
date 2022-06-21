@@ -40,7 +40,9 @@ const Oparator = styled.div`
 `
 
 const Activities = () => {
-  const { token, userInfo, primaryColor } = useSelector(state => state)
+  const { token, userInfo, primaryColor } = useSelector(
+    ({ mainReducer }) => mainReducer
+  )
   const dispatch = useDispatch()
   const [logsData, setLogsData] = useState([])
   const [isError, setIsError] = useState({

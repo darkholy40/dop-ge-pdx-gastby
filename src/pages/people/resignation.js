@@ -32,7 +32,7 @@ const Label = styled.span`
 const Text = styled.span``
 
 const ResignationPage = ({ location }) => {
-  const { token, userInfo } = useSelector(state => state)
+  const { token, userInfo } = useSelector(({ mainReducer }) => mainReducer)
   const dispatch = useDispatch()
   const [isError, setIsError] = useState({
     status: false,

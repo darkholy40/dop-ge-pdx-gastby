@@ -76,8 +76,12 @@ const textfieldProps = {
 // }
 
 const EditPositionsPage = ({ location }) => {
-  const { token, userInfo, positionTypes, positionNames, redirectPage } =
-    useSelector(state => state)
+  const { token, userInfo, redirectPage } = useSelector(
+    ({ mainReducer }) => mainReducer
+  )
+  const { positionTypes, positionNames } = useSelector(
+    ({ staticReducer }) => staticReducer
+  )
   const dispatch = useDispatch()
   const [positions, setPositions] = useState([])
   const [isError, setIsError] = useState({

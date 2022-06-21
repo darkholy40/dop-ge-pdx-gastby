@@ -51,7 +51,9 @@ const LogoContainer = styled.div`
 
 const IndexPage = () => {
   const dispatch = useDispatch()
-  const { userInfo, primaryColor } = useSelector(state => state)
+  const { userInfo, primaryColor } = useSelector(
+    ({ mainReducer }) => mainReducer
+  )
   const [usernameInput, setUsernameInput] = useState(userInfo.username)
   const [passwordInput, setPasswordInput] = useState(``)
   const [isLoading, setIsLoading] = useState(false)

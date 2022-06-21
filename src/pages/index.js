@@ -19,7 +19,7 @@ const Container = styled.div`
 `
 
 const IndexPage = () => {
-  const { token, userInfo } = useSelector(state => state)
+  const { token, userInfo } = useSelector(({ mainReducer }) => mainReducer)
   const dispatch = useDispatch()
 
   useEffect(() => {

@@ -32,14 +32,12 @@ const Oparator = styled.div`
 `
 
 const PositionsPage = () => {
-  const {
-    token,
-    userInfo,
-    searchPositionFilter,
-    positionTypes,
-    positionNames,
-    units,
-  } = useSelector(state => state)
+  const { token, userInfo, searchPositionFilter } = useSelector(
+    ({ mainReducer }) => mainReducer
+  )
+  const { positionTypes, positionNames, units } = useSelector(
+    ({ staticReducer }) => staticReducer
+  )
   const dispatch = useDispatch()
 
   const savePageView = useCallback(() => {
