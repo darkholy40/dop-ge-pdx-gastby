@@ -34,6 +34,10 @@ import renderCheckingIcon from "../../functions/render-checking-icon"
 import renderAgeFromDifferentDateRange from "../../functions/render-age-from-different-date-range"
 import checkPid from "../../functions/check-pid"
 import uniqByKeepFirst from "../../functions/uniq-by-keep-first"
+import {
+  updateAnObjectInArray,
+  removeObjectInArray,
+} from "../../functions/object-in-array"
 import roles from "../../static/roles"
 import countries from "../../static/countries"
 import educationLevels from "../../static/education-levels"
@@ -132,11 +136,7 @@ const EditPositionsPage = ({ location }) => {
   const [statusDisability, setStatusDisability] = useState(``)
   const [skills, setSkills] = useState(``)
   const [firstStrike, setFirstStrike] = useState(false)
-  const [percentDialog, setPercentDialog] = useState({
-    open: false,
-    title: `กำลังโหลดข้อมูลคลังตำแหน่งที่ว่างทั้งหมด`,
-    percent: 0,
-  })
+  const [percentDialog, setPercentDialog] = useState([])
 
   const search = location.search.split("id=")
   const id = search[1] || `0`
@@ -326,10 +326,15 @@ const EditPositionsPage = ({ location }) => {
     let role = ``
     let lap = 0
 
-    setPercentDialog(prev => ({
+    setPercentDialog(prev => [
       ...prev,
-      open: true,
-    }))
+      {
+        id: 1,
+        open: true,
+        title: `กำลังโหลดข้อมูลคลังตำแหน่งที่ว่างทั้งหมด`,
+        percent: 0,
+      },
+    ])
 
     if (id === `0`) {
       return 0
@@ -431,10 +436,11 @@ const EditPositionsPage = ({ location }) => {
           returnData = [...returnData, position]
         }
 
-        setPercentDialog(prev => ({
-          ...prev,
-          percent: (i * 100) / lap,
-        }))
+        setPercentDialog(prev =>
+          updateAnObjectInArray(prev, `id`, 1, {
+            percent: (i * 100) / lap,
+          })
+        )
 
         if (returnData.length > 0) {
           setPositions(returnData)
@@ -448,11 +454,14 @@ const EditPositionsPage = ({ location }) => {
       }
     }
 
-    setPercentDialog(prev => ({
-      ...prev,
-      open: false,
-      percent: 100,
-    }))
+    setPercentDialog(prev =>
+      updateAnObjectInArray(prev, `id`, 1, {
+        percent: 100,
+      })
+    )
+    setTimeout(() => {
+      setPercentDialog(prev => removeObjectInArray(prev, `id`, 1))
+    }, 200)
 
     setTimeout(() => {
       window.scrollTo({
@@ -466,13 +475,15 @@ const EditPositionsPage = ({ location }) => {
   const getLocations = useCallback(async () => {
     let lap = 0
 
-    dispatch({
-      type: `SET_BACKDROP_OPEN`,
-      backdropDialog: {
+    setPercentDialog(prev => [
+      ...prev,
+      {
+        id: 2,
         open: true,
         title: `กำลังโหลดข้อมูลพื้นที่`,
+        percent: 0,
       },
-    })
+    ])
 
     setIsError(prev => ({
       ...prev,
@@ -543,18 +554,25 @@ const EditPositionsPage = ({ location }) => {
         for (let location of res.data.locations) {
           returnData = [...returnData, location]
         }
+
+        setPercentDialog(prev =>
+          updateAnObjectInArray(prev, `id`, 2, {
+            percent: (i * 100) / lap,
+          })
+        )
       }
 
       setLocationData(returnData)
     }
 
-    dispatch({
-      type: `SET_BACKDROP_OPEN`,
-      backdropDialog: {
-        open: false,
-        title: `กำลังโหลดข้อมูลพื้นที่`,
-      },
-    })
+    setPercentDialog(prev =>
+      updateAnObjectInArray(prev, `id`, 2, {
+        percent: 100,
+      })
+    )
+    setTimeout(() => {
+      setPercentDialog(prev => removeObjectInArray(prev, `id`, 2))
+    }, 200)
   }, [token, dispatch])
 
   const goEdit = async () => {
@@ -1681,7 +1699,7 @@ const EditPositionsPage = ({ location }) => {
                       <TextField
                         sx={textfieldProps}
                         id="Address"
-                        label="* ที่อยู่"
+                        label="* รายละเอียดที่อยู่"
                         variant="outlined"
                         onChange={e => setAddress(e.target.value)}
                         value={address}
@@ -2500,11 +2518,7 @@ const EditPositionsPage = ({ location }) => {
                     </Grid>
                   </Grid>
                 </Form>
-                <PercentDialog
-                  open={percentDialog.open}
-                  title={percentDialog.title}
-                  percent={percentDialog.percent}
-                />
+                <PercentDialog data={percentDialog} />
 
                 <Divider style={{ marginTop: `1rem`, marginBottom: `1rem` }} />
                 <Flex

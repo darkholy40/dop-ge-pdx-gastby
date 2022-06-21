@@ -625,13 +625,20 @@ const PositionsPage = () => {
                   <Button
                     color="primary"
                     variant="contained"
-                    onClick={() =>
+                    onClick={() => {
+                      dispatch({
+                        type: `SET_SEARCH_PERSON_FILTER`,
+                        searchPersonFilter: {
+                          ...searchPersonFilter,
+                          currentPage: 0,
+                        },
+                      })
                       navigate(
                         !searchPersonFilter.isResigned
                           ? `/people/list/`
                           : `/people/resigned-list/`
                       )
-                    }
+                    }}
                     disabled={
                       searchPersonFilter.personId.length === 13 &&
                       !checkPid(searchPersonFilter.personId)

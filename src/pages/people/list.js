@@ -205,10 +205,13 @@ const PeopleListPage = () => {
           `,
         })
 
+        let lap = 0
         for (let thisPosition of res.data.positions) {
           returnData = [
             ...returnData,
             {
+              orderNumber:
+                lap + 1 + parseInt(tableOption.rowsPerPage * tableOption.page),
               _id: thisPosition.person._id,
               Prename: thisPosition.person.Prename,
               Name: thisPosition.person.Name,
@@ -229,6 +232,8 @@ const PeopleListPage = () => {
               division: thisPosition.division,
             },
           ]
+
+          lap++
         }
 
         if (returnData.length > 0) {
@@ -407,7 +412,7 @@ const PeopleListPage = () => {
                           }}
                         >
                           <TableCell component="th" scope="row" align="center">
-                            {rowIndex + 1}
+                            {row.orderNumber}
                           </TableCell>
                           <TableCell align="left">
                             {`${row.Prename} ${row.Name} ${row.Surname}`}

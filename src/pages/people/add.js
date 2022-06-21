@@ -34,6 +34,10 @@ import renderCheckingIcon from "../../functions/render-checking-icon"
 import renderAgeFromDifferentDateRange from "../../functions/render-age-from-different-date-range"
 import checkPid from "../../functions/check-pid"
 import uniqByKeepFirst from "../../functions/uniq-by-keep-first"
+import {
+  updateAnObjectInArray,
+  removeObjectInArray,
+} from "../../functions/object-in-array"
 import roles from "../../static/roles"
 import countries from "../../static/countries"
 import educationLevels from "../../static/education-levels"
@@ -131,11 +135,7 @@ const AddPositionsPage = () => {
   const [scoreCompetence, setScoreCompetence] = useState(``)
   const [statusDisability, setStatusDisability] = useState(``)
   const [skills, setSkills] = useState(``)
-  const [percentDialog, setPercentDialog] = useState({
-    open: false,
-    title: `กำลังโหลดข้อมูลคลังตำแหน่งที่ว่างทั้งหมด`,
-    percent: 0,
-  })
+  const [percentDialog, setPercentDialog] = useState([])
 
   const savePageView = useCallback(() => {
     // Prevent saving a log when switch user to super admin
@@ -168,10 +168,15 @@ const AddPositionsPage = () => {
     let role = ``
     let lap = 0
 
-    setPercentDialog(prev => ({
+    setPercentDialog(prev => [
       ...prev,
-      open: true,
-    }))
+      {
+        id: 1,
+        open: true,
+        title: `กำลังโหลดข้อมูลคลังตำแหน่งที่ว่างทั้งหมด`,
+        percent: 0,
+      },
+    ])
 
     if (roles[userInfo.role.name].level <= 1) {
       role = `division: "${userInfo.division._id}"`
@@ -255,10 +260,11 @@ const AddPositionsPage = () => {
           returnData = [...returnData, position]
         }
 
-        setPercentDialog(prev => ({
-          ...prev,
-          percent: (i * 100) / lap,
-        }))
+        setPercentDialog(prev =>
+          updateAnObjectInArray(prev, `id`, 1, {
+            percent: (i * 100) / lap,
+          })
+        )
 
         if (returnData.length > 0) {
           setPositions(returnData)
@@ -275,11 +281,14 @@ const AddPositionsPage = () => {
       }
     }
 
-    setPercentDialog(prev => ({
-      ...prev,
-      open: false,
-      percent: 100,
-    }))
+    setPercentDialog(prev =>
+      updateAnObjectInArray(prev, `id`, 1, {
+        percent: 100,
+      })
+    )
+    setTimeout(() => {
+      setPercentDialog(prev => removeObjectInArray(prev, `id`, 1))
+    }, 200)
 
     setTimeout(() => {
       window.scrollTo({
@@ -293,13 +302,15 @@ const AddPositionsPage = () => {
   const getLocations = useCallback(async () => {
     let lap = 0
 
-    dispatch({
-      type: `SET_BACKDROP_OPEN`,
-      backdropDialog: {
+    setPercentDialog(prev => [
+      ...prev,
+      {
+        id: 2,
         open: true,
         title: `กำลังโหลดข้อมูลพื้นที่`,
+        percent: 0,
       },
-    })
+    ])
 
     setIsError(prev => ({
       ...prev,
@@ -370,6 +381,12 @@ const AddPositionsPage = () => {
         for (let location of res.data.locations) {
           returnData = [...returnData, location]
         }
+
+        setPercentDialog(prev =>
+          updateAnObjectInArray(prev, `id`, 2, {
+            percent: (i * 100) / lap,
+          })
+        )
       }
 
       setLocationData(returnData)
@@ -379,13 +396,14 @@ const AddPositionsPage = () => {
       // console.log(uniqByKeepFirst(returnData, it => it.zipcode))
     }
 
-    dispatch({
-      type: `SET_BACKDROP_OPEN`,
-      backdropDialog: {
-        open: false,
-        title: `กำลังโหลดข้อมูลพื้นที่`,
-      },
-    })
+    setPercentDialog(prev =>
+      updateAnObjectInArray(prev, `id`, 2, {
+        percent: 100,
+      })
+    )
+    setTimeout(() => {
+      setPercentDialog(prev => removeObjectInArray(prev, `id`, 2))
+    }, 200)
   }, [token, dispatch])
 
   const goAdd = async () => {
@@ -1179,6 +1197,7 @@ const AddPositionsPage = () => {
               </Grid>
             </Grid>
             <Divider style={{ margin: `1rem auto 2rem`, width: 360 }} />
+            <p>ที่อยู่</p>
             <Grid container spacing={2} sx={{ marginBottom: `1rem` }}>
               <Grid item xs={12} sm={3}>
                 <Flex>
@@ -2205,11 +2224,7 @@ const AddPositionsPage = () => {
               </Grid>
             </Grid>
           </Form>
-          <PercentDialog
-            open={percentDialog.open}
-            title={percentDialog.title}
-            percent={percentDialog.percent}
-          />
+          <PercentDialog data={percentDialog} />
         </>
       ) : (
         <PageNotFound />
