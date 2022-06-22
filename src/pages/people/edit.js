@@ -79,7 +79,7 @@ const EditPositionsPage = ({ location }) => {
   const { token, userInfo, redirectPage } = useSelector(
     ({ mainReducer }) => mainReducer
   )
-  const { positionTypes, positionNames } = useSelector(
+  const { positionTypes, positionNames, locations } = useSelector(
     ({ staticReducer }) => staticReducer
   )
   const dispatch = useDispatch()
@@ -113,7 +113,6 @@ const EditPositionsPage = ({ location }) => {
     district: null,
     subdistrict: null,
   })
-  const [locationData, setLocationData] = useState([])
   const [address, setAddress] = useState(``)
   const [emergencyName, setEmergencyName] = useState(``)
   const [emergencyNumber, setEmergencyNumber] = useState(``)
@@ -476,109 +475,6 @@ const EditPositionsPage = ({ location }) => {
     }, 200)
   }, [token, userInfo, id, dispatch])
 
-  const getLocations = useCallback(async () => {
-    let lap = 0
-
-    setPercentDialog(prev => [
-      ...prev,
-      {
-        id: 2,
-        open: true,
-        title: `กำลังโหลดข้อมูลพื้นที่`,
-        percent: 0,
-      },
-    ])
-
-    setIsError(prev => ({
-      ...prev,
-      location: {
-        status: ``,
-        text: ``,
-      },
-    }))
-
-    try {
-      const res = await client(token).query({
-        query: gql`
-          query LocationsCount {
-            locationsConnection {
-              aggregate {
-                totalCount
-              }
-            }
-          }
-        `,
-      })
-
-      const totalCount = res.data.locationsConnection.aggregate.totalCount
-      lap = Math.ceil(totalCount / 100)
-    } catch (error) {
-      // console.log(error.message)
-
-      if (error.message === `Failed to fetch`) {
-        setIsError(prev => ({
-          ...prev,
-          location: {
-            status: `notfound`,
-            text: `ไม่พบข้อมูล`,
-          },
-        }))
-
-        dispatch({
-          type: `SET_NOTIFICATION_DIALOG`,
-          notificationDialog: {
-            open: true,
-            title: `การเชื่อมต่อไม่เสถียร`,
-            description: `ไม่สามารถเชื่อมต่อฐานข้อมูลได้`,
-            variant: `error`,
-            confirmText: `ลองอีกครั้ง`,
-            callback: () => getLocations(),
-          },
-        })
-      }
-    }
-
-    if (lap > 0) {
-      let returnData = []
-      for (let i = 0; i < lap; i++) {
-        const res = await client(token).query({
-          query: gql`
-            query Locations {
-              locations(limit: 100, start: ${i * 100}) {
-                _id
-                province
-                district
-                subdistrict
-                zipcode
-              }
-            }
-          `,
-        })
-
-        for (let location of res.data.locations) {
-          returnData = [...returnData, location]
-        }
-
-        setPercentDialog(prev =>
-          updateAnObjectInArray(prev, `id`, 2, {
-            percent: (i * 100) / lap,
-          })
-        )
-      }
-
-      setLocationData(returnData)
-    }
-
-    setPercentDialog(prev =>
-      updateAnObjectInArray(prev, `id`, 2, {
-        percent: 100,
-      })
-    )
-    setTimeout(() => {
-      setPercentDialog(prev => removeObjectInArray(prev, `id`, 2))
-    }, 200)
-  }, [token, dispatch])
-
   const goEdit = async () => {
     let getPersonID = ``
 
@@ -885,19 +781,19 @@ const EditPositionsPage = ({ location }) => {
   }
 
   const fetchLocationInput = useCallback(() => {
-    if (locationData.length > 0) {
+    if (locations.length > 0) {
       if (locationSelectFromDb !== null) {
         setLocationSelect(prev => ({
           ...prev,
-          province: uniqByKeepFirst(locationData, it => it.province).find(
+          province: uniqByKeepFirst(locations, it => it.province).find(
             elem => elem.province === locationSelectFromDb.province
           ),
-          district: uniqByKeepFirst(locationData, it => it.district).find(
+          district: uniqByKeepFirst(locations, it => it.district).find(
             elem =>
               elem.province === locationSelectFromDb.province &&
               elem.district === locationSelectFromDb.district
           ),
-          subdistrict: locationData.find(
+          subdistrict: locations.find(
             elem =>
               elem.province === locationSelectFromDb.province &&
               elem.district === locationSelectFromDb.district &&
@@ -912,7 +808,7 @@ const EditPositionsPage = ({ location }) => {
         })
       }
     }
-  }, [locationData, locationSelectFromDb])
+  }, [locations, locationSelectFromDb])
 
   const reloadInput = () => {
     getPerson()
@@ -952,14 +848,9 @@ const EditPositionsPage = ({ location }) => {
 
   useEffect(() => {
     if (token !== ``) {
-      const fetch = async () => {
-        await getPerson()
-        await getLocations()
-      }
-
-      fetch()
+      getPerson()
     }
-  }, [getLocations, getPerson, token])
+  }, [getPerson, token])
 
   useEffect(() => {
     fetchLocationInput()
@@ -1524,16 +1415,10 @@ const EditPositionsPage = ({ location }) => {
                           id="Province"
                           disablePortal
                           options={uniqByKeepFirst(
-                            locationData,
+                            locations,
                             it => it.province
                           )}
-                          noOptionsText={
-                            locationData.length === 0
-                              ? isError.location.status === `notfound`
-                                ? `ไม่มีตำแหน่งว่าง`
-                                : `กำลังโหลดข้อมูล...`
-                              : `ไม่พบข้อมูล`
-                          }
+                          noOptionsText={`ไม่พบข้อมูล`}
                           getOptionLabel={option => option.province}
                           isOptionEqualToValue={(option, value) => {
                             return option === value
@@ -1580,7 +1465,7 @@ const EditPositionsPage = ({ location }) => {
                             options={
                               locationSelect.province !== null
                                 ? uniqByKeepFirst(
-                                    locationData,
+                                    locations,
                                     it => it.district
                                   ).filter(
                                     elem =>
@@ -1635,7 +1520,7 @@ const EditPositionsPage = ({ location }) => {
                             disabled={locationSelect.district === null}
                             options={
                               locationSelect.district !== null
-                                ? locationData.filter(
+                                ? locations.filter(
                                     elem =>
                                       elem.province ===
                                         locationSelect.province.province &&

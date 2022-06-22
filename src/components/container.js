@@ -13,7 +13,6 @@ import thLocale from "date-fns/locale/th"
 
 import Jwt from "./jwt"
 import Navbar from "./navbar"
-import StaticData from "./static-data"
 import NotificationDialog from "./notification-dialog"
 import Footer from "./footer"
 
@@ -94,7 +93,6 @@ const Container = ({ children }) => {
         <GlobalStyles color={primaryColor} />
         <Jwt />
         <Navbar />
-        <StaticData />
         <MainContainer>
           <Row>{children}</Row>
           <Backdrop

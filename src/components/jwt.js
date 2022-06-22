@@ -117,7 +117,7 @@ const Jwt = () => {
     () => {
       fetchSessionTimer()
     },
-    token !== `` && currentPage === `setting` ? 1000 : null
+    token !== `` && currentPage === `settings-general` ? 1000 : null
   )
 
   return <></>

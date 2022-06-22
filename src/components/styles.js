@@ -72,15 +72,15 @@ const ColorButton = styled.div`
 
     > div {
       height: ${({ height }) => (height !== undefined ? height : `50px`)};
-      margin: 8px;
-      padding: 6px 12px;
+      margin-bottom: 16px;
+      padding: 8px 24px;
       border: 1px solid rgba(0, 0, 0, 0.24);
       border-radius: 8px;
       cursor: pointer;
 
       display: flex;
       align-items: center;
-      justify-content: center;
+      justify-content: flex-start;
       transition: background-color 0.2s, color 0.2s;
 
       @media (hover: hover) {

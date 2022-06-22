@@ -5,6 +5,10 @@ const initialState = {
   positionNames: [],
   units: [],
   locations: [],
+  educationLevels: [],
+  educationNames: [],
+  educationalInstitutions: [],
+  countries: [],
 }
 
 const staticReducer = (state = initialState, action) => {
@@ -33,6 +37,43 @@ const staticReducer = (state = initialState, action) => {
         locations: action.locations,
       }
 
+    case `SET_EDUCATION_LEVELS`:
+      return {
+        ...state,
+        educationLevels: action.educationLevels,
+      }
+
+    case `SET_EDUCATION_NAMES`:
+      return {
+        ...state,
+        educationNames: action.educationNames,
+      }
+
+    case `SET_EDUCATIONAL_INSTITUTIONS`:
+      return {
+        ...state,
+        educationalInstitutions: action.educationalInstitutions,
+      }
+
+    case `SET_COUNTRIES`:
+      return {
+        ...state,
+        countries: action.countries,
+      }
+
+    case `SET_ZERO`:
+      return {
+        ...state,
+        positionTypes: [],
+        positionNames: [],
+        units: [],
+        locations: [],
+        educationLevels: [],
+        educationNames: [],
+        educationalInstitutions: [],
+        countries: [],
+      }
+
     default:
       break
   }
@@ -43,7 +84,16 @@ const staticReducer = (state = initialState, action) => {
 const staticPersistConfig = {
   key: `gepdx_static`,
   storage: storage,
-  whitelist: [`positionTypes`, `positionNames`, `units`, `locations`],
+  whitelist: [
+    `positionTypes`,
+    `positionNames`,
+    `units`,
+    `locations`,
+    `educationLevels`,
+    `educationNames`,
+    `educationalInstitutions`,
+    `countries`,
+  ],
 }
 
 export { staticReducer, staticPersistConfig }

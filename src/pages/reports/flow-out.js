@@ -30,9 +30,8 @@ const Container = styled.div`
 `
 
 const FlowOutPage = () => {
-  const { token, userInfo, units } = useSelector(
-    ({ mainReducer }) => mainReducer
-  )
+  const { token, userInfo } = useSelector(({ mainReducer }) => mainReducer)
+  const { units } = useSelector(({ staticReducer }) => staticReducer)
   const dispatch = useDispatch()
 
   const [input, setInput] = useState({
@@ -290,7 +289,7 @@ const FlowOutPage = () => {
             previous={[
               {
                 name: `ออกรายงาน`,
-                link: `/reports`,
+                link: `/reports/`,
               },
             ]}
             current="รายชื่อพนักงานราชการที่ออกในปีงบประมาณที่ผ่านมา (Flow-Out)"

@@ -2,21 +2,21 @@ import React, { useEffect, useState, useCallback } from "react"
 import { useSelector, useDispatch } from "react-redux"
 import styled from "styled-components"
 
-import { client, gql } from "../functions/apollo-client"
+import { client, gql } from "../../functions/apollo-client"
 
-import Layout from "../components/layout"
-import Seo from "../components/seo"
-import Breadcrumbs from "../components/breadcrumbs"
-import PageNotFound from "../components/page-not-found"
-import renderDivision from "../functions/render-division"
-import displaySessionTimer from "../functions/display-session-timer"
+import Layout from "../../components/layout"
+import Seo from "../../components/seo"
+import Breadcrumbs from "../../components/breadcrumbs"
+import PageNotFound from "../../components/page-not-found"
+import renderDivision from "../../functions/render-division"
+import displaySessionTimer from "../../functions/display-session-timer"
+import roles from "../../static/roles"
 
 const Container = styled.div`
-  // border: 1px solid rgba(0, 0, 0, 0.12);
   box-shadow: rgb(0 0 0 / 24%) 0px 1px 2px;
   border-radius: 8px;
   padding: 16px 24px;
-  max-width: 800px;
+  max-width: calc(800px - 48px);
   margin: auto;
 `
 
@@ -48,7 +48,7 @@ const Right = styled.div`
   }
 `
 
-const SettingPage = () => {
+const SettingGeneral = () => {
   const { token, userInfo, sessionTimer } = useSelector(
     ({ mainReducer }) => mainReducer
   )
@@ -63,7 +63,7 @@ const SettingPage = () => {
             createLog(input: {
               data: {
                 action: "view",
-                description: "setting",
+                description: "settings -> general",
                 users_permissions_user: "${userInfo._id}",
               }
             }) {
@@ -96,7 +96,7 @@ const SettingPage = () => {
   useEffect(() => {
     dispatch({
       type: `SET_CURRENT_PAGE`,
-      currentPage: `setting`,
+      currentPage: `settings-general`,
     })
   }, [dispatch])
 
@@ -140,10 +140,18 @@ const SettingPage = () => {
 
   return (
     <Layout>
-      {token !== `` ? (
+      {token !== `` && roles[userInfo.role.name].level >= 1 ? (
         <>
-          <Seo title="ตั้งค่า" />
-          <Breadcrumbs current="ตั้งค่า" />
+          <Seo title="การตั้งค่า" />
+          <Breadcrumbs
+            previous={[
+              {
+                name: `การตั้งค่า`,
+                link: `/settings/`,
+              },
+            ]}
+            current="บัญชีผู้ใช้งาน"
+          />
 
           <Container>
             {rows.map(row => (
@@ -167,4 +175,4 @@ const SettingPage = () => {
   )
 }
 
-export default SettingPage
+export default SettingGeneral

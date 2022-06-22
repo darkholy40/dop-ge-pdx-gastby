@@ -77,20 +77,14 @@ const textfieldProps = {
 
 const AddPositionsPage = () => {
   const { token, userInfo } = useSelector(({ mainReducer }) => mainReducer)
-  const { positionTypes, positionNames } = useSelector(
+  const { positionTypes, positionNames, locations } = useSelector(
     ({ staticReducer }) => staticReducer
   )
   const dispatch = useDispatch()
   const [positions, setPositions] = useState([])
   const [isError, setIsError] = useState({
-    main: {
-      status: ``,
-      text: ``,
-    },
-    location: {
-      status: ``,
-      text: ``,
-    },
+    status: ``,
+    text: ``,
   })
   const [prename, setPrename] = useState(``)
   const [name, setName] = useState(``)
@@ -110,7 +104,6 @@ const AddPositionsPage = () => {
     district: null,
     subdistrict: null,
   })
-  const [locationData, setLocationData] = useState([])
   const [address, setAddress] = useState(``)
   const [emergencyName, setEmergencyName] = useState(``)
   const [emergencyNumber, setEmergencyNumber] = useState(``)
@@ -271,13 +264,10 @@ const AddPositionsPage = () => {
           setPositions(returnData)
         } else {
           setPositions([])
-          setIsError(prev => ({
-            ...prev,
-            main: {
-              status: `notfound`,
-              text: `ไม่พบข้อมูล`,
-            },
-          }))
+          setIsError({
+            status: `notfound`,
+            text: `ไม่พบข้อมูล`,
+          })
         }
       }
     }
@@ -300,123 +290,13 @@ const AddPositionsPage = () => {
     }, 200)
   }, [token, userInfo, dispatch])
 
-  const getLocations = useCallback(async () => {
-    let lap = 0
-
-    setPercentDialog(prev => [
-      ...prev,
-      {
-        id: 2,
-        open: true,
-        title: `กำลังโหลดข้อมูลพื้นที่`,
-        percent: 0,
-      },
-    ])
-
-    setIsError(prev => ({
-      ...prev,
-      location: {
-        status: ``,
-        text: ``,
-      },
-    }))
-
-    try {
-      const res = await client(token).query({
-        query: gql`
-          query LocationsCount {
-            locationsConnection {
-              aggregate {
-                totalCount
-              }
-            }
-          }
-        `,
-      })
-
-      const totalCount = res.data.locationsConnection.aggregate.totalCount
-      lap = Math.ceil(totalCount / 100)
-    } catch (error) {
-      // console.log(error.message)
-
-      if (error.message === `Failed to fetch`) {
-        setIsError(prev => ({
-          ...prev,
-          location: {
-            status: `notfound`,
-            text: `ไม่พบข้อมูล`,
-          },
-        }))
-
-        dispatch({
-          type: `SET_NOTIFICATION_DIALOG`,
-          notificationDialog: {
-            open: true,
-            title: `การเชื่อมต่อไม่เสถียร`,
-            description: `ไม่สามารถเชื่อมต่อฐานข้อมูลได้`,
-            variant: `error`,
-            confirmText: `ลองอีกครั้ง`,
-            callback: () => getLocations(),
-          },
-        })
-      }
-    }
-
-    if (lap > 0) {
-      let returnData = []
-      for (let i = 0; i < lap; i++) {
-        const res = await client(token).query({
-          query: gql`
-            query Locations {
-              locations(limit: 100, start: ${i * 100}) {
-                _id
-                province
-                district
-                subdistrict
-                zipcode
-              }
-            }
-          `,
-        })
-
-        for (let location of res.data.locations) {
-          returnData = [...returnData, location]
-        }
-
-        setPercentDialog(prev =>
-          updateAnObjectInArray(prev, `id`, 2, {
-            percent: (i * 100) / lap,
-          })
-        )
-      }
-
-      setLocationData(returnData)
-      // console.log(uniqByKeepFirst(returnData, it => it.province))
-      // console.log(uniqByKeepFirst(returnData, it => it.district))
-      // console.log(uniqByKeepFirst(returnData, it => it.subdistrict))
-      // console.log(uniqByKeepFirst(returnData, it => it.zipcode))
-    }
-
-    setPercentDialog(prev =>
-      updateAnObjectInArray(prev, `id`, 2, {
-        percent: 100,
-      })
-    )
-    setTimeout(() => {
-      setPercentDialog(prev => removeObjectInArray(prev, `id`, 2))
-    }, 200)
-  }, [token, dispatch])
-
   const goAdd = async () => {
     let getPersonID = ``
 
-    setIsError(prev => ({
-      ...prev,
-      main: {
-        status: ``,
-        text: ``,
-      },
-    }))
+    setIsError({
+      status: ``,
+      text: ``,
+    })
     dispatch({
       type: `SET_BACKDROP_OPEN`,
       backdropDialog: {
@@ -694,9 +574,8 @@ const AddPositionsPage = () => {
   useEffect(() => {
     if (token !== ``) {
       getPositions()
-      getLocations()
     }
-  }, [getPositions, getLocations, token])
+  }, [getPositions, token])
 
   useEffect(() => {
     if (jobType === `ลูกจ้างประจำ`) {
@@ -988,7 +867,7 @@ const AddPositionsPage = () => {
                     options={renderFilterPositions(positions)}
                     noOptionsText={
                       positions.length === 0
-                        ? isError.main.status === `notfound`
+                        ? isError.status === `notfound`
                           ? `ไม่มีตำแหน่งว่าง`
                           : `กำลังโหลดข้อมูล...`
                         : `ไม่พบข้อมูล`
@@ -1206,14 +1085,8 @@ const AddPositionsPage = () => {
                     sx={{ width: `100%` }}
                     id="Province"
                     disablePortal
-                    options={uniqByKeepFirst(locationData, it => it.province)}
-                    noOptionsText={
-                      locationData.length === 0
-                        ? isError.location.status === `notfound`
-                          ? `ไม่มีตำแหน่งว่าง`
-                          : `กำลังโหลดข้อมูล...`
-                        : `ไม่พบข้อมูล`
-                    }
+                    options={uniqByKeepFirst(locations, it => it.province)}
+                    noOptionsText={`ไม่พบข้อมูล`}
                     getOptionLabel={option => option.province}
                     isOptionEqualToValue={(option, value) => {
                       return option === value
@@ -1258,7 +1131,7 @@ const AddPositionsPage = () => {
                       options={
                         locationSelect.province !== null
                           ? uniqByKeepFirst(
-                              locationData,
+                              locations,
                               it => it.district
                             ).filter(
                               elem =>
@@ -1311,7 +1184,7 @@ const AddPositionsPage = () => {
                       disabled={locationSelect.district === null}
                       options={
                         locationSelect.district !== null
-                          ? locationData.filter(
+                          ? locations.filter(
                               elem =>
                                 elem.province ===
                                   locationSelect.province.province &&

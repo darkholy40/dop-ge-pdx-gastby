@@ -32,9 +32,8 @@ const Container = styled.div`
 `
 
 const StockPage = () => {
-  const { token, userInfo, units } = useSelector(
-    ({ mainReducer }) => mainReducer
-  )
+  const { token, userInfo } = useSelector(({ mainReducer }) => mainReducer)
+  const { units } = useSelector(({ staticReducer }) => staticReducer)
   const dispatch = useDispatch()
   const [input, setInput] = useState({
     unit: null,
@@ -363,7 +362,7 @@ const StockPage = () => {
             previous={[
               {
                 name: `ออกรายงาน`,
-                link: `/reports`,
+                link: `/reports/`,
               },
             ]}
             current="รายชื่อพนักงานราชการและตำแหน่งว่าง (Stock)"

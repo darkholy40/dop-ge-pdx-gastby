@@ -321,7 +321,7 @@ const Navbar = () => {
               <MenuItem
                 onClick={() => {
                   setAnchorElMyInfo(null)
-                  navigate(`/setting/`)
+                  navigate(`/settings/`)
                 }}
                 disableRipple
               >
@@ -329,7 +329,7 @@ const Navbar = () => {
                   icon={faCog}
                   style={{ fontSize: 20, marginRight: 5 }}
                 />
-                ตั้งค่า
+                การตั้งค่า
               </MenuItem>
               <MenuItem
                 onClick={() => {
