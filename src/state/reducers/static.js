@@ -9,6 +9,15 @@ const initialState = {
   educationNames: [],
   educationalInstitutions: [],
   countries: [],
+  installationDate: {
+    positionTypes: null,
+    units: null,
+    locations: null,
+    educationLevels: null,
+    educationNames: null,
+    educationalInstitutions: null,
+    countries: null,
+  },
 }
 
 const staticReducer = (state = initialState, action) => {
@@ -61,6 +70,15 @@ const staticReducer = (state = initialState, action) => {
         countries: action.countries,
       }
 
+    case `SET_INSTALLATION_DATE`:
+      return {
+        ...state,
+        installationDate: {
+          ...state.installationDate,
+          [action.key]: new Date(),
+        },
+      }
+
     case `SET_ZERO`:
       return {
         ...state,
@@ -72,6 +90,9 @@ const staticReducer = (state = initialState, action) => {
         educationNames: [],
         educationalInstitutions: [],
         countries: [],
+        installationDate: {
+          ...initialState.installationDate,
+        },
       }
 
     default:
@@ -93,6 +114,7 @@ const staticPersistConfig = {
     `educationNames`,
     `educationalInstitutions`,
     `countries`,
+    `installationDate`,
   ],
 }
 

@@ -19,10 +19,10 @@ import {
   updateAnObjectInArray,
   removeObjectInArray,
 } from "../../functions/object-in-array"
+import renderTableDate from "../../functions/render-table-date"
 import roles from "../../static/roles"
 
 const Container = styled.div`
-  // border: 1px solid rgba(0, 0, 0, 0.12);
   box-shadow: rgb(0 0 0 / 24%) 0px 1px 2px;
   border-radius: 8px;
   padding: 16px 24px;
@@ -34,11 +34,39 @@ const Block = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-start;
+
+  div {
+    &:nth-child(1) {
+      margin-top: 0.5rem;
+    }
+
+    &:nth-child(2) {
+      margin-top: 0.5rem;
+      margin-bottom: 0.5rem;
+    }
+
+    p {
+      margin-top: 0;
+      margin-bottom: 0.75rem;
+    }
+
+    .detail {
+      font-size: 0.8rem;
+      color: rgba(0, 0, 0, 0.8);
+      margin: 0.25rem auto;
+    }
+  }
+`
+const UpdatedDate = styled.p`
+  font-size: 0.8rem;
+  font-style: italic;
+  color: rgba(0, 0, 0, 0.8);
+  margin: 0.25rem auto;
+  text-align: right;
 `
 
 const ButtonBlock = styled.div`
-  margin-top: 1rem;
   display: inline-flex;
   justify-content: flex-end;
 `
@@ -49,6 +77,12 @@ const buttons = {
   },
   downloadAll: {
     name: `ติดตั้งทั้งหมด`,
+  },
+  updateDate: {
+    name: `อัปเดต`,
+  },
+  updateAll: {
+    name: `อัปเดตทั้งหมด`,
   },
   deleteAll: {
     name: `ยกเลิกการติดตั้งทั้งหมด`,
@@ -66,6 +100,7 @@ const SettingSystemData = () => {
     educationNames,
     educationalInstitutions,
     countries,
+    installationDate,
   } = useSelector(({ staticReducer }) => staticReducer)
   const dispatch = useDispatch()
   const [percentDialog, setPercentDialog] = useState([])
@@ -195,6 +230,10 @@ const SettingSystemData = () => {
         type: `SET_POSITION_TYPES`,
         positionTypes: positionTypeData,
       })
+      dispatch({
+        type: `SET_INSTALLATION_DATE`,
+        key: `positionTypes`,
+      })
     }
 
     setPercentDialog(prev =>
@@ -285,6 +324,10 @@ const SettingSystemData = () => {
         type: `SET_UNITS`,
         units: returnData,
       })
+      dispatch({
+        type: `SET_INSTALLATION_DATE`,
+        key: `units`,
+      })
     }
 
     setPercentDialog(prev =>
@@ -305,7 +348,7 @@ const SettingSystemData = () => {
       {
         id: 3,
         open: true,
-        title: `กำลังโหลดข้อมูลพื้นที่`,
+        title: `กำลังโหลดข้อมูลจังหวัด อำเภอ ตำบล และรหัสไปรษณีย์`,
         percent: 0,
       },
     ])
@@ -375,6 +418,10 @@ const SettingSystemData = () => {
         type: `SET_LOCATIONS`,
         locations: returnData,
       })
+      dispatch({
+        type: `SET_INSTALLATION_DATE`,
+        key: `locations`,
+      })
       // console.log(uniqByKeepFirst(returnData, it => it.province))
       // console.log(uniqByKeepFirst(returnData, it => it.district))
       // console.log(uniqByKeepFirst(returnData, it => it.subdistrict))
@@ -391,9 +438,383 @@ const SettingSystemData = () => {
     }, 200)
   }, [token, dispatch])
 
+  const getEducationLevels = useCallback(async () => {
+    let lap = 0
+
+    setPercentDialog(prev => [
+      ...prev,
+      {
+        id: 4,
+        open: true,
+        title: `กำลังโหลดข้อมูลชื่อระดับการศึกษา`,
+        percent: 0,
+      },
+    ])
+
+    try {
+      const res = await client(token).query({
+        query: gql`
+          query EducationLevelsCount {
+            educationLevelsConnection {
+              aggregate {
+                totalCount
+              }
+            }
+          }
+        `,
+      })
+
+      const totalCount = res.data.educationLevelsConnection.aggregate.totalCount
+      lap = Math.ceil(totalCount / 100)
+    } catch (error) {
+      // console.log(error.message)
+
+      if (error.message === `Failed to fetch`) {
+        dispatch({
+          type: `SET_NOTIFICATION_DIALOG`,
+          notificationDialog: {
+            open: true,
+            title: `การเชื่อมต่อไม่เสถียร`,
+            description: `ไม่สามารถเชื่อมต่อฐานข้อมูลได้`,
+            variant: `error`,
+            confirmText: `ลองอีกครั้ง`,
+            callback: () => getEducationLevels(),
+          },
+        })
+      }
+    }
+
+    if (lap > 0) {
+      let returnData = []
+      for (let i = 0; i < lap; i++) {
+        const res = await client(token).query({
+          query: gql`
+            query EducationLevels {
+              educationLevels(limit: 100, start: ${i * 100}) {
+                _id
+                code
+                name
+              }
+            }
+          `,
+        })
+
+        for (let educationLevel of res.data.educationLevels) {
+          returnData = [...returnData, educationLevel]
+        }
+
+        setPercentDialog(prev =>
+          updateAnObjectInArray(prev, `id`, 4, {
+            percent: (i * 100) / lap,
+          })
+        )
+      }
+
+      dispatch({
+        type: `SET_EDUCATION_LEVELS`,
+        educationLevels: returnData,
+      })
+      dispatch({
+        type: `SET_INSTALLATION_DATE`,
+        key: `educationLevels`,
+      })
+    }
+
+    setPercentDialog(prev =>
+      updateAnObjectInArray(prev, `id`, 4, {
+        percent: 100,
+      })
+    )
+    setTimeout(() => {
+      setPercentDialog(prev => removeObjectInArray(prev, `id`, 4))
+    }, 200)
+  }, [token, dispatch])
+
+  const getEducationNames = useCallback(async () => {
+    let lap = 0
+
+    setPercentDialog(prev => [
+      ...prev,
+      {
+        id: 5,
+        open: true,
+        title: `กำลังโหลดข้อมูลชื่อวุฒิการศึกษา`,
+        percent: 0,
+      },
+    ])
+
+    try {
+      const res = await client(token).query({
+        query: gql`
+          query EducationNamesCount {
+            educationNamesConnection {
+              aggregate {
+                totalCount
+              }
+            }
+          }
+        `,
+      })
+
+      const totalCount = res.data.educationNamesConnection.aggregate.totalCount
+      lap = Math.ceil(totalCount / 100)
+    } catch (error) {
+      // console.log(error.message)
+
+      if (error.message === `Failed to fetch`) {
+        dispatch({
+          type: `SET_NOTIFICATION_DIALOG`,
+          notificationDialog: {
+            open: true,
+            title: `การเชื่อมต่อไม่เสถียร`,
+            description: `ไม่สามารถเชื่อมต่อฐานข้อมูลได้`,
+            variant: `error`,
+            confirmText: `ลองอีกครั้ง`,
+            callback: () => getEducationNames(),
+          },
+        })
+      }
+    }
+
+    if (lap > 0) {
+      let returnData = []
+      for (let i = 0; i < lap; i++) {
+        const res = await client(token).query({
+          query: gql`
+            query EducationNames {
+              educationNames(limit: 100, start: ${i * 100}) {
+                _id
+                code
+                short_name
+                full_name
+              }
+            }
+          `,
+        })
+
+        for (let educationName of res.data.educationNames) {
+          returnData = [...returnData, educationName]
+        }
+
+        setPercentDialog(prev =>
+          updateAnObjectInArray(prev, `id`, 5, {
+            percent: (i * 100) / lap,
+          })
+        )
+      }
+
+      dispatch({
+        type: `SET_EDUCATION_NAMES`,
+        educationNames: returnData,
+      })
+      dispatch({
+        type: `SET_INSTALLATION_DATE`,
+        key: `educationNames`,
+      })
+    }
+
+    setPercentDialog(prev =>
+      updateAnObjectInArray(prev, `id`, 5, {
+        percent: 100,
+      })
+    )
+    setTimeout(() => {
+      setPercentDialog(prev => removeObjectInArray(prev, `id`, 5))
+    }, 200)
+  }, [token, dispatch])
+
+  const getEducationalInstitutions = useCallback(async () => {
+    let lap = 0
+
+    setPercentDialog(prev => [
+      ...prev,
+      {
+        id: 6,
+        open: true,
+        title: `กำลังโหลดข้อมูลสถาบันการศึกษา`,
+        percent: 0,
+      },
+    ])
+
+    try {
+      const res = await client(token).query({
+        query: gql`
+          query EducationalInstitutionsCount {
+            educationalInstitutionsConnection {
+              aggregate {
+                totalCount
+              }
+            }
+          }
+        `,
+      })
+
+      const totalCount =
+        res.data.educationalInstitutionsConnection.aggregate.totalCount
+      lap = Math.ceil(totalCount / 100)
+    } catch (error) {
+      // console.log(error.message)
+
+      if (error.message === `Failed to fetch`) {
+        dispatch({
+          type: `SET_NOTIFICATION_DIALOG`,
+          notificationDialog: {
+            open: true,
+            title: `การเชื่อมต่อไม่เสถียร`,
+            description: `ไม่สามารถเชื่อมต่อฐานข้อมูลได้`,
+            variant: `error`,
+            confirmText: `ลองอีกครั้ง`,
+            callback: () => getEducationalInstitutions(),
+          },
+        })
+      }
+    }
+
+    if (lap > 0) {
+      let returnData = []
+      for (let i = 0; i < lap; i++) {
+        const res = await client(token).query({
+          query: gql`
+            query EducationalInstitutions {
+              educationalInstitutions(limit: 100, start: ${i * 100}) {
+                _id
+                code
+                name
+              }
+            }
+          `,
+        })
+
+        for (let educationalInstitution of res.data.educationalInstitutions) {
+          returnData = [...returnData, educationalInstitution]
+        }
+
+        setPercentDialog(prev =>
+          updateAnObjectInArray(prev, `id`, 6, {
+            percent: (i * 100) / lap,
+          })
+        )
+      }
+
+      dispatch({
+        type: `SET_EDUCATIONAL_INSTITUTIONS`,
+        educationalInstitutions: returnData,
+      })
+      dispatch({
+        type: `SET_INSTALLATION_DATE`,
+        key: `educationalInstitutions`,
+      })
+    }
+
+    setPercentDialog(prev =>
+      updateAnObjectInArray(prev, `id`, 6, {
+        percent: 100,
+      })
+    )
+    setTimeout(() => {
+      setPercentDialog(prev => removeObjectInArray(prev, `id`, 6))
+    }, 200)
+  }, [token, dispatch])
+
+  const getCountries = useCallback(async () => {
+    let lap = 0
+
+    setPercentDialog(prev => [
+      ...prev,
+      {
+        id: 7,
+        open: true,
+        title: `กำลังโหลดข้อมูลรายชื่อประเทศ`,
+        percent: 0,
+      },
+    ])
+
+    try {
+      const res = await client(token).query({
+        query: gql`
+          query CountriesCount {
+            countriesConnection {
+              aggregate {
+                totalCount
+              }
+            }
+          }
+        `,
+      })
+
+      const totalCount = res.data.countriesConnection.aggregate.totalCount
+      lap = Math.ceil(totalCount / 100)
+    } catch (error) {
+      // console.log(error.message)
+
+      if (error.message === `Failed to fetch`) {
+        dispatch({
+          type: `SET_NOTIFICATION_DIALOG`,
+          notificationDialog: {
+            open: true,
+            title: `การเชื่อมต่อไม่เสถียร`,
+            description: `ไม่สามารถเชื่อมต่อฐานข้อมูลได้`,
+            variant: `error`,
+            confirmText: `ลองอีกครั้ง`,
+            callback: () => getCountries(),
+          },
+        })
+      }
+    }
+
+    if (lap > 0) {
+      let returnData = []
+      for (let i = 0; i < lap; i++) {
+        const res = await client(token).query({
+          query: gql`
+            query Countries {
+              countries(limit: 100, start: ${i * 100}) {
+                _id
+                code
+                name
+              }
+            }
+          `,
+        })
+
+        for (let country of res.data.countries) {
+          returnData = [...returnData, country]
+        }
+
+        setPercentDialog(prev =>
+          updateAnObjectInArray(prev, `id`, 7, {
+            percent: (i * 100) / lap,
+          })
+        )
+      }
+
+      dispatch({
+        type: `SET_COUNTRIES`,
+        countries: returnData,
+      })
+      dispatch({
+        type: `SET_INSTALLATION_DATE`,
+        key: `countries`,
+      })
+    }
+
+    setPercentDialog(prev =>
+      updateAnObjectInArray(prev, `id`, 7, {
+        percent: 100,
+      })
+    )
+    setTimeout(() => {
+      setPercentDialog(prev => removeObjectInArray(prev, `id`, 7))
+    }, 200)
+  }, [token, dispatch])
+
   const fetchAll = () => {
     getPositionName()
     getLocations()
+    getEducationLevels()
+    getEducationNames()
+    getEducationalInstitutions()
+    getCountries()
 
     if (roles[userInfo.role.name].level >= 2) {
       getUnits()
@@ -432,8 +853,12 @@ const SettingSystemData = () => {
                 <p>ข้อมูลชื่อประเภทกลุ่มงานและชื่อตำแหน่ง</p>
                 {positionTypes.length > 0 && positionNames.length > 0 && (
                   <>
-                    <p>ข้อมูลประเภท: {positionTypes.length} รายการ</p>
-                    <p>ข้อมูลชื่อตำแหน่ง: {positionNames.length} รายการ</p>
+                    <p className="detail">
+                      ชื่อประเภทกลุ่มงาน: {positionTypes.length} รายการ
+                    </p>
+                    <p className="detail">
+                      ชื่อตำแหน่งในสายงาน: {positionNames.length} รายการ
+                    </p>
                   </>
                 )}
               </div>
@@ -453,13 +878,20 @@ const SettingSystemData = () => {
                 )}
               </div>
             </Block>
+            {positionTypes.length > 0 && positionNames.length > 0 && (
+              <UpdatedDate>
+                {renderTableDate(installationDate.positionTypes, `datetime`)}
+              </UpdatedDate>
+            )}
             <Divider style={{ marginTop: `1rem`, marginBottom: `1rem` }} />
             {roles[userInfo.role.name].level >= 2 && (
               <>
                 <Block>
                   <div>
                     <p>ข้อมูลหน่วย</p>
-                    {units.length > 0 && <p>{units.length} รายการ</p>}
+                    {units.length > 0 && (
+                      <p className="detail">{units.length} รายการ</p>
+                    )}
                   </div>
                   <div>
                     {units.length > 0 ? (
@@ -477,13 +909,41 @@ const SettingSystemData = () => {
                     )}
                   </div>
                 </Block>
+                {units.length > 0 && (
+                  <UpdatedDate>
+                    {renderTableDate(installationDate.units, `datetime`)}
+                  </UpdatedDate>
+                )}
                 <Divider style={{ marginTop: `1rem`, marginBottom: `1rem` }} />
               </>
             )}
             <Block>
               <div>
-                <p>ข้อมูลพื่นที่ (จังหวัด อำเภอ ตำบล และรหัสไปรษณีย์)</p>
-                {locations.length > 0 && <p>{locations.length} รายการ</p>}
+                <p>ข้อมูลจังหวัด อำเภอ ตำบล และรหัสไปรษณีย์</p>
+                {locations.length > 0 && (
+                  <>
+                    <p className="detail">
+                      จังหวัด:{" "}
+                      {uniqByKeepFirst(locations, it => it.province).length}{" "}
+                      รายการ
+                    </p>
+                    <p className="detail">
+                      อำเภอ:{" "}
+                      {uniqByKeepFirst(locations, it => it.district).length}{" "}
+                      รายการ
+                    </p>
+                    <p className="detail">
+                      ตำบล:{" "}
+                      {uniqByKeepFirst(locations, it => it.subdistrict).length}{" "}
+                      รายการ
+                    </p>
+                    <p className="detail">
+                      รหัสไปรษณีย์:{" "}
+                      {uniqByKeepFirst(locations, it => it.zipcode).length}{" "}
+                      รายการ
+                    </p>
+                  </>
+                )}
               </div>
               <div>
                 {locations.length > 0 ? (
@@ -501,12 +961,17 @@ const SettingSystemData = () => {
                 )}
               </div>
             </Block>
+            {locations.length > 0 && (
+              <UpdatedDate>
+                {renderTableDate(installationDate.locations, `datetime`)}
+              </UpdatedDate>
+            )}
             <Divider style={{ marginTop: `1rem`, marginBottom: `1rem` }} />
             <Block>
               <div>
                 <p>ข้อมูลชื่อระดับการศึกษา</p>
                 {educationLevels.length > 0 && (
-                  <p>{educationLevels.length} รายการ</p>
+                  <p className="detail">{educationLevels.length} รายการ</p>
                 )}
               </div>
               <div>
@@ -516,19 +981,26 @@ const SettingSystemData = () => {
                   <Button
                     color="primary"
                     variant="contained"
-                    onClick={() => {}}
+                    onClick={() => {
+                      getEducationLevels()
+                    }}
                   >
                     {buttons.downloadData.name}
                   </Button>
                 )}
               </div>
             </Block>
+            {educationLevels.length > 0 && (
+              <UpdatedDate>
+                {renderTableDate(installationDate.educationLevels, `datetime`)}
+              </UpdatedDate>
+            )}
             <Divider style={{ marginTop: `1rem`, marginBottom: `1rem` }} />
             <Block>
               <div>
                 <p>ข้อมูลชื่อวุฒิการศึกษา</p>
                 {educationNames.length > 0 && (
-                  <p>{educationNames.length} รายการ</p>
+                  <p className="detail">{educationNames.length} รายการ</p>
                 )}
               </div>
               <div>
@@ -538,19 +1010,28 @@ const SettingSystemData = () => {
                   <Button
                     color="primary"
                     variant="contained"
-                    onClick={() => {}}
+                    onClick={() => {
+                      getEducationNames()
+                    }}
                   >
                     {buttons.downloadData.name}
                   </Button>
                 )}
               </div>
             </Block>
+            {educationNames.length > 0 && (
+              <UpdatedDate>
+                {renderTableDate(installationDate.educationNames, `datetime`)}
+              </UpdatedDate>
+            )}
             <Divider style={{ marginTop: `1rem`, marginBottom: `1rem` }} />
             <Block>
               <div>
                 <p>ข้อมูลสถาบันการศึกษา</p>
                 {educationalInstitutions.length > 0 && (
-                  <p>{educationalInstitutions.length} รายการ</p>
+                  <p className="detail">
+                    {educationalInstitutions.length} รายการ
+                  </p>
                 )}
               </div>
               <div>
@@ -560,18 +1041,30 @@ const SettingSystemData = () => {
                   <Button
                     color="primary"
                     variant="contained"
-                    onClick={() => {}}
+                    onClick={() => {
+                      getEducationalInstitutions()
+                    }}
                   >
                     {buttons.downloadData.name}
                   </Button>
                 )}
               </div>
             </Block>
+            {educationalInstitutions.length > 0 && (
+              <UpdatedDate>
+                {renderTableDate(
+                  installationDate.educationalInstitutions,
+                  `datetime`
+                )}
+              </UpdatedDate>
+            )}
             <Divider style={{ marginTop: `1rem`, marginBottom: `1rem` }} />
             <Block>
               <div>
-                <p>ข้อมูลประเทศ</p>
-                {countries.length > 0 && <p>{countries.length} รายการ</p>}
+                <p>ข้อมูลรายชื่อประเทศ</p>
+                {countries.length > 0 && (
+                  <p className="detail">{countries.length} รายการ</p>
+                )}
               </div>
               <div>
                 {countries.length > 0 ? (
@@ -580,49 +1073,65 @@ const SettingSystemData = () => {
                   <Button
                     color="primary"
                     variant="contained"
-                    onClick={() => {}}
+                    onClick={() => {
+                      getCountries()
+                    }}
                   >
                     {buttons.downloadData.name}
                   </Button>
                 )}
               </div>
             </Block>
+            {countries.length > 0 && (
+              <UpdatedDate>
+                {renderTableDate(installationDate.countries, `datetime`)}
+              </UpdatedDate>
+            )}
           </Container>
+          <Divider style={{ marginTop: `1rem`, marginBottom: `1rem` }} />
           <Form>
             <ButtonBlock>
               <Button
-                sx={{
-                  marginRight: `1rem`,
-                }}
-                color="primary"
+                color="success"
                 variant="contained"
                 onClick={() => {
                   fetchAll()
                 }}
               >
-                {buttons.downloadAll.name}
+                {positionTypes.length > 0 &&
+                positionNames.length > 0 &&
+                units.length > 0 &&
+                locations.length > 0 &&
+                educationLevels.length > 0 &&
+                educationNames.length > 0 &&
+                educationalInstitutions.length > 0 &&
+                countries.length > 0
+                  ? buttons.updateAll.name
+                  : buttons.downloadAll.name}
               </Button>
-              <Button
-                color="error"
-                variant="outlined"
-                onClick={() => {
-                  dispatch({
-                    type: `SET_ZERO`,
-                  })
-                }}
-                disabled={
-                  positionTypes.length === 0 &&
-                  positionNames.length === 0 &&
-                  units.length === 0 &&
-                  locations.length === 0 &&
-                  educationLevels.length === 0 &&
-                  educationNames.length === 0 &&
-                  educationalInstitutions.length === 0 &&
-                  countries.length === 0
-                }
-              >
-                {buttons.deleteAll.name}
-              </Button>
+              {(positionTypes.length > 0 ||
+                positionNames.length > 0 ||
+                units.length > 0 ||
+                locations.length > 0 ||
+                educationLevels.length > 0 ||
+                educationNames.length > 0 ||
+                educationalInstitutions.length > 0 ||
+                countries.length > 0) && (
+                <Button
+                  sx={{
+                    marginLeft: `1rem`,
+                  }}
+                  color="error"
+                  variant="outlined"
+                  onClick={() => {
+                    dispatch({
+                      type: `SET_ZERO`,
+                    })
+                  }}
+                >
+                  {buttons.deleteAll.name}
+                </Button>
+              )}
             </ButtonBlock>
           </Form>
           <PercentDialog data={percentDialog} />
