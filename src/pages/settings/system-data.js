@@ -14,6 +14,7 @@ import Breadcrumbs from "../../components/breadcrumbs"
 import PageNotFound from "../../components/page-not-found"
 import { Form } from "../../components/styles"
 import PercentDialog from "../../components/percent-dialog"
+import ConfirmationDialog from "../../components/confirmation-dialog"
 import uniqByKeepFirst from "../../functions/uniq-by-keep-first"
 import {
   updateAnObjectInArray,
@@ -36,7 +37,7 @@ const DownloadButtonSection = styled.div`
   padding: 0.5rem 1.5rem;
   background-color: ${({ primaryColor }) => primaryColor[50]};
   border-radius: 8px 8px 0 0;
-  
+
   p {
     margin: 0;
   }
@@ -122,6 +123,8 @@ const SettingSystemData = () => {
   } = useSelector(({ staticReducer }) => staticReducer)
   const dispatch = useDispatch()
   const [percentDialog, setPercentDialog] = useState([])
+  const [openDeleteAllConfirmationDialog, setOpenDeleteAllConfirmationDialog] =
+    useState(false)
 
   const savePageView = useCallback(() => {
     if (token !== `` && userInfo._id !== ``) {
@@ -144,15 +147,6 @@ const SettingSystemData = () => {
       })
     }
   }, [token, userInfo])
-
-  const renderSyncedData = () => {
-    return (
-      <FontAwesomeIcon
-        icon={faCheckCircle}
-        style={{ color: green[400], fontSize: `1.75rem` }}
-      />
-    )
-  }
 
   const getPositionName = useCallback(async () => {
     let lap = 0
@@ -826,7 +820,22 @@ const SettingSystemData = () => {
     }, 200)
   }, [token, dispatch])
 
-  const fetchAll = () => {
+  const installAll = () => {
+    positionTypes.length === 0 &&
+      positionNames.length === 0 &&
+      getPositionName()
+    locations.length === 0 && getLocations()
+    educationLevels.length === 0 && getEducationLevels()
+    educationNames.length === 0 && getEducationNames()
+    educationalInstitutions.length === 0 && getEducationalInstitutions()
+    countries.length === 0 && getCountries()
+
+    if (roles[userInfo.role.name].level >= 2) {
+      units.length === 0 && getUnits()
+    }
+  }
+
+  const updateAll = () => {
     getPositionName()
     getLocations()
     getEducationLevels()
@@ -839,11 +848,29 @@ const SettingSystemData = () => {
     }
   }
 
+  const renderCheckedSign = () => {
+    return (
+      <FontAwesomeIcon
+        icon={faCheckCircle}
+        style={{ color: green[400], fontSize: `1.75rem` }}
+      />
+    )
+  }
+
+  const renderFetchDataButton = callback => {
+    return (
+      <Button color="primary" variant="contained" onClick={callback}>
+        {buttons.downloadData.name}
+      </Button>
+    )
+  }
+
   const renderFetchAllDataButton = () => {
     let props = {
       text: buttons.downloadAll.name,
       color: `success`,
       variant: `contained`,
+      method: `install`,
     }
     let count = 0
 
@@ -862,6 +889,7 @@ const SettingSystemData = () => {
           text: buttons.updateAll.name,
           color: `primary`,
           variant: `contained`,
+          method: `update`,
         }
 
         units.length === 0 && count++
@@ -880,6 +908,7 @@ const SettingSystemData = () => {
           text: buttons.updateAll.name,
           color: `primary`,
           variant: `contained`,
+          method: `update`,
         }
       }
     }
@@ -896,7 +925,13 @@ const SettingSystemData = () => {
         <Button
           {...props}
           onClick={() => {
-            fetchAll()
+            if (props.method === `install`) {
+              installAll()
+            }
+
+            if (props.method === `update`) {
+              updateAll()
+            }
           }}
         >
           {props.text}
@@ -955,17 +990,9 @@ const SettingSystemData = () => {
                 </div>
                 <div>
                   {positionTypes.length > 0 && positionNames.length > 0 ? (
-                    <>{renderSyncedData()}</>
+                    <>{renderCheckedSign()}</>
                   ) : (
-                    <Button
-                      color="primary"
-                      variant="contained"
-                      onClick={() => {
-                        getPositionName()
-                      }}
-                    >
-                      {buttons.downloadData.name}
-                    </Button>
+                    <>{renderFetchDataButton(getPositionName)}</>
                   )}
                 </div>
               </Block>
@@ -986,17 +1013,9 @@ const SettingSystemData = () => {
                     </div>
                     <div>
                       {units.length > 0 ? (
-                        <>{renderSyncedData()}</>
+                        <>{renderCheckedSign()}</>
                       ) : (
-                        <Button
-                          color="primary"
-                          variant="contained"
-                          onClick={() => {
-                            getUnits()
-                          }}
-                        >
-                          {buttons.downloadData.name}
-                        </Button>
+                        <>{renderFetchDataButton(getUnits)}</>
                       )}
                     </div>
                   </Block>
@@ -1043,17 +1062,9 @@ const SettingSystemData = () => {
                 </div>
                 <div>
                   {locations.length > 0 ? (
-                    <>{renderSyncedData()}</>
+                    <>{renderCheckedSign()}</>
                   ) : (
-                    <Button
-                      color="primary"
-                      variant="contained"
-                      onClick={() => {
-                        getLocations()
-                      }}
-                    >
-                      {buttons.downloadData.name}
-                    </Button>
+                    <>{renderFetchDataButton(getLocations)}</>
                   )}
                 </div>
               </Block>
@@ -1072,17 +1083,9 @@ const SettingSystemData = () => {
                 </div>
                 <div>
                   {educationLevels.length > 0 ? (
-                    <>{renderSyncedData()}</>
+                    <>{renderCheckedSign()}</>
                   ) : (
-                    <Button
-                      color="primary"
-                      variant="contained"
-                      onClick={() => {
-                        getEducationLevels()
-                      }}
-                    >
-                      {buttons.downloadData.name}
-                    </Button>
+                    <>{renderFetchDataButton(getEducationLevels)}</>
                   )}
                 </div>
               </Block>
@@ -1104,17 +1107,9 @@ const SettingSystemData = () => {
                 </div>
                 <div>
                   {educationNames.length > 0 ? (
-                    <>{renderSyncedData()}</>
+                    <>{renderCheckedSign()}</>
                   ) : (
-                    <Button
-                      color="primary"
-                      variant="contained"
-                      onClick={() => {
-                        getEducationNames()
-                      }}
-                    >
-                      {buttons.downloadData.name}
-                    </Button>
+                    <>{renderFetchDataButton(getEducationNames)}</>
                   )}
                 </div>
               </Block>
@@ -1135,17 +1130,9 @@ const SettingSystemData = () => {
                 </div>
                 <div>
                   {educationalInstitutions.length > 0 ? (
-                    <>{renderSyncedData()}</>
+                    <>{renderCheckedSign()}</>
                   ) : (
-                    <Button
-                      color="primary"
-                      variant="contained"
-                      onClick={() => {
-                        getEducationalInstitutions()
-                      }}
-                    >
-                      {buttons.downloadData.name}
-                    </Button>
+                    <>{renderFetchDataButton(getEducationalInstitutions)}</>
                   )}
                 </div>
               </Block>
@@ -1167,17 +1154,9 @@ const SettingSystemData = () => {
                 </div>
                 <div>
                   {countries.length > 0 ? (
-                    <>{renderSyncedData()}</>
+                    <>{renderCheckedSign()}</>
                   ) : (
-                    <Button
-                      color="primary"
-                      variant="contained"
-                      onClick={() => {
-                        getCountries()
-                      }}
-                    >
-                      {buttons.downloadData.name}
-                    </Button>
+                    <>{renderFetchDataButton(getCountries)}</>
                   )}
                 </div>
               </Block>
@@ -1206,11 +1185,7 @@ const SettingSystemData = () => {
                     }}
                     color="error"
                     variant="outlined"
-                    onClick={() => {
-                      dispatch({
-                        type: `SET_ZERO`,
-                      })
-                    }}
+                    onClick={() => setOpenDeleteAllConfirmationDialog(true)}
                   >
                     <FontAwesomeIcon
                       icon={faTrash}
@@ -1223,6 +1198,20 @@ const SettingSystemData = () => {
             </>
           )}
           <PercentDialog data={percentDialog} />
+          <ConfirmationDialog
+            open={openDeleteAllConfirmationDialog}
+            title="ยืนยันการยกเลิกการติดตั้งทั้งหมด?"
+            description={`กดปุ่ม "ตกลง" เพื่อยกเลิกการติดตั้งทั้งหมด`}
+            variant="delete"
+            confirmCallback={() => {
+              dispatch({
+                type: `SET_ZERO`,
+              })
+            }}
+            cancelCallback={() => {
+              setOpenDeleteAllConfirmationDialog(false)
+            }}
+          />
         </>
       ) : (
         <>
