@@ -42,6 +42,7 @@ const initialState = {
       description: ``,
     },
   },
+  tutorialCount: 0,
   searchPositionFilter: {
     posName: ``,
     posType: ``,
@@ -108,6 +109,12 @@ const mainReducer = (state = initialState, action) => {
         userInfo: action.userInfo,
       }
 
+    case `SET_TUTORIAL_COUNT`:
+      return {
+        ...state,
+        tutorialCount: action.tutorialCount,
+      }
+
     case `SET_SEARCH_POSITION_FILTER`:
       return {
         ...state,
@@ -142,7 +149,7 @@ const mainReducer = (state = initialState, action) => {
 const mainPersistConfig = {
   key: `gepdx_main`,
   storage: storage,
-  whitelist: [`sessionTimer`, `lang`, `token`, `userInfo`],
+  whitelist: [`sessionTimer`, `lang`, `token`, `userInfo`, `tutorialCount`],
 }
 
 export { mainReducer, mainPersistConfig }

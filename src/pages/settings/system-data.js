@@ -107,7 +107,7 @@ const buttons = {
 }
 
 const SettingSystemData = () => {
-  const { token, userInfo, primaryColor } = useSelector(
+  const { token, tutorialCount, userInfo, primaryColor } = useSelector(
     ({ mainReducer }) => mainReducer
   )
   const {
@@ -944,13 +944,46 @@ const SettingSystemData = () => {
   useEffect(() => {
     dispatch({
       type: `SET_CURRENT_PAGE`,
-      currentPage: `settings`,
+      currentPage: `settings-system-data`,
     })
   }, [dispatch])
 
   useEffect(() => {
     savePageView()
   }, [savePageView])
+
+  useEffect(() => {
+    let count = 0
+
+    if (roles[userInfo.role.name].level >= 2) {
+      units.length === 0 && count++
+    }
+
+    positionNames.length === 0 && count++
+    locations.length === 0 && count++
+    educationLevels.length === 0 && count++
+    educationNames.length === 0 && count++
+    educationalInstitutions.length === 0 && count++
+    countries.length === 0 && count++
+
+    if (count === 0 && tutorialCount === 2) {
+      dispatch({
+        type: `SET_TUTORIAL_COUNT`,
+        tutorialCount: 3,
+      })
+    }
+  }, [
+    userInfo.role.name,
+    tutorialCount,
+    positionNames.length,
+    units.length,
+    locations.length,
+    educationLevels.length,
+    educationNames.length,
+    educationalInstitutions.length,
+    countries.length,
+    dispatch,
+  ])
 
   return (
     <Layout>
@@ -1167,51 +1200,61 @@ const SettingSystemData = () => {
               )}
             </Content>
           </Container>
-          {(positionTypes.length > 0 ||
-            positionNames.length > 0 ||
-            units.length > 0 ||
-            locations.length > 0 ||
-            educationLevels.length > 0 ||
-            educationNames.length > 0 ||
-            educationalInstitutions.length > 0 ||
-            countries.length > 0) && (
+          <PercentDialog data={percentDialog} />
+          {roles[userInfo.role.name].level >= 3 && (
             <>
-              <Divider style={{ marginTop: `2rem`, marginBottom: `1rem` }} />
-              <Form style={{ maxWidth: `100%` }}>
-                <ButtonBlock>
-                  <Button
-                    sx={{
-                      marginLeft: `1rem`,
-                    }}
-                    color="error"
-                    variant="outlined"
-                    onClick={() => setOpenDeleteAllConfirmationDialog(true)}
-                  >
-                    <FontAwesomeIcon
-                      icon={faTrash}
-                      style={{ marginRight: 5 }}
-                    />
-                    {buttons.deleteAll.name}
-                  </Button>
-                </ButtonBlock>
-              </Form>
+              {(positionTypes.length > 0 ||
+                positionNames.length > 0 ||
+                units.length > 0 ||
+                locations.length > 0 ||
+                educationLevels.length > 0 ||
+                educationNames.length > 0 ||
+                educationalInstitutions.length > 0 ||
+                countries.length > 0) && (
+                <>
+                  <Divider
+                    style={{ marginTop: `2rem`, marginBottom: `1rem` }}
+                  />
+                  <Form style={{ maxWidth: `100%` }}>
+                    <ButtonBlock>
+                      <Button
+                        sx={{
+                          marginLeft: `1rem`,
+                        }}
+                        color="error"
+                        variant="outlined"
+                        onClick={() => setOpenDeleteAllConfirmationDialog(true)}
+                      >
+                        <FontAwesomeIcon
+                          icon={faTrash}
+                          style={{ marginRight: 5 }}
+                        />
+                        {buttons.deleteAll.name}
+                      </Button>
+                    </ButtonBlock>
+                  </Form>
+                </>
+              )}
+              <ConfirmationDialog
+                open={openDeleteAllConfirmationDialog}
+                title="ยืนยันการยกเลิกการติดตั้งทั้งหมด?"
+                description={`กดปุ่ม "ตกลง" เพื่อยกเลิกการติดตั้งทั้งหมด`}
+                variant="delete"
+                confirmCallback={() => {
+                  dispatch({
+                    type: `SET_ZERO`,
+                  })
+                  // dispatch({
+                  //   type: `SET_TUTORIAL_COUNT`,
+                  //   tutorialCount: 0,
+                  // })
+                }}
+                cancelCallback={() => {
+                  setOpenDeleteAllConfirmationDialog(false)
+                }}
+              />
             </>
           )}
-          <PercentDialog data={percentDialog} />
-          <ConfirmationDialog
-            open={openDeleteAllConfirmationDialog}
-            title="ยืนยันการยกเลิกการติดตั้งทั้งหมด?"
-            description={`กดปุ่ม "ตกลง" เพื่อยกเลิกการติดตั้งทั้งหมด`}
-            variant="delete"
-            confirmCallback={() => {
-              dispatch({
-                type: `SET_ZERO`,
-              })
-            }}
-            cancelCallback={() => {
-              setOpenDeleteAllConfirmationDialog(false)
-            }}
-          />
         </>
       ) : (
         <>
