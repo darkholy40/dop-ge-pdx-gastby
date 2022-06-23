@@ -689,7 +689,7 @@ const EditPositionsPage = ({ location }) => {
                   </Button>
                 </Form>
 
-                <Divider style={{ marginTop: `1rem`, marginBottom: `1rem` }} />
+                <Divider style={{ marginTop: `2rem`, marginBottom: `1rem` }} />
                 <Flex
                   style={{
                     justifyContent: `end`,

@@ -77,25 +77,24 @@ const PositionsPage = () => {
 
   const getPositions = useCallback(async () => {
     let role = ``
+    const clearSession = async () => {
+      dispatch({
+        type: `SET_TOKEN`,
+        token: ``,
+      })
+
+      dispatch({
+        type: `SET_SESSION_TIMER`,
+        sessionTimer: {
+          hr: `08`,
+          min: `00`,
+          sec: `00`,
+        },
+      })
+    }
 
     if (roles[userInfo.role.name].level <= 1) {
       if (userInfo.division === null) {
-        const clearSession = async () => {
-          dispatch({
-            type: `SET_TOKEN`,
-            token: ``,
-          })
-
-          dispatch({
-            type: `SET_SESSION_TIMER`,
-            sessionTimer: {
-              hr: `08`,
-              min: `00`,
-              sec: `00`,
-            },
-          })
-        }
-
         await clearSession()
         await navigate(`/`)
 
@@ -196,7 +195,9 @@ const PositionsPage = () => {
         })
       }
 
-      return 0
+      if (error.message === `Invalid token.`) {
+        window.location.reload()
+      }
     }
 
     dispatch({
