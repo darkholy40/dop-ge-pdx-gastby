@@ -39,10 +39,6 @@ import {
   removeObjectInArray,
 } from "../../functions/object-in-array"
 import roles from "../../static/roles"
-import countries from "../../static/countries"
-import educationLevels from "../../static/education-levels"
-import educationNames from "../../static/education-names"
-import educationalInstitutions from "../../static/educational-institutions"
 
 const Form = styled.form`
   display: flex;
@@ -79,9 +75,15 @@ const EditPositionsPage = ({ location }) => {
   const { token, userInfo, redirectPage } = useSelector(
     ({ mainReducer }) => mainReducer
   )
-  const { positionTypes, positionNames, locations } = useSelector(
-    ({ staticReducer }) => staticReducer
-  )
+  const {
+    positionTypes,
+    positionNames,
+    locations,
+    educationLevels,
+    educationNames,
+    educationalInstitutions,
+    countries,
+  } = useSelector(({ staticReducer }) => staticReducer)
   const dispatch = useDispatch()
   const [positions, setPositions] = useState([])
   const [isError, setIsError] = useState({
@@ -107,7 +109,6 @@ const EditPositionsPage = ({ location }) => {
   const [birthDate, setBirthDate] = useState(null)
   const [marriedStatus, setMarriedStatus] = useState(``)
   const [telephone, setTelephone] = useState(``)
-  const [locationSelectFromDb, setLocationSelectFromDb] = useState(null)
   const [locationSelect, setLocationSelect] = useState({
     province: null,
     district: null,
@@ -117,10 +118,12 @@ const EditPositionsPage = ({ location }) => {
   const [emergencyName, setEmergencyName] = useState(``)
   const [emergencyNumber, setEmergencyNumber] = useState(``)
   const [startDate, setStartDate] = useState(null)
-  const [eduLevel, setEduLevel] = useState(``)
-  const [eduName, setEduName] = useState(``)
-  const [eduGraduated, setEduGraduated] = useState(``)
-  const [eduCountry, setEduCountry] = useState(``)
+  const [educationSelect, setEducationSelect] = useState({
+    level: null,
+    name: null,
+    educationalInstitution: null,
+    country: null,
+  })
   const [movementType, setMovementType] = useState(``)
   const [outline, setOutline] = useState(``)
   const [rewardType1, setRewardType1] = useState(``)
@@ -171,6 +174,96 @@ const EditPositionsPage = ({ location }) => {
     }
   }, [token, userInfo, id])
 
+  const setInput = useCallback(
+    data => {
+      setPrename(data.person.Prename)
+      setName(data.person.Name)
+      setSurname(data.person.Surname)
+      setIdCard(data.person.ID_Card)
+      setSidCard(data.person.SID_Card)
+      setPositionTypeSelect(data.position.position_type.type)
+      setPositionNameSelect(data.position.position_type.name)
+      setPositionInput(data.position)
+      setJobType(data.person.type)
+      setGender(data.person.Gender)
+      setBirthDate(new Date(data.person.BirthDate))
+      setMarriedStatus(data.person.MarriedStatus)
+      setTelephone(data.person.Telephone)
+      if (data.person.location !== null) {
+        setLocationSelect({
+          province: uniqByKeepFirst(locations, it => it.province).find(
+            elem => elem.province === data.person.location.province
+          ),
+          district: uniqByKeepFirst(locations, it => it.district).find(
+            elem =>
+              elem.province === data.person.location.province &&
+              elem.district === data.person.location.district
+          ),
+          subdistrict: locations.find(
+            elem =>
+              elem.province === data.person.location.province &&
+              elem.district === data.person.location.district &&
+              elem.subdistrict === data.person.location.subdistrict
+          ),
+        })
+      }
+      setAddress(data.person.Address)
+      setEmergencyName(data.person.Emergency_Name)
+      setEmergencyNumber(data.person.Emergency_Number)
+      setStartDate(new Date(data.person.StartDate))
+      setEducationSelect({
+        level:
+          data.person.education_level !== null
+            ? educationLevels.find(
+                elem => elem._id === data.person.education_level._id
+              )
+            : null,
+        name:
+          data.person.education_name !== null
+            ? educationNames.find(
+                elem => elem._id === data.person.education_name._id
+              )
+            : null,
+        educationalInstitution:
+          data.person.educational_institution !== null
+            ? educationalInstitutions.find(
+                elem => elem._id === data.person.educational_institution._id
+              )
+            : null,
+        country:
+          data.person.country !== null
+            ? countries.find(elem => elem._id === data.person.country._id)
+            : null,
+      })
+      setMovementType(data.person.MovementType)
+      setOutline(data.person.Outline)
+      setRewardType1(data.person.RewardType1)
+      setRewardType2(data.person.RewardType2)
+      setRewardType3(data.person.RewardType3)
+      setContactCnt(data.person.ContactCnt)
+      setMission(data.person.Mission)
+      if (data.person.type === `พนักงานราชการ`) {
+        setCurrentContactStart(new Date(data.person.CurrentContactStart))
+        setCurrentContactEnd(new Date(data.person.CurrentContactEnd))
+      }
+      setGuilty(data.person.Guilty)
+      setPunish(data.person.Punish)
+      setDecoration(data.person.Decoration)
+      setPercentSalary(data.person.PercentSalary)
+      setScoreKPI(data.person.ScoreKPI)
+      setScoreCompetence(data.person.ScoreCompetence)
+      setStatusDisability(data.person.StatusDisability)
+      setSkills(data.person.skills)
+    },
+    [
+      locations,
+      countries,
+      educationLevels,
+      educationNames,
+      educationalInstitutions,
+    ]
+  )
+
   const getPerson = useCallback(async () => {
     let returnData = {
       person: null,
@@ -213,10 +306,6 @@ const EditPositionsPage = ({ location }) => {
               Emergency_Name
               Emergency_Number
               StartDate
-              Edu_Level
-              Edu_Name
-              Edu_Graduated
-              Edu_Country
               MovementType
               Outline
               RewardType1
@@ -243,6 +332,27 @@ const EditPositionsPage = ({ location }) => {
                 district
                 subdistrict
                 zipcode
+              }
+              education_level {
+                _id
+                code
+                name
+              }
+              education_name {
+                _id
+                code
+                short_name
+                full_name
+              }
+              educational_institution {
+                _id
+                code
+                name
+              }
+              country {
+                _id
+                code
+                name
               }
             }
           }
@@ -313,7 +423,6 @@ const EditPositionsPage = ({ location }) => {
     // console.log(returnData)
     if (returnData.person !== null && returnData.position !== null) {
       setInput(returnData)
-      setLocationSelectFromDb(returnData.person.location)
     }
     setFirstStrike(true)
     dispatch({
@@ -323,7 +432,7 @@ const EditPositionsPage = ({ location }) => {
         title: ``,
       },
     })
-  }, [token, id, dispatch])
+  }, [token, id, setInput, dispatch])
 
   const getPositions = useCallback(async () => {
     let role = ``
@@ -512,10 +621,6 @@ const EditPositionsPage = ({ location }) => {
                 Emergency_Name: "${emergencyName}",
                 Emergency_Number: "${emergencyNumber}",
                 StartDate: ${renderDateForGraphQL(startDate)},
-                Edu_Level: "${eduLevel}",
-                Edu_Name: "${eduName}",
-                Edu_Graduated: "${eduGraduated}",
-                Edu_Country: "${eduCountry}",
                 MovementType: "${movementType}",
                 Outline: "${outline}",
                 RewardType1: "${rewardType1}",
@@ -539,6 +644,12 @@ const EditPositionsPage = ({ location }) => {
                 staff_updated: "",
                 type: "${jobType}",
                 location: "${locationSelect.subdistrict._id}",
+                education_level: "${educationSelect.level._id}",
+                education_name: "${educationSelect.name._id}",
+                educational_institution: "${
+                  educationSelect.educationalInstitution._id
+                }",
+                country: "${educationSelect.country._id}",
               }
             }) {
               person {
@@ -737,82 +848,8 @@ const EditPositionsPage = ({ location }) => {
     })
   }
 
-  const setInput = data => {
-    setPrename(data.person.Prename)
-    setName(data.person.Name)
-    setSurname(data.person.Surname)
-    setIdCard(data.person.ID_Card)
-    setSidCard(data.person.SID_Card)
-    setPositionTypeSelect(data.position.position_type.type)
-    setPositionNameSelect(data.position.position_type.name)
-    setPositionInput(data.position)
-    setJobType(data.person.type)
-    setGender(data.person.Gender)
-    setBirthDate(new Date(data.person.BirthDate))
-    setMarriedStatus(data.person.MarriedStatus)
-    setTelephone(data.person.Telephone)
-    setAddress(data.person.Address)
-    setEmergencyName(data.person.Emergency_Name)
-    setEmergencyNumber(data.person.Emergency_Number)
-    setStartDate(new Date(data.person.StartDate))
-    setEduLevel(data.person.Edu_Level)
-    setEduName(data.person.Edu_Name)
-    setEduGraduated(data.person.Edu_Graduated)
-    setEduCountry(data.person.Edu_Country)
-    setMovementType(data.person.MovementType)
-    setOutline(data.person.Outline)
-    setRewardType1(data.person.RewardType1)
-    setRewardType2(data.person.RewardType2)
-    setRewardType3(data.person.RewardType3)
-    setContactCnt(data.person.ContactCnt)
-    setMission(data.person.Mission)
-    if (data.person.type === `พนักงานราชการ`) {
-      setCurrentContactStart(new Date(data.person.CurrentContactStart))
-      setCurrentContactEnd(new Date(data.person.CurrentContactEnd))
-    }
-    setGuilty(data.person.Guilty)
-    setPunish(data.person.Punish)
-    setDecoration(data.person.Decoration)
-    setPercentSalary(data.person.PercentSalary)
-    setScoreKPI(data.person.ScoreKPI)
-    setScoreCompetence(data.person.ScoreCompetence)
-    setStatusDisability(data.person.StatusDisability)
-    setSkills(data.person.skills)
-  }
-
-  const fetchLocationInput = useCallback(() => {
-    if (locations.length > 0) {
-      if (locationSelectFromDb !== null) {
-        setLocationSelect(prev => ({
-          ...prev,
-          province: uniqByKeepFirst(locations, it => it.province).find(
-            elem => elem.province === locationSelectFromDb.province
-          ),
-          district: uniqByKeepFirst(locations, it => it.district).find(
-            elem =>
-              elem.province === locationSelectFromDb.province &&
-              elem.district === locationSelectFromDb.district
-          ),
-          subdistrict: locations.find(
-            elem =>
-              elem.province === locationSelectFromDb.province &&
-              elem.district === locationSelectFromDb.district &&
-              elem.subdistrict === locationSelectFromDb.subdistrict
-          ),
-        }))
-      } else {
-        setLocationSelect({
-          province: null,
-          district: null,
-          subdistrict: null,
-        })
-      }
-    }
-  }, [locations, locationSelectFromDb])
-
   const reloadInput = () => {
     getPerson()
-    fetchLocationInput()
   }
 
   const renderFilterPositions = getPositions => {
@@ -851,10 +888,6 @@ const EditPositionsPage = ({ location }) => {
       getPerson()
     }
   }, [getPerson, token])
-
-  useEffect(() => {
-    fetchLocationInput()
-  }, [fetchLocationInput])
 
   useEffect(() => {
     if (token !== ``) {
@@ -1598,6 +1631,7 @@ const EditPositionsPage = ({ location }) => {
                       />
                     </Grid>
                   </Grid>
+                  <Divider style={{ margin: `1rem auto 2rem`, width: 360 }} />
                   <Grid container spacing={2} sx={{ marginBottom: `1rem` }}>
                     <Grid item xs={12} sm={6}>
                       <TextField
@@ -1690,14 +1724,17 @@ const EditPositionsPage = ({ location }) => {
                           disablePortal
                           options={educationLevels}
                           noOptionsText={`ไม่พบข้อมูล`}
-                          getOptionLabel={option => option}
+                          getOptionLabel={option => option.name}
                           isOptionEqualToValue={(option, value) => {
                             return option === value
                           }}
                           onChange={(_, newValue) => {
-                            setEduLevel(newValue !== null ? newValue : ``)
+                            setEducationSelect(prev => ({
+                              ...prev,
+                              level: newValue,
+                            }))
                           }}
-                          value={eduLevel !== `` ? eduLevel : null}
+                          value={educationSelect.level}
                           renderInput={params => (
                             <TextField
                               {...params}
@@ -1712,7 +1749,7 @@ const EditPositionsPage = ({ location }) => {
                           )}
                         />
                         <CheckCircleFlex>
-                          {renderCheckingIcon(eduLevel)}
+                          {renderCheckingIcon(educationSelect.level)}
                         </CheckCircleFlex>
                       </Flex>
                     </Grid>
@@ -1724,14 +1761,17 @@ const EditPositionsPage = ({ location }) => {
                           disablePortal
                           options={educationNames}
                           noOptionsText={`ไม่พบข้อมูล`}
-                          getOptionLabel={option => option}
+                          getOptionLabel={option => `${option.full_name}`}
                           isOptionEqualToValue={(option, value) => {
                             return option === value
                           }}
                           onChange={(_, newValue) => {
-                            setEduName(newValue !== null ? newValue : ``)
+                            setEducationSelect(prev => ({
+                              ...prev,
+                              name: newValue,
+                            }))
                           }}
-                          value={eduName !== `` ? eduName : null}
+                          value={educationSelect.name}
                           renderInput={params => (
                             <TextField
                               {...params}
@@ -1746,7 +1786,7 @@ const EditPositionsPage = ({ location }) => {
                           )}
                         />
                         <CheckCircleFlex>
-                          {renderCheckingIcon(eduName)}
+                          {renderCheckingIcon(educationSelect.name)}
                         </CheckCircleFlex>
                       </Flex>
                     </Grid>
@@ -1760,14 +1800,17 @@ const EditPositionsPage = ({ location }) => {
                           disablePortal
                           options={educationalInstitutions}
                           noOptionsText={`ไม่พบข้อมูล`}
-                          getOptionLabel={option => option}
+                          getOptionLabel={option => option.name}
                           isOptionEqualToValue={(option, value) => {
                             return option === value
                           }}
                           onChange={(_, newValue) => {
-                            setEduGraduated(newValue !== null ? newValue : ``)
+                            setEducationSelect(prev => ({
+                              ...prev,
+                              educationalInstitution: newValue,
+                            }))
                           }}
-                          value={eduGraduated !== `` ? eduGraduated : null}
+                          value={educationSelect.educationalInstitution}
                           renderInput={params => (
                             <TextField
                               {...params}
@@ -1782,7 +1825,9 @@ const EditPositionsPage = ({ location }) => {
                           )}
                         />
                         <CheckCircleFlex>
-                          {renderCheckingIcon(eduGraduated)}
+                          {renderCheckingIcon(
+                            educationSelect.educationalInstitution
+                          )}
                         </CheckCircleFlex>
                       </Flex>
                     </Grid>
@@ -1794,14 +1839,17 @@ const EditPositionsPage = ({ location }) => {
                           disablePortal
                           options={countries}
                           noOptionsText={`ไม่พบข้อมูล`}
-                          getOptionLabel={option => option}
+                          getOptionLabel={option => option.name}
                           isOptionEqualToValue={(option, value) => {
                             return option === value
                           }}
                           onChange={(_, newValue) => {
-                            setEduCountry(newValue !== null ? newValue : ``)
+                            setEducationSelect(prev => ({
+                              ...prev,
+                              country: newValue,
+                            }))
                           }}
-                          value={eduCountry !== `` ? eduCountry : null}
+                          value={educationSelect.country}
                           renderInput={params => (
                             <TextField
                               {...params}
@@ -1816,7 +1864,7 @@ const EditPositionsPage = ({ location }) => {
                           )}
                         />
                         <CheckCircleFlex>
-                          {renderCheckingIcon(eduCountry)}
+                          {renderCheckingIcon(educationSelect.country)}
                         </CheckCircleFlex>
                       </Flex>
                     </Grid>
@@ -2347,10 +2395,10 @@ const EditPositionsPage = ({ location }) => {
                               emergencyName === `` ||
                               emergencyNumber === `` ||
                               startDate === null ||
-                              eduLevel === `` ||
-                              eduName === `` ||
-                              eduGraduated === `` ||
-                              eduCountry === `` ||
+                              educationSelect.level === null ||
+                              educationSelect.name === null ||
+                              educationSelect.educationalInstitution === null ||
+                              educationSelect.country === null ||
                               movementType === `` ||
                               outline === `` ||
                               rewardType1 === `` ||
@@ -2375,10 +2423,10 @@ const EditPositionsPage = ({ location }) => {
                               emergencyName === `` ||
                               emergencyNumber === `` ||
                               startDate === null ||
-                              eduLevel === `` ||
-                              eduName === `` ||
-                              eduGraduated === `` ||
-                              eduCountry === `` ||
+                              educationSelect.level === null ||
+                              educationSelect.name === null ||
+                              educationSelect.educationalInstitution === null ||
+                              educationSelect.country === null ||
                               rewardType1 === `` ||
                               mission === ``
                         }
@@ -2434,8 +2482,12 @@ const EditPositionsPage = ({ location }) => {
         ) : (
           <PageNotFound
             desc="ไม่พบ url ที่ท่านเรียกหรือเนื้อหาในส่วนนี้ได้ถูกลบออกจากระบบ"
-            link="/people/list/"
-            buttonText="กลับไปหน้าค้นหากำลังพล"
+            link={redirectPage}
+            buttonText={`กลับไปหน้า${
+              redirectPage === `/positions/list/`
+                ? `ค้นหาคลังตำแหน่ง`
+                : `ค้นหากำลังพล`
+            }`}
           />
         )
       ) : (

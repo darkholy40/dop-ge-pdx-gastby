@@ -39,10 +39,6 @@ import {
   removeObjectInArray,
 } from "../../functions/object-in-array"
 import roles from "../../static/roles"
-import countries from "../../static/countries"
-import educationLevels from "../../static/education-levels"
-import educationNames from "../../static/education-names"
-import educationalInstitutions from "../../static/educational-institutions"
 
 const Form = styled.form`
   display: flex;
@@ -77,9 +73,15 @@ const textfieldProps = {
 
 const AddPositionsPage = () => {
   const { token, userInfo } = useSelector(({ mainReducer }) => mainReducer)
-  const { positionTypes, positionNames, locations } = useSelector(
-    ({ staticReducer }) => staticReducer
-  )
+  const {
+    positionTypes,
+    positionNames,
+    locations,
+    educationLevels,
+    educationNames,
+    educationalInstitutions,
+    countries,
+  } = useSelector(({ staticReducer }) => staticReducer)
   const dispatch = useDispatch()
   const [positions, setPositions] = useState([])
   const [isError, setIsError] = useState({
@@ -108,10 +110,12 @@ const AddPositionsPage = () => {
   const [emergencyName, setEmergencyName] = useState(``)
   const [emergencyNumber, setEmergencyNumber] = useState(``)
   const [startDate, setStartDate] = useState(null)
-  const [eduLevel, setEduLevel] = useState(``)
-  const [eduName, setEduName] = useState(``)
-  const [eduGraduated, setEduGraduated] = useState(``)
-  const [eduCountry, setEduCountry] = useState(``)
+  const [educationSelect, setEducationSelect] = useState({
+    level: null,
+    name: null,
+    educationalInstitution: null,
+    country: null,
+  })
   const [movementType, setMovementType] = useState(``)
   const [outline, setOutline] = useState(``)
   const [rewardType1, setRewardType1] = useState(``)
@@ -324,10 +328,6 @@ const AddPositionsPage = () => {
                 Emergency_Name: "${emergencyName}",
                 Emergency_Number: "${emergencyNumber}",
                 StartDate: ${renderDateForGraphQL(startDate)},
-                Edu_Level: "${eduLevel}",
-                Edu_Name: "${eduName}",
-                Edu_Graduated: "${eduGraduated}",
-                Edu_Country: "${eduCountry}",
                 MovementType: "${movementType}",
                 Outline: "${outline}",
                 RewardType1: "${rewardType1}",
@@ -354,6 +354,12 @@ const AddPositionsPage = () => {
                 resignationNote: "",
                 position: null,
                 location: "${locationSelect.subdistrict._id}",
+                education_level: "${educationSelect.level._id}",
+                education_name: "${educationSelect.name._id}",
+                educational_institution: "${
+                  educationSelect.educationalInstitution._id
+                }",
+                country: "${educationSelect.country._id}",
               }
             }) {
               person {
@@ -517,10 +523,12 @@ const AddPositionsPage = () => {
     setEmergencyName(``)
     setEmergencyNumber(``)
     setStartDate(null)
-    setEduLevel(``)
-    setEduName(``)
-    setEduGraduated(``)
-    setEduCountry(``)
+    setEducationSelect({
+      level: null,
+      name: null,
+      educationalInstitution: null,
+      country: null,
+    })
     setMovementType(``)
     setOutline(``)
     setRewardType1(``)
@@ -1077,7 +1085,6 @@ const AddPositionsPage = () => {
               </Grid>
             </Grid>
             <Divider style={{ margin: `1rem auto 2rem`, width: 360 }} />
-            <p>ที่อยู่</p>
             <Grid container spacing={2} sx={{ marginBottom: `1rem` }}>
               <Grid item xs={12} sm={3}>
                 <Flex>
@@ -1263,6 +1270,7 @@ const AddPositionsPage = () => {
               </Grid>
             </Grid>
             <Divider style={{ margin: `1rem auto 2rem`, width: 360 }} />
+            <Divider style={{ margin: `1rem auto 2rem`, width: 360 }} />
             <Grid container spacing={2} sx={{ marginBottom: `1rem` }}>
               <Grid item xs={12} sm={6}>
                 <TextField
@@ -1354,14 +1362,17 @@ const AddPositionsPage = () => {
                     disablePortal
                     options={educationLevels}
                     noOptionsText={`ไม่พบข้อมูล`}
-                    getOptionLabel={option => option}
+                    getOptionLabel={option => option.name}
                     isOptionEqualToValue={(option, value) => {
                       return option === value
                     }}
                     onChange={(_, newValue) => {
-                      setEduLevel(newValue !== null ? newValue : ``)
+                      setEducationSelect(prev => ({
+                        ...prev,
+                        level: newValue,
+                      }))
                     }}
-                    value={eduLevel !== `` ? eduLevel : null}
+                    value={educationSelect.level}
                     renderInput={params => (
                       <TextField
                         {...params}
@@ -1376,7 +1387,7 @@ const AddPositionsPage = () => {
                     )}
                   />
                   <CheckCircleFlex>
-                    {renderCheckingIcon(eduLevel)}
+                    {renderCheckingIcon(educationSelect.level)}
                   </CheckCircleFlex>
                 </Flex>
               </Grid>
@@ -1388,14 +1399,17 @@ const AddPositionsPage = () => {
                     disablePortal
                     options={educationNames}
                     noOptionsText={`ไม่พบข้อมูล`}
-                    getOptionLabel={option => option}
+                    getOptionLabel={option => `${option.full_name}`}
                     isOptionEqualToValue={(option, value) => {
                       return option === value
                     }}
                     onChange={(_, newValue) => {
-                      setEduName(newValue !== null ? newValue : ``)
+                      setEducationSelect(prev => ({
+                        ...prev,
+                        name: newValue,
+                      }))
                     }}
-                    value={eduName !== `` ? eduName : null}
+                    value={educationSelect.name}
                     renderInput={params => (
                       <TextField
                         {...params}
@@ -1410,7 +1424,7 @@ const AddPositionsPage = () => {
                     )}
                   />
                   <CheckCircleFlex>
-                    {renderCheckingIcon(eduName)}
+                    {renderCheckingIcon(educationSelect.name)}
                   </CheckCircleFlex>
                 </Flex>
               </Grid>
@@ -1424,14 +1438,17 @@ const AddPositionsPage = () => {
                     disablePortal
                     options={educationalInstitutions}
                     noOptionsText={`ไม่พบข้อมูล`}
-                    getOptionLabel={option => option}
+                    getOptionLabel={option => option.name}
                     isOptionEqualToValue={(option, value) => {
                       return option === value
                     }}
                     onChange={(_, newValue) => {
-                      setEduGraduated(newValue !== null ? newValue : ``)
+                      setEducationSelect(prev => ({
+                        ...prev,
+                        educationalInstitution: newValue,
+                      }))
                     }}
-                    value={eduGraduated !== `` ? eduGraduated : null}
+                    value={educationSelect.educationalInstitution}
                     renderInput={params => (
                       <TextField
                         {...params}
@@ -1446,7 +1463,7 @@ const AddPositionsPage = () => {
                     )}
                   />
                   <CheckCircleFlex>
-                    {renderCheckingIcon(eduGraduated)}
+                    {renderCheckingIcon(educationSelect.educationalInstitution)}
                   </CheckCircleFlex>
                 </Flex>
               </Grid>
@@ -1458,14 +1475,17 @@ const AddPositionsPage = () => {
                     disablePortal
                     options={countries}
                     noOptionsText={`ไม่พบข้อมูล`}
-                    getOptionLabel={option => option}
+                    getOptionLabel={option => option.name}
                     isOptionEqualToValue={(option, value) => {
                       return option === value
                     }}
                     onChange={(_, newValue) => {
-                      setEduCountry(newValue !== null ? newValue : ``)
+                      setEducationSelect(prev => ({
+                        ...prev,
+                        country: newValue,
+                      }))
                     }}
-                    value={eduCountry !== `` ? eduCountry : null}
+                    value={educationSelect.country}
                     renderInput={params => (
                       <TextField
                         {...params}
@@ -1480,7 +1500,7 @@ const AddPositionsPage = () => {
                     )}
                   />
                   <CheckCircleFlex>
-                    {renderCheckingIcon(eduCountry)}
+                    {renderCheckingIcon(educationSelect.country)}
                   </CheckCircleFlex>
                 </Flex>
               </Grid>
@@ -2003,10 +2023,10 @@ const AddPositionsPage = () => {
                         emergencyName === `` ||
                         emergencyNumber === `` ||
                         startDate === null ||
-                        eduLevel === `` ||
-                        eduName === `` ||
-                        eduGraduated === `` ||
-                        eduCountry === `` ||
+                        educationSelect.level === null ||
+                        educationSelect.name === null ||
+                        educationSelect.educationalInstitution === null ||
+                        educationSelect.country === null ||
                         movementType === `` ||
                         outline === `` ||
                         rewardType1 === `` ||
@@ -2031,10 +2051,10 @@ const AddPositionsPage = () => {
                         emergencyName === `` ||
                         emergencyNumber === `` ||
                         startDate === null ||
-                        eduLevel === `` ||
-                        eduName === `` ||
-                        eduGraduated === `` ||
-                        eduCountry === `` ||
+                        educationSelect.level === null ||
+                        educationSelect.name === null ||
+                        educationSelect.educationalInstitution === null ||
+                        educationSelect.country === null ||
                         rewardType1 === `` ||
                         mission === ``
                   }
@@ -2069,10 +2089,10 @@ const AddPositionsPage = () => {
                     emergencyName === `` &&
                     emergencyNumber === `` &&
                     startDate === null &&
-                    eduLevel === `` &&
-                    eduName === `` &&
-                    eduGraduated === `` &&
-                    eduCountry === `` &&
+                    educationSelect.level === null &&
+                    educationSelect.name === null &&
+                    educationSelect.educationalInstitution === null &&
+                    educationSelect.country === null &&
                     movementType === `` &&
                     outline === `` &&
                     rewardType1 === `` &&

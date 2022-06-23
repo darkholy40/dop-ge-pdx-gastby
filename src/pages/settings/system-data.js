@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from "react-redux"
 import styled from "styled-components"
 import { Button, Divider } from "@mui/material"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { faCheckCircle } from "@fortawesome/free-solid-svg-icons"
+import { faCheckCircle, faTrash } from "@fortawesome/free-solid-svg-icons"
 import { green } from "@mui/material/colors"
 
 import { client, gql } from "../../functions/apollo-client"
@@ -25,9 +25,25 @@ import roles from "../../static/roles"
 const Container = styled.div`
   box-shadow: rgb(0 0 0 / 24%) 0px 1px 2px;
   border-radius: 8px;
-  padding: 16px 24px;
-  max-width: calc(800px - 48px);
+  max-width: 800px;
   margin: auto;
+`
+
+const DownloadButtonSection = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 1.5rem;
+  background-color: ${({ primaryColor }) => primaryColor[50]};
+  border-radius: 8px 8px 0 0;
+  
+  p {
+    margin: 0;
+  }
+`
+
+const Content = styled.div`
+  padding: 16px 24px;
 `
 
 const Block = styled.div`
@@ -90,7 +106,9 @@ const buttons = {
 }
 
 const SettingSystemData = () => {
-  const { token, userInfo } = useSelector(({ mainReducer }) => mainReducer)
+  const { token, userInfo, primaryColor } = useSelector(
+    ({ mainReducer }) => mainReducer
+  )
   const {
     positionTypes,
     positionNames,
@@ -821,6 +839,73 @@ const SettingSystemData = () => {
     }
   }
 
+  const renderFetchAllDataButton = () => {
+    let props = {
+      text: buttons.downloadAll.name,
+      color: `success`,
+      variant: `contained`,
+    }
+    let count = 0
+
+    if (roles[userInfo.role.name].level >= 2) {
+      if (
+        positionTypes.length > 0 &&
+        positionNames.length > 0 &&
+        units.length > 0 &&
+        locations.length > 0 &&
+        educationLevels.length > 0 &&
+        educationNames.length > 0 &&
+        educationalInstitutions.length > 0 &&
+        countries.length > 0
+      ) {
+        props = {
+          text: buttons.updateAll.name,
+          color: `primary`,
+          variant: `contained`,
+        }
+
+        units.length === 0 && count++
+      }
+    } else {
+      if (
+        positionTypes.length > 0 &&
+        positionNames.length > 0 &&
+        locations.length > 0 &&
+        educationLevels.length > 0 &&
+        educationNames.length > 0 &&
+        educationalInstitutions.length > 0 &&
+        countries.length > 0
+      ) {
+        props = {
+          text: buttons.updateAll.name,
+          color: `primary`,
+          variant: `contained`,
+        }
+      }
+    }
+
+    positionNames.length === 0 && count++
+    locations.length === 0 && count++
+    educationLevels.length === 0 && count++
+    educationNames.length === 0 && count++
+    educationalInstitutions.length === 0 && count++
+    countries.length === 0 && count++
+
+    return (
+      <>
+        <Button
+          {...props}
+          onClick={() => {
+            fetchAll()
+          }}
+        >
+          {props.text}
+        </Button>
+        {count > 0 && <span>{count}</span>}
+      </>
+    )
+  }
+
   useEffect(() => {
     dispatch({
       type: `SET_CURRENT_PAGE`,
@@ -846,294 +931,297 @@ const SettingSystemData = () => {
             ]}
             current="ข้อมูลระบบ"
           />
-
           <Container>
-            <Block>
-              <div>
-                <p>ข้อมูลชื่อประเภทกลุ่มงานและชื่อตำแหน่ง</p>
-                {positionTypes.length > 0 && positionNames.length > 0 && (
-                  <>
-                    <p className="detail">
-                      ชื่อประเภทกลุ่มงาน: {positionTypes.length} รายการ
-                    </p>
-                    <p className="detail">
-                      ชื่อตำแหน่งในสายงาน: {positionNames.length} รายการ
-                    </p>
-                  </>
-                )}
-              </div>
-              <div>
-                {positionTypes.length > 0 && positionNames.length > 0 ? (
-                  <>{renderSyncedData()}</>
-                ) : (
-                  <Button
-                    color="primary"
-                    variant="contained"
-                    onClick={() => {
-                      getPositionName()
-                    }}
-                  >
-                    {buttons.downloadData.name}
-                  </Button>
-                )}
-              </div>
-            </Block>
-            {positionTypes.length > 0 && positionNames.length > 0 && (
-              <UpdatedDate>
-                {renderTableDate(installationDate.positionTypes, `datetime`)}
-              </UpdatedDate>
-            )}
-            <Divider style={{ marginTop: `1rem`, marginBottom: `1rem` }} />
-            {roles[userInfo.role.name].level >= 2 && (
-              <>
-                <Block>
-                  <div>
-                    <p>ข้อมูลหน่วย</p>
-                    {units.length > 0 && (
-                      <p className="detail">{units.length} รายการ</p>
-                    )}
-                  </div>
-                  <div>
-                    {units.length > 0 ? (
-                      <>{renderSyncedData()}</>
-                    ) : (
-                      <Button
-                        color="primary"
-                        variant="contained"
-                        onClick={() => {
-                          getUnits()
-                        }}
-                      >
-                        {buttons.downloadData.name}
-                      </Button>
-                    )}
-                  </div>
-                </Block>
-                {units.length > 0 && (
-                  <UpdatedDate>
-                    {renderTableDate(installationDate.units, `datetime`)}
-                  </UpdatedDate>
-                )}
-                <Divider style={{ marginTop: `1rem`, marginBottom: `1rem` }} />
-              </>
-            )}
-            <Block>
-              <div>
-                <p>ข้อมูลจังหวัด อำเภอ ตำบล และรหัสไปรษณีย์</p>
-                {locations.length > 0 && (
-                  <>
-                    <p className="detail">
-                      จังหวัด:{" "}
-                      {uniqByKeepFirst(locations, it => it.province).length}{" "}
-                      รายการ
-                    </p>
-                    <p className="detail">
-                      อำเภอ:{" "}
-                      {uniqByKeepFirst(locations, it => it.district).length}{" "}
-                      รายการ
-                    </p>
-                    <p className="detail">
-                      ตำบล:{" "}
-                      {uniqByKeepFirst(locations, it => it.subdistrict).length}{" "}
-                      รายการ
-                    </p>
-                    <p className="detail">
-                      รหัสไปรษณีย์:{" "}
-                      {uniqByKeepFirst(locations, it => it.zipcode).length}{" "}
-                      รายการ
-                    </p>
-                  </>
-                )}
-              </div>
-              <div>
-                {locations.length > 0 ? (
-                  <>{renderSyncedData()}</>
-                ) : (
-                  <Button
-                    color="primary"
-                    variant="contained"
-                    onClick={() => {
-                      getLocations()
-                    }}
-                  >
-                    {buttons.downloadData.name}
-                  </Button>
-                )}
-              </div>
-            </Block>
-            {locations.length > 0 && (
-              <UpdatedDate>
-                {renderTableDate(installationDate.locations, `datetime`)}
-              </UpdatedDate>
-            )}
-            <Divider style={{ marginTop: `1rem`, marginBottom: `1rem` }} />
-            <Block>
-              <div>
-                <p>ข้อมูลชื่อระดับการศึกษา</p>
-                {educationLevels.length > 0 && (
-                  <p className="detail">{educationLevels.length} รายการ</p>
-                )}
-              </div>
-              <div>
-                {educationLevels.length > 0 ? (
-                  <>{renderSyncedData()}</>
-                ) : (
-                  <Button
-                    color="primary"
-                    variant="contained"
-                    onClick={() => {
-                      getEducationLevels()
-                    }}
-                  >
-                    {buttons.downloadData.name}
-                  </Button>
-                )}
-              </div>
-            </Block>
-            {educationLevels.length > 0 && (
-              <UpdatedDate>
-                {renderTableDate(installationDate.educationLevels, `datetime`)}
-              </UpdatedDate>
-            )}
-            <Divider style={{ marginTop: `1rem`, marginBottom: `1rem` }} />
-            <Block>
-              <div>
-                <p>ข้อมูลชื่อวุฒิการศึกษา</p>
-                {educationNames.length > 0 && (
-                  <p className="detail">{educationNames.length} รายการ</p>
-                )}
-              </div>
-              <div>
-                {educationNames.length > 0 ? (
-                  <>{renderSyncedData()}</>
-                ) : (
-                  <Button
-                    color="primary"
-                    variant="contained"
-                    onClick={() => {
-                      getEducationNames()
-                    }}
-                  >
-                    {buttons.downloadData.name}
-                  </Button>
-                )}
-              </div>
-            </Block>
-            {educationNames.length > 0 && (
-              <UpdatedDate>
-                {renderTableDate(installationDate.educationNames, `datetime`)}
-              </UpdatedDate>
-            )}
-            <Divider style={{ marginTop: `1rem`, marginBottom: `1rem` }} />
-            <Block>
-              <div>
-                <p>ข้อมูลสถาบันการศึกษา</p>
-                {educationalInstitutions.length > 0 && (
-                  <p className="detail">
-                    {educationalInstitutions.length} รายการ
-                  </p>
-                )}
-              </div>
-              <div>
-                {educationalInstitutions.length > 0 ? (
-                  <>{renderSyncedData()}</>
-                ) : (
-                  <Button
-                    color="primary"
-                    variant="contained"
-                    onClick={() => {
-                      getEducationalInstitutions()
-                    }}
-                  >
-                    {buttons.downloadData.name}
-                  </Button>
-                )}
-              </div>
-            </Block>
-            {educationalInstitutions.length > 0 && (
-              <UpdatedDate>
-                {renderTableDate(
-                  installationDate.educationalInstitutions,
-                  `datetime`
-                )}
-              </UpdatedDate>
-            )}
-            <Divider style={{ marginTop: `1rem`, marginBottom: `1rem` }} />
-            <Block>
-              <div>
-                <p>ข้อมูลรายชื่อประเทศ</p>
-                {countries.length > 0 && (
-                  <p className="detail">{countries.length} รายการ</p>
-                )}
-              </div>
-              <div>
-                {countries.length > 0 ? (
-                  <>{renderSyncedData()}</>
-                ) : (
-                  <Button
-                    color="primary"
-                    variant="contained"
-                    onClick={() => {
-                      getCountries()
-                    }}
-                  >
-                    {buttons.downloadData.name}
-                  </Button>
-                )}
-              </div>
-            </Block>
-            {countries.length > 0 && (
-              <UpdatedDate>
-                {renderTableDate(installationDate.countries, `datetime`)}
-              </UpdatedDate>
-            )}
-          </Container>
-          <Divider style={{ marginTop: `1rem`, marginBottom: `1rem` }} />
-          <Form>
-            <ButtonBlock>
-              <Button
-                color="success"
-                variant="contained"
-                onClick={() => {
-                  fetchAll()
-                }}
-              >
-                {positionTypes.length > 0 &&
-                positionNames.length > 0 &&
-                units.length > 0 &&
-                locations.length > 0 &&
-                educationLevels.length > 0 &&
-                educationNames.length > 0 &&
-                educationalInstitutions.length > 0 &&
-                countries.length > 0
-                  ? buttons.updateAll.name
-                  : buttons.downloadAll.name}
-              </Button>
-              {(positionTypes.length > 0 ||
-                positionNames.length > 0 ||
-                units.length > 0 ||
-                locations.length > 0 ||
-                educationLevels.length > 0 ||
-                educationNames.length > 0 ||
-                educationalInstitutions.length > 0 ||
-                countries.length > 0) && (
-                <Button
-                  sx={{
-                    marginLeft: `1rem`,
-                  }}
-                  color="error"
-                  variant="outlined"
-                  onClick={() => {
-                    dispatch({
-                      type: `SET_ZERO`,
-                    })
-                  }}
-                >
-                  {buttons.deleteAll.name}
-                </Button>
+            <DownloadButtonSection
+              primaryColor={primaryColor}
+              role="presentation"
+            >
+              {renderFetchAllDataButton()}
+            </DownloadButtonSection>
+            <Content>
+              <Block>
+                <div>
+                  <p>ข้อมูลชื่อประเภทกลุ่มงานและชื่อตำแหน่ง</p>
+                  {positionTypes.length > 0 && positionNames.length > 0 && (
+                    <>
+                      <p className="detail">
+                        ชื่อประเภทกลุ่มงาน: {positionTypes.length} รายการ
+                      </p>
+                      <p className="detail">
+                        ชื่อตำแหน่งในสายงาน: {positionNames.length} รายการ
+                      </p>
+                    </>
+                  )}
+                </div>
+                <div>
+                  {positionTypes.length > 0 && positionNames.length > 0 ? (
+                    <>{renderSyncedData()}</>
+                  ) : (
+                    <Button
+                      color="primary"
+                      variant="contained"
+                      onClick={() => {
+                        getPositionName()
+                      }}
+                    >
+                      {buttons.downloadData.name}
+                    </Button>
+                  )}
+                </div>
+              </Block>
+              {positionTypes.length > 0 && positionNames.length > 0 && (
+                <UpdatedDate>
+                  {renderTableDate(installationDate.positionTypes, `datetime`)}
+                </UpdatedDate>
               )}
-            </ButtonBlock>
-          </Form>
+              <Divider style={{ marginTop: `1rem`, marginBottom: `1rem` }} />
+              {roles[userInfo.role.name].level >= 2 && (
+                <>
+                  <Block>
+                    <div>
+                      <p>ข้อมูลหน่วย</p>
+                      {units.length > 0 && (
+                        <p className="detail">{units.length} รายการ</p>
+                      )}
+                    </div>
+                    <div>
+                      {units.length > 0 ? (
+                        <>{renderSyncedData()}</>
+                      ) : (
+                        <Button
+                          color="primary"
+                          variant="contained"
+                          onClick={() => {
+                            getUnits()
+                          }}
+                        >
+                          {buttons.downloadData.name}
+                        </Button>
+                      )}
+                    </div>
+                  </Block>
+                  {units.length > 0 && (
+                    <UpdatedDate>
+                      {renderTableDate(installationDate.units, `datetime`)}
+                    </UpdatedDate>
+                  )}
+                  <Divider
+                    style={{ marginTop: `1rem`, marginBottom: `1rem` }}
+                  />
+                </>
+              )}
+              <Block>
+                <div>
+                  <p>ข้อมูลจังหวัด อำเภอ ตำบล และรหัสไปรษณีย์</p>
+                  {locations.length > 0 && (
+                    <>
+                      <p className="detail">
+                        จังหวัด:{" "}
+                        {uniqByKeepFirst(locations, it => it.province).length}{" "}
+                        รายการ
+                      </p>
+                      <p className="detail">
+                        อำเภอ:{" "}
+                        {uniqByKeepFirst(locations, it => it.district).length}{" "}
+                        รายการ
+                      </p>
+                      <p className="detail">
+                        ตำบล:{" "}
+                        {
+                          uniqByKeepFirst(locations, it => it.subdistrict)
+                            .length
+                        }{" "}
+                        รายการ
+                      </p>
+                      <p className="detail">
+                        รหัสไปรษณีย์:{" "}
+                        {uniqByKeepFirst(locations, it => it.zipcode).length}{" "}
+                        รายการ
+                      </p>
+                    </>
+                  )}
+                </div>
+                <div>
+                  {locations.length > 0 ? (
+                    <>{renderSyncedData()}</>
+                  ) : (
+                    <Button
+                      color="primary"
+                      variant="contained"
+                      onClick={() => {
+                        getLocations()
+                      }}
+                    >
+                      {buttons.downloadData.name}
+                    </Button>
+                  )}
+                </div>
+              </Block>
+              {locations.length > 0 && (
+                <UpdatedDate>
+                  {renderTableDate(installationDate.locations, `datetime`)}
+                </UpdatedDate>
+              )}
+              <Divider style={{ marginTop: `1rem`, marginBottom: `1rem` }} />
+              <Block>
+                <div>
+                  <p>ข้อมูลชื่อระดับการศึกษา</p>
+                  {educationLevels.length > 0 && (
+                    <p className="detail">{educationLevels.length} รายการ</p>
+                  )}
+                </div>
+                <div>
+                  {educationLevels.length > 0 ? (
+                    <>{renderSyncedData()}</>
+                  ) : (
+                    <Button
+                      color="primary"
+                      variant="contained"
+                      onClick={() => {
+                        getEducationLevels()
+                      }}
+                    >
+                      {buttons.downloadData.name}
+                    </Button>
+                  )}
+                </div>
+              </Block>
+              {educationLevels.length > 0 && (
+                <UpdatedDate>
+                  {renderTableDate(
+                    installationDate.educationLevels,
+                    `datetime`
+                  )}
+                </UpdatedDate>
+              )}
+              <Divider style={{ marginTop: `1rem`, marginBottom: `1rem` }} />
+              <Block>
+                <div>
+                  <p>ข้อมูลชื่อวุฒิการศึกษา</p>
+                  {educationNames.length > 0 && (
+                    <p className="detail">{educationNames.length} รายการ</p>
+                  )}
+                </div>
+                <div>
+                  {educationNames.length > 0 ? (
+                    <>{renderSyncedData()}</>
+                  ) : (
+                    <Button
+                      color="primary"
+                      variant="contained"
+                      onClick={() => {
+                        getEducationNames()
+                      }}
+                    >
+                      {buttons.downloadData.name}
+                    </Button>
+                  )}
+                </div>
+              </Block>
+              {educationNames.length > 0 && (
+                <UpdatedDate>
+                  {renderTableDate(installationDate.educationNames, `datetime`)}
+                </UpdatedDate>
+              )}
+              <Divider style={{ marginTop: `1rem`, marginBottom: `1rem` }} />
+              <Block>
+                <div>
+                  <p>ข้อมูลสถาบันการศึกษา</p>
+                  {educationalInstitutions.length > 0 && (
+                    <p className="detail">
+                      {educationalInstitutions.length} รายการ
+                    </p>
+                  )}
+                </div>
+                <div>
+                  {educationalInstitutions.length > 0 ? (
+                    <>{renderSyncedData()}</>
+                  ) : (
+                    <Button
+                      color="primary"
+                      variant="contained"
+                      onClick={() => {
+                        getEducationalInstitutions()
+                      }}
+                    >
+                      {buttons.downloadData.name}
+                    </Button>
+                  )}
+                </div>
+              </Block>
+              {educationalInstitutions.length > 0 && (
+                <UpdatedDate>
+                  {renderTableDate(
+                    installationDate.educationalInstitutions,
+                    `datetime`
+                  )}
+                </UpdatedDate>
+              )}
+              <Divider style={{ marginTop: `1rem`, marginBottom: `1rem` }} />
+              <Block>
+                <div>
+                  <p>ข้อมูลรายชื่อประเทศ</p>
+                  {countries.length > 0 && (
+                    <p className="detail">{countries.length} รายการ</p>
+                  )}
+                </div>
+                <div>
+                  {countries.length > 0 ? (
+                    <>{renderSyncedData()}</>
+                  ) : (
+                    <Button
+                      color="primary"
+                      variant="contained"
+                      onClick={() => {
+                        getCountries()
+                      }}
+                    >
+                      {buttons.downloadData.name}
+                    </Button>
+                  )}
+                </div>
+              </Block>
+              {countries.length > 0 && (
+                <UpdatedDate>
+                  {renderTableDate(installationDate.countries, `datetime`)}
+                </UpdatedDate>
+              )}
+            </Content>
+          </Container>
+          {(positionTypes.length > 0 ||
+            positionNames.length > 0 ||
+            units.length > 0 ||
+            locations.length > 0 ||
+            educationLevels.length > 0 ||
+            educationNames.length > 0 ||
+            educationalInstitutions.length > 0 ||
+            countries.length > 0) && (
+            <>
+              <Divider style={{ marginTop: `2rem`, marginBottom: `1rem` }} />
+              <Form style={{ maxWidth: `100%` }}>
+                <ButtonBlock>
+                  <Button
+                    sx={{
+                      marginLeft: `1rem`,
+                    }}
+                    color="error"
+                    variant="outlined"
+                    onClick={() => {
+                      dispatch({
+                        type: `SET_ZERO`,
+                      })
+                    }}
+                  >
+                    <FontAwesomeIcon
+                      icon={faTrash}
+                      style={{ marginRight: 5 }}
+                    />
+                    {buttons.deleteAll.name}
+                  </Button>
+                </ButtonBlock>
+              </Form>
+            </>
+          )}
           <PercentDialog data={percentDialog} />
         </>
       ) : (
