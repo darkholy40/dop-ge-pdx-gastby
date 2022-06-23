@@ -89,19 +89,16 @@ const ButtonBlock = styled.div`
 `
 
 const buttons = {
-  downloadData: {
+  install: {
     name: `ติดตั้ง`,
   },
-  downloadAll: {
+  installAll: {
     name: `ติดตั้งทั้งหมด`,
   },
-  updateDate: {
+  update: {
     name: `อัปเดต`,
   },
-  updateAll: {
-    name: `อัปเดตทั้งหมด`,
-  },
-  deleteAll: {
+  removeAll: {
     name: `ยกเลิกการติดตั้งทั้งหมด`,
   },
 }
@@ -119,6 +116,7 @@ const SettingSystemData = () => {
     educationNames,
     educationalInstitutions,
     countries,
+    decorations,
     installationDate,
   } = useSelector(({ staticReducer }) => staticReducer)
   const dispatch = useDispatch()
@@ -820,7 +818,104 @@ const SettingSystemData = () => {
     }, 200)
   }, [token, dispatch])
 
+  const getDecorations = useCallback(async () => {
+    let lap = 0
+
+    setPercentDialog(prev => [
+      ...prev,
+      {
+        id: 8,
+        open: true,
+        title: `กำลังโหลดข้อมูลเครื่องราชอิสริยาภรณ์`,
+        percent: 0,
+      },
+    ])
+
+    try {
+      const res = await client(token).query({
+        query: gql`
+          query DecorationsCount {
+            decorationsConnection {
+              aggregate {
+                totalCount
+              }
+            }
+          }
+        `,
+      })
+
+      const totalCount = res.data.decorationsConnection.aggregate.totalCount
+      lap = Math.ceil(totalCount / 100)
+    } catch (error) {
+      // console.log(error.message)
+
+      if (error.message === `Failed to fetch`) {
+        dispatch({
+          type: `SET_NOTIFICATION_DIALOG`,
+          notificationDialog: {
+            open: true,
+            title: `การเชื่อมต่อไม่เสถียร`,
+            description: `ไม่สามารถเชื่อมต่อฐานข้อมูลได้`,
+            variant: `error`,
+            confirmText: `ลองอีกครั้ง`,
+            callback: () => getDecorations(),
+          },
+        })
+      }
+    }
+
+    if (lap > 0) {
+      let returnData = []
+      for (let i = 0; i < lap; i++) {
+        const res = await client(token).query({
+          query: gql`
+            query Decorations {
+              decorations(limit: 100, start: ${i * 100}) {
+                _id
+                short_name
+                full_name
+                eng_name
+              }
+            }
+          `,
+        })
+
+        for (let decoration of res.data.decorations) {
+          returnData = [...returnData, decoration]
+        }
+
+        setPercentDialog(prev =>
+          updateAnObjectInArray(prev, `id`, 8, {
+            percent: (i * 100) / lap,
+          })
+        )
+      }
+
+      dispatch({
+        type: `SET_DECORATIONS`,
+        decorations: returnData,
+      })
+      dispatch({
+        type: `SET_INSTALLATION_DATE`,
+        key: `decorations`,
+      })
+    }
+
+    setPercentDialog(prev =>
+      updateAnObjectInArray(prev, `id`, 8, {
+        percent: 100,
+      })
+    )
+    setTimeout(() => {
+      setPercentDialog(prev => removeObjectInArray(prev, `id`, 8))
+    }, 200)
+  }, [token, dispatch])
+
   const installAll = () => {
+    if (roles[userInfo.role.name].level >= 2) {
+      units.length === 0 && getUnits()
+    }
+
     positionTypes.length === 0 &&
       positionNames.length === 0 &&
       getPositionName()
@@ -829,23 +924,21 @@ const SettingSystemData = () => {
     educationNames.length === 0 && getEducationNames()
     educationalInstitutions.length === 0 && getEducationalInstitutions()
     countries.length === 0 && getCountries()
-
-    if (roles[userInfo.role.name].level >= 2) {
-      units.length === 0 && getUnits()
-    }
+    decorations.length === 0 && getDecorations()
   }
 
   const updateAll = () => {
+    if (roles[userInfo.role.name].level >= 2) {
+      getUnits()
+    }
+
     getPositionName()
     getLocations()
     getEducationLevels()
     getEducationNames()
     getEducationalInstitutions()
     getCountries()
-
-    if (roles[userInfo.role.name].level >= 2) {
-      getUnits()
-    }
+    getDecorations()
   }
 
   const renderCheckedSign = () => {
@@ -860,14 +953,14 @@ const SettingSystemData = () => {
   const renderFetchDataButton = callback => {
     return (
       <Button color="primary" variant="contained" onClick={callback}>
-        {buttons.downloadData.name}
+        {buttons.install.name}
       </Button>
     )
   }
 
   const renderFetchAllDataButton = () => {
     let props = {
-      text: buttons.downloadAll.name,
+      text: buttons.installAll.name,
       color: `success`,
       variant: `contained`,
       method: `install`,
@@ -875,6 +968,8 @@ const SettingSystemData = () => {
     let count = 0
 
     if (roles[userInfo.role.name].level >= 2) {
+      units.length === 0 && count++
+
       if (
         positionTypes.length > 0 &&
         positionNames.length > 0 &&
@@ -883,16 +978,15 @@ const SettingSystemData = () => {
         educationLevels.length > 0 &&
         educationNames.length > 0 &&
         educationalInstitutions.length > 0 &&
-        countries.length > 0
+        countries.length > 0 &&
+        decorations.length > 0
       ) {
         props = {
-          text: buttons.updateAll.name,
+          text: buttons.update.name,
           color: `primary`,
           variant: `contained`,
           method: `update`,
         }
-
-        units.length === 0 && count++
       }
     } else {
       if (
@@ -902,10 +996,11 @@ const SettingSystemData = () => {
         educationLevels.length > 0 &&
         educationNames.length > 0 &&
         educationalInstitutions.length > 0 &&
-        countries.length > 0
+        countries.length > 0 &&
+        decorations.length > 0
       ) {
         props = {
-          text: buttons.updateAll.name,
+          text: buttons.update.name,
           color: `primary`,
           variant: `contained`,
           method: `update`,
@@ -919,6 +1014,7 @@ const SettingSystemData = () => {
     educationNames.length === 0 && count++
     educationalInstitutions.length === 0 && count++
     countries.length === 0 && count++
+    decorations.length === 0 && count++
 
     return (
       <>
@@ -1198,6 +1294,28 @@ const SettingSystemData = () => {
                   {renderTableDate(installationDate.countries, `datetime`)}
                 </UpdatedDate>
               )}
+
+              <Divider style={{ marginTop: `1rem`, marginBottom: `1rem` }} />
+              <Block>
+                <div>
+                  <p>ข้อมูลเครื่องราชอิสริยาภรณ์</p>
+                  {decorations.length > 0 && (
+                    <p className="detail">{decorations.length} รายการ</p>
+                  )}
+                </div>
+                <div>
+                  {decorations.length > 0 ? (
+                    <>{renderCheckedSign()}</>
+                  ) : (
+                    <>{renderFetchDataButton(getDecorations)}</>
+                  )}
+                </div>
+              </Block>
+              {decorations.length > 0 && (
+                <UpdatedDate>
+                  {renderTableDate(installationDate.decorations, `datetime`)}
+                </UpdatedDate>
+              )}
             </Content>
           </Container>
           <PercentDialog data={percentDialog} />
@@ -1210,11 +1328,13 @@ const SettingSystemData = () => {
                 educationLevels.length > 0 ||
                 educationNames.length > 0 ||
                 educationalInstitutions.length > 0 ||
-                countries.length > 0) && (
+                countries.length > 0 ||
+                decorations.length > 0) && (
                 <>
                   <Divider
                     style={{ marginTop: `2rem`, marginBottom: `1rem` }}
                   />
+                  <p style={{ textAlign: `right` }}>สำหรับทดสอบฟังก์ชัน</p>
                   <Form style={{ maxWidth: `100%` }}>
                     <ButtonBlock>
                       <Button
@@ -1229,7 +1349,7 @@ const SettingSystemData = () => {
                           icon={faTrash}
                           style={{ marginRight: 5 }}
                         />
-                        {buttons.deleteAll.name}
+                        {buttons.removeAll.name}
                       </Button>
                     </ButtonBlock>
                   </Form>
@@ -1244,10 +1364,10 @@ const SettingSystemData = () => {
                   dispatch({
                     type: `SET_ZERO`,
                   })
-                  // dispatch({
-                  //   type: `SET_TUTORIAL_COUNT`,
-                  //   tutorialCount: 0,
-                  // })
+                  dispatch({
+                    type: `SET_TUTORIAL_COUNT`,
+                    tutorialCount: 0,
+                  })
                 }}
                 cancelCallback={() => {
                   setOpenDeleteAllConfirmationDialog(false)

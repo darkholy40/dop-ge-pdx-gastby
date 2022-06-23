@@ -81,6 +81,7 @@ const AddPositionsPage = () => {
     educationNames,
     educationalInstitutions,
     countries,
+    decorations,
   } = useSelector(({ staticReducer }) => staticReducer)
   const dispatch = useDispatch()
   const [positions, setPositions] = useState([])
@@ -127,7 +128,7 @@ const AddPositionsPage = () => {
   const [currentContactEnd, setCurrentContactEnd] = useState(null)
   const [guilty, setGuilty] = useState(``)
   const [punish, setPunish] = useState(``)
-  const [decoration, setDecoration] = useState(``)
+  const [decoration, setDecoration] = useState(null)
   const [percentSalary, setPercentSalary] = useState(``)
   const [scoreKPI, setScoreKPI] = useState(``)
   const [scoreCompetence, setScoreCompetence] = useState(``)
@@ -341,7 +342,6 @@ const AddPositionsPage = () => {
                 CurrentContactEnd: ${renderDateForGraphQL(currentContactEnd)},
                 Guilty: "${guilty}",
                 Punish: "${punish}",
-                Decoration: "${decoration}",
                 PercentSalary: "${percentSalary}",
                 ScoreKPI: "${scoreKPI}",
                 ScoreCompetence: "${scoreCompetence}",
@@ -360,6 +360,7 @@ const AddPositionsPage = () => {
                   educationSelect.educationalInstitution._id
                 }",
                 country: "${educationSelect.country._id}",
+                decoration: "${decoration._id}",
               }
             }) {
               person {
@@ -540,7 +541,7 @@ const AddPositionsPage = () => {
     setCurrentContactEnd(null)
     setGuilty(``)
     setPunish(``)
-    setDecoration(``)
+    setDecoration(null)
     setPercentSalary(``)
     setScoreKPI(``)
     setScoreCompetence(``)
@@ -594,7 +595,7 @@ const AddPositionsPage = () => {
       setCurrentContactStart(null)
       setCurrentContactEnd(null)
     } else {
-      setDecoration(``)
+      setDecoration(null)
     }
   }, [jobType])
 
@@ -1899,15 +1900,36 @@ const AddPositionsPage = () => {
                 <DisabledBlock
                   className={jobType !== `ลูกจ้างประจำ` ? `disabled` : ``}
                 >
-                  <TextField
-                    sx={textfieldProps}
-                    id="Decoration"
-                    label="เครื่องราชอิสริยาภรณ์สูงสุดที่ได้รับ"
-                    variant="outlined"
-                    onChange={e => setDecoration(e.target.value)}
-                    value={decoration}
-                    disabled={jobType !== `ลูกจ้างประจำ`}
-                  />
+                  <Flex>
+                    <Autocomplete
+                      sx={{ width: `100%` }}
+                      id="Decoration"
+                      disablePortal
+                      options={decorations}
+                      noOptionsText={`ไม่พบข้อมูล`}
+                      getOptionLabel={option => `${option.full_name}`}
+                      isOptionEqualToValue={(option, value) => {
+                        return option === value
+                      }}
+                      onChange={(_, newValue) => {
+                        setDecoration(newValue)
+                      }}
+                      value={decoration}
+                      renderInput={params => (
+                        <TextField
+                          {...params}
+                          label="เครื่องราชอิสริยาภรณ์สูงสุดที่ได้รับ"
+                          InputProps={{
+                            ...params.InputProps,
+                            sx: {
+                              borderRadius: `5px`,
+                            },
+                          }}
+                        />
+                      )}
+                      disabled={jobType !== `ลูกจ้างประจำ`}
+                    />
+                  </Flex>
                 </DisabledBlock>
               </Grid>
             </Grid>
@@ -2104,7 +2126,7 @@ const AddPositionsPage = () => {
                     currentContactEnd === null &&
                     guilty === `` &&
                     punish === `` &&
-                    decoration === `` &&
+                    decoration === null &&
                     percentSalary === `` &&
                     scoreKPI === `` &&
                     scoreCompetence === `` &&

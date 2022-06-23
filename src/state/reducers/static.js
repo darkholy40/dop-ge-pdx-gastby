@@ -9,6 +9,7 @@ const initialState = {
   educationNames: [],
   educationalInstitutions: [],
   countries: [],
+  decorations: [],
   installationDate: {
     positionTypes: null,
     units: null,
@@ -17,6 +18,7 @@ const initialState = {
     educationNames: null,
     educationalInstitutions: null,
     countries: null,
+    decorations: null,
   },
 }
 
@@ -70,6 +72,12 @@ const staticReducer = (state = initialState, action) => {
         countries: action.countries,
       }
 
+    case `SET_DECORATIONS`:
+      return {
+        ...state,
+        decorations: action.decorations,
+      }
+
     case `SET_INSTALLATION_DATE`:
       return {
         ...state,
@@ -90,6 +98,7 @@ const staticReducer = (state = initialState, action) => {
         educationNames: [],
         educationalInstitutions: [],
         countries: [],
+        decorations: [],
         installationDate: {
           ...initialState.installationDate,
         },
@@ -114,6 +123,7 @@ const staticPersistConfig = {
     `educationNames`,
     `educationalInstitutions`,
     `countries`,
+    `decorations`,
     `installationDate`,
   ],
 }

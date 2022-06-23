@@ -83,6 +83,7 @@ const EditPositionsPage = ({ location }) => {
     educationNames,
     educationalInstitutions,
     countries,
+    decorations,
   } = useSelector(({ staticReducer }) => staticReducer)
   const dispatch = useDispatch()
   const [positions, setPositions] = useState([])
@@ -135,7 +136,7 @@ const EditPositionsPage = ({ location }) => {
   const [currentContactEnd, setCurrentContactEnd] = useState(null)
   const [guilty, setGuilty] = useState(``)
   const [punish, setPunish] = useState(``)
-  const [decoration, setDecoration] = useState(``)
+  const [decoration, setDecoration] = useState(null)
   const [percentSalary, setPercentSalary] = useState(``)
   const [scoreKPI, setScoreKPI] = useState(``)
   const [scoreCompetence, setScoreCompetence] = useState(``)
@@ -248,7 +249,11 @@ const EditPositionsPage = ({ location }) => {
       }
       setGuilty(data.person.Guilty)
       setPunish(data.person.Punish)
-      setDecoration(data.person.Decoration)
+      setDecoration(
+        data.person.decoration !== null
+          ? decorations.find(elem => elem._id === data.person.decoration._id)
+          : null
+      )
       setPercentSalary(data.person.PercentSalary)
       setScoreKPI(data.person.ScoreKPI)
       setScoreCompetence(data.person.ScoreCompetence)
@@ -261,6 +266,7 @@ const EditPositionsPage = ({ location }) => {
       educationLevels,
       educationNames,
       educationalInstitutions,
+      decorations,
     ]
   )
 
@@ -317,7 +323,6 @@ const EditPositionsPage = ({ location }) => {
               CurrentContactEnd
               Guilty
               Punish
-              Decoration
               PercentSalary
               ScoreKPI
               ScoreCompetence
@@ -353,6 +358,12 @@ const EditPositionsPage = ({ location }) => {
                 _id
                 code
                 name
+              }
+              decoration {
+                _id
+                short_name
+                full_name
+                eng_name
               }
             }
           }
@@ -634,7 +645,6 @@ const EditPositionsPage = ({ location }) => {
                 CurrentContactEnd: ${renderDateForGraphQL(currentContactEnd)},
                 Guilty: "${guilty}",
                 Punish: "${punish}",
-                Decoration: "${decoration}",
                 PercentSalary: "${percentSalary}",
                 ScoreKPI: "${scoreKPI}",
                 ScoreCompetence: "${scoreCompetence}",
@@ -650,6 +660,7 @@ const EditPositionsPage = ({ location }) => {
                   educationSelect.educationalInstitution._id
                 }",
                 country: "${educationSelect.country._id}",
+                decoration: "${decoration._id}",
               }
             }) {
               person {
@@ -904,7 +915,7 @@ const EditPositionsPage = ({ location }) => {
       setCurrentContactStart(null)
       setCurrentContactEnd(null)
     } else {
-      setDecoration(``)
+      setDecoration(null)
     }
   }, [jobType])
 
@@ -2267,15 +2278,36 @@ const EditPositionsPage = ({ location }) => {
                       <DisabledBlock
                         className={jobType !== `ลูกจ้างประจำ` ? `disabled` : ``}
                       >
-                        <TextField
-                          sx={textfieldProps}
-                          id="Decoration"
-                          label="เครื่องราชอิสริยาภรณ์สูงสุดที่ได้รับ"
-                          variant="outlined"
-                          onChange={e => setDecoration(e.target.value)}
-                          value={decoration}
-                          disabled={jobType !== `ลูกจ้างประจำ`}
-                        />
+                        <Flex>
+                          <Autocomplete
+                            sx={{ width: `100%` }}
+                            id="Decoration"
+                            disablePortal
+                            options={decorations}
+                            noOptionsText={`ไม่พบข้อมูล`}
+                            getOptionLabel={option => `${option.full_name}`}
+                            isOptionEqualToValue={(option, value) => {
+                              return option === value
+                            }}
+                            onChange={(_, newValue) => {
+                              setDecoration(newValue)
+                            }}
+                            value={decoration}
+                            renderInput={params => (
+                              <TextField
+                                {...params}
+                                label="เครื่องราชอิสริยาภรณ์สูงสุดที่ได้รับ"
+                                InputProps={{
+                                  ...params.InputProps,
+                                  sx: {
+                                    borderRadius: `5px`,
+                                  },
+                                }}
+                              />
+                            )}
+                            disabled={jobType !== `ลูกจ้างประจำ`}
+                          />
+                        </Flex>
                       </DisabledBlock>
                     </Grid>
                   </Grid>
