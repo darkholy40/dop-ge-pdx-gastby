@@ -16,7 +16,7 @@ const RootElement = ({ element }) => {
   if (typeof window === "undefined") {
     return (
       <Provider store={store}>
-        <Container>{element}</Container>
+        <div />
       </Provider>
     )
   }

@@ -86,6 +86,9 @@ const IndexPage = () => {
 
       switch (res.status) {
         case 200:
+          const userData = res.data.user
+          const token = res.data.jwt
+
           // use setTimeout() to prevent "Can't perform a React state update on an unmounted component"
           setIsError({
             status: false,
@@ -93,14 +96,14 @@ const IndexPage = () => {
           })
 
           setTimeout(() => {
-            client(res.data.jwt).mutate({
+            client(token).mutate({
               mutation: gql`
                 mutation CreateLog {
                   createLog(input: {
                     data: {
                       action: "auth",
                       description: "login",
-                      users_permissions_user: "${res.data.user._id}",
+                      users_permissions_user: "${userData._id}",
                     }
                   }) {
                     log {
@@ -110,9 +113,6 @@ const IndexPage = () => {
                 }
               `,
             })
-
-            const userData = res.data.user
-            const token = res.data.jwt
 
             dispatch({
               type: `SET_TOKEN`,
