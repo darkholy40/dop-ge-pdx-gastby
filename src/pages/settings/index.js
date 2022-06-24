@@ -86,7 +86,7 @@ const SettingsIndex = () => {
                   <FontAwesomeIcon
                     icon={faDatabase}
                     style={{
-                      fontSize: `1.25rem`,
+                      fontSize: `1.5rem`,
                       marginRight: 8,
                       minWidth: 35,
                     }}
@@ -108,7 +108,7 @@ const SettingsIndex = () => {
                   <FontAwesomeIcon
                     icon={faAddressCard}
                     style={{
-                      fontSize: `1.25rem`,
+                      fontSize: `1.5rem`,
                       marginRight: 8,
                       minWidth: 35,
                     }}

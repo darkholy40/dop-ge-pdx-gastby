@@ -2,6 +2,8 @@ import React, { useCallback, useEffect } from "react"
 import { navigate } from "gatsby"
 import { useSelector, useDispatch } from "react-redux"
 import styled from "styled-components"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { faPrint } from "@fortawesome/free-solid-svg-icons"
 
 import { client, gql } from "../../functions/apollo-client"
 
@@ -81,7 +83,15 @@ const IndexPage = () => {
                   role="presentation"
                   onClick={() => navigate(`/reports/stock/`)}
                 >
-                  รายชื่อพนักงานราชการและตำแหน่งว่าง (Stock)
+                  <FontAwesomeIcon
+                    icon={faPrint}
+                    style={{
+                      fontSize: `1.5rem`,
+                      marginRight: 8,
+                      minWidth: 35,
+                    }}
+                  />
+                  <span>รายชื่อพนักงานราชการและตำแหน่งว่าง (Stock)</span>
                 </div>
               </div>
             </ColorButton>
@@ -95,7 +105,17 @@ const IndexPage = () => {
                   role="presentation"
                   onClick={() => navigate(`/reports/flow-out/`)}
                 >
-                  รายชื่อพนักงานราชการที่ออกในปีงบประมาณที่ผ่านมา (Flow-Out)
+                  <FontAwesomeIcon
+                    icon={faPrint}
+                    style={{
+                      fontSize: `1.5rem`,
+                      marginRight: 8,
+                      minWidth: 35,
+                    }}
+                  />
+                  <span>
+                    รายชื่อพนักงานราชการที่ออกในปีงบประมาณที่ผ่านมา (Flow-Out)
+                  </span>
                 </div>
               </div>
             </ColorButton>

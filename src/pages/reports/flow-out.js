@@ -127,10 +127,6 @@ const FlowOutPage = () => {
                 Gender
                 BirthDate
                 StartDate
-                Edu_Level
-                Edu_Name
-                Edu_Graduated
-                Edu_Country
                 MovementType
                 Outline
                 RewardType1
@@ -142,7 +138,6 @@ const FlowOutPage = () => {
                 CurrentContactEnd
                 Guilty
                 Punish
-                Decoration
                 PercentSalary
                 ScoreKPI
                 ScoreCompetence

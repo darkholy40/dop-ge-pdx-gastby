@@ -127,10 +127,6 @@ const StockPage = () => {
                   Gender
                   BirthDate
                   StartDate
-                  Edu_Level
-                  Edu_Name
-                  Edu_Graduated
-                  Edu_Country
                   MovementType
                   Outline
                   RewardType1
@@ -142,13 +138,27 @@ const StockPage = () => {
                   CurrentContactEnd
                   Guilty
                   Punish
-                  Decoration
                   PercentSalary
                   ScoreKPI
                   ScoreCompetence
                   StatusDisability
                   type
                   skills
+                  education_level {
+                    name
+                  }
+                  education_name {
+                    full_name
+                  }
+                  educational_institution {
+                    name
+                  }
+                  country {
+                    name
+                  }
+                  decoration {
+                    full_name
+                  }
                 }
                 position_type {
                   type
@@ -218,15 +228,26 @@ const StockPage = () => {
                   ? renderThaiDate(position.person.StartDate)
                   : ``,
               ชื่อระดับการศึกษา:
-                position.person !== null ? position.person.Edu_Level : ``,
+                position.person !== null &&
+                position.person.education_level !== null
+                  ? position.person.education_level.name
+                  : ``,
               ทักษะประสบการณ์:
                 position.person !== null ? position.person.skills || `-` : ``,
               "ชื่อวุฒิการศึกษา(ในตำแหน่ง)":
-                position.person !== null ? position.person.Edu_Name : ``,
+                position.person !== null &&
+                position.person.education_name !== null
+                  ? position.person.education_name.full_name
+                  : ``,
               "ชื่อสถาบันการศึกษาที่สำเร็จการศึกษา(ในตำแหน่ง)":
-                position.person !== null ? position.person.Edu_Graduated : ``,
+                position.person !== null &&
+                position.person.educational_institution !== null
+                  ? position.person.educational_institution.name
+                  : ``,
               ชื่อประเทศที่สำเร็จการศึกษา:
-                position.person !== null ? position.person.Edu_Country : ``,
+                position.person !== null && position.person.country !== null
+                  ? position.person.country.name
+                  : ``,
               ชื่อประเภทการเคลื่อนไหวล่าสุด:
                 position.person !== null
                   ? position.person.MovementType || `-`
@@ -271,7 +292,9 @@ const StockPage = () => {
                   ? renderNumberAsText(position.person.Punish)
                   : ``,
               เครื่องราชอิสริยาภรณ์สูงสุดที่ได้รับ:
-                position.person !== null ? position.person.Decoration : ``,
+                position.person !== null && position.person.decoration !== null
+                  ? position.person.decoration.full_name
+                  : ``,
               ร้อยละที่ได้รับการเลื่อนเงินเดือน:
                 position.person !== null
                   ? renderNumberAsText(position.person.PercentSalary, 2)
