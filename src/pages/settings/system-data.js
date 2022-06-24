@@ -125,7 +125,11 @@ const SettingSystemData = () => {
     useState(false)
 
   const savePageView = useCallback(() => {
-    if (token !== `` && userInfo._id !== ``) {
+    if (
+      token !== `` &&
+      userInfo._id !== `` &&
+      roles[userInfo.role.name].level < 3
+    ) {
       client(token).mutate({
         mutation: gql`
           mutation CreateLog {
@@ -925,6 +929,24 @@ const SettingSystemData = () => {
     educationalInstitutions.length === 0 && getEducationalInstitutions()
     countries.length === 0 && getCountries()
     decorations.length === 0 && getDecorations()
+
+    client(token).mutate({
+      mutation: gql`
+        mutation CreateLog {
+          createLog(input: {
+            data: {
+              action: "action",
+              description: "download static all",
+              users_permissions_user: "${userInfo._id}",
+            }
+          }) {
+            log {
+              _id
+            }
+          }
+        }
+      `,
+    })
   }
 
   const updateAll = () => {
@@ -939,6 +961,24 @@ const SettingSystemData = () => {
     getEducationalInstitutions()
     getCountries()
     getDecorations()
+
+    client(token).mutate({
+      mutation: gql`
+        mutation CreateLog {
+          createLog(input: {
+            data: {
+              action: "action",
+              description: "update static all",
+              users_permissions_user: "${userInfo._id}",
+            }
+          }) {
+            log {
+              _id
+            }
+          }
+        }
+      `,
+    })
   }
 
   const renderCheckedSign = () => {
@@ -950,9 +990,32 @@ const SettingSystemData = () => {
     )
   }
 
-  const renderFetchDataButton = callback => {
+  const renderFetchDataButton = (callback, descriptionLog) => {
     return (
-      <Button color="primary" variant="contained" onClick={callback}>
+      <Button
+        color="primary"
+        variant="contained"
+        onClick={() => {
+          callback()
+          client(token).mutate({
+            mutation: gql`
+            mutation CreateLog {
+              createLog(input: {
+                data: {
+                  action: "action",
+                  description: "download static -> ${descriptionLog}",
+                  users_permissions_user: "${userInfo._id}",
+                }
+              }) {
+                log {
+                  _id
+                }
+              }
+            }
+          `,
+          })
+        }}
+      >
         {buttons.install.name}
       </Button>
     )
@@ -1061,6 +1124,7 @@ const SettingSystemData = () => {
     educationNames.length === 0 && count++
     educationalInstitutions.length === 0 && count++
     countries.length === 0 && count++
+    decorations.length === 0 && count++
 
     if (count === 0 && tutorialCount === 2) {
       dispatch({
@@ -1078,6 +1142,7 @@ const SettingSystemData = () => {
     educationNames.length,
     educationalInstitutions.length,
     countries.length,
+    decorations.length,
     dispatch,
   ])
 
@@ -1121,7 +1186,9 @@ const SettingSystemData = () => {
                   {positionTypes.length > 0 && positionNames.length > 0 ? (
                     <>{renderCheckedSign()}</>
                   ) : (
-                    <>{renderFetchDataButton(getPositionName)}</>
+                    <>
+                      {renderFetchDataButton(getPositionName, `position-types`)}
+                    </>
                   )}
                 </div>
               </Block>
@@ -1144,7 +1211,7 @@ const SettingSystemData = () => {
                       {units.length > 0 ? (
                         <>{renderCheckedSign()}</>
                       ) : (
-                        <>{renderFetchDataButton(getUnits)}</>
+                        <>{renderFetchDataButton(getUnits, `units`)}</>
                       )}
                     </div>
                   </Block>
@@ -1193,7 +1260,7 @@ const SettingSystemData = () => {
                   {locations.length > 0 ? (
                     <>{renderCheckedSign()}</>
                   ) : (
-                    <>{renderFetchDataButton(getLocations)}</>
+                    <>{renderFetchDataButton(getLocations, `locations`)}</>
                   )}
                 </div>
               </Block>
@@ -1214,7 +1281,12 @@ const SettingSystemData = () => {
                   {educationLevels.length > 0 ? (
                     <>{renderCheckedSign()}</>
                   ) : (
-                    <>{renderFetchDataButton(getEducationLevels)}</>
+                    <>
+                      {renderFetchDataButton(
+                        getEducationLevels,
+                        `education-levels`
+                      )}
+                    </>
                   )}
                 </div>
               </Block>
@@ -1238,7 +1310,12 @@ const SettingSystemData = () => {
                   {educationNames.length > 0 ? (
                     <>{renderCheckedSign()}</>
                   ) : (
-                    <>{renderFetchDataButton(getEducationNames)}</>
+                    <>
+                      {renderFetchDataButton(
+                        getEducationNames,
+                        `education-names`
+                      )}
+                    </>
                   )}
                 </div>
               </Block>
@@ -1261,7 +1338,12 @@ const SettingSystemData = () => {
                   {educationalInstitutions.length > 0 ? (
                     <>{renderCheckedSign()}</>
                   ) : (
-                    <>{renderFetchDataButton(getEducationalInstitutions)}</>
+                    <>
+                      {renderFetchDataButton(
+                        getEducationalInstitutions,
+                        `educational-institutions`
+                      )}
+                    </>
                   )}
                 </div>
               </Block>
@@ -1285,7 +1367,7 @@ const SettingSystemData = () => {
                   {countries.length > 0 ? (
                     <>{renderCheckedSign()}</>
                   ) : (
-                    <>{renderFetchDataButton(getCountries)}</>
+                    <>{renderFetchDataButton(getCountries, `countries`)}</>
                   )}
                 </div>
               </Block>
@@ -1307,7 +1389,7 @@ const SettingSystemData = () => {
                   {decorations.length > 0 ? (
                     <>{renderCheckedSign()}</>
                   ) : (
-                    <>{renderFetchDataButton(getDecorations)}</>
+                    <>{renderFetchDataButton(getDecorations, `decorations`)}</>
                   )}
                 </div>
               </Block>

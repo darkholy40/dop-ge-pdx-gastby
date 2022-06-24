@@ -56,7 +56,11 @@ const SettingGeneral = () => {
   const [rows, setRows] = useState([])
 
   const savePageView = useCallback(() => {
-    if (token !== `` && userInfo._id !== ``) {
+    if (
+      token !== `` &&
+      userInfo._id !== `` &&
+      roles[userInfo.role.name].level < 3
+    ) {
       client(token).mutate({
         mutation: gql`
           mutation CreateLog {
