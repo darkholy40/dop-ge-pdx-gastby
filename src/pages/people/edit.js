@@ -669,7 +669,7 @@ const EditPositionsPage = ({ location }) => {
                 country: ${renderValueForRelationField(
                   educationSelect.country
                 )},
-                decoration: ${decoration},
+                decoration: ${renderValueForRelationField(decoration)},
               }
             }) {
               person {

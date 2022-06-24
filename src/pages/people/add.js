@@ -369,6 +369,7 @@ const AddPositionsPage = () => {
                 country: ${renderValueForRelationField(
                   educationSelect.country
                 )},
+                decoration: ${renderValueForRelationField(decoration)},
               }
             }) {
               person {
