@@ -32,6 +32,7 @@ import renderDateForGraphQL from "../../functions/render-date-for-graphql"
 import renderDivision from "../../functions/render-division"
 import renderCheckingIcon from "../../functions/render-checking-icon"
 import renderAgeFromDifferentDateRange from "../../functions/render-age-from-different-date-range"
+import renderValueForRelationField from "../../functions/render-value-for-relation-field"
 import checkPid from "../../functions/check-pid"
 import uniqByKeepFirst from "../../functions/uniq-by-keep-first"
 import {
@@ -347,20 +348,27 @@ const AddPositionsPage = () => {
                 ScoreCompetence: "${scoreCompetence}",
                 StatusDisability: "${statusDisability}",
                 skills: "${skills}",
-                staff_created: "${userInfo.id}",
+                staff_created: "${userInfo._id}",
                 staff_updated: "",
                 type: "${jobType}",
                 isResigned: false,
                 resignationNote: "",
                 position: null,
-                location: "${locationSelect.subdistrict._id}",
-                education_level: "${educationSelect.level._id}",
-                education_name: "${educationSelect.name._id}",
-                educational_institution: "${
-                  educationSelect.educationalInstitution._id
-                }",
-                country: "${educationSelect.country._id}",
-                decoration: "${decoration._id}",
+                location: ${renderValueForRelationField(
+                  locationSelect.subdistrict
+                )},
+                education_level: ${renderValueForRelationField(
+                  educationSelect.level
+                )},
+                education_name: ${renderValueForRelationField(
+                  educationSelect.name
+                )},
+                educational_institution: ${renderValueForRelationField(
+                  educationSelect.educationalInstitution
+                )},
+                country: ${renderValueForRelationField(
+                  educationSelect.country
+                )},
               }
             }) {
               person {

@@ -188,7 +188,7 @@ const ResignationPage = ({ location }) => {
                   isResigned: true,
                   resignationNote: "${input.note}",
                   position: "${positionId}",
-                  staff_updated: "${userInfo.id}"
+                  staff_updated: "${userInfo._id}"
                 }
               }) {
                 person {
