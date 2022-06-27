@@ -1,7 +1,7 @@
 import React from "react"
 import PropTypes from "prop-types"
 import { useSelector } from "react-redux"
-import styled, { createGlobalStyle } from "styled-components"
+import { createGlobalStyle } from "styled-components"
 import { Backdrop, CircularProgress } from "@mui/material"
 import { ThemeProvider, createTheme } from "@mui/material/styles"
 import { green } from "@mui/material/colors"
@@ -12,9 +12,10 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider"
 import thLocale from "date-fns/locale/th"
 
 import Jwt from "./jwt"
-import Navbar from "./navbar"
+import FirstMeetDialog from "./first-meet-dialog"
 import NotificationDialog from "./notification-dialog"
 import Footer from "./footer"
+import ResponsiveDrawer from "./responsive-drawer"
 
 const GlobalStyles = createGlobalStyle`
   a {
@@ -28,6 +29,27 @@ const GlobalStyles = createGlobalStyle`
 
     &:active {
       color: ${({ color }) => color[300]};
+    }
+  }
+
+  .MuiListItemButton-root {
+    padding: 6px 12px;
+    margin: 2px 6px;
+    border-radius: 6px;
+
+    &.Mui-selected {
+      background-color: ${({ color }) => color[700]};
+      color: #fff;
+      transition: background-color 0.15s, color 0.15s;
+
+      &:hover {
+        background-color: ${({ color }) => color[800]};
+      }
+
+      svg {
+        color: #fff;
+        transition: color 0.15s;
+      }
     }
   }
 
@@ -55,19 +77,6 @@ const GlobalStyles = createGlobalStyle`
   }
 `
 
-const MainContainer = styled.div`
-  width: 100%;
-  margin-left: auto;
-
-  @media (max-width: 599px) {
-    transition: 0.3s;
-  }
-`
-
-const Row = styled.div`
-  padding: 4rem 1rem 0 1rem;
-`
-
 const Container = ({ children }) => {
   const { primaryColor, secondaryColor, backdropDialog } = useSelector(
     ({ mainReducer }) => mainReducer
@@ -92,9 +101,9 @@ const Container = ({ children }) => {
       <LocalizationProvider dateAdapter={AdapterDateFns} locale={thLocale}>
         <GlobalStyles color={primaryColor} />
         <Jwt />
-        <Navbar />
-        <MainContainer>
-          <Row>{children}</Row>
+        <FirstMeetDialog />
+        <ResponsiveDrawer>
+          <div>{children}</div>
           <Backdrop
             sx={{
               color: primaryColor[500],
@@ -130,7 +139,7 @@ const Container = ({ children }) => {
               )}
             </div>
           </Backdrop>
-        </MainContainer>
+        </ResponsiveDrawer>
         <NotificationDialog />
         <Footer />
       </LocalizationProvider>

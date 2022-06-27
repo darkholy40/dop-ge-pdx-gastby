@@ -13,7 +13,7 @@ import Login from "../components/login"
 
 const Container = styled.div`
   width: 100%;
-  height: calc(100vh - 172px);
+  height: calc(100vh - 220px);
   display: flex;
   flex-direction: column;
   align-items: center;

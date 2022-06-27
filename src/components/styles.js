@@ -24,6 +24,7 @@ const Flex = styled.div`
   flex-direction: row;
   justify-content: flex-start;
   align-items: center;
+  font-family: var(--main-font-family);
 `
 
 const DisabledBlock = styled.div`
@@ -50,8 +51,8 @@ const CheckCircleFlex = styled.div`
   border-top: 1px solid rgba(0, 0, 0, 0.24);
   border-right: 1px solid rgba(0, 0, 0, 0.24);
   border-bottom: 1px solid rgba(0, 0, 0, 0.24);
-  height: 54px;
-  width: 30px;
+  height: 56px;
+  width: 40px;
   padding-right: 10px;
   display: flex;
   align-items: center;

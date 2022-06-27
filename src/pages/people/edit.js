@@ -1127,7 +1127,7 @@ const EditPositionsPage = ({ location }) => {
                     </Grid>
                   </Grid>
                   <Grid container spacing={2} sx={{ marginBottom: `1rem` }}>
-                    <Grid item xs={12} sm={3}>
+                    <Grid item xs={12} sm={6} md={3}>
                       <Flex>
                         <Autocomplete
                           sx={{ width: `100%` }}
@@ -1177,7 +1177,7 @@ const EditPositionsPage = ({ location }) => {
                         </CheckCircleFlex>
                       </Flex>
                     </Grid>
-                    <Grid item xs={12} sm={3}>
+                    <Grid item xs={12} sm={6} md={3}>
                       <Flex>
                         <Autocomplete
                           sx={{ width: `100%` }}
@@ -1232,7 +1232,7 @@ const EditPositionsPage = ({ location }) => {
                         </CheckCircleFlex>
                       </Flex>
                     </Grid>
-                    <Grid item xs={12} sm={3}>
+                    <Grid item xs={12} sm={6} md={3}>
                       <Flex>
                         <Autocomplete
                           sx={{ width: `100%` }}
@@ -1290,7 +1290,7 @@ const EditPositionsPage = ({ location }) => {
                         </CheckCircleFlex>
                       </Flex>
                     </Grid>
-                    <Grid item xs={12} sm={3}>
+                    <Grid item xs={12} sm={6} md={3}>
                       <Flex>
                         <Autocomplete
                           sx={{ width: `100%` }}
@@ -1328,7 +1328,46 @@ const EditPositionsPage = ({ location }) => {
                     </Grid>
                   </Grid>
                   <Grid container spacing={2} sx={{ marginBottom: `1rem` }}>
-                    <Grid item xs={12} sm={2}>
+                    <Grid item sm={11} xs={10}>
+                      <DatePicker
+                        maxDate={new Date()}
+                        id="BirthDate"
+                        label="* วันเดือนปีเกิด"
+                        onChange={newValue => {
+                          setBirthDate(newValue)
+                        }}
+                        value={birthDate}
+                        renderInput={params => {
+                          return (
+                            <TextField
+                              {...params}
+                              sx={textfieldProps}
+                              InputProps={{
+                                startAdornment: params.InputProps.endAdornment,
+                                endAdornment: renderCheckingIcon(
+                                  birthDate === null ? `` : birthDate
+                                ),
+                              }}
+                            />
+                          )
+                        }}
+                      />
+                    </Grid>
+                    <Grid item sm={1} xs={2}>
+                      <TextFieldWall
+                        style={{
+                          width: `100%`,
+                          height: `100%`,
+                          whiteSpace: `nowrap`,
+                          backgroundColor: `rgba(0, 0, 0, 0.15)`,
+                        }}
+                      >
+                        {birthDate !== null
+                          ? `${renderAgeFromDifferentDateRange(birthDate)} ปี`
+                          : ``}
+                      </TextFieldWall>
+                    </Grid>
+                    <Grid item xs={12} sm={4}>
                       <Flex>
                         <Autocomplete
                           sx={{ width: `100%` }}
@@ -1363,48 +1402,6 @@ const EditPositionsPage = ({ location }) => {
                       </Flex>
                     </Grid>
                     <Grid item xs={12} sm={4}>
-                      <div style={{ display: `inline-flex`, width: `100%` }}>
-                        <div style={{ width: `100%` }}>
-                          <DatePicker
-                            maxDate={new Date()}
-                            id="BirthDate"
-                            label="* วันเดือนปีเกิด"
-                            onChange={newValue => {
-                              setBirthDate(newValue)
-                            }}
-                            value={birthDate}
-                            renderInput={params => {
-                              return (
-                                <TextField
-                                  {...params}
-                                  sx={textfieldProps}
-                                  InputProps={{
-                                    startAdornment:
-                                      params.InputProps.endAdornment,
-                                    endAdornment: renderCheckingIcon(
-                                      birthDate === null ? `` : birthDate
-                                    ),
-                                  }}
-                                />
-                              )
-                            }}
-                          />
-                        </div>
-                        <TextFieldWall
-                          style={{
-                            height: 34,
-                            minWidth: 18,
-                            whiteSpace: `nowrap`,
-                            backgroundColor: `rgba(0, 0, 0, 0.15)`,
-                          }}
-                        >
-                          {birthDate !== null
-                            ? `${renderAgeFromDifferentDateRange(birthDate)} ปี`
-                            : ``}
-                        </TextFieldWall>
-                      </div>
-                    </Grid>
-                    <Grid item xs={12} sm={3}>
                       <Flex>
                         <Autocomplete
                           sx={{ width: `100%` }}
@@ -1444,7 +1441,7 @@ const EditPositionsPage = ({ location }) => {
                         </CheckCircleFlex>
                       </Flex>
                     </Grid>
-                    <Grid item xs={12} sm={3}>
+                    <Grid item xs={12} sm={4}>
                       <TextField
                         sx={textfieldProps}
                         id="Telephone"

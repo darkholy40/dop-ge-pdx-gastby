@@ -16,7 +16,7 @@ const Title = styled.p`
 `
 
 const Flex = styled.div`
-  width: calc(100% - 1rem);
+  width: 100%;
   margin: auto;
   display: flex;
   flex-direction: row;
