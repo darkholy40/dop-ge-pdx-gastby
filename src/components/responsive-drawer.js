@@ -276,7 +276,7 @@ const ResponsiveDrawer = props => {
         sx={{
           width: {
             md:
-              token !== `` && tutorialCount === 4
+              token !== `` && tutorialCount === 4 && currentPage !== `home`
                 ? `calc(100% - ${drawerWidth}px)`
                 : `100%`,
           },
@@ -371,7 +371,7 @@ const ResponsiveDrawer = props => {
           )}
         </Toolbar>
       </AppBar>
-      {token !== `` && tutorialCount === 4 && (
+      {token !== `` && tutorialCount === 4 && currentPage !== `home` && (
         <Box
           component="nav"
           sx={{ width: { md: drawerWidth }, flexShrink: { md: 0 } }}
@@ -418,7 +418,7 @@ const ResponsiveDrawer = props => {
           p: 3,
           width: {
             md:
-              token !== `` && tutorialCount === 4
+              token !== `` && tutorialCount === 4 && currentPage !== `home`
                 ? `calc(100% - ${drawerWidth}px)`
                 : `100%`,
             xs: `100%`,
