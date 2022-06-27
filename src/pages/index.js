@@ -2,14 +2,15 @@ import React, { useEffect } from "react"
 import { navigate } from "gatsby"
 import { useSelector, useDispatch } from "react-redux"
 import styled from "styled-components"
-import { Button, CircularProgress, Divider } from "@mui/material"
-import { grey } from "@mui/material/colors"
+import { CircularProgress, Divider } from "@mui/material"
+import { grey, amber } from "@mui/material/colors"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faLongArrowAltRight } from "@fortawesome/free-solid-svg-icons"
 
 import Layout from "../components/layout"
 import Seo from "../components/seo"
 import Login from "../components/login"
+import SystemData from "../components/system-data"
 
 const Container = styled.div`
   width: 100%;
@@ -116,27 +117,29 @@ const IndexPage = () => {
                 />
                 <Content>
                   <p>
-                    สำหรับการเข้าใช้งานครั้งแรก
-                    จำเป็นจะต้องติดตั้งฐานข้อมูลที่จำเป็นในการใช้งานระบบ
+                    <span style={{ backgroundColor: amber[100], borderRadius: 4 }}>สำหรับการเข้าใช้งานครั้งแรก</span>
+                    จำเป็นต้องดาวน์โหลดข้อมูลพื้นฐานของระบบไปยังเว็บบราวเซอร์ของท่าน
                   </p>
-                  <p>กรุณากดปุ่ม "ดำเนินการต่อ" เพื่อไปยังขั้นตอนถัดไป</p>
-                  <Button
-                    color="primary"
-                    variant="contained"
-                    onClick={() => {
+                  <p>
+                    กรุณากดปุ่ม "ดำเนินการต่อ" เพื่อดาวน์โหลดข้อมูล
+                  </p>
+                  <SystemData
+                    confirmButtonContent={
+                      <>
+                        <span>ดำเนินการต่อ</span>
+                        <FontAwesomeIcon
+                          icon={faLongArrowAltRight}
+                          style={{ marginLeft: 5, fontSize: `1.25rem` }}
+                        />
+                      </>
+                    }
+                    confirmCallback={() => {
                       dispatch({
                         type: `SET_TUTORIAL_COUNT`,
                         tutorialCount: 1,
                       })
-                      navigate(`/settings/system-data/`)
                     }}
-                  >
-                    ดำเนินการต่อ
-                    <FontAwesomeIcon
-                      icon={faLongArrowAltRight}
-                      style={{ marginLeft: 5, fontSize: `1.25rem` }}
-                    />
-                  </Button>
+                  />
                 </Content>
               </>
             ) : (

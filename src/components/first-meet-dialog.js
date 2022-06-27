@@ -4,8 +4,8 @@ import { useSelector, useDispatch } from "react-redux"
 import { Dialog, Button } from "@mui/material"
 import styled from "styled-components"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { faCheckCircle, faDatabase } from "@fortawesome/free-solid-svg-icons"
-import { grey as infoColor, green as successColor } from "@mui/material/colors"
+import { faCheckCircle } from "@fortawesome/free-solid-svg-icons"
+import { green as successColor } from "@mui/material/colors"
 
 const Content = styled.div`
   display: flex;
@@ -13,8 +13,9 @@ const Content = styled.div`
   align-items: center;
   justify-content: flex-start;
   padding: 24px;
+  font-family: var(--main-font-family);
 
-  p {
+  > p {
     font-size: 1rem;
     margin-top: 0;
   }
@@ -22,49 +23,13 @@ const Content = styled.div`
 
 const FirstMeetDialog = () => {
   const dispatch = useDispatch()
-  const { tutorialCount, currentPage } = useSelector(
-    ({ mainReducer }) => mainReducer
-  )
+  const { tutorialCount } = useSelector(({ mainReducer }) => mainReducer)
 
   return (
     <>
-      <Dialog
-        fullWidth
-        maxWidth="sm"
-        open={tutorialCount === 1 && currentPage === `settings-system-data`}
-      >
+      <Dialog fullWidth maxWidth="sm" open={tutorialCount === 2}>
         <Content>
-          <FontAwesomeIcon
-            icon={faDatabase}
-            style={{
-              fontSize: `4rem`,
-              marginBottom: `1rem`,
-              color: infoColor[500],
-            }}
-          />
-          <p>กรุณาติดตั้งฐานข้อมูลที่จำเป็นในการใช้งานระบบ</p>
-          <p>กดปุ่ม "ตกลง" เพื่อดำเนินการต่อ</p>
-          <Button
-            color="primary"
-            variant="contained"
-            onClick={() => {
-              dispatch({
-                type: `SET_TUTORIAL_COUNT`,
-                tutorialCount: 2,
-              })
-            }}
-          >
-            ตกลง
-          </Button>
-        </Content>
-      </Dialog>
-
-      <Dialog
-        fullWidth
-        maxWidth="sm"
-        open={tutorialCount === 3 && currentPage === `settings-system-data`}
-      >
-        <Content>
+          <p style={{ fontSize: `1.25rem` }}>การดาวน์โหลดข้อมูลสำเร็จ</p>
           <FontAwesomeIcon
             icon={faCheckCircle}
             style={{
@@ -73,7 +38,6 @@ const FirstMeetDialog = () => {
               color: successColor[500],
             }}
           />
-          <p>การดำเนินการติดตั้งฐานข้อมูลสำเร็จ</p>
           <p>กดปุ่ม "ตกลง" เพื่อไปยังหน้าจัดการประวัติกำลังพล</p>
           <Button
             color="primary"

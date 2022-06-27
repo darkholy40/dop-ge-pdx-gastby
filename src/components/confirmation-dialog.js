@@ -12,6 +12,7 @@ const Flex = styled.div`
   align-items: center;
   justify-content: flex-start;
   padding: 16px 24px;
+  font-family: var(--main-font-family);
 `
 
 const ConfirmationDialog = ({
