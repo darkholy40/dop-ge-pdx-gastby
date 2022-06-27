@@ -16,7 +16,7 @@ const Container = styled.div`
   box-shadow: rgb(0 0 0 / 24%) 0px 1px 2px;
   border-radius: 8px;
   padding: 16px 24px;
-  max-width: calc(800px - 48px);
+  max-width: 800px;
   margin: auto;
 `
 
@@ -134,10 +134,10 @@ const SettingGeneral = () => {
         // desc: `8 ชม. (คงเหลือ ${sessionTimer.hr}:${sessionTimer.min}:${sessionTimer.sec})`,
         desc: `8 ชม. (คงเหลือ ${displaySessionTimer(sessionTimer)})`,
       },
-      {
-        title: `Token`,
-        desc: token,
-      },
+      // {
+      //   title: `Token`,
+      //   desc: token,
+      // },
     ]
     setRows(users)
   }, [userInfo, token, sessionTimer])

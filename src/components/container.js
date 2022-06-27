@@ -35,7 +35,7 @@ const GlobalStyles = createGlobalStyle`
   .MuiListItemButton-root {
     padding: 6px 12px;
     margin: 2px 6px;
-    border-radius: 6px;
+    border-radius: 4px;
 
     &.Mui-selected {
       background-color: ${({ color }) => color[700]};

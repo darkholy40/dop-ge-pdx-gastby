@@ -81,28 +81,6 @@ const SettingsIndex = () => {
               <div className="row">
                 <div
                   role="presentation"
-                  onClick={() => navigate(`/settings/system-data/`)}
-                >
-                  <FontAwesomeIcon
-                    icon={faDatabase}
-                    style={{
-                      fontSize: `1.5rem`,
-                      marginRight: 8,
-                      minWidth: 35,
-                    }}
-                  />
-                  <span>ข้อมูลระบบ</span>
-                </div>
-              </div>
-            </ColorButton>
-            <ColorButton
-              primaryColor={primaryColor}
-              width="800px"
-              height="75px"
-            >
-              <div className="row">
-                <div
-                  role="presentation"
                   onClick={() => navigate(`/settings/general/`)}
                 >
                   <FontAwesomeIcon
@@ -114,6 +92,28 @@ const SettingsIndex = () => {
                     }}
                   />
                   <span>บัญชีผู้ใช้งาน</span>
+                </div>
+              </div>
+            </ColorButton>
+            <ColorButton
+              primaryColor={primaryColor}
+              width="800px"
+              height="75px"
+            >
+              <div className="row">
+                <div
+                  role="presentation"
+                  onClick={() => navigate(`/settings/system-data/`)}
+                >
+                  <FontAwesomeIcon
+                    icon={faDatabase}
+                    style={{
+                      fontSize: `1.5rem`,
+                      marginRight: 8,
+                      minWidth: 35,
+                    }}
+                  />
+                  <span>ข้อมูลระบบ</span>
                 </div>
               </div>
             </ColorButton>

@@ -117,12 +117,14 @@ const IndexPage = () => {
                 />
                 <Content>
                   <p>
-                    <span style={{ backgroundColor: amber[100], borderRadius: 4 }}>สำหรับการเข้าใช้งานครั้งแรก</span>
+                    <span
+                      style={{ backgroundColor: amber[100], borderRadius: 4 }}
+                    >
+                      สำหรับการเข้าใช้งานครั้งแรก
+                    </span>
                     จำเป็นต้องดาวน์โหลดข้อมูลพื้นฐานของระบบไปยังเว็บบราวเซอร์ของท่าน
                   </p>
-                  <p>
-                    กรุณากดปุ่ม "ดำเนินการต่อ" เพื่อดาวน์โหลดข้อมูล
-                  </p>
+                  <p>กรุณากดปุ่ม "ดำเนินการต่อ" เพื่อดาวน์โหลดข้อมูล</p>
                   <SystemData
                     confirmButtonContent={
                       <>

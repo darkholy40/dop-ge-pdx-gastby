@@ -1,13 +1,7 @@
 import React, { useCallback, useEffect, useState } from "react"
 import { useSelector, useDispatch } from "react-redux"
 import styled from "styled-components"
-import {
-  TextField,
-  Alert,
-  Box,
-  Typography,
-  LinearProgress,
-} from "@mui/material"
+import { TextField, Alert } from "@mui/material"
 import Autocomplete from "@mui/material/Autocomplete"
 
 import { client, gql } from "../../functions/apollo-client"
@@ -18,8 +12,18 @@ import Breadcrumbs from "../../components/breadcrumbs"
 import PageNotFound from "../../components/page-not-found"
 import ExportToExcel from "../../components/export-to-excel"
 import { Form, Flex } from "../../components/styles"
+import PercentDialog from "../../components/percent-dialog"
 import renderDivision from "../../functions/render-division"
 import renderNumberAsText from "../../functions/render-number-as-text"
+import {
+  exportedDataSelect,
+  displayStatus,
+  printSeverity,
+} from "../../functions/reports"
+import {
+  updateAnObjectInArray,
+  removeObjectInArray,
+} from "../../functions/object-in-array"
 import roles from "../../static/roles"
 
 const Container = styled.div`
@@ -33,13 +37,14 @@ const FlowOutPage = () => {
   const { token, userInfo } = useSelector(({ mainReducer }) => mainReducer)
   const { units } = useSelector(({ staticReducer }) => staticReducer)
   const dispatch = useDispatch()
-
   const [input, setInput] = useState({
+    option: null,
     unit: null,
   })
   const [data, setData] = useState([])
-  const [statusCode, setStatusCode] = useState(`loading`)
-  const [percent, setPercent] = useState(0)
+  const [statusCode, setStatusCode] = useState(`selecting`)
+  // const [percent, setPercent] = useState(0)
+  const [percentDialog, setPercentDialog] = useState([])
 
   const savePageView = useCallback(() => {
     // Prevent saving a log when switch user to super admin
@@ -70,7 +75,16 @@ const FlowOutPage = () => {
 
   const getData = useCallback(async () => {
     setStatusCode(`loading`)
-    setPercent(0)
+    // setPercent(0)
+    setPercentDialog(prev => [
+      ...prev,
+      {
+        id: 1,
+        open: true,
+        title: `กำลังโหลดข้อมูล...`,
+        percent: 0,
+      },
+    ])
 
     let lap = 0
 
@@ -170,7 +184,12 @@ const FlowOutPage = () => {
           returnData = [...returnData, person]
         }
 
-        setPercent((i * 100) / lap)
+        // setPercent((i * 100) / lap)
+        setPercentDialog(prev =>
+          updateAnObjectInArray(prev, `id`, 1, {
+            percent: (i * 100) / lap,
+          })
+        )
       }
 
       if (returnData.length > 0) {
@@ -222,47 +241,31 @@ const FlowOutPage = () => {
       setStatusCode(`0`)
     }
 
-    setPercent(100)
+    // setPercent(100)
+    setPercentDialog(prev =>
+      updateAnObjectInArray(prev, `id`, 1, {
+        percent: 100,
+      })
+    )
     setTimeout(() => {
-      setPercent(0)
+      // setPercent(0)
+      setPercentDialog(prev => removeObjectInArray(prev, `id`, 1))
     }, 300)
   }, [token, input.unit])
 
-  const displayStatus = code => {
-    switch (code) {
-      case ``:
-        return `การเตรียมข้อมูลนำออกสำเร็จ`
-
-      case `0`:
-        return `ไม่มีข้อมูลสำหรับนำออก`
-
-      case `connection`:
-        return `การเชื่อมต่อไม่สำเร็จ กรุณาตรวจสอบการเชื่อมต่อของอุปกรณ์`
-
-      case `loading`:
-        return `กำลังโหลดข้อมูล...`
-
-      default:
-        return ``
-    }
-  }
-
-  const printSeverity = value => {
-    switch (value) {
-      case ``:
-        return `success`
-
-      case `loading`:
-        return `info`
-
-      default:
-        return `warning`
-    }
-  }
-
   useEffect(() => {
-    getData()
-  }, [getData, input.unit])
+    if (input.option !== null) {
+      // search all
+      if (input.option.id === 1) {
+        getData()
+      }
+
+      // search -> filter by unit
+      if (input.option.id === 2 && input.unit !== null) {
+        getData()
+      }
+    }
+  }, [getData, input])
 
   useEffect(() => {
     dispatch({
@@ -291,81 +294,101 @@ const FlowOutPage = () => {
           />
 
           <Container>
-            <Form onSubmit={e => e.preventDefault()} style={{ width: `400px` }}>
-              <p>
-                ข้อมูลนำออก:{" "}
-                {input.unit !== null ? renderDivision(input.unit) : `ทั้งหมด`}
-              </p>
+            <Form
+              onSubmit={e => e.preventDefault()}
+              style={{ width: `100%`, maxWidth: `400px` }}
+            >
               <Flex style={{ marginBottom: `1rem` }}>
                 <Autocomplete
                   sx={{ width: `100%` }}
-                  id="position-name"
+                  id="exported-data"
                   disablePortal
-                  options={units}
+                  options={exportedDataSelect}
                   noOptionsText={`ไม่พบข้อมูล`}
-                  getOptionLabel={option => renderDivision(option)}
+                  getOptionLabel={option => option.name}
                   isOptionEqualToValue={(option, value) => {
-                    return option === value
+                    return option.id === value.id
                   }}
                   onChange={(_, newValue) => {
                     if (newValue !== null) {
                       setInput(prev => ({
                         ...prev,
-                        unit: newValue,
+                        option: newValue,
+                        unit: null,
                       }))
+                      setStatusCode(`selecting-unit`)
                     } else {
                       setInput(prev => ({
                         ...prev,
+                        option: null,
                         unit: null,
                       }))
+                      setStatusCode(`selecting`)
                     }
                   }}
-                  value={input.unit}
+                  value={input.option}
                   renderInput={params => (
                     <TextField
                       {...params}
-                      label="สังกัด"
+                      label="เลือกข้อมูลนำออก"
                       InputProps={{
                         ...params.InputProps,
                       }}
                     />
                   )}
+                  disabled={
+                    statusCode === `loading` || statusCode === `connection`
+                  }
                 />
               </Flex>
+              {input.option !== null && input.option.id === 2 && (
+                <Flex style={{ marginBottom: `1rem` }}>
+                  <Autocomplete
+                    sx={{ width: `100%` }}
+                    id="unit"
+                    disablePortal
+                    options={units}
+                    noOptionsText={`ไม่พบข้อมูล`}
+                    getOptionLabel={option => renderDivision(option)}
+                    isOptionEqualToValue={(option, value) => {
+                      return option === value
+                    }}
+                    onChange={(_, newValue) => {
+                      if (newValue !== null) {
+                        setInput(prev => ({
+                          ...prev,
+                          unit: newValue,
+                        }))
+                      } else {
+                        setInput(prev => ({
+                          ...prev,
+                          unit: null,
+                        }))
+                        setStatusCode(`selecting-unit`)
+                      }
+                    }}
+                    value={input.unit}
+                    renderInput={params => (
+                      <TextField
+                        {...params}
+                        label="สังกัด"
+                        InputProps={{
+                          ...params.InputProps,
+                        }}
+                      />
+                    )}
+                    disabled={
+                      statusCode === `loading` || statusCode === `connection`
+                    }
+                  />
+                </Flex>
+              )}
               <Alert
                 sx={{ marginBottom: `1rem`, animation: `fadein 0.3s` }}
                 severity={printSeverity(statusCode)}
               >
                 {displayStatus(statusCode)}
               </Alert>
-              <Box
-                sx={{
-                  display: `flex`,
-                  alignItems: `center`,
-                  marginBottom: `1rem`,
-                  opacity: statusCode === `loading` ? 1 : 0,
-                  transition: `opacity 0.3s`,
-                }}
-              >
-                <Box sx={{ width: `100%`, mr: 1 }}>
-                  <LinearProgress
-                    sx={{
-                      height: `8px`,
-                      borderRadius: `8px`,
-                      ".MuiLinearProgress-bar": { borderRadius: `8px` },
-                    }}
-                    variant="determinate"
-                    value={percent}
-                  />
-                </Box>
-                <Box sx={{ minWidth: 50 }}>
-                  <Typography
-                    sx={{ transform: `skewX(-10deg)` }}
-                    variant="body2"
-                    color="text.secondary"
-                  >{`${percent.toFixed(2)}%`}</Typography>
-                </Box>
-              </Box>
               <ExportToExcel
                 apiData={data}
                 fileName="flow-out"
@@ -397,6 +420,7 @@ const FlowOutPage = () => {
               />
             </Form>
           </Container>
+          <PercentDialog data={percentDialog} />
         </>
       ) : (
         <PageNotFound />
