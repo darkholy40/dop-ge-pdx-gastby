@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useCallback } from "react"
 import { useSelector, useDispatch } from "react-redux"
 import styled from "styled-components"
+import jwt_decode from "jwt-decode"
 
 import { client, gql } from "../../functions/apollo-client"
 
@@ -9,7 +10,6 @@ import Seo from "../../components/seo"
 import Breadcrumbs from "../../components/breadcrumbs"
 import PageNotFound from "../../components/page-not-found"
 import renderDivision from "../../functions/render-division"
-import displaySessionTimer from "../../functions/display-session-timer"
 import roles from "../../static/roles"
 
 const Container = styled.div`
@@ -49,9 +49,8 @@ const Right = styled.div`
 `
 
 const SettingGeneral = () => {
-  const { token, userInfo, sessionTimer } = useSelector(
-    ({ mainReducer }) => mainReducer
-  )
+  const { token, userInfo } = useSelector(({ mainReducer }) => mainReducer)
+  const { sessionTimer } = useSelector(({ timerReducer }) => timerReducer)
   const dispatch = useDispatch()
   const [rows, setRows] = useState([])
 
@@ -110,6 +109,8 @@ const SettingGeneral = () => {
 
   useEffect(() => {
     // console.log(userInfo)
+    const decodedToken = jwt_decode(token)
+    const maxTimer = (decodedToken.exp - decodedToken.iat) / 3600
 
     let users = [
       {
@@ -131,8 +132,7 @@ const SettingGeneral = () => {
       },
       {
         title: `ระยะเวลาเซสชัน`,
-        // desc: `8 ชม. (คงเหลือ ${sessionTimer.hr}:${sessionTimer.min}:${sessionTimer.sec})`,
-        desc: `8 ชม. (คงเหลือ ${displaySessionTimer(sessionTimer)})`,
+        desc: `${maxTimer} ชม. (คงเหลือ ${sessionTimer.hr}:${sessionTimer.min}:${sessionTimer.sec})`,
       },
       // {
       //   title: `Token`,

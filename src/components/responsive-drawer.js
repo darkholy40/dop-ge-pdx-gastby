@@ -31,6 +31,7 @@ import {
 
 import { client, gql } from "../functions/apollo-client"
 
+// import SessionTimer from "./session-timer"
 import roles from "../static/roles"
 
 const drawerWidth = 240
@@ -124,12 +125,7 @@ const ResponsiveDrawer = props => {
       })
 
       dispatch({
-        type: `SET_SESSION_TIMER`,
-        sessionTimer: {
-          hr: `08`,
-          min: `00`,
-          sec: `00`,
-        },
+        type: `RESET_SESSION_TIMER`,
       })
     }
 
@@ -162,104 +158,108 @@ const ResponsiveDrawer = props => {
   const drawer = (
     <div>
       <Toolbar />
-      {roles[userInfo.role.name].level >= 1 && (
+      {userInfo.role._id !== `` && (
         <>
-          <Divider />
-          <List>
-            {pages.authenticated.map((page, pageIndex) => {
-              return (
-                <ListItem key={`menu_${pageIndex}`} disablePadding>
-                  <ListItemButton
-                    onClick={() => {
-                      changePage(`${page.name}`)
-                    }}
-                    selected={currentPage === `${page.name}`}
-                  >
-                    <ListItemIcon>
-                      <FontAwesomeIcon icon={page.icon} />
-                    </ListItemIcon>
-                    <ListItemText primary={page.desc} />
-                  </ListItemButton>
-                </ListItem>
-              )
-            })}
-          </List>
-        </>
-      )}
-      {roles[userInfo.role.name].level >= 2 && (
-        <>
-          <Divider />
-          <List>
-            {pages.administrator.map((page, pageIndex) => {
-              return (
-                <ListItem key={`menu_${pageIndex}`} disablePadding>
-                  <ListItemButton
-                    onClick={() => {
-                      changePage(`${page.name}`)
-                    }}
-                    selected={currentPage === `${page.name}`}
-                  >
-                    <ListItemIcon>
-                      <FontAwesomeIcon icon={page.icon} />
-                    </ListItemIcon>
-                    <ListItemText primary={page.desc} />
-                  </ListItemButton>
-                </ListItem>
-              )
-            })}
-          </List>
-        </>
-      )}
-      {roles[userInfo.role.name].level >= 3 && (
-        <>
-          <Divider />
-          <List>
-            {pages.superAdministrator.map((page, pageIndex) => {
-              return (
-                <ListItem key={`menu_${pageIndex}`} disablePadding>
-                  <ListItemButton
-                    onClick={() => {
-                      changePage(`${page.name}`)
-                    }}
-                    selected={currentPage === `${page.name}`}
-                  >
-                    <ListItemIcon>
-                      <FontAwesomeIcon icon={page.icon} />
-                    </ListItemIcon>
-                    <ListItemText primary={page.desc} />
-                  </ListItemButton>
-                </ListItem>
-              )
-            })}
-          </List>
-        </>
-      )}
-      {roles[userInfo.role.name].level >= 1 && (
-        <>
-          <Divider />
-          <List>
-            {pages.all.map((page, pageIndex) => {
-              return (
-                <ListItem key={`menu_${pageIndex}`} disablePadding>
-                  <ListItemButton
-                    onClick={() => {
-                      changePage(`${page.name}`)
-                    }}
-                    selected={
-                      currentPage === `settings` ||
-                      currentPage === `settings-general` ||
-                      currentPage === `settings-system-data`
-                    }
-                  >
-                    <ListItemIcon>
-                      <FontAwesomeIcon icon={page.icon} />
-                    </ListItemIcon>
-                    <ListItemText primary={page.desc} />
-                  </ListItemButton>
-                </ListItem>
-              )
-            })}
-          </List>
+          {roles[userInfo.role.name].level >= 1 && (
+            <>
+              <Divider />
+              <List>
+                {pages.authenticated.map((page, pageIndex) => {
+                  return (
+                    <ListItem key={`menu_${pageIndex}`} disablePadding>
+                      <ListItemButton
+                        onClick={() => {
+                          changePage(`${page.name}`)
+                        }}
+                        selected={currentPage === `${page.name}`}
+                      >
+                        <ListItemIcon>
+                          <FontAwesomeIcon icon={page.icon} />
+                        </ListItemIcon>
+                        <ListItemText primary={page.desc} />
+                      </ListItemButton>
+                    </ListItem>
+                  )
+                })}
+              </List>
+            </>
+          )}
+          {roles[userInfo.role.name].level >= 2 && (
+            <>
+              <Divider />
+              <List>
+                {pages.administrator.map((page, pageIndex) => {
+                  return (
+                    <ListItem key={`menu_${pageIndex}`} disablePadding>
+                      <ListItemButton
+                        onClick={() => {
+                          changePage(`${page.name}`)
+                        }}
+                        selected={currentPage === `${page.name}`}
+                      >
+                        <ListItemIcon>
+                          <FontAwesomeIcon icon={page.icon} />
+                        </ListItemIcon>
+                        <ListItemText primary={page.desc} />
+                      </ListItemButton>
+                    </ListItem>
+                  )
+                })}
+              </List>
+            </>
+          )}
+          {roles[userInfo.role.name].level >= 3 && (
+            <>
+              <Divider />
+              <List>
+                {pages.superAdministrator.map((page, pageIndex) => {
+                  return (
+                    <ListItem key={`menu_${pageIndex}`} disablePadding>
+                      <ListItemButton
+                        onClick={() => {
+                          changePage(`${page.name}`)
+                        }}
+                        selected={currentPage === `${page.name}`}
+                      >
+                        <ListItemIcon>
+                          <FontAwesomeIcon icon={page.icon} />
+                        </ListItemIcon>
+                        <ListItemText primary={page.desc} />
+                      </ListItemButton>
+                    </ListItem>
+                  )
+                })}
+              </List>
+            </>
+          )}
+          {roles[userInfo.role.name].level >= 1 && (
+            <>
+              <Divider />
+              <List>
+                {pages.all.map((page, pageIndex) => {
+                  return (
+                    <ListItem key={`menu_${pageIndex}`} disablePadding>
+                      <ListItemButton
+                        onClick={() => {
+                          changePage(`${page.name}`)
+                        }}
+                        selected={
+                          currentPage === `settings` ||
+                          currentPage === `settings-general` ||
+                          currentPage === `settings-system-data`
+                        }
+                      >
+                        <ListItemIcon>
+                          <FontAwesomeIcon icon={page.icon} />
+                        </ListItemIcon>
+                        <ListItemText primary={page.desc} />
+                      </ListItemButton>
+                    </ListItem>
+                  )
+                })}
+              </List>
+            </>
+          )}
         </>
       )}
     </div>

@@ -84,12 +84,7 @@ const PositionsPage = () => {
       })
 
       dispatch({
-        type: `SET_SESSION_TIMER`,
-        sessionTimer: {
-          hr: `08`,
-          min: `00`,
-          sec: `00`,
-        },
+        type: `RESET_SESSION_TIMER`,
       })
     }
 

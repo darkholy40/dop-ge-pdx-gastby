@@ -6,7 +6,7 @@ import displaySessionTimer from "../functions/display-session-timer"
 
 const Timer = styled.div`
   position: absolute;
-  top: 3.5rem;
+  top: 4.5rem;
   right: 1.5rem;
   color: #000;
   padding: 5px 10px;
@@ -27,13 +27,22 @@ const Timer = styled.div`
     }
   }
 
-  > span.l {
-    margin-right: 5px;
+  > span {
+    font-family: var(--main-font-family);
+
+    &.l {
+      margin-right: 5px;
+    }
   }
 
   @media (max-width: 599px) {
     display: flex;
     flex-direction: column;
+    top: 4rem;
+
+    &.active {
+      opacity: 1;
+    }
 
     > span {
       &.l {
@@ -46,7 +55,8 @@ const Timer = styled.div`
 `
 
 const SessionTimer = () => {
-  const { token, sessionTimer } = useSelector(({ mainReducer }) => mainReducer)
+  const { token } = useSelector(({ mainReducer }) => mainReducer)
+  const { sessionTimer } = useSelector(({ timerReducer }) => timerReducer)
   const [sessionTimerClassname, setSessionTimerClassname] = useState(``)
 
   useEffect(() => {

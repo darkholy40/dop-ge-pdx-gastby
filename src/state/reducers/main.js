@@ -5,11 +5,6 @@ import {
 } from "@mui/material/colors"
 
 const initialState = {
-  sessionTimer: {
-    hr: `08`,
-    min: `00`,
-    sec: `00`,
-  },
   primaryColor: primaryColor,
   secondaryColor: secondaryColor,
   lang: `th`,
@@ -73,12 +68,6 @@ const initialState = {
 
 const mainReducer = (state = initialState, action) => {
   switch (action.type) {
-    case `SET_SESSION_TIMER`:
-      return {
-        ...state,
-        sessionTimer: action.sessionTimer,
-      }
-
     case `CHANGE_LANG`:
       return {
         ...state,
@@ -149,7 +138,7 @@ const mainReducer = (state = initialState, action) => {
 const mainPersistConfig = {
   key: `gepdx_main`,
   storage: storage,
-  whitelist: [`sessionTimer`, `lang`, `token`, `userInfo`, `tutorialCount`],
+  whitelist: [`lang`, `token`, `userInfo`, `tutorialCount`],
 }
 
 export { mainReducer, mainPersistConfig }
