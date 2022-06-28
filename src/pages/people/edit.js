@@ -72,7 +72,7 @@ const textfieldProps = {
 //   openTo: `year`,
 // }
 
-const EditPositionsPage = ({ location }) => {
+const EditPersonPage = ({ location }) => {
   const { token, userInfo, redirectPage } = useSelector(
     ({ mainReducer }) => mainReducer
   )
@@ -2535,4 +2535,4 @@ const EditPositionsPage = ({ location }) => {
   )
 }
 
-export default EditPositionsPage
+export default EditPersonPage

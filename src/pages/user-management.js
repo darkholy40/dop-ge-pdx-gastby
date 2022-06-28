@@ -7,7 +7,7 @@ import Breadcrumbs from "../components/breadcrumbs"
 import PageNotFound from "../components/page-not-found"
 import roles from "../static/roles"
 
-const UserManagement = () => {
+const UserManagementPage = () => {
   const { token, userInfo } = useSelector(({ mainReducer }) => mainReducer)
   const dispatch = useDispatch()
 
@@ -34,4 +34,4 @@ const UserManagement = () => {
   )
 }
 
-export default UserManagement
+export default UserManagementPage

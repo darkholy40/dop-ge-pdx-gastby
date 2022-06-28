@@ -37,7 +37,7 @@ const Oparator = styled.div`
   margin-bottom: 1rem;
 `
 
-const PositionsPage = () => {
+const PeoplePage = () => {
   const { token, userInfo, searchPersonFilter, primaryColor } = useSelector(
     ({ mainReducer }) => mainReducer
   )
@@ -660,4 +660,4 @@ const PositionsPage = () => {
   )
 }
 
-export default PositionsPage
+export default PeoplePage

@@ -48,7 +48,7 @@ const Right = styled.div`
   }
 `
 
-const SettingGeneral = () => {
+const SettingsGeneral = () => {
   const { token, userInfo } = useSelector(({ mainReducer }) => mainReducer)
   const { sessionTimer } = useSelector(({ timerReducer }) => timerReducer)
   const dispatch = useDispatch()
@@ -179,4 +179,4 @@ const SettingGeneral = () => {
   )
 }
 
-export default SettingGeneral
+export default SettingsGeneral

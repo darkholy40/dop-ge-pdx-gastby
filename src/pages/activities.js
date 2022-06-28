@@ -39,7 +39,7 @@ const Oparator = styled.div`
   margin-bottom: 1rem;
 `
 
-const Activities = () => {
+const ActivitiesPage = () => {
   const { token, userInfo, primaryColor } = useSelector(
     ({ mainReducer }) => mainReducer
   )
@@ -402,4 +402,4 @@ const Activities = () => {
   )
 }
 
-export default Activities
+export default ActivitiesPage

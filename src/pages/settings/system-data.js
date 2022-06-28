@@ -29,7 +29,7 @@ const buttons = {
   },
 }
 
-const SettingSystemData = () => {
+const SettingsSystemData = () => {
   const { token, userInfo } = useSelector(({ mainReducer }) => mainReducer)
   const {
     positionTypes,
@@ -166,4 +166,4 @@ const SettingSystemData = () => {
   )
 }
 
-export default SettingSystemData
+export default SettingsSystemData

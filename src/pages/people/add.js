@@ -72,7 +72,7 @@ const textfieldProps = {
 //   openTo: `year`,
 // }
 
-const AddPositionsPage = () => {
+const AddPersonPage = () => {
   const { token, userInfo } = useSelector(({ mainReducer }) => mainReducer)
   const {
     positionTypes,
@@ -2156,4 +2156,4 @@ const AddPositionsPage = () => {
   )
 }
 
-export default AddPositionsPage
+export default AddPersonPage
