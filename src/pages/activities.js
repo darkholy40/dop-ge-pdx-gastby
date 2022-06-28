@@ -97,6 +97,7 @@ const Activities = () => {
                 description
                 users_permissions_user {
                   _id
+                  username
                   name
                   surname
                   role {
@@ -327,7 +328,9 @@ const Activities = () => {
                             {row.orderNumber}
                           </TableCell>
                           <TableCell align="left">
-                            {`${row.users_permissions_user.name} ${row.users_permissions_user.surname}`}
+                            {row.users_permissions_user !== null
+                              ? `${row.users_permissions_user.name} ${row.users_permissions_user.surname}`
+                              : `-`}
                           </TableCell>
                           <TableCell align="left" sx={{ minWidth: 100 }}>
                             {renderAction(row.action, row.description)}

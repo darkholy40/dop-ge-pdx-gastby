@@ -877,7 +877,7 @@ const SystemData = ({ showContent, confirmButtonContent, confirmCallback }) => {
   }, [token, dispatch])
 
   const installAll = () => {
-    if (roles[userInfo.role.name].level >= 2) {
+    if (userInfo.role._id !== `` && roles[userInfo.role.name].level >= 2) {
       units.length === 0 && getUnits()
     }
 
@@ -911,7 +911,7 @@ const SystemData = ({ showContent, confirmButtonContent, confirmCallback }) => {
   }
 
   const updateAll = () => {
-    if (roles[userInfo.role.name].level >= 2) {
+    if (userInfo.role._id !== `` && roles[userInfo.role.name].level >= 2) {
       getUnits()
     }
 
@@ -991,7 +991,7 @@ const SystemData = ({ showContent, confirmButtonContent, confirmCallback }) => {
     }
     let count = 0
 
-    if (roles[userInfo.role.name].level >= 2) {
+    if (userInfo.role._id !== `` && roles[userInfo.role.name].level >= 2) {
       units.length === 0 && count++
 
       if (
@@ -1064,7 +1064,7 @@ const SystemData = ({ showContent, confirmButtonContent, confirmCallback }) => {
   useEffect(() => {
     let count = 0
 
-    if (roles[userInfo.role.name].level >= 2) {
+    if (userInfo.role._id !== `` && roles[userInfo.role.name].level >= 2) {
       units.length === 0 && count++
     }
 
@@ -1083,7 +1083,7 @@ const SystemData = ({ showContent, confirmButtonContent, confirmCallback }) => {
       })
     }
   }, [
-    userInfo.role.name,
+    userInfo.role,
     tutorialCount,
     positionNames.length,
     units.length,
@@ -1157,7 +1157,7 @@ const SystemData = ({ showContent, confirmButtonContent, confirmCallback }) => {
               </UpdatedDate>
             )}
             <Divider style={{ marginTop: `1rem`, marginBottom: `1rem` }} />
-            {roles[userInfo.role.name].level >= 2 && (
+            {userInfo.role._id !== `` && roles[userInfo.role.name].level >= 2 && (
               <>
                 <Block>
                   <div>

@@ -9,7 +9,6 @@ const Main = styled.div`
   margin-left: auto;
   margin-right: auto;
   margin-bottom: 2rem;
-  padding: 0.5rem 0;
   color: rgb(0, 0, 0);
   border-radius: 3px;
 

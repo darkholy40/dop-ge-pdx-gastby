@@ -18,8 +18,8 @@ const Flex = styled.div`
   width: 100%;
   padding: 12px 16px;
   background-color: ${({ primaryColor }) => primaryColor[50]};
-  border-radius: 4px;
-  transform: skewX(-10deg);
+  border: 1px solid ${({ primaryColor }) => primaryColor[200]};
+  border-radius: 8px;
 `
 
 const Previous = styled.div`
@@ -38,11 +38,12 @@ const Previous = styled.div`
 
 const Text = styled.div`
   font-size: 1.25rem;
-  transform: skewX(10deg);
+  display: flex;
+  align-items: center;
+  min-height: 40px;
 
   + svg {
     font-size: 1rem;
-    transform: skewX(10deg);
   }
 
   @media (max-width: 599px) {
@@ -61,16 +62,13 @@ const Breadcrumbs = ({ previous, current }) => {
     <Flex primaryColor={primaryColor}>
       {previous.length > 0 ? (
         <IconButton
-          style={{ transform: `skewX(10deg)`, marginRight: 8 }}
+          style={{ marginRight: 8 }}
           onClick={() => navigate(`${previous[previous.length - 1].link}`)}
         >
           <FontAwesomeIcon icon={faArrowLeft} />
         </IconButton>
       ) : (
-        <IconButton
-          style={{ transform: `skewX(10deg)`, marginRight: 8 }}
-          disabled
-        >
+        <IconButton style={{ marginRight: 8 }} disabled>
           <FontAwesomeIcon icon={faArrowLeft} />
         </IconButton>
       )}
@@ -86,7 +84,7 @@ const Breadcrumbs = ({ previous, current }) => {
             </Text>
             <FontAwesomeIcon
               icon={faChevronRight}
-              style={{ marginLeft: 7, marginRight: 7 }}
+              style={{ marginLeft: `1rem`, marginRight: `1rem` }}
             />
           </Previous>
         )

@@ -32,9 +32,15 @@ const GlobalStyles = createGlobalStyle`
     }
   }
 
+  .MuiList-root {
+    padding-top: 4px;
+    padding-bottom: 4px;
+  }
+
+  .MuiMenuItem-root,
   .MuiListItemButton-root {
     padding: 6px 12px;
-    margin: 2px 6px;
+    margin: 3px 6px;
     border-radius: 4px;
 
     &.Mui-selected {

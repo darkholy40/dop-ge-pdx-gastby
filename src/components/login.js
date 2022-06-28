@@ -24,6 +24,19 @@ import Image from "./image"
 const Title = styled.p`
   font-size: 1.5rem;
   text-align: center;
+
+  &.primary {
+    font-size: 2rem;
+    font-weight: bold;
+  }
+
+  @media (max-width: 599px) {
+    font-size: 1.25rem;
+
+    &.primary {
+      font-size: 1.75rem;
+    }
+  }
 `
 
 const Flex = styled.div`
@@ -180,10 +193,9 @@ const IndexPage = () => {
     <>
       <Title
         style={{
-          fontSize: `2rem`,
-          fontWeight: `bold`,
           color: primaryColor[700],
         }}
+        className="primary"
       >
         ระบบพนักงานราชการและลูกจ้าง
       </Title>
