@@ -2,20 +2,24 @@ import * as React from "react"
 import { useStaticQuery, graphql, navigate } from "gatsby"
 import { useSelector, useDispatch } from "react-redux"
 import PropTypes from "prop-types"
-import AppBar from "@mui/material/AppBar"
-import Box from "@mui/material/Box"
-import CssBaseline from "@mui/material/CssBaseline"
-import Divider from "@mui/material/Divider"
-import Drawer from "@mui/material/Drawer"
-import IconButton from "@mui/material/IconButton"
-import List from "@mui/material/List"
-import ListItem from "@mui/material/ListItem"
-import ListItemButton from "@mui/material/ListItemButton"
-import ListItemIcon from "@mui/material/ListItemIcon"
-import ListItemText from "@mui/material/ListItemText"
-import Toolbar from "@mui/material/Toolbar"
-import Typography from "@mui/material/Typography"
-import { Button, Menu, MenuItem } from "@mui/material"
+import {
+  AppBar,
+  Box,
+  CssBaseline,
+  Divider,
+  Drawer,
+  IconButton,
+  List,
+  ListItem,
+  ListItemButton,
+  ListItemIcon,
+  ListItemText,
+  Toolbar,
+  Typography,
+  Button,
+  Menu,
+  MenuItem,
+} from "@mui/material"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import {
   faBars,
@@ -31,7 +35,7 @@ import {
 
 import { client, gql } from "../functions/apollo-client"
 
-// import SessionTimer from "./session-timer"
+import SessionTimer from "./session-timer"
 import roles from "../static/roles"
 
 const drawerWidth = 240
@@ -157,7 +161,9 @@ const ResponsiveDrawer = props => {
 
   const drawer = (
     <div>
-      <Toolbar />
+      <Toolbar sx={{ position: `relative` }}>
+        <SessionTimer />
+      </Toolbar>
       {userInfo.role._id !== `` && (
         <>
           {roles[userInfo.role.name].level >= 1 && (

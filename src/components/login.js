@@ -1,9 +1,20 @@
 import React, { useState } from "react"
 import styled from "styled-components"
 import { useSelector, useDispatch } from "react-redux"
-import { TextField, InputAdornment, Button, Alert } from "@mui/material"
+import {
+  TextField,
+  InputAdornment,
+  Button,
+  Alert,
+  IconButton,
+} from "@mui/material"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { faUser, faLock } from "@fortawesome/free-solid-svg-icons"
+import {
+  faUser,
+  faLock,
+  faEye,
+  faEyeSlash,
+} from "@fortawesome/free-solid-svg-icons"
 import axios from "axios"
 
 import { client, gql } from "../functions/apollo-client"
@@ -61,6 +72,7 @@ const IndexPage = () => {
     status: false,
     text: ``,
   })
+  const [pwdVisibility, setPwdVisibility] = useState(false)
 
   const goLogin = async () => {
     setIsError({
@@ -221,7 +233,7 @@ const IndexPage = () => {
                 }}
                 id="pwd"
                 label="รหัสผ่าน"
-                type="password"
+                type={!pwdVisibility ? `password` : `text`}
                 autoComplete="true"
                 variant="outlined"
                 InputProps={{
@@ -229,6 +241,18 @@ const IndexPage = () => {
                     <InputAdornment position="start">
                       <FontAwesomeIcon icon={faLock} style={{ fontSize: 20 }} />
                     </InputAdornment>
+                  ),
+                  endAdornment: (
+                    <IconButton
+                      onClick={() => setPwdVisibility(!pwdVisibility)}
+                      color="inherit"
+                      style={{ width: 35, height: 35 }}
+                    >
+                      <FontAwesomeIcon
+                        icon={!pwdVisibility ? faEye : faEyeSlash}
+                        style={{ fontSize: 16 }}
+                      />
+                    </IconButton>
                   ),
                 }}
                 value={passwordInput}

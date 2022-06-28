@@ -4,52 +4,43 @@ import styled from "styled-components"
 
 import displaySessionTimer from "../functions/display-session-timer"
 
-const Timer = styled.div`
+const Wall = styled.div`
   position: absolute;
-  top: 4.5rem;
-  right: 1.5rem;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  margin-left: 4rem;
+`
+
+const Timer = styled.div`
   color: #000;
   padding: 5px 10px;
-  border-radius: 8px;
-  box-shadow: rgb(0 0 0 / 10%) 0px 10px 24px;
-  opacity: 0;
-  transition: 0.75s ease-in;
-
-  &.active {
-    opacity: 0.25;
-
-    @media (hover: hover) {
-      &:hover {
-        background-color: #fff;
-        transition: 0.025s ease-in;
-        opacity: 1;
-      }
-    }
-  }
+  display: flex;
+  flex-direction: column;
+  user-select: none;
+  cursor: pointer;
 
   > span {
     font-family: var(--main-font-family);
 
     &.l {
-      margin-right: 5px;
+      font-size: 0.75rem;
     }
+
+    font-size: 1rem;
   }
 
   @media (max-width: 599px) {
-    display: flex;
-    flex-direction: column;
-    top: 4rem;
-
-    &.active {
-      opacity: 1;
-    }
-
     > span {
       &.l {
-        font-size: 0.5rem;
+        font-size: 0.6rem;
       }
 
-      font-size: 0.75rem;
+      font-size: 0.85rem;
     }
   }
 `
@@ -68,10 +59,12 @@ const SessionTimer = () => {
   }, [token])
 
   return (
-    <Timer className={sessionTimerClassname}>
-      <span className="l">เซสชันคงเหลือ</span>
-      <span className="r">{displaySessionTimer(sessionTimer)}</span>
-    </Timer>
+    <Wall>
+      <Timer className={sessionTimerClassname}>
+        <span className="l">เซสชันคงเหลือ</span>
+        <span className="r">{displaySessionTimer(sessionTimer)}</span>
+      </Timer>
+    </Wall>
   )
 }
 
