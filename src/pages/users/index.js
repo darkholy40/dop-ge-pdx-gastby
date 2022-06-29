@@ -317,8 +317,8 @@ const UserManagementPage = () => {
     <Layout>
       {token !== `` && roles[userInfo.role.name].level >= 3 ? (
         <>
-          <Seo title="จัดการผู้ใช้งาน" />
-          <Breadcrumbs current="จัดการผู้ใช้งาน" />
+          <Seo title="ผู้ใช้งานระบบ" />
+          <Breadcrumbs current="ผู้ใช้งานระบบ" />
 
           {!isError.status ? (
             usersData.length > 0 && (

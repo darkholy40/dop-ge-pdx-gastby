@@ -618,12 +618,12 @@ const AddPersonPage = () => {
               {
                 name:
                   roles[userInfo.role.name].level <= 1
-                    ? `จัดการประวัติกำลังพล (${
+                    ? `ประวัติกำลังพล (${
                         userInfo.division !== null
                           ? renderDivision(userInfo.division)
                           : `-`
                       })`
-                    : `จัดการประวัติกำลังพล`,
+                    : `ประวัติกำลังพล`,
                 link: `/people/`,
               },
             ]}

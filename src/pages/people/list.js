@@ -23,6 +23,7 @@ import {
   faPen,
   faSignOutAlt,
   faChevronLeft,
+  faEye,
 } from "@fortawesome/free-solid-svg-icons"
 
 import { client, gql } from "../../functions/apollo-client"
@@ -315,12 +316,12 @@ const PeopleListPage = () => {
               {
                 name:
                   roles[userInfo.role.name].level <= 1
-                    ? `จัดการประวัติกำลังพล (${
+                    ? `ประวัติกำลังพล (${
                         userInfo.division !== null
                           ? renderDivision(userInfo.division)
                           : `-`
                       })`
-                    : `จัดการประวัติกำลังพล`,
+                    : `ประวัติกำลังพล`,
                 link: `/people/`,
               },
             ]}
@@ -503,6 +504,15 @@ const PeopleListPage = () => {
                     horizontal: "right",
                   }}
                 >
+                  <MenuItem
+                    onClick={() => {
+                      setAnchorEl(null)
+                    }}
+                    disableRipple
+                  >
+                    <FontAwesomeIcon icon={faEye} style={{ marginRight: 5 }} />
+                    ดูประวัติกำลังพล
+                  </MenuItem>
                   <MenuItem
                     onClick={() => {
                       setAnchorEl(null)

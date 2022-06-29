@@ -1,5 +1,5 @@
 import React, { useEffect, useCallback, useState } from "react"
-import { navigate, Link } from "gatsby"
+import { navigate } from "gatsby"
 import { useSelector, useDispatch } from "react-redux"
 import {
   Table,
@@ -308,12 +308,12 @@ const PositionsListPage = () => {
               {
                 name:
                   roles[userInfo.role.name].level <= 1
-                    ? `จัดการคลังตำแหน่ง (${
+                    ? `คลังตำแหน่ง (${
                         userInfo.division !== null
                           ? renderDivision(userInfo.division)
                           : `-`
                       })`
-                    : `จัดการคลังตำแหน่ง`,
+                    : `คลังตำแหน่ง`,
                 link: `/positions/`,
               },
             ]}
@@ -386,13 +386,13 @@ const PositionsListPage = () => {
                           align="center"
                           sx={{ backgroundColor: primaryColor[200] }}
                         >
-                          อัตรากำลังจังหวัดชายแดนภาคใต้
+                          เปิดอัตรา
                         </TableCell>
                         <TableCell
                           align="center"
                           sx={{ backgroundColor: primaryColor[200] }}
                         >
-                          เปิดอัตรา
+                          อัตรากำลังจังหวัดชายแดนภาคใต้
                         </TableCell>
                         <TableCell
                           align="center"
@@ -430,15 +430,13 @@ const PositionsListPage = () => {
                           </TableCell>
                           <TableCell align="left">
                             {row.person._id !== `` ? (
-                              <Link
-                                to={`/people/edit/?id=${row.person._id}`}
-                              >{`${row.person.prename} ${row.person.name} ${row.person.surname}`}</Link>
+                              <span>{`${row.person.prename} ${row.person.name} ${row.person.surname}`}</span>
                             ) : (
                               <span>-</span>
                             )}
                           </TableCell>
                           <TableCell align="center">
-                            {row.isSouth && (
+                            {row.isOpen && (
                               <FontAwesomeIcon
                                 icon={faCheckCircle}
                                 style={{
@@ -449,7 +447,7 @@ const PositionsListPage = () => {
                             )}
                           </TableCell>
                           <TableCell align="center">
-                            {row.isOpen && (
+                            {row.isSouth && (
                               <FontAwesomeIcon
                                 icon={faCheckCircle}
                                 style={{

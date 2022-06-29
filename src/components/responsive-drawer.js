@@ -77,7 +77,7 @@ const ResponsiveDrawer = props => {
     administrator: [
       {
         name: `reports`,
-        desc: `ออกรายงาน`,
+        desc: `การออกรายงาน`,
         icon: faPrint,
         role: roles.Administrator,
       },
@@ -85,7 +85,7 @@ const ResponsiveDrawer = props => {
     superAdministrator: [
       {
         name: `users`,
-        desc: `จัดการผู้ใช้งาน`,
+        desc: `ผู้ใช้งานระบบ`,
         icon: faUsersCog,
         role: roles.SuperAdministrator,
       },

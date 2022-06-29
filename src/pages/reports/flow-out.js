@@ -286,7 +286,7 @@ const FlowOutPage = () => {
           <Breadcrumbs
             previous={[
               {
-                name: `ออกรายงาน`,
+                name: `การออกรายงาน`,
                 link: `/reports/`,
               },
             ]}

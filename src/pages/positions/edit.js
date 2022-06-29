@@ -318,7 +318,7 @@ const EditPositionsPage = ({ location }) => {
           notificationDialog: {
             open: true,
             title: `การบันทึกข้อมูลไม่สำเร็จ`,
-            description: `ไม่สามารถแก้ไขรายการคลังตำแหน่งได้`,
+            description: `ไม่สามารถแก้ไขข้อมูลคลังตำแหน่งได้`,
             variant: `error`,
             confirmText: `ตกลง`,
             callback: () => {},
@@ -364,12 +364,12 @@ const EditPositionsPage = ({ location }) => {
                 {
                   name:
                     roles[userInfo.role.name].level <= 1
-                      ? `จัดการคลังตำแหน่ง (${
+                      ? `คลังตำแหน่ง (${
                           userInfo.division !== null
                             ? renderDivision(userInfo.division)
                             : `-`
                         })`
-                      : `จัดการคลังตำแหน่ง`,
+                      : `คลังตำแหน่ง`,
                   link: `/positions/`,
                 },
                 {

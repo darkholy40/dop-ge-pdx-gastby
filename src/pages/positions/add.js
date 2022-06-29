@@ -122,7 +122,7 @@ const AddPositionsPage = () => {
         notificationDialog: {
           open: true,
           title: `การเพิ่มข้อมูลไม่สำเร็จ`,
-          description: `ไม่สามารถเพิ่มรายการคลังตำแหน่งได้`,
+          description: `ไม่สามารถเพิ่มข้อมูลคลังตำแหน่งได้`,
           variant: `error`,
           confirmText: `ตกลง`,
           callback: () => {},
@@ -220,7 +220,7 @@ const AddPositionsPage = () => {
           notificationDialog: {
             open: true,
             title: `การเพิ่มข้อมูลไม่สำเร็จ`,
-            description: `ไม่สามารถเพิ่มรายการคลังตำแหน่งได้`,
+            description: `ไม่สามารถเพิ่มข้อมูลคลังตำแหน่งได้`,
             variant: `error`,
             confirmText: `ตกลง`,
             callback: () => {},
@@ -261,12 +261,12 @@ const AddPositionsPage = () => {
               {
                 name:
                   roles[userInfo.role.name].level <= 1
-                    ? `จัดการคลังตำแหน่ง (${
+                    ? `คลังตำแหน่ง (${
                         userInfo.division !== null
                           ? renderDivision(userInfo.division)
                           : `-`
                       })`
-                    : `จัดการคลังตำแหน่ง`,
+                    : `คลังตำแหน่ง`,
                 link: `/positions/`,
               },
             ]}

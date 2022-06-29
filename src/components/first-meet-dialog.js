@@ -38,7 +38,7 @@ const FirstMeetDialog = () => {
               color: successColor[500],
             }}
           />
-          <p>กดปุ่ม "ตกลง" เพื่อไปยังหน้าจัดการประวัติกำลังพล</p>
+          <p>กดปุ่ม "ตกลง" เพื่อไปยังหน้าประวัติกำลังพล</p>
           <Button
             color="primary"
             variant="contained"

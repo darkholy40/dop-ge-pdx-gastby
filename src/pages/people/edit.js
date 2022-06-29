@@ -940,12 +940,12 @@ const EditPersonPage = ({ location }) => {
                   {
                     name:
                       roles[userInfo.role.name].level <= 1
-                        ? `จัดการคลังตำแหน่ง (${
+                        ? `คลังตำแหน่ง (${
                             userInfo.division !== null
                               ? renderDivision(userInfo.division)
                               : `-`
                           })`
-                        : `จัดการคลังตำแหน่ง`,
+                        : `คลังตำแหน่ง`,
                     link: `/positions/`,
                   },
                   {
@@ -961,12 +961,12 @@ const EditPersonPage = ({ location }) => {
                   {
                     name:
                       roles[userInfo.role.name].level <= 1
-                        ? `จัดการประวัติกำลังพล (${
+                        ? `ประวัติกำลังพล (${
                             userInfo.division !== null
                               ? renderDivision(userInfo.division)
                               : `-`
                           })`
-                        : `จัดการประวัติกำลังพล`,
+                        : `ประวัติกำลังพล`,
                     link: `/people/`,
                   },
                   {
