@@ -114,41 +114,48 @@ const IndexPage = () => {
           const userData = res.data.user
           const token = res.data.jwt
 
-          // use setTimeout() to prevent "Can't perform a React state update on an unmounted component"
-          setIsError({
-            status: false,
-            text: `pass`,
-          })
+          if (userData.confirmed) {
+            setIsError({
+              status: false,
+              text: `pass`,
+            })
 
-          setTimeout(() => {
-            client(token).mutate({
-              mutation: gql`
-                mutation CreateLog {
-                  createLog(input: {
-                    data: {
-                      action: "auth",
-                      description: "login",
-                      users_permissions_user: "${userData._id}",
-                    }
-                  }) {
-                    log {
-                      _id
+            // use setTimeout() to prevent "Can't perform a React state update on an unmounted component"
+            setTimeout(() => {
+              client(token).mutate({
+                mutation: gql`
+                  mutation CreateLog {
+                    createLog(input: {
+                      data: {
+                        action: "auth",
+                        description: "login",
+                        users_permissions_user: "${userData._id}",
+                      }
+                    }) {
+                      log {
+                        _id
+                      }
                     }
                   }
-                }
-              `,
-            })
+                `,
+              })
 
-            dispatch({
-              type: `SET_TOKEN`,
-              token: token,
-            })
+              dispatch({
+                type: `SET_TOKEN`,
+                token: token,
+              })
 
-            dispatch({
-              type: `SET_USER_INFO`,
-              userInfo: userData,
+              dispatch({
+                type: `SET_USER_INFO`,
+                userInfo: userData,
+              })
+            }, 0)
+          } else {
+            setIsError({
+              status: true,
+              text: `บัญชีนี้ถูกระงับการใช้งาน`,
             })
-          }, 0)
+          }
           break
 
         default:
