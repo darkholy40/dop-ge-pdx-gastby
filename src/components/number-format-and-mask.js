@@ -5,19 +5,6 @@ import NumberFormat from "react-number-format"
 
 const PhoneNumber = React.forwardRef((props, ref) => {
   const { onChange, ...other } = props
-  // return (
-  //   <IMaskInput
-  //     {...other}
-  //     mask="000-000-0000"
-  //     // mask="(#00) 000-0000"
-  //     // definitions={{
-  //     //   '#': /[1-9]/,
-  //     // }}
-  //     inputRef={ref}
-  //     onAccept={value => onChange({ target: { id: props.id, value } })}
-  //     overwrite
-  //   />
-  // )
 
   return (
     <NumberFormat
@@ -66,6 +53,11 @@ const Currency = React.forwardRef((props, ref) => {
     />
   )
 })
+
+Currency.propTypes = {
+  id: PropTypes.string.isRequired,
+  onChange: PropTypes.func.isRequired,
+}
 
 const Percent = React.forwardRef((props, ref) => {
   const { onChange, ...other } = props

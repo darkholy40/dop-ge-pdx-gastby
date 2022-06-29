@@ -42,6 +42,7 @@ option {
 .MuiPagination-root .MuiButtonBase-root,
 .MuiAutocomplete-noOptions,
 .MuiFormHelperText-root,
+.MuiFormHelperText-root.Mui-error,
 .MuiListItemText-root .MuiListItemText-primary,
 .react-datepicker__day-name,
 .react-datepicker__week {

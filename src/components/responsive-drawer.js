@@ -84,7 +84,7 @@ const ResponsiveDrawer = props => {
     ],
     superAdministrator: [
       {
-        name: `user-management`,
+        name: `users`,
         desc: `จัดการผู้ใช้งาน`,
         icon: faUsersCog,
         role: roles.SuperAdministrator,

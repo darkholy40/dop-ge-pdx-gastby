@@ -10,6 +10,7 @@ import Seo from "../../components/seo"
 import Breadcrumbs from "../../components/breadcrumbs"
 import PageNotFound from "../../components/page-not-found"
 import renderDivision from "../../functions/render-division"
+import renderUserRole from "../../functions/render-user-role"
 import roles from "../../static/roles"
 
 const Container = styled.div`
@@ -80,22 +81,6 @@ const SettingsGeneral = () => {
     }
   }, [token, userInfo])
 
-  const renderRole = getRole => {
-    switch (getRole) {
-      case `SuperAdministrator`:
-        return `ผู้ดูแลระบบ (จัดการผู้ใช้งาน)`
-
-      case `Administrator`:
-        return `ผู้ดูแลระบบ (ส่วนกลาง)`
-
-      case `Authenticated`:
-        return `ผู้ใช้งาน (ระดับหน่วย)`
-
-      default:
-        return ``
-    }
-  }
-
   useEffect(() => {
     dispatch({
       type: `SET_CURRENT_PAGE`,
@@ -128,7 +113,7 @@ const SettingsGeneral = () => {
       },
       {
         title: `ระดับผู้ใช้งาน`,
-        desc: renderRole(userInfo.role.name),
+        desc: renderUserRole(userInfo.role.name),
       },
       {
         title: `ระยะเวลาเซสชัน`,

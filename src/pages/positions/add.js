@@ -121,7 +121,7 @@ const AddPositionsPage = () => {
         type: `SET_NOTIFICATION_DIALOG`,
         notificationDialog: {
           open: true,
-          title: `เพิ่มรายการไม่สำเร็จ`,
+          title: `การเพิ่มข้อมูลไม่สำเร็จ`,
           description: `ไม่สามารถเพิ่มรายการคลังตำแหน่งได้`,
           variant: `error`,
           confirmText: `ตกลง`,
@@ -219,7 +219,7 @@ const AddPositionsPage = () => {
           type: `SET_NOTIFICATION_DIALOG`,
           notificationDialog: {
             open: true,
-            title: `เพิ่มรายการไม่สำเร็จ`,
+            title: `การเพิ่มข้อมูลไม่สำเร็จ`,
             description: `ไม่สามารถเพิ่มรายการคลังตำแหน่งได้`,
             variant: `error`,
             confirmText: `ตกลง`,
