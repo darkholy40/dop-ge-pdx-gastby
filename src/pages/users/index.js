@@ -27,7 +27,7 @@ import {
   faEllipsisH,
   faUserEdit,
 } from "@fortawesome/free-solid-svg-icons"
-import { green, grey, red } from "@mui/material/colors"
+import { green, grey } from "@mui/material/colors"
 
 import { client, gql } from "../../functions/apollo-client"
 
@@ -99,11 +99,27 @@ const UserManagementPage = () => {
         const res = await client(token).query({
           query: gql`
             query Users {
-              users(start: ${parseInt(
-                tableOption.rowsPerPage * tableOption.page
-              )}, limit: ${tableOption.rowsPerPage}) {
+              users(
+                start: ${parseInt(tableOption.rowsPerPage * tableOption.page)},
+                limit: ${tableOption.rowsPerPage},
+                where: {
+                  _or: [
+                    {
+                      role: {
+                        name: "Authenticated"
+                      }
+                    },
+                    {
+                      role: {
+                        name: "Administrator"
+                      }
+                    },
+                  ]
+                }
+              ) {
                 _id
                 username
+                rank
                 name
                 surname
                 confirmed
@@ -240,15 +256,15 @@ const UserManagementPage = () => {
     const { rank, name, surname } = obj
     let fullname = ``
 
-    if (rank !== undefined && rank !== ``) {
+    if (rank !== undefined && rank !== null && rank !== ``) {
       fullname += `${rank} `
     }
 
-    if (name !== undefined && name !== ``) {
+    if (name !== undefined && name !== null && name !== ``) {
       fullname += `${name} `
     }
 
-    if (surname !== undefined && surname !== ``) {
+    if (surname !== undefined && surname !== null && surname !== ``) {
       fullname += `${surname}`
     }
 

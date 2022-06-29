@@ -17,7 +17,7 @@ import {
 } from "../functions/object-in-array"
 import renderTableDate from "../functions/render-table-date"
 
-import roles from "../static/roles"
+import roleNames from "../static/roles"
 
 const Container = styled.div`
   box-shadow: rgb(0 0 0 / 24%) 0px 1px 2px;
@@ -106,6 +106,7 @@ const SystemData = ({ showContent, confirmButtonContent, confirmCallback }) => {
     educationalInstitutions,
     countries,
     decorations,
+    roles,
     installationDate,
   } = useSelector(({ staticReducer }) => staticReducer)
   const dispatch = useDispatch()
@@ -876,9 +877,81 @@ const SystemData = ({ showContent, confirmButtonContent, confirmCallback }) => {
     }, 200)
   }, [token, dispatch])
 
+  const getRoles = useCallback(async () => {
+    let returnData = []
+
+    setPercentDialog(prev => [
+      ...prev,
+      {
+        id: 9,
+        open: true,
+        title: `ข้อมูลประเภทผู้ใช้งาน`,
+        percent: 0,
+      },
+    ])
+
+    try {
+      const res = await client(token).query({
+        query: gql`
+          query Roles {
+            roles {
+              _id
+              name
+            }
+          }
+        `,
+      })
+
+      returnData = [
+        ...returnData,
+        res.data.roles.find(elem => elem.name === `Authenticated`),
+      ]
+
+      returnData = [
+        ...returnData,
+        res.data.roles.find(elem => elem.name === `Administrator`),
+      ]
+    } catch (error) {
+      console.log(error.message)
+
+      if (error.message === `Failed to fetch`) {
+        dispatch({
+          type: `SET_NOTIFICATION_DIALOG`,
+          notificationDialog: {
+            open: true,
+            title: `การเชื่อมต่อไม่เสถียร`,
+            description: `ไม่สามารถเชื่อมต่อฐานข้อมูลได้`,
+            variant: `error`,
+            confirmText: `ลองอีกครั้ง`,
+            callback: () => getRoles(),
+          },
+        })
+      }
+    }
+
+    dispatch({
+      type: `SET_ROLES`,
+      roles: returnData,
+    })
+    dispatch({
+      type: `SET_INSTALLATION_DATE`,
+      key: `roles`,
+    })
+
+    setPercentDialog(prev =>
+      updateAnObjectInArray(prev, `id`, 9, {
+        percent: 100,
+      })
+    )
+    setTimeout(() => {
+      setPercentDialog(prev => removeObjectInArray(prev, `id`, 9))
+    }, 200)
+  }, [token, dispatch])
+
   const installAll = () => {
-    if (userInfo.role._id !== `` && roles[userInfo.role.name].level >= 2) {
+    if (userInfo.role._id !== `` && roleNames[userInfo.role.name].level >= 2) {
       units.length === 0 && getUnits()
+      roles.length === 0 && getRoles()
     }
 
     positionTypes.length === 0 &&
@@ -911,8 +984,9 @@ const SystemData = ({ showContent, confirmButtonContent, confirmCallback }) => {
   }
 
   const updateAll = () => {
-    if (userInfo.role._id !== `` && roles[userInfo.role.name].level >= 2) {
+    if (userInfo.role._id !== `` && roleNames[userInfo.role.name].level >= 2) {
       getUnits()
+      getRoles()
     }
 
     getPositionName()
@@ -991,13 +1065,15 @@ const SystemData = ({ showContent, confirmButtonContent, confirmCallback }) => {
     }
     let count = 0
 
-    if (userInfo.role._id !== `` && roles[userInfo.role.name].level >= 2) {
+    if (userInfo.role._id !== `` && roleNames[userInfo.role.name].level >= 2) {
       units.length === 0 && count++
+      roles.length === 0 && count++
 
       if (
         positionTypes.length > 0 &&
         positionNames.length > 0 &&
         units.length > 0 &&
+        roles.length > 0 &&
         locations.length > 0 &&
         educationLevels.length > 0 &&
         educationNames.length > 0 &&
@@ -1064,8 +1140,9 @@ const SystemData = ({ showContent, confirmButtonContent, confirmCallback }) => {
   useEffect(() => {
     let count = 0
 
-    if (userInfo.role._id !== `` && roles[userInfo.role.name].level >= 2) {
+    if (userInfo.role._id !== `` && roleNames[userInfo.role.name].level >= 2) {
       units.length === 0 && count++
+      roles.length === 0 && count++
     }
 
     positionNames.length === 0 && count++
@@ -1087,6 +1164,7 @@ const SystemData = ({ showContent, confirmButtonContent, confirmCallback }) => {
     tutorialCount,
     positionNames.length,
     units.length,
+    roles.length,
     locations.length,
     educationLevels.length,
     educationNames.length,
@@ -1127,6 +1205,62 @@ const SystemData = ({ showContent, confirmButtonContent, confirmCallback }) => {
             {renderFetchAllDataButton()}
           </DownloadButtonSection>
           <Content>
+            {userInfo.role._id !== `` &&
+              roleNames[userInfo.role.name].level >= 2 && (
+                <>
+                  <Block>
+                    <div>
+                      <p>ข้อมูลหน่วย</p>
+                      {units.length > 0 && (
+                        <p className="detail">{units.length} รายการ</p>
+                      )}
+                    </div>
+                    <div>
+                      {units.length > 0 ? (
+                        <>{renderCheckedSign()}</>
+                      ) : (
+                        <>{renderFetchDataButton(getUnits, `units`)}</>
+                      )}
+                    </div>
+                  </Block>
+                  {units.length > 0 && (
+                    <UpdatedDate>
+                      {renderTableDate(installationDate.units, `datetime`)}
+                    </UpdatedDate>
+                  )}
+                  <Divider
+                    style={{ marginTop: `1rem`, marginBottom: `1rem` }}
+                  />
+                </>
+              )}
+            {userInfo.role._id !== `` &&
+              roleNames[userInfo.role.name].level >= 2 && (
+                <>
+                  <Block>
+                    <div>
+                      <p>ข้อมูลประเภทผู้ใช้งาน</p>
+                      {roles.length > 0 && (
+                        <p className="detail">{roles.length} รายการ</p>
+                      )}
+                    </div>
+                    <div>
+                      {roles.length > 0 ? (
+                        <>{renderCheckedSign()}</>
+                      ) : (
+                        <>{renderFetchDataButton(getRoles, `roles`)}</>
+                      )}
+                    </div>
+                  </Block>
+                  {roles.length > 0 && (
+                    <UpdatedDate>
+                      {renderTableDate(installationDate.roles, `datetime`)}
+                    </UpdatedDate>
+                  )}
+                  <Divider
+                    style={{ marginTop: `1rem`, marginBottom: `1rem` }}
+                  />
+                </>
+              )}
             <Block>
               <div>
                 <p>ข้อมูลชื่อประเภทกลุ่มงานและชื่อตำแหน่ง</p>
@@ -1157,31 +1291,6 @@ const SystemData = ({ showContent, confirmButtonContent, confirmCallback }) => {
               </UpdatedDate>
             )}
             <Divider style={{ marginTop: `1rem`, marginBottom: `1rem` }} />
-            {userInfo.role._id !== `` && roles[userInfo.role.name].level >= 2 && (
-              <>
-                <Block>
-                  <div>
-                    <p>ข้อมูลหน่วย</p>
-                    {units.length > 0 && (
-                      <p className="detail">{units.length} รายการ</p>
-                    )}
-                  </div>
-                  <div>
-                    {units.length > 0 ? (
-                      <>{renderCheckedSign()}</>
-                    ) : (
-                      <>{renderFetchDataButton(getUnits, `units`)}</>
-                    )}
-                  </div>
-                </Block>
-                {units.length > 0 && (
-                  <UpdatedDate>
-                    {renderTableDate(installationDate.units, `datetime`)}
-                  </UpdatedDate>
-                )}
-                <Divider style={{ marginTop: `1rem`, marginBottom: `1rem` }} />
-              </>
-            )}
             <Block>
               <div>
                 <p>ข้อมูลจังหวัด อำเภอ ตำบล และรหัสไปรษณีย์</p>
