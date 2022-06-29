@@ -31,6 +31,7 @@ import { client, gql } from "../../functions/apollo-client"
 import Layout from "../../components/layout"
 import Seo from "../../components/seo"
 import Breadcrumbs from "../../components/breadcrumbs"
+import PersonViewDialog from "../../components/people/person-view-dialog"
 import PageNotFound from "../../components/page-not-found"
 import Warning from "../../components/warning"
 import renderDivision from "../../functions/render-division"
@@ -47,12 +48,13 @@ const PeopleListPage = () => {
     text: ``,
   })
   const [anchorEl, setAnchorEl] = useState(null)
-  const [currentRow, setCurrentRow] = useState({})
+  const [currentRow, setCurrentRow] = useState(null)
   const [tableOption, setTableOption] = useState({
     totalRows: 0,
     page: searchPersonFilter.currentPage,
     rowsPerPage: 10,
   })
+  const [personViewOpen, setPersonViewOpen] = useState(false)
 
   const savePageView = useCallback(() => {
     // Prevent saving a log when switch user to super admin
@@ -507,6 +509,7 @@ const PeopleListPage = () => {
                   <MenuItem
                     onClick={() => {
                       setAnchorEl(null)
+                      setPersonViewOpen(true)
                     }}
                     disableRipple
                   >
@@ -516,7 +519,6 @@ const PeopleListPage = () => {
                   <MenuItem
                     onClick={() => {
                       setAnchorEl(null)
-
                       navigate(`/people/edit/?id=${currentRow._id}`)
                     }}
                     disableRipple
@@ -527,7 +529,6 @@ const PeopleListPage = () => {
                   <MenuItem
                     onClick={() => {
                       setAnchorEl(null)
-
                       navigate(`/people/resignation/?id=${currentRow._id}`)
                     }}
                     disableRipple
@@ -539,6 +540,14 @@ const PeopleListPage = () => {
                     จำหน่ายสูญเสีย
                   </MenuItem>
                 </Menu>
+
+                <PersonViewDialog
+                  open={personViewOpen}
+                  callback={() => {
+                    setPersonViewOpen(false)
+                  }}
+                  personId={currentRow !== null ? currentRow._id : ``}
+                />
               </>
             )
           ) : (

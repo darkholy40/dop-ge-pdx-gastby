@@ -89,14 +89,8 @@ const EditPersonPage = ({ location }) => {
   const dispatch = useDispatch()
   const [positions, setPositions] = useState([])
   const [isError, setIsError] = useState({
-    main: {
-      status: ``,
-      text: ``,
-    },
-    location: {
-      status: ``,
-      text: ``,
-    },
+    status: ``,
+    text: ``,
   })
   const [prename, setPrename] = useState(``)
   const [name, setName] = useState(``)
