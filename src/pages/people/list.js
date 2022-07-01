@@ -20,10 +20,10 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import {
   // faCheckCircle,
   faEllipsisH,
-  faPen,
+  faPencilAlt,
   faSignOutAlt,
   faChevronLeft,
-  faEye,
+  faSearch,
 } from "@fortawesome/free-solid-svg-icons"
 
 import { client, gql } from "../../functions/apollo-client"
@@ -31,6 +31,7 @@ import { client, gql } from "../../functions/apollo-client"
 import Layout from "../../components/layout"
 import Seo from "../../components/seo"
 import Breadcrumbs from "../../components/breadcrumbs"
+import { Link } from "../../components/styles"
 import PersonViewDialog from "../../components/people/person-view-dialog"
 import PageNotFound from "../../components/page-not-found"
 import Warning from "../../components/warning"
@@ -418,7 +419,14 @@ const PeopleListPage = () => {
                             {row.orderNumber}
                           </TableCell>
                           <TableCell align="left">
-                            {`${row.Prename} ${row.Name} ${row.Surname}`}
+                            <Link
+                              onClick={() => {
+                                setCurrentRow(row)
+                                setPersonViewOpen(true)
+                              }}
+                            >
+                              {`${row.Prename} ${row.Name} ${row.Surname}`}
+                            </Link>
                           </TableCell>
                           <TableCell align="left" sx={{ minWidth: 100 }}>
                             {row.position.posNumber}
@@ -513,7 +521,10 @@ const PeopleListPage = () => {
                     }}
                     disableRipple
                   >
-                    <FontAwesomeIcon icon={faEye} style={{ marginRight: 5 }} />
+                    <FontAwesomeIcon
+                      icon={faSearch}
+                      style={{ marginRight: 5 }}
+                    />
                     ดูประวัติกำลังพล
                   </MenuItem>
                   <MenuItem
@@ -523,7 +534,10 @@ const PeopleListPage = () => {
                     }}
                     disableRipple
                   >
-                    <FontAwesomeIcon icon={faPen} style={{ marginRight: 5 }} />
+                    <FontAwesomeIcon
+                      icon={faPencilAlt}
+                      style={{ marginRight: 5 }}
+                    />
                     แก้ไขประวัติกำลังพล
                   </MenuItem>
                   <MenuItem

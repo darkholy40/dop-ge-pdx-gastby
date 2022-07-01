@@ -432,7 +432,6 @@ const ResponsiveDrawer = props => {
                 : `100%`,
             xs: `100%`,
           },
-          fontFamily: `var(--main-font-family)`,
         }}
       >
         <Toolbar />

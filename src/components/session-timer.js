@@ -25,8 +25,6 @@ const Timer = styled.div`
   cursor: pointer;
 
   > span {
-    font-family: var(--main-font-family);
-
     &.l {
       font-size: 0.75rem;
     }

@@ -1,6 +1,26 @@
 import styled from "styled-components"
 import { blue } from "@mui/material/colors"
 
+const Link = styled.a`
+  text-decoration: none;
+  color: ${({ primaryColor }) =>
+    primaryColor !== undefined ? primaryColor[500] : blue[500]};
+  cursor: pointer;
+  transition: color 0.1s;
+
+  @media (hover: hover) {
+    &:hover {
+      color: ${({ primaryColor }) =>
+        primaryColor !== undefined ? primaryColor[500] : blue[500]};
+    }
+
+    &:active {
+      color: ${({ primaryColor }) =>
+        primaryColor !== undefined ? primaryColor[700] : blue[700]};
+    }
+  }
+`
+
 const Form = styled.form`
   display: flex;
   flex-direction: column;
@@ -24,7 +44,6 @@ const Flex = styled.div`
   flex-direction: row;
   justify-content: flex-start;
   align-items: center;
-  font-family: var(--main-font-family);
 `
 
 const DisabledBlock = styled.div`
@@ -109,6 +128,7 @@ const ColorButton = styled.div`
 `
 
 export {
+  Link,
   Form,
   SubmitButtonFlex,
   Flex,

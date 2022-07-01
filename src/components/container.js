@@ -100,6 +100,9 @@ const Container = ({ children }) => {
         main: green[600],
       },
     },
+    typography: {
+      fontFamily: `var(--main-font-family)`,
+    },
   })
 
   return (

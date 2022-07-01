@@ -21,7 +21,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import {
   faCheckCircle,
   faEllipsisH,
-  faPen,
+  faPencilAlt,
   faChevronLeft,
 } from "@fortawesome/free-solid-svg-icons"
 
@@ -538,7 +538,10 @@ const PositionsListPage = () => {
                     }}
                     disableRipple
                   >
-                    <FontAwesomeIcon icon={faPen} style={{ marginRight: 5 }} />
+                    <FontAwesomeIcon
+                      icon={faPencilAlt}
+                      style={{ marginRight: 5 }}
+                    />
                     แก้ไขคลังตำแหน่ง
                   </MenuItem>
                 </Menu>

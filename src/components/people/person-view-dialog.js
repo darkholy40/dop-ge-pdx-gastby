@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useState } from "react"
+import { navigate } from "gatsby"
 import PropTypes from "prop-types"
-import { useSelector, useDispatch } from "react-redux"
+import { useSelector } from "react-redux"
 import {
   Dialog,
   DialogTitle,
@@ -9,11 +10,16 @@ import {
   IconButton,
   Grid,
   Divider,
-  CircularProgress,
+  LinearProgress,
+  Tooltip,
 } from "@mui/material"
 import styled from "styled-components"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { faTimes } from "@fortawesome/free-solid-svg-icons"
+import {
+  faTimes,
+  faPencilAlt,
+  faSignOutAlt,
+} from "@fortawesome/free-solid-svg-icons"
 
 import { client, gql } from "../../functions/apollo-client"
 
@@ -21,13 +27,13 @@ import renderDivision from "../../functions/render-division"
 import renderTableDate from "../../functions/render-table-date"
 import renderAgeFromDifferentDateRange from "../../functions/render-age-from-different-date-range"
 import renderFullname from "../../functions/render-fullname"
+import renderNumberAsText from "../../functions/render-number-as-text"
 
 const Content = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
-  font-family: var(--main-font-family);
 
   > p {
     font-size: 1rem;
@@ -38,8 +44,8 @@ const Content = styled.div`
 const Line = styled.div`
   display: flex;
   flex-direction: column;
-  border: 1px solid rgba(0, 0, 0, 0.27);
-  border-radius: 8px;
+  border: 1px solid rgba(0, 0, 0, 0.18);
+  border-radius: 12px;
   padding: 0.5rem 1rem;
 `
 const Label = styled.span`
@@ -50,7 +56,6 @@ const Label = styled.span`
 
 const PersonViewDialog = ({ personId, open, title, callback }) => {
   const { token } = useSelector(({ mainReducer }) => mainReducer)
-  const dispatch = useDispatch()
   const [data, setData] = useState(null)
   const [progressStatus, setProgressStatus] = useState({
     status: ``,
@@ -76,14 +81,6 @@ const PersonViewDialog = ({ personId, open, title, callback }) => {
 
       return 0
     }
-
-    dispatch({
-      type: `SET_BACKDROP_OPEN`,
-      backdropDialog: {
-        open: true,
-        title: ``,
-      },
-    })
 
     try {
       const res = await client(token).query({
@@ -235,15 +232,7 @@ const PersonViewDialog = ({ personId, open, title, callback }) => {
         text: `ข้อมูลผิดพลาดผิดพลาด`,
       })
     }
-
-    dispatch({
-      type: `SET_BACKDROP_OPEN`,
-      backdropDialog: {
-        open: false,
-        title: ``,
-      },
-    })
-  }, [token, personId, dispatch])
+  }, [token, personId])
 
   const closeModal = () => {
     callback()
@@ -269,7 +258,7 @@ const PersonViewDialog = ({ personId, open, title, callback }) => {
         onClose={() => closeModal()}
       >
         <DialogTitle>{title}</DialogTitle>
-        <DialogContent dividers>
+        <DialogContent dividers sx={{ padding: `24px` }}>
           <Content>
             {data !== null && progressStatus.status === `` && (
               <>
@@ -593,19 +582,31 @@ const PersonViewDialog = ({ personId, open, title, callback }) => {
                   <Grid item sm={4} xs={12}>
                     <Line>
                       <Label>ร้อยละที่ได้รับการเลื่อนเงินเดือน</Label>
-                      <span>{data.person.PercentSalary || `-`}</span>
+                      <span>
+                        {data.person.PercentSalary
+                          ? renderNumberAsText(data.person.PercentSalary, 2)
+                          : `-`}
+                      </span>
                     </Line>
                   </Grid>
                   <Grid item sm={4} xs={12}>
                     <Line>
                       <Label>คะแนนผลสัมฤทธิ์ของงาน</Label>
-                      <span>{data.person.ScoreKPI || `-`}</span>
+                      <span>
+                        {data.person.ScoreKPI
+                          ? renderNumberAsText(data.person.ScoreKPI, 2)
+                          : `-`}
+                      </span>
                     </Line>
                   </Grid>
                   <Grid item sm={4} xs={12}>
                     <Line>
                       <Label>คะแนนประเมินสมรรถนะ</Label>
-                      <span>{data.person.ScoreCompetence || `-`}</span>
+                      <span>
+                        {data.person.ScoreCompetence
+                          ? renderNumberAsText(data.person.ScoreCompetence, 2)
+                          : `-`}
+                      </span>
                     </Line>
                   </Grid>
                   <Grid item xs={12}>
@@ -626,6 +627,7 @@ const PersonViewDialog = ({ personId, open, title, callback }) => {
             {progressStatus.status === `loading` && (
               <div
                 style={{
+                  width: `100%`,
                   display: `flex`,
                   alignItems: `center`,
                   justifyContent: `center`,
@@ -633,18 +635,55 @@ const PersonViewDialog = ({ personId, open, title, callback }) => {
                   padding: `2rem`,
                 }}
               >
-                <CircularProgress color="primary" size="5rem" thickness={5} />
+                <LinearProgress
+                  color="primary"
+                  sx={{
+                    width: `100%`,
+                    maxWidth: `360px`,
+                    height: `12px`,
+                    borderRadius: `8px`,
+                    ".MuiLinearProgress-bar": { borderRadius: `8px` },
+                  }}
+                />
               </div>
             )}
           </Content>
         </DialogContent>
         <DialogActions sx={{ position: `absolute`, top: 0, right: 0 }}>
-          <IconButton
-            style={{ width: 40, height: 40 }}
-            onClick={() => closeModal()}
-          >
-            <FontAwesomeIcon icon={faTimes} style={{ fontSize: 20 }} />
-          </IconButton>
+          <Tooltip arrow placement="bottom" title="ปิดหน้าต่าง">
+            <IconButton
+              style={{ width: 40, height: 40 }}
+              onClick={() => closeModal()}
+            >
+              <FontAwesomeIcon icon={faTimes} style={{ fontSize: 20 }} />
+            </IconButton>
+          </Tooltip>
+        </DialogActions>
+        <DialogActions sx={{ position: `absolute`, top: 0, right: 45 }}>
+          <Tooltip arrow placement="bottom" title="จำหน่ายสูญเสีย">
+            <IconButton
+              style={{ width: 40, height: 40 }}
+              color="inherit"
+              onClick={() => {
+                navigate(`/people/resignation/?id=${personId}`)
+              }}
+            >
+              <FontAwesomeIcon icon={faSignOutAlt} style={{ fontSize: 20 }} />
+            </IconButton>
+          </Tooltip>
+        </DialogActions>
+        <DialogActions sx={{ position: `absolute`, top: 0, right: 90 }}>
+          <Tooltip arrow placement="bottom" title="แก้ไขประวัติกำลังพล">
+            <IconButton
+              style={{ width: 40, height: 40 }}
+              color="inherit"
+              onClick={() => {
+                navigate(`/people/edit/?id=${personId}`)
+              }}
+            >
+              <FontAwesomeIcon icon={faPencilAlt} style={{ fontSize: 20 }} />
+            </IconButton>
+          </Tooltip>
         </DialogActions>
       </Dialog>
     </>

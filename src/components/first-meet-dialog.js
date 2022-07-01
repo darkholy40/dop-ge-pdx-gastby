@@ -13,7 +13,6 @@ const Content = styled.div`
   align-items: center;
   justify-content: flex-start;
   padding: 24px;
-  font-family: var(--main-font-family);
 
   > p {
     font-size: 1rem;

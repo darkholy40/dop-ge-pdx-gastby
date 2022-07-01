@@ -26,7 +26,6 @@ const FooterRow = styled.div`
   max-width: 960px;
   color: rgb(0, 0, 0);
   line-height: 28px;
-  font-family: var(--main-font-family);
   transition: 0.3s;
 
   @media (max-width: 599px) {

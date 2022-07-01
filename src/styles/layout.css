@@ -26,24 +26,6 @@ option {
   display: none;
 }
 
-.MuiInputLabel-root.MuiInputLabel-formControl,
-.MuiOutlinedInput-input.MuiInputBase-input,
-.MuiButton-root.MuiButtonBase-root,
-.MuiAlert-message,
-.MuiTypography-root.MuiTypography-h6,
-.MuiMenuItem-root.MuiButtonBase-root,
-.MuiAutocomplete-root,
-.MuiAutocomplete-option,
-.MuiTableCell-root.MuiTableCell-head,
-.MuiTableCell-root.MuiTableCell-body,
-.MuiTablePagination-root > .MuiToolbar-root > .MuiTablePagination-selectLabel,
-.MuiTablePagination-root > .MuiToolbar-root > .MuiInputBase-root,
-.MuiTablePagination-root > .MuiToolbar-root > .MuiTablePagination-displayedRows,
-.MuiPagination-root .MuiButtonBase-root,
-.MuiAutocomplete-noOptions,
-.MuiFormHelperText-root,
-.MuiFormHelperText-root.Mui-error,
-.MuiListItemText-root .MuiListItemText-primary,
 .react-datepicker__day-name,
 .react-datepicker__week {
   font-family: var(--main-font-family);
