@@ -73,7 +73,9 @@ const textfieldProps = {
 // }
 
 const AddPersonPage = () => {
-  const { token, userInfo } = useSelector(({ mainReducer }) => mainReducer)
+  const { token, userInfo, addPersonFilter } = useSelector(
+    ({ mainReducer }) => mainReducer
+  )
   const {
     positionTypes,
     positionNames,
@@ -180,6 +182,12 @@ const AddPersonPage = () => {
 
     if (roles[userInfo.role.name].level <= 1) {
       role = `division: "${userInfo.division._id}"`
+    }
+
+    if (roles[userInfo.role.name].level >= 2) {
+      if (addPersonFilter.unit !== null) {
+        role = `division: "${addPersonFilter.unit._id}"`
+      }
     }
 
     try {
@@ -294,7 +302,7 @@ const AddPersonPage = () => {
         behavior: "smooth",
       })
     }, 200)
-  }, [token, userInfo, dispatch])
+  }, [token, userInfo, addPersonFilter.unit, dispatch])
 
   const goAdd = async () => {
     let getPersonID = ``

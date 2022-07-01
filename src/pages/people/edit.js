@@ -89,14 +89,8 @@ const EditPersonPage = ({ location }) => {
   const dispatch = useDispatch()
   const [positions, setPositions] = useState([])
   const [isError, setIsError] = useState({
-    main: {
-      status: ``,
-      text: ``,
-    },
-    location: {
-      status: ``,
-      text: ``,
-    },
+    status: ``,
+    text: ``,
   })
   const [prename, setPrename] = useState(``)
   const [name, setName] = useState(``)
@@ -466,6 +460,50 @@ const EditPersonPage = ({ location }) => {
 
     if (roles[userInfo.role.name].level <= 1) {
       role = `division: "${userInfo.division._id}"`
+    }
+
+    if (roles[userInfo.role.name].level >= 2) {
+      try {
+        const res = await client(token).query({
+          query: gql`
+            query Positions {
+              positions(where: {
+                person: "${id}"
+              }) {
+                _id
+                division {
+                  _id
+                  division1
+                  division2
+                  division3
+                }
+              }
+            }
+          `,
+        })
+
+        if (res.data.positions.length > 0) {
+          const divisionId = res.data.positions[0].division._id
+          role = `division: "${divisionId}"`
+        }
+      } catch (error) {
+        console.log(error)
+
+        setPercentDialog(prev => removeObjectInArray(prev, `id`, 1))
+        dispatch({
+          type: `SET_NOTIFICATION_DIALOG`,
+          notificationDialog: {
+            open: true,
+            title: `การเชื่อมต่อไม่เสถียร`,
+            description: `ไม่สามารถเชื่อมต่อฐานข้อมูลได้`,
+            variant: `error`,
+            confirmText: `ลองอีกครั้ง`,
+            callback: () => getPositions(),
+          },
+        })
+
+        return 0
+      }
     }
 
     try {

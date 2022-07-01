@@ -55,6 +55,9 @@ const initialState = {
     isResigned: false,
     currentPage: 0,
   },
+  addPersonFilter: {
+    unit: null,
+  },
   notificationDialog: {
     open: false,
     title: ``,
@@ -114,6 +117,12 @@ const mainReducer = (state = initialState, action) => {
       return {
         ...state,
         searchPersonFilter: action.searchPersonFilter,
+      }
+
+    case `SET_ADD_PERSON_FILTER`:
+      return {
+        ...state,
+        addPersonFilter: action.addPersonFilter,
       }
 
     case `SET_NOTIFICATION_DIALOG`:

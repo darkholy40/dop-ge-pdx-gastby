@@ -35,12 +35,39 @@ const Oparator = styled.div`
   margin-left: auto;
   margin-right: auto;
   margin-bottom: 1rem;
+
+  .mobile {
+    width: 100%;
+    display: none;
+  }
+
+  .division-select {
+    display: flex;
+    flex-direction: column;
+    width: 300px;
+    min-width: 235px;
+  }
+
+  @media (max-width: 599px) {
+    flex-direction: column;
+
+    .mobile {
+      display: block;
+    }
+
+    .desktop {
+      display: none;
+    }
+
+    .division-select {
+      width: 100%;
+    }
+  }
 `
 
 const PeoplePage = () => {
-  const { token, userInfo, searchPersonFilter, primaryColor } = useSelector(
-    ({ mainReducer }) => mainReducer
-  )
+  const { token, userInfo, searchPersonFilter, addPersonFilter, primaryColor } =
+    useSelector(({ mainReducer }) => mainReducer)
   const { units } = useSelector(({ staticReducer }) => staticReducer)
   const dispatch = useDispatch()
   const [isError, setIsError] = useState({
@@ -88,49 +115,55 @@ const PeoplePage = () => {
       })
     }
 
-    if (roles[userInfo.role.name].level <= 1) {
-      if (userInfo.division === null) {
-        await clearSession()
-        await navigate(`/`)
+    if (userInfo.division === null) {
+      await clearSession()
+      await navigate(`/`)
 
-        dispatch({
-          type: `SET_NOTIFICATION_DIALOG`,
-          notificationDialog: {
-            open: true,
-            title: `บัญชีผู้ใช้งานมีปัญหา`,
-            description: `กรุณาติดต่อเจ้าหน้าที่ผู้ดูแลระบบ`,
-            variant: `error`,
-            confirmText: `ตกลง`,
-            callback: () => {},
-          },
-        })
+      dispatch({
+        type: `SET_NOTIFICATION_DIALOG`,
+        notificationDialog: {
+          open: true,
+          title: `บัญชีผู้ใช้งานมีปัญหา`,
+          description: `กรุณาติดต่อเจ้าหน้าที่ผู้ดูแลระบบ`,
+          variant: `error`,
+          confirmText: `ตกลง`,
+          callback: () => {},
+        },
+      })
 
-        try {
-          await client(token).mutate({
-            mutation: gql`
-              mutation CreateLog {
-                createLog(input: {
-                  data: {
-                    action: "auth",
-                    description: "division is null",
-                    users_permissions_user: "${userInfo._id}",
-                  }
-                }) {
-                  log {
-                    _id
-                  }
+      try {
+        await client(token).mutate({
+          mutation: gql`
+            mutation CreateLog {
+              createLog(input: {
+                data: {
+                  action: "auth",
+                  description: "division is null",
+                  users_permissions_user: "${userInfo._id}",
+                }
+              }) {
+                log {
+                  _id
                 }
               }
-            `,
-          })
-        } catch (error) {
-          console.log(error.message)
-        }
-
-        return 0
+            }
+          `,
+        })
+      } catch (error) {
+        console.log(error.message)
       }
 
+      return 0
+    }
+
+    if (roles[userInfo.role.name].level <= 1) {
       role = `division: "${userInfo.division._id}"`
+    }
+
+    if (roles[userInfo.role.name].level >= 2) {
+      if (addPersonFilter.unit !== null) {
+        role = `division: "${addPersonFilter.unit._id}"`
+      }
     }
 
     savePageView()
@@ -149,8 +182,8 @@ const PeoplePage = () => {
           query PositionsCount {
             positionsConnection(where: {
               isOpen: true
-              ${role}
               person_null: true
+              ${role}
             }) {
               aggregate {
                 count
@@ -166,7 +199,11 @@ const PeoplePage = () => {
         setIsError({
           status: ``,
           text: `มีตำแหน่งว่าง${
-            roles[userInfo.role.name].level > 1 ? `ทั้ง ทบ.` : ``
+            roles[userInfo.role.name].level > 1
+              ? addPersonFilter.unit !== null
+                ? ``
+                : `ทั้ง ทบ.`
+              : ``
           } ${totalCount} ตำแหน่ง`,
         })
       } else {
@@ -202,7 +239,7 @@ const PeoplePage = () => {
         title: ``,
       },
     })
-  }, [token, userInfo, savePageView, dispatch])
+  }, [token, userInfo, addPersonFilter.unit, savePageView, dispatch])
 
   useEffect(() => {
     dispatch({
@@ -246,44 +283,98 @@ const PeoplePage = () => {
 
           <Oparator>
             {isError.status === `disabled` && (
-              <Alert sx={{ width: `100%`, marginRight: `10px` }} icon={false}>
+              <Alert sx={{ width: `100%` }} icon={false}>
                 {isError.text}
               </Alert>
             )}
             {isError.status === `notfound` && (
-              <Alert
-                sx={{ width: `100%`, marginRight: `10px` }}
-                severity="error"
-              >
+              <Alert sx={{ width: `100%` }} severity="error">
                 {isError.text}
               </Alert>
             )}
             {isError.status === `` && (
-              <Alert
-                sx={{ width: `100%`, marginRight: `10px` }}
-                severity="success"
-              >
+              <Alert sx={{ width: `100%` }} severity="success">
                 {isError.text}
               </Alert>
             )}
-
-            <Button
-              sx={{
-                minWidth: 120,
-                whiteSpace: `nowrap`,
-              }}
-              color="success"
-              variant="outlined"
-              disabled={
-                isError.status === `disabled` || isError.status === `notfound`
-              }
-              onClick={() => {
-                navigate(`/people/add/`)
-              }}
-            >
-              <FontAwesomeIcon icon={faPlusCircle} style={{ marginRight: 5 }} />
-              เพิ่มกำลังพล
-            </Button>
+            <div className="desktop">
+              <Divider
+                orientation="vertical"
+                style={{ height: 100, marginLeft: `1rem`, marginRight: `1rem` }}
+              />
+            </div>
+            <div className="mobile">
+              <Divider
+                style={{
+                  width: 360,
+                  maxWidth: `100%`,
+                  marginTop: `1rem`,
+                  marginBottom: `1rem`,
+                  marginLeft: `auto`,
+                  marginRight: `auto`,
+                }}
+              />
+            </div>
+            <div className="division-select">
+              {roles[userInfo.role.name].level > 1 && (
+                <Flex style={{ marginBottom: `1rem` }}>
+                  <Autocomplete
+                    sx={{ width: `100%` }}
+                    id="division"
+                    disablePortal
+                    options={units}
+                    noOptionsText={`ไม่พบข้อมูล`}
+                    getOptionLabel={option => renderDivision(option)}
+                    isOptionEqualToValue={(option, value) => {
+                      return option === value
+                    }}
+                    onChange={(_, newValue) => {
+                      dispatch({
+                        type: `SET_ADD_PERSON_FILTER`,
+                        addPersonFilter: {
+                          ...addPersonFilter,
+                          unit: newValue,
+                        },
+                      })
+                    }}
+                    value={addPersonFilter.unit}
+                    renderInput={params => (
+                      <TextField
+                        {...params}
+                        label="สังกัด"
+                        helperText="เลือกสังกัดสำหรับเพิ่มประวัติกำลังพล"
+                        InputProps={{
+                          ...params.InputProps,
+                        }}
+                      />
+                    )}
+                  />
+                </Flex>
+              )}
+              <Button
+                sx={{
+                  minWidth: 120,
+                  whiteSpace: `nowrap`,
+                }}
+                color="success"
+                variant="outlined"
+                disabled={
+                  isError.status === `disabled` ||
+                  isError.status === `notfound` ||
+                  (roles[userInfo.role.name].level > 1 &&
+                    addPersonFilter.unit === null)
+                }
+                onClick={() => {
+                  navigate(`/people/add/`)
+                }}
+              >
+                <FontAwesomeIcon
+                  icon={faPlusCircle}
+                  style={{ marginRight: 5 }}
+                />
+                เพิ่มกำลังพล
+              </Button>
+            </div>
           </Oparator>
           <Divider style={{ marginTop: `1rem`, marginBottom: `1rem` }} />
           <Form onSubmit={e => e.preventDefault()}>
@@ -490,26 +581,11 @@ const PeoplePage = () => {
                   <Flex style={{ marginBottom: `1rem` }}>
                     <Autocomplete
                       sx={{ width: `100%` }}
-                      id="position-name"
+                      id="unit"
                       disablePortal
                       options={units}
                       noOptionsText={`ไม่พบข้อมูล`}
-                      getOptionLabel={option => {
-                        let label = ``
-
-                        if (option.division1) {
-                          label = option.division1
-                        }
-
-                        if (option.division2) {
-                          label = option.division2
-                        }
-
-                        if (option.division3) {
-                          label = option.division3
-                        }
-                        return label
-                      }}
+                      getOptionLabel={option => renderDivision(option)}
                       isOptionEqualToValue={(option, value) => {
                         return option === value
                       }}
@@ -545,7 +621,13 @@ const PeoplePage = () => {
                     />
                   </Flex>
                 )}
-                <Divider style={{ margin: `0 auto 1rem auto`, width: 300 }} />
+                <Divider
+                  style={{
+                    margin: `0 auto 1rem auto`,
+                    width: 300,
+                    maxWidth: `100%`,
+                  }}
+                />
                 <TextFieldWall
                   style={{
                     padding: `6px 12px`,

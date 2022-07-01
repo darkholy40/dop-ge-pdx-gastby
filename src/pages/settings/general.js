@@ -93,38 +93,42 @@ const SettingsGeneral = () => {
   }, [savePageView])
 
   useEffect(() => {
-    // console.log(userInfo)
-    const decodedToken = jwt_decode(token)
-    const maxTimer = (decodedToken.exp - decodedToken.iat) / 3600
+    if (token !== ``) {
+      // console.log(userInfo)
+      const decodedToken = jwt_decode(token)
+      const maxTimer = (decodedToken.exp - decodedToken.iat) / 3600
 
-    let users = [
-      {
-        title: `ชื่อ - สกุล`,
-        desc: `${userInfo.name} ${userInfo.surname}`,
-      },
-      {
-        title: `ชื่อผู้ใช้`,
-        desc: userInfo.username,
-      },
-      {
-        title: `สังกัด`,
-        desc:
-          userInfo.division !== null ? renderDivision(userInfo.division) : `-`,
-      },
-      {
-        title: `ระดับผู้ใช้งาน`,
-        desc: renderUserRole(userInfo.role.name),
-      },
-      {
-        title: `ระยะเวลาเซสชัน`,
-        desc: `${maxTimer} ชม. (คงเหลือ ${sessionTimer.hr}:${sessionTimer.min}:${sessionTimer.sec})`,
-      },
-      // {
-      //   title: `Token`,
-      //   desc: token,
-      // },
-    ]
-    setRows(users)
+      let users = [
+        {
+          title: `ชื่อ - สกุล`,
+          desc: `${userInfo.name} ${userInfo.surname}`,
+        },
+        {
+          title: `ชื่อผู้ใช้`,
+          desc: userInfo.username,
+        },
+        {
+          title: `สังกัด`,
+          desc:
+            userInfo.division !== null
+              ? renderDivision(userInfo.division)
+              : `-`,
+        },
+        {
+          title: `ระดับผู้ใช้งาน`,
+          desc: renderUserRole(userInfo.role.name),
+        },
+        {
+          title: `ระยะเวลาเซสชัน`,
+          desc: `${maxTimer} ชม. (คงเหลือ ${sessionTimer.hr}:${sessionTimer.min}:${sessionTimer.sec})`,
+        },
+        {
+          title: `Token`,
+          desc: token,
+        },
+      ]
+      setRows(users)
+    }
   }, [userInfo, token, sessionTimer])
 
   return (
