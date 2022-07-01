@@ -54,7 +54,7 @@ const Label = styled.span`
   margin-bottom: 0.5rem;
 `
 
-const PersonViewDialog = ({ personId, open, title, callback }) => {
+const PersonInfoDialog = ({ personId, open, title, callback }) => {
   const { token } = useSelector(({ mainReducer }) => mainReducer)
   const [data, setData] = useState(null)
   const [progressStatus, setProgressStatus] = useState({
@@ -690,18 +690,18 @@ const PersonViewDialog = ({ personId, open, title, callback }) => {
   )
 }
 
-PersonViewDialog.propTypes = {
+PersonInfoDialog.propTypes = {
   personId: PropTypes.string,
   open: PropTypes.bool,
   title: PropTypes.string,
   callback: PropTypes.func,
 }
 
-PersonViewDialog.defaultProps = {
+PersonInfoDialog.defaultProps = {
   personId: ``,
   open: false,
   title: `ดูประวัติกำลังพล`,
   callback: () => {},
 }
 
-export default PersonViewDialog
+export default PersonInfoDialog

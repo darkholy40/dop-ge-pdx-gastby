@@ -32,7 +32,7 @@ import Layout from "../../components/layout"
 import Seo from "../../components/seo"
 import Breadcrumbs from "../../components/breadcrumbs"
 import { Link } from "../../components/styles"
-import PersonViewDialog from "../../components/people/person-view-dialog"
+import PersonInfoDialog from "../../components/people/person-info-dialog"
 import PageNotFound from "../../components/page-not-found"
 import Warning from "../../components/warning"
 import renderDivision from "../../functions/render-division"
@@ -555,7 +555,7 @@ const PeopleListPage = () => {
                   </MenuItem>
                 </Menu>
 
-                <PersonViewDialog
+                <PersonInfoDialog
                   open={personViewOpen}
                   callback={() => {
                     setPersonViewOpen(false)
