@@ -38,6 +38,7 @@ import PageNotFound from "../../components/page-not-found"
 import Warning from "../../components/warning"
 import renderTableDate from "../../functions/render-table-date"
 import renderUserRole from "../../functions/render-user-role"
+import renderFullname from "../../functions/render-fullname"
 import roles from "../../static/roles"
 
 const Oparator = styled.div`
@@ -251,25 +252,6 @@ const UserManagementPage = () => {
       },
     })
   }, [token, dispatch, tableOption.page, tableOption.rowsPerPage])
-
-  const renderFullname = obj => {
-    const { rank, name, surname } = obj
-    let fullname = ``
-
-    if (rank !== undefined && rank !== null && rank !== ``) {
-      fullname += `${rank} `
-    }
-
-    if (name !== undefined && name !== null && name !== ``) {
-      fullname += `${name} `
-    }
-
-    if (surname !== undefined && surname !== null && surname !== ``) {
-      fullname += `${surname}`
-    }
-
-    return fullname
-  }
 
   useEffect(() => {
     if (token !== ``) {

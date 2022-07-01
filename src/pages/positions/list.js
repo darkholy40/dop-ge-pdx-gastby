@@ -46,7 +46,7 @@ const PositionsListPage = () => {
     text: ``,
   })
   const [anchorEl, setAnchorEl] = useState(null)
-  const [currentRow, setCurrentRow] = useState({})
+  const [currentRow, setCurrentRow] = useState(null)
   const [tableOption, setTableOption] = useState({
     totalRows: 0,
     page: searchPositionFilter.currentPage,
