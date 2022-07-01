@@ -36,6 +36,7 @@ import {
 import { client, gql } from "../functions/apollo-client"
 
 import SessionTimer from "./session-timer"
+import renderFullname from "../functions/render-fullname"
 import roles from "../static/roles"
 
 const drawerWidth = 240
@@ -320,7 +321,9 @@ const ResponsiveDrawer = props => {
                   icon={faUserAlt}
                   style={{ fontSize: 20, marginRight: 5 }}
                 />
-                <span>{userInfo.name}</span>
+                <span>
+                  {renderFullname({ rank: userInfo.rank, name: userInfo.name })}
+                </span>
               </Button>
               {/* <SessionTimer /> */}
 

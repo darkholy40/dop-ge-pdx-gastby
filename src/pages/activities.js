@@ -30,6 +30,7 @@ import Breadcrumbs from "../components/breadcrumbs"
 import PageNotFound from "../components/page-not-found"
 import Warning from "../components/warning"
 import renderTableDate from "../functions/render-table-date"
+import renderFullname from "../functions/render-fullname"
 import roles from "../static/roles"
 
 const Oparator = styled.div`
@@ -98,6 +99,7 @@ const ActivitiesPage = () => {
                 users_permissions_user {
                   _id
                   username
+                  rank
                   name
                   surname
                   role {
@@ -303,6 +305,9 @@ const ActivitiesPage = () => {
                           ชื่อผู้ใช้งาน
                         </TableCell>
                         <TableCell sx={{ backgroundColor: primaryColor[200] }}>
+                          ยศ - ชื่อ - สกุล
+                        </TableCell>
+                        <TableCell sx={{ backgroundColor: primaryColor[200] }}>
                           การกระทำ
                         </TableCell>
                         <TableCell
@@ -329,7 +334,12 @@ const ActivitiesPage = () => {
                           </TableCell>
                           <TableCell align="left">
                             {row.users_permissions_user !== null
-                              ? `${row.users_permissions_user.name} ${row.users_permissions_user.surname}`
+                              ? row.users_permissions_user.username
+                              : `-`}
+                          </TableCell>
+                          <TableCell align="left">
+                            {row.users_permissions_user !== null
+                              ? renderFullname(row.users_permissions_user)
                               : `-`}
                           </TableCell>
                           <TableCell align="left" sx={{ minWidth: 100 }}>

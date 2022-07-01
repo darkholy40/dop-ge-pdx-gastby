@@ -99,7 +99,7 @@ const SettingsSystemData = () => {
           />
 
           <SystemData showContent={true} />
-          {roles[userInfo.role.name].level >= 3 && (
+          {process.env.SERVER_TYPE === `dev` && (
             <>
               {(positionTypes.length > 0 ||
                 positionNames.length > 0 ||

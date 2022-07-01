@@ -9,6 +9,7 @@ import Layout from "../../components/layout"
 import Seo from "../../components/seo"
 import Breadcrumbs from "../../components/breadcrumbs"
 import PageNotFound from "../../components/page-not-found"
+import renderFullname from "../../functions/render-fullname"
 import renderDivision from "../../functions/render-division"
 import renderUserRole from "../../functions/render-user-role"
 import roles from "../../static/roles"
@@ -97,11 +98,12 @@ const SettingsGeneral = () => {
       // console.log(userInfo)
       const decodedToken = jwt_decode(token)
       const maxTimer = (decodedToken.exp - decodedToken.iat) / 3600
+      const showToken = process.env.SERVER_TYPE === `dev`
 
       let users = [
         {
           title: `ชื่อ - สกุล`,
-          desc: `${userInfo.name} ${userInfo.surname}`,
+          desc: renderFullname(userInfo),
         },
         {
           title: `ชื่อผู้ใช้`,
@@ -122,11 +124,17 @@ const SettingsGeneral = () => {
           title: `ระยะเวลาเซสชัน`,
           desc: `${maxTimer} ชม. (คงเหลือ ${sessionTimer.hr}:${sessionTimer.min}:${sessionTimer.sec})`,
         },
-        {
-          title: `Token`,
-          desc: token,
-        },
       ]
+
+      if (showToken) {
+        users = [
+          ...users,
+          {
+            title: `Token`,
+            desc: token,
+          },
+        ]
+      }
       setRows(users)
     }
   }, [userInfo, token, sessionTimer])
