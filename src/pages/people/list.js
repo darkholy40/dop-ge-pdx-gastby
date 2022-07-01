@@ -545,6 +545,7 @@ const PeopleListPage = () => {
                   open={personViewOpen}
                   callback={() => {
                     setPersonViewOpen(false)
+                    setCurrentRow(null)
                   }}
                   personId={currentRow !== null ? currentRow._id : ``}
                 />
