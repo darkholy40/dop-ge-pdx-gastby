@@ -21,6 +21,7 @@ import { client, gql } from "../../functions/apollo-client"
 import PercentDialog from "../../components/percent-dialog"
 import Warning from "../warning"
 import {
+  Form as StyledForm,
   Flex,
   DisabledBlock,
   CheckCircleFlex,
@@ -46,11 +47,8 @@ import {
 } from "../../functions/object-in-array"
 import roles from "../../static/roles"
 
-const Form = styled.form`
-  display: flex;
-  flex-direction: column;
-  // max-width: 400px;
-  // margin: auto;
+const Form = styled(StyledForm)`
+  max-width: 100%;
 `
 
 const textfieldProps = {
