@@ -32,11 +32,12 @@ const Oparator = styled.div`
 `
 
 const PositionsPage = () => {
-  const { token, userInfo, searchPositionFilter } = useSelector(
-    ({ mainReducer }) => mainReducer
-  )
+  const { token, userInfo } = useSelector(({ mainReducer }) => mainReducer)
   const { positionTypes, positionNames, units } = useSelector(
     ({ staticReducer }) => staticReducer
+  )
+  const { searchPositionFilter } = useSelector(
+    ({ positionsReducer }) => positionsReducer
   )
   const dispatch = useDispatch()
 

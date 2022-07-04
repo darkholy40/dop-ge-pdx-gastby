@@ -66,9 +66,13 @@ const Oparator = styled.div`
 `
 
 const PeoplePage = () => {
-  const { token, userInfo, searchPersonFilter, addPersonFilter, primaryColor } =
-    useSelector(({ mainReducer }) => mainReducer)
+  const { token, userInfo, primaryColor } = useSelector(
+    ({ mainReducer }) => mainReducer
+  )
   const { units } = useSelector(({ staticReducer }) => staticReducer)
+  const { searchPersonFilter, addPersonFilter } = useSelector(
+    ({ peopleReducer }) => peopleReducer
+  )
   const dispatch = useDispatch()
   const [isError, setIsError] = useState({
     status: `disabled`,

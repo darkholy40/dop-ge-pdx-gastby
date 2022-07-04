@@ -27,8 +27,9 @@ const PositionForm = ({ modification, id }) => {
   )
   const dispatch = useDispatch()
   const [currentPosNumber, setCurrentPosNumber] = useState(``)
+  const [firstStrike, setFirstStrike] = useState(false)
   const [isError, setIsError] = useState({
-    type: ``,
+    status: ``,
     text: ``,
   })
   const [addPositionFilter, setAddPositionFilter] = useState({
@@ -45,7 +46,7 @@ const PositionForm = ({ modification, id }) => {
   const getPosition = useCallback(async () => {
     if (id === `0`) {
       setIsError({
-        type: `notfound`,
+        status: `notfound`,
         text: `ไม่พบข้อมูลหน้านี้`,
       })
 
@@ -102,9 +103,10 @@ const PositionForm = ({ modification, id }) => {
           posSouth: thisPosition.isSouth,
           haveABudget: thisPosition.have_a_budget,
         })
+        setFirstStrike(true)
       } else {
         setIsError({
-          type: `notfound`,
+          status: `notfound`,
           text: `ไม่พบข้อมูลหน้านี้`,
         })
       }
@@ -112,7 +114,7 @@ const PositionForm = ({ modification, id }) => {
       console.log(error.message)
 
       setIsError({
-        type: `notfound`,
+        status: `notfound`,
         text: `ไม่พบข้อมูลหน้านี้`,
       })
     }
@@ -130,7 +132,7 @@ const PositionForm = ({ modification, id }) => {
     let posNumberIsExisted = false
 
     setIsError({
-      type: ``,
+      status: ``,
       text: ``,
     })
     dispatch({
@@ -170,7 +172,7 @@ const PositionForm = ({ modification, id }) => {
         posNumberIsExisted = true
 
         setIsError({
-          type: `posNumberIsExisted`,
+          status: `posNumberIsExisted`,
           text: `มีเลขที่ตำแหน่งนี้ในฐานข้อมูลแล้ว`,
         })
       }
@@ -302,7 +304,7 @@ const PositionForm = ({ modification, id }) => {
     let posNumberIsExisted = false
 
     setIsError({
-      type: ``,
+      status: ``,
       text: ``,
     })
     dispatch({
@@ -343,7 +345,7 @@ const PositionForm = ({ modification, id }) => {
           posNumberIsExisted = true
 
           setIsError({
-            type: `posNumberIsExisted`,
+            status: `posNumberIsExisted`,
             text: `มีเลขที่ตำแหน่งนี้ในฐานข้อมูลแล้ว`,
           })
         }
@@ -481,7 +483,7 @@ const PositionForm = ({ modification, id }) => {
 
   return (
     <>
-      {isError.type !== `notfound` ? (
+      {(modification && firstStrike) || !modification ? (
         <>
           <Form
             onSubmit={e => {
@@ -677,9 +679,9 @@ const PositionForm = ({ modification, id }) => {
                 }
               }}
               value={addPositionFilter.posNumber}
-              error={isError.type === `posNumberIsExisted`}
+              error={isError.status === `posNumberIsExisted`}
             />
-            {isError.type === `posNumberIsExisted` && (
+            {isError.status === `posNumberIsExisted` && (
               <Alert sx={{ marginBottom: `1rem` }} severity="error">
                 {isError.text}
               </Alert>
@@ -817,23 +819,27 @@ const PositionForm = ({ modification, id }) => {
           )}
         </>
       ) : (
-        <Warning
-          text="ไม่พบ url ที่ท่านเรียกหรือเนื้อหาในส่วนนี้ได้ถูกลบออกจากระบบ"
-          variant="notfound"
-          button={
-            <Button
-              color="primary"
-              variant="outlined"
-              onClick={() => navigate(`/positions/list/`)}
-            >
-              <FontAwesomeIcon
-                icon={faChevronLeft}
-                style={{ marginRight: 5 }}
-              />
-              <span>กลับไปหน้าค้นหาคลังตำแหน่ง</span>
-            </Button>
-          }
-        />
+        <>
+          {isError.status === `notfound` && (
+            <Warning
+              text="ไม่พบ url ที่ท่านเรียกหรือเนื้อหาในส่วนนี้ได้ถูกลบออกจากระบบ"
+              variant="notfound"
+              button={
+                <Button
+                  color="primary"
+                  variant="outlined"
+                  onClick={() => navigate(`/positions/list/`)}
+                >
+                  <FontAwesomeIcon
+                    icon={faChevronLeft}
+                    style={{ marginRight: 5 }}
+                  />
+                  <span>กลับไปหน้าค้นหาคลังตำแหน่ง</span>
+                </Button>
+              }
+            />
+          )}
+        </>
       )}
     </>
   )

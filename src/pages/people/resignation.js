@@ -36,8 +36,7 @@ const ResignationPage = ({ location }) => {
   const { token, userInfo } = useSelector(({ mainReducer }) => mainReducer)
   const dispatch = useDispatch()
   const [isError, setIsError] = useState({
-    status: false,
-    type: ``,
+    status: ``,
     text: ``,
   })
   const [input, setInput] = useState({
@@ -113,8 +112,7 @@ const ResignationPage = ({ location }) => {
         setPersonData(res.data.positions[0])
       } else {
         setIsError({
-          status: true,
-          type: `id-notfound`,
+          status: `id-notfound`,
           text: `ไม่พบข้อมูลกำลังพลรายการนี้ หรือข้อมูลถูกลบออกจากระบบแล้ว`,
         })
       }
@@ -138,8 +136,7 @@ const ResignationPage = ({ location }) => {
         })
       } else {
         setIsError({
-          status: true,
-          type: `id-notfound`,
+          status: `id-notfound`,
           text: `ไม่พบข้อมูลกำลังพลรายการนี้ หรือข้อมูลถูกลบออกจากระบบแล้ว`,
         })
       }
@@ -157,8 +154,7 @@ const ResignationPage = ({ location }) => {
   const goSaveResignation = async () => {
     let getPersonID = ``
     setIsError({
-      status: false,
-      type: ``,
+      status: ``,
       text: ``,
     })
     dispatch({
@@ -215,8 +211,7 @@ const ResignationPage = ({ location }) => {
       }
     } catch {
       setIsError({
-        status: true,
-        type: `id-notfound`,
+        status: `id-notfound`,
         text: `ไม่พบข้อมูลกำลังพลรายการนี้ หรือข้อมูลถูกลบออกจากระบบแล้ว`,
       })
 
@@ -396,7 +391,7 @@ const ResignationPage = ({ location }) => {
             current="จำหน่ายสูญเสีย"
           />
 
-          {personData !== null && (
+          {personData !== null ? (
             <>
               <Form
                 onSubmit={e => {
@@ -474,7 +469,7 @@ const ResignationPage = ({ location }) => {
                               ...input,
                               note: e.target.value,
                             }),
-                          disabled: isError.type === `id-notfound`,
+                          disabled: isError.status === `id-notfound`,
                         }}
                       />
                     )}
@@ -488,33 +483,37 @@ const ResignationPage = ({ location }) => {
                   color="success"
                   variant="contained"
                   type="submit"
-                  disabled={input.note === `` || isError.type === `id-notfound`}
+                  disabled={
+                    input.note === `` || isError.status === `id-notfound`
+                  }
                 >
                   <FontAwesomeIcon icon={faSave} style={{ marginRight: 5 }} />
                   บันทึก
                 </Button>
               </Form>
             </>
-          )}
-
-          {isError.type === `id-notfound` && (
-            <Warning
-              text={isError.text}
-              variant="notfound"
-              button={
-                <Button
-                  color="primary"
-                  variant="outlined"
-                  onClick={() => navigate(`/people/list/`)}
-                >
-                  <FontAwesomeIcon
-                    icon={faChevronLeft}
-                    style={{ marginRight: 5 }}
-                  />
-                  <span>กลับไปหน้าค้นหากำลังพล</span>
-                </Button>
-              }
-            />
+          ) : (
+            <>
+              {isError.status === `id-notfound` && (
+                <Warning
+                  text={isError.text}
+                  variant="notfound"
+                  button={
+                    <Button
+                      color="primary"
+                      variant="outlined"
+                      onClick={() => navigate(`/people/list/`)}
+                    >
+                      <FontAwesomeIcon
+                        icon={faChevronLeft}
+                        style={{ marginRight: 5 }}
+                      />
+                      <span>กลับไปหน้าค้นหากำลังพล</span>
+                    </Button>
+                  }
+                />
+              )}
+            </>
           )}
         </>
       ) : (

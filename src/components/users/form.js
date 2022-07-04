@@ -49,6 +49,7 @@ const UserForm = ({ modification, id }) => {
   )
   const { units, roles } = useSelector(({ staticReducer }) => staticReducer)
   const dispatch = useDispatch()
+  const [firstStrike, setFirstStrike] = useState(false)
   const [inputsError, setInputsError] = useState({
     username: false,
     email: false,
@@ -65,7 +66,7 @@ const UserForm = ({ modification, id }) => {
     isConfirmed: false,
   })
   const [isError, setIsError] = useState({
-    type: ``,
+    status: ``,
     text: ``,
   })
   const [pwdVisibility, setPwdVisibility] = useState(false)
@@ -73,7 +74,7 @@ const UserForm = ({ modification, id }) => {
   const getUser = useCallback(async () => {
     if (id === `0`) {
       setIsError({
-        type: `notfound`,
+        status: `notfound`,
         text: `ไม่พบข้อมูลผู้ใช้งาน`,
       })
 
@@ -121,6 +122,7 @@ const UserForm = ({ modification, id }) => {
       const userData = res.data.user
 
       if (userData) {
+        setFirstStrike(true)
         setInputs(prev => ({
           ...prev,
           rank: ranks.find(elem => elem.shortName === userData.rank) || null,
@@ -144,7 +146,7 @@ const UserForm = ({ modification, id }) => {
       console.log(error.message)
 
       setIsError({
-        type: `notfound`,
+        status: `notfound`,
         text: `ไม่พบข้อมูลผู้ใช้งาน`,
       })
     }
@@ -471,7 +473,7 @@ const UserForm = ({ modification, id }) => {
 
   return (
     <>
-      {isError.type !== `notfound` ? (
+      {(modification && firstStrike) || !modification ? (
         <Form
           onSubmit={e => {
             e.preventDefault()
@@ -889,23 +891,27 @@ const UserForm = ({ modification, id }) => {
           </Grid>
         </Form>
       ) : (
-        <Warning
-          text="ไม่พบ url ที่ท่านเรียกหรือเนื้อหาในส่วนนี้ได้ถูกลบออกจากระบบ"
-          variant="notfound"
-          button={
-            <Button
-              color="primary"
-              variant="outlined"
-              onClick={() => navigate(`/users/`)}
-            >
-              <FontAwesomeIcon
-                icon={faChevronLeft}
-                style={{ marginRight: 5 }}
-              />
-              <span>กลับไปหน้าจัดการผู้ใช้งาน</span>
-            </Button>
-          }
-        />
+        <>
+          {isError.status === `notfound` && (
+            <Warning
+              text="ไม่พบ url ที่ท่านเรียกหรือเนื้อหาในส่วนนี้ได้ถูกลบออกจากระบบ"
+              variant="notfound"
+              button={
+                <Button
+                  color="primary"
+                  variant="outlined"
+                  onClick={() => navigate(`/users/`)}
+                >
+                  <FontAwesomeIcon
+                    icon={faChevronLeft}
+                    style={{ marginRight: 5 }}
+                  />
+                  <span>กลับไปหน้าจัดการผู้ใช้งาน</span>
+                </Button>
+              }
+            />
+          )}
+        </>
       )}
     </>
   )

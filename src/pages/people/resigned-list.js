@@ -27,8 +27,11 @@ import renderDivision from "../../functions/render-division"
 import roleLevel from "../../functions/roleLevel"
 
 const ResignedPeopleListPage = () => {
-  const { token, userInfo, primaryColor, searchPersonFilter } = useSelector(
+  const { token, userInfo, primaryColor } = useSelector(
     ({ mainReducer }) => mainReducer
+  )
+  const { searchPersonFilter } = useSelector(
+    ({ peopleReducer }) => peopleReducer
   )
   const dispatch = useDispatch()
   const [peopleData, setPeopleData] = useState([])
@@ -287,11 +290,6 @@ const ResignedPeopleListPage = () => {
     dispatch({
       type: `SET_CURRENT_PAGE`,
       currentPage: `people`,
-    })
-
-    dispatch({
-      type: `SET_REDIRECT_PAGE`,
-      redirectPage: `/people/list/`,
     })
   }, [dispatch])
 

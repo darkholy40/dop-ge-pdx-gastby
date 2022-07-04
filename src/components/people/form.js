@@ -76,9 +76,8 @@ const textfieldProps = {
 // }
 
 const PersonForm = ({ modification, id }) => {
-  const { token, userInfo, addPersonFilter } = useSelector(
-    ({ mainReducer }) => mainReducer
-  )
+  const { token, userInfo } = useSelector(({ mainReducer }) => mainReducer)
+  const { addPersonFilter } = useSelector(({ peopleReducer }) => peopleReducer)
   const {
     positionTypes,
     positionNames,
@@ -91,6 +90,7 @@ const PersonForm = ({ modification, id }) => {
   } = useSelector(({ staticReducer }) => staticReducer)
   const dispatch = useDispatch()
   const [positions, setPositions] = useState([])
+  const [firstStrike, setFirstStrike] = useState(false)
   const [isError, setIsError] = useState({
     status: ``,
     text: ``,
@@ -142,7 +142,7 @@ const PersonForm = ({ modification, id }) => {
   const [skills, setSkills] = useState(``)
   const [percentDialog, setPercentDialog] = useState([])
 
-  const setInput = useCallback(
+  const setInputs = useCallback(
     data => {
       setPrename(data.person.Prename)
       setName(data.person.Name)
@@ -388,7 +388,7 @@ const PersonForm = ({ modification, id }) => {
 
     if (id === `0`) {
       setIsError({
-        type: `notfound`,
+        status: `notfound`,
         text: `ไม่พบข้อมูลหน้านี้`,
       })
 
@@ -484,7 +484,7 @@ const PersonForm = ({ modification, id }) => {
         returnData.person = res.data.person
       } else {
         setIsError({
-          type: `notfound`,
+          status: `notfound`,
           text: `ไม่พบข้อมูลหน้านี้`,
         })
       }
@@ -495,7 +495,7 @@ const PersonForm = ({ modification, id }) => {
       // })
 
       setIsError({
-        type: `notfound`,
+        status: `notfound`,
         text: `ไม่พบข้อมูลหน้านี้`,
       })
       dispatch({
@@ -548,14 +548,15 @@ const PersonForm = ({ modification, id }) => {
       console.log(error)
 
       setIsError({
-        type: `notfound`,
+        status: `notfound`,
         text: `ไม่พบข้อมูลหน้านี้`,
       })
     }
 
     // console.log(returnData)
     if (returnData.person !== null && returnData.position !== null) {
-      setInput(returnData)
+      setInputs(returnData)
+      setFirstStrike(true)
     }
 
     dispatch({
@@ -565,7 +566,7 @@ const PersonForm = ({ modification, id }) => {
         title: ``,
       },
     })
-  }, [token, id, setInput, dispatch])
+  }, [token, id, setInputs, dispatch])
 
   const getPositionsForEditing = useCallback(async () => {
     let role = ``
@@ -1360,7 +1361,7 @@ const PersonForm = ({ modification, id }) => {
 
   return (
     <>
-      {isError.type !== `notfound` ? (
+      {(modification && firstStrike) || !modification ? (
         <>
           <Form
             onSubmit={e => {
@@ -3017,23 +3018,27 @@ const PersonForm = ({ modification, id }) => {
           </Flex>
         </>
       ) : (
-        <Warning
-          text="ไม่พบ url ที่ท่านเรียกหรือเนื้อหาในส่วนนี้ได้ถูกลบออกจากระบบ"
-          variant="notfound"
-          button={
-            <Button
-              color="primary"
-              variant="outlined"
-              onClick={() => navigate(`/people/list/`)}
-            >
-              <FontAwesomeIcon
-                icon={faChevronLeft}
-                style={{ marginRight: 5 }}
-              />
-              <span>กลับไปหน้าค้นหากำลังพล</span>
-            </Button>
-          }
-        />
+        <>
+          {isError.status === `notfound` && (
+            <Warning
+              text="ไม่พบ url ที่ท่านเรียกหรือเนื้อหาในส่วนนี้ได้ถูกลบออกจากระบบ"
+              variant="notfound"
+              button={
+                <Button
+                  color="primary"
+                  variant="outlined"
+                  onClick={() => navigate(`/people/list/`)}
+                >
+                  <FontAwesomeIcon
+                    icon={faChevronLeft}
+                    style={{ marginRight: 5 }}
+                  />
+                  <span>กลับไปหน้าค้นหากำลังพล</span>
+                </Button>
+              }
+            />
+          )}
+        </>
       )}
     </>
   )

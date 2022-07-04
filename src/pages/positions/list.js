@@ -36,8 +36,11 @@ import renderDivision from "../../functions/render-division"
 import roleLevel from "../../functions/roleLevel"
 
 const PositionsListPage = () => {
-  const { token, userInfo, primaryColor, searchPositionFilter } = useSelector(
+  const { token, userInfo, primaryColor } = useSelector(
     ({ mainReducer }) => mainReducer
+  )
+  const { searchPositionFilter } = useSelector(
+    ({ positionsReducer }) => positionsReducer
   )
   const dispatch = useDispatch()
   const [posData, setPosData] = useState([])
@@ -276,11 +279,6 @@ const PositionsListPage = () => {
     dispatch({
       type: `SET_CURRENT_PAGE`,
       currentPage: `positions`,
-    })
-
-    dispatch({
-      type: `SET_REDIRECT_PAGE`,
-      redirectPage: `/positions/list/`,
     })
   }, [dispatch])
 
