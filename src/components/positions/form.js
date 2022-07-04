@@ -32,7 +32,7 @@ const PositionForm = ({ modification, id }) => {
     status: ``,
     text: ``,
   })
-  const [addPositionFilter, setAddPositionFilter] = useState({
+  const [positionInputs, setPositionInputs] = useState({
     posId: ``,
     posName: ``,
     posType: ``,
@@ -93,7 +93,7 @@ const PositionForm = ({ modification, id }) => {
 
       if (thisPosition !== null) {
         setCurrentPosNumber(thisPosition.number)
-        setAddPositionFilter({
+        setPositionInputs({
           posId: thisPosition.position_type._id,
           posName: thisPosition.position_type.name,
           posType: thisPosition.position_type.type,
@@ -148,7 +148,7 @@ const PositionForm = ({ modification, id }) => {
         query: gql`
           query Positions {
             positions(where: {
-              number: "${addPositionFilter.posNumber}"
+              number: "${positionInputs.posNumber}"
             }) {
               _id
               position_type {
@@ -207,17 +207,17 @@ const PositionForm = ({ modification, id }) => {
             mutation CreatePosition {
               createPosition(input: {
                 data: {
-                  position_type: "${addPositionFilter.posId}",
-                  number: "${addPositionFilter.posNumber}",
-                  isOpen: ${addPositionFilter.posOpen},
-                  isSouth: ${addPositionFilter.posSouth},
-                  have_a_budget: ${addPositionFilter.haveABudget},
+                  position_type: "${positionInputs.posId}",
+                  number: "${positionInputs.posNumber}",
+                  isOpen: ${positionInputs.posOpen},
+                  isSouth: ${positionInputs.posSouth},
+                  have_a_budget: ${positionInputs.haveABudget},
                   staff_created: "${userInfo._id}",
                   staff_updated: "",
                   person: null,
                   division: "${
                     roleLevel(userInfo.role) > 1
-                      ? `${addPositionFilter.unit._id}`
+                      ? `${positionInputs.unit._id}`
                       : `${userInfo.division._id}`
                   }"
                 }
@@ -315,13 +315,13 @@ const PositionForm = ({ modification, id }) => {
       },
     })
 
-    if (currentPosNumber !== addPositionFilter.posNumber) {
+    if (currentPosNumber !== positionInputs.posNumber) {
       try {
         const res = await client(token).query({
           query: gql`
             query Positions {
               positions(where: {
-                number: "${addPositionFilter.posNumber}"
+                number: "${positionInputs.posNumber}"
               }) {
                 _id
                 position_type {
@@ -384,15 +384,15 @@ const PositionForm = ({ modification, id }) => {
                   id: "${id}"
                 }
                 data: {
-                  position_type: "${addPositionFilter.posId}",
-                  number: "${addPositionFilter.posNumber}",
-                  isOpen: ${addPositionFilter.posOpen},
-                  isSouth: ${addPositionFilter.posSouth},
-                  have_a_budget: ${addPositionFilter.haveABudget},
+                  position_type: "${positionInputs.posId}",
+                  number: "${positionInputs.posNumber}",
+                  isOpen: ${positionInputs.posOpen},
+                  isSouth: ${positionInputs.posSouth},
+                  have_a_budget: ${positionInputs.haveABudget},
                   staff_updated: "${userInfo._id}",
                   ${
                     roleLevel(userInfo.role) > 1
-                      ? `division: "${addPositionFilter.unit._id}"`
+                      ? `division: "${positionInputs.unit._id}"`
                       : ``
                   }
                 }
@@ -506,14 +506,14 @@ const PositionForm = ({ modification, id }) => {
                 }}
                 onChange={(_, newValue) => {
                   if (newValue !== null) {
-                    setAddPositionFilter({
-                      ...addPositionFilter,
+                    setPositionInputs({
+                      ...positionInputs,
                       posType: newValue.type,
                       posName: ``,
                     })
                   } else {
-                    setAddPositionFilter({
-                      ...addPositionFilter,
+                    setPositionInputs({
+                      ...positionInputs,
                       posId: ``,
                       posType: ``,
                       posName: ``,
@@ -521,9 +521,9 @@ const PositionForm = ({ modification, id }) => {
                   }
                 }}
                 value={
-                  addPositionFilter.posType !== ``
+                  positionInputs.posType !== ``
                     ? positionTypes.find(
-                        elem => elem.type === addPositionFilter.posType
+                        elem => elem.type === positionInputs.posType
                       )
                     : null
                 }
@@ -542,7 +542,7 @@ const PositionForm = ({ modification, id }) => {
               />
               <CheckCircleFlex>
                 {renderCheckingIcon(
-                  addPositionFilter.posType !== `` ? `correct` : ``
+                  positionInputs.posType !== `` ? `correct` : ``
                 )}
               </CheckCircleFlex>
             </Flex>
@@ -553,9 +553,9 @@ const PositionForm = ({ modification, id }) => {
                 id="position-name"
                 disablePortal
                 options={
-                  addPositionFilter.posType !== ``
+                  positionInputs.posType !== ``
                     ? positionNames.filter(
-                        elem => elem.type === addPositionFilter.posType
+                        elem => elem.type === positionInputs.posType
                       )
                     : positionNames
                 }
@@ -566,24 +566,24 @@ const PositionForm = ({ modification, id }) => {
                 }}
                 onChange={(_, newValue) => {
                   if (newValue !== null) {
-                    setAddPositionFilter({
-                      ...addPositionFilter,
+                    setPositionInputs({
+                      ...positionInputs,
                       posId: newValue._id,
                       posName: newValue.name,
                       posType: newValue.type,
                     })
                   } else {
-                    setAddPositionFilter({
-                      ...addPositionFilter,
+                    setPositionInputs({
+                      ...positionInputs,
                       posId: ``,
                       posName: ``,
                     })
                   }
                 }}
                 value={
-                  addPositionFilter.posName !== ``
+                  positionInputs.posName !== ``
                     ? positionNames.find(
-                        elem => elem.name === addPositionFilter.posName
+                        elem => elem.name === positionInputs.posName
                       )
                     : null
                 }
@@ -602,7 +602,7 @@ const PositionForm = ({ modification, id }) => {
               />
               <CheckCircleFlex>
                 {renderCheckingIcon(
-                  addPositionFilter.posName !== `` ? `correct` : ``
+                  positionInputs.posName !== `` ? `correct` : ``
                 )}
               </CheckCircleFlex>
             </Flex>
@@ -621,18 +621,18 @@ const PositionForm = ({ modification, id }) => {
                   }}
                   onChange={(_, newValue) => {
                     if (newValue !== null) {
-                      setAddPositionFilter({
-                        ...addPositionFilter,
+                      setPositionInputs({
+                        ...positionInputs,
                         unit: newValue,
                       })
                     } else {
-                      setAddPositionFilter({
-                        ...addPositionFilter,
+                      setPositionInputs({
+                        ...positionInputs,
                         unit: null,
                       })
                     }
                   }}
-                  value={addPositionFilter.unit}
+                  value={positionInputs.unit}
                   renderInput={params => (
                     <TextField
                       {...params}
@@ -648,7 +648,7 @@ const PositionForm = ({ modification, id }) => {
                 />
                 <CheckCircleFlex>
                   {renderCheckingIcon(
-                    addPositionFilter.unit !== null ? `correct` : ``
+                    positionInputs.unit !== null ? `correct` : ``
                   )}
                 </CheckCircleFlex>
               </Flex>
@@ -667,18 +667,18 @@ const PositionForm = ({ modification, id }) => {
                 if (result !== null) {
                   const newPosNumber = result.toString().replaceAll(`,`, ``)
 
-                  setAddPositionFilter({
-                    ...addPositionFilter,
+                  setPositionInputs({
+                    ...positionInputs,
                     posNumber: newPosNumber,
                   })
                 } else {
-                  setAddPositionFilter({
-                    ...addPositionFilter,
+                  setPositionInputs({
+                    ...positionInputs,
                     posNumber: ``,
                   })
                 }
               }}
-              value={addPositionFilter.posNumber}
+              value={positionInputs.posNumber}
               error={isError.status === `posNumberIsExisted`}
             />
             {isError.status === `posNumberIsExisted` && (
@@ -689,20 +689,20 @@ const PositionForm = ({ modification, id }) => {
             <Flex>
               <Checkbox
                 onChange={(_, newValue) => {
-                  setAddPositionFilter({
-                    ...addPositionFilter,
+                  setPositionInputs({
+                    ...positionInputs,
                     haveABudget: newValue,
                   })
                 }}
-                checked={addPositionFilter.haveABudget}
+                checked={positionInputs.haveABudget}
               />
               <div
                 role="presentation"
                 style={{ cursor: `pointer`, userSelect: `none` }}
                 onClick={() => {
-                  setAddPositionFilter({
-                    ...addPositionFilter,
-                    haveABudget: !addPositionFilter.haveABudget,
+                  setPositionInputs({
+                    ...positionInputs,
+                    haveABudget: !positionInputs.haveABudget,
                   })
                 }}
               >
@@ -712,20 +712,20 @@ const PositionForm = ({ modification, id }) => {
             <Flex>
               <Checkbox
                 onChange={(_, newValue) => {
-                  setAddPositionFilter({
-                    ...addPositionFilter,
+                  setPositionInputs({
+                    ...positionInputs,
                     posOpen: newValue,
                   })
                 }}
-                checked={addPositionFilter.posOpen}
+                checked={positionInputs.posOpen}
               />
               <div
                 role="presentation"
                 style={{ cursor: `pointer`, userSelect: `none` }}
                 onClick={() =>
-                  setAddPositionFilter({
-                    ...addPositionFilter,
-                    posOpen: !addPositionFilter.posOpen,
+                  setPositionInputs({
+                    ...positionInputs,
+                    posOpen: !positionInputs.posOpen,
                   })
                 }
               >
@@ -735,20 +735,20 @@ const PositionForm = ({ modification, id }) => {
             <Flex style={{ marginBottom: `1rem` }}>
               <Checkbox
                 onChange={(_, newValue) => {
-                  setAddPositionFilter({
-                    ...addPositionFilter,
+                  setPositionInputs({
+                    ...positionInputs,
                     posSouth: newValue,
                   })
                 }}
-                checked={addPositionFilter.posSouth}
+                checked={positionInputs.posSouth}
               />
               <div
                 role="presentation"
                 style={{ cursor: `pointer`, userSelect: `none` }}
                 onClick={() =>
-                  setAddPositionFilter({
-                    ...addPositionFilter,
-                    posSouth: !addPositionFilter.posSouth,
+                  setPositionInputs({
+                    ...positionInputs,
+                    posSouth: !positionInputs.posSouth,
                   })
                 }
               >
@@ -763,13 +763,13 @@ const PositionForm = ({ modification, id }) => {
                 type="submit"
                 disabled={
                   roleLevel(userInfo.role) > 1
-                    ? addPositionFilter.posName === `` ||
-                      addPositionFilter.posType === `` ||
-                      addPositionFilter.posNumber === `` ||
-                      addPositionFilter.unit === null
-                    : addPositionFilter.posName === `` ||
-                      addPositionFilter.posType === `` ||
-                      addPositionFilter.posNumber === ``
+                    ? positionInputs.posName === `` ||
+                      positionInputs.posType === `` ||
+                      positionInputs.posNumber === `` ||
+                      positionInputs.unit === null
+                    : positionInputs.posName === `` ||
+                      positionInputs.posType === `` ||
+                      positionInputs.posNumber === ``
                 }
               >
                 <FontAwesomeIcon icon={faPlus} style={{ marginRight: 5 }} />
@@ -782,13 +782,13 @@ const PositionForm = ({ modification, id }) => {
                 type="submit"
                 disabled={
                   roleLevel(userInfo.role) > 1
-                    ? addPositionFilter.posName === `` ||
-                      addPositionFilter.posType === `` ||
-                      addPositionFilter.posNumber === `` ||
-                      addPositionFilter.unit === null
-                    : addPositionFilter.posName === `` ||
-                      addPositionFilter.posType === `` ||
-                      addPositionFilter.posNumber === ``
+                    ? positionInputs.posName === `` ||
+                      positionInputs.posType === `` ||
+                      positionInputs.posNumber === `` ||
+                      positionInputs.unit === null
+                    : positionInputs.posName === `` ||
+                      positionInputs.posType === `` ||
+                      positionInputs.posNumber === ``
                 }
               >
                 <FontAwesomeIcon icon={faSave} style={{ marginRight: 5 }} />

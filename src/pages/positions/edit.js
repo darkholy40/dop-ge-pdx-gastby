@@ -23,10 +23,6 @@ const EditPositionsPage = ({ location }) => {
   //   console.log(search[1])
   // }, [location])
 
-  // useEffect(() => {
-  //   console.log(addPositionFilter)
-  // }, [addPositionFilter])
-
   const savePageView = useCallback(() => {
     // Prevent saving a log when switch user to super admin
     if (token !== `` && userInfo._id !== `` && roleLevel(userInfo.role) < 3) {
