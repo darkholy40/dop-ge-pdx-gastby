@@ -251,22 +251,7 @@ const PositionsPage = () => {
                       disablePortal
                       options={units}
                       noOptionsText={`ไม่พบข้อมูล`}
-                      getOptionLabel={option => {
-                        let label = ``
-
-                        if (option.division1) {
-                          label = option.division1
-                        }
-
-                        if (option.division2) {
-                          label = option.division2
-                        }
-
-                        if (option.division3) {
-                          label = option.division3
-                        }
-                        return label
-                      }}
+                      getOptionLabel={option => renderDivision(option)}
                       isOptionEqualToValue={(option, value) => {
                         return option === value
                       }}
