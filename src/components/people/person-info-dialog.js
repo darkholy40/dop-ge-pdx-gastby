@@ -28,6 +28,7 @@ import renderTableDate from "../../functions/render-table-date"
 import renderAgeFromDifferentDateRange from "../../functions/render-age-from-different-date-range"
 import renderFullname from "../../functions/render-fullname"
 import renderNumberAsText from "../../functions/render-number-as-text"
+import roles from "../../static/roles"
 
 const Content = styled.div`
   display: flex;
@@ -55,12 +56,40 @@ const Label = styled.span`
 `
 
 const PersonInfoDialog = ({ personId, open, title, callback }) => {
-  const { token } = useSelector(({ mainReducer }) => mainReducer)
+  const { token, userInfo } = useSelector(({ mainReducer }) => mainReducer)
   const [data, setData] = useState(null)
   const [progressStatus, setProgressStatus] = useState({
     status: ``,
     text: ``,
   })
+
+  const savePageView = useCallback(() => {
+    // Prevent saving a log when switch user to super admin
+    if (
+      token !== `` &&
+      userInfo._id !== `` &&
+      personId !== `` &&
+      roles[userInfo.role.name].level < 3
+    ) {
+      client(token).mutate({
+        mutation: gql`
+          mutation CreateLog {
+            createLog(input: {
+              data: {
+                action: "view",
+                description: "people -> view -> ${personId}",
+                users_permissions_user: "${userInfo._id}",
+              }
+            }) {
+              log {
+                _id
+              }
+            }
+          }
+        `,
+      })
+    }
+  }, [token, userInfo, personId])
 
   const getPerson = useCallback(async () => {
     let returnData = {
@@ -247,6 +276,10 @@ const PersonInfoDialog = ({ personId, open, title, callback }) => {
       getPerson()
     }
   }, [open, getPerson])
+
+  useEffect(() => {
+    savePageView()
+  }, [savePageView])
 
   return (
     <>

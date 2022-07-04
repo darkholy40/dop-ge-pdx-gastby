@@ -247,7 +247,7 @@ const PositionsPage = () => {
                   <Flex style={{ marginBottom: `1rem` }}>
                     <Autocomplete
                       sx={{ width: `100%` }}
-                      id="position-name"
+                      id="unit"
                       disablePortal
                       options={units}
                       noOptionsText={`ไม่พบข้อมูล`}
