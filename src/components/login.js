@@ -21,6 +21,11 @@ import { client, gql } from "../functions/apollo-client"
 
 import Image from "./image"
 
+const TitleFlex = styled.div`
+  display: flex;
+  flex-direction: column;
+`
+
 const Title = styled.p`
   font-size: 1.5rem;
   text-align: center;
@@ -199,6 +204,7 @@ const IndexPage = () => {
                   _id: userData._id,
                   confirmed: userData.confirmed,
                   blocked: userData.blocked,
+                  rank: userData.rank,
                   name: userData.name,
                   username: userData.username,
                   surname: userData.surname,
@@ -258,15 +264,19 @@ const IndexPage = () => {
 
   return (
     <>
-      <Title
-        style={{
-          color: primaryColor[700],
-        }}
-        className="primary"
-      >
-        ระบบพนักงานราชการและลูกจ้าง
-      </Title>
-      <Title style={{ fontStyle: `italic` }}>ลงชื่อเข้าใช้งานระบบ</Title>
+      <TitleFlex>
+        <Title
+          style={{
+            color: primaryColor[700],
+          }}
+          className="primary"
+        >
+          ระบบพนักงานราชการและลูกจ้าง
+        </Title>
+        <Title style={{ fontStyle: `italic`, marginTop: 0 }}>
+          ลงชื่อเข้าใช้งานระบบ
+        </Title>
+      </TitleFlex>
       <form
         style={{
           maxWidth: `960px`,
