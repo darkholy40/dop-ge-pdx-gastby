@@ -89,8 +89,8 @@ const PersonForm = ({ modification, id }) => {
     decorations,
   } = useSelector(({ staticReducer }) => staticReducer)
   const dispatch = useDispatch()
-  const [positions, setPositions] = useState([])
   const [firstStrike, setFirstStrike] = useState(false)
+  const [positions, setPositions] = useState([])
   const [isError, setIsError] = useState({
     status: ``,
     text: ``,

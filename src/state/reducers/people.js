@@ -31,6 +31,12 @@ const peopleReducer = (state = initialState, action) => {
         addPersonFilter: action.addPersonFilter,
       }
 
+    case `CLEAR_ADD_PERSON_FILTER`:
+      return {
+        ...state,
+        addPersonFilter: initialState.addPersonFilter,
+      }
+
     default:
       break
   }

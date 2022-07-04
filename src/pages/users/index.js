@@ -583,10 +583,10 @@ const UserManagementPage = () => {
                   <Button
                     color="primary"
                     variant="outlined"
-                    onClick={() => window.location.reload()}
+                    onClick={() => getUsers()}
                   >
                     <FontAwesomeIcon icon={faRedo} style={{ marginRight: 5 }} />
-                    <span>โหลดหน้านี้อีกครั้ง</span>
+                    <span>โหลดข้อมูลอีกครั้ง</span>
                   </Button>
                 }
               />

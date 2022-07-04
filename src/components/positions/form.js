@@ -26,8 +26,8 @@ const PositionForm = ({ modification, id }) => {
     ({ staticReducer }) => staticReducer
   )
   const dispatch = useDispatch()
-  const [currentPosNumber, setCurrentPosNumber] = useState(``)
   const [firstStrike, setFirstStrike] = useState(false)
+  const [currentPosNumber, setCurrentPosNumber] = useState(``)
   const [isError, setIsError] = useState({
     status: ``,
     text: ``,

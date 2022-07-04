@@ -195,6 +195,10 @@ const PeoplePage = () => {
       type: `SET_CURRENT_PAGE`,
       currentPage: `people`,
     })
+
+    dispatch({
+      type: `CLEAR_ADD_PERSON_FILTER`,
+    })
   }, [dispatch])
 
   useEffect(() => {
