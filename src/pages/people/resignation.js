@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from "react"
 import { navigate } from "gatsby"
 import { useSelector, useDispatch } from "react-redux"
-import { Button, TextField, Alert, Divider } from "@mui/material"
+import { Button, TextField, Divider } from "@mui/material"
 import Autocomplete from "@mui/material/Autocomplete"
 import styled from "styled-components"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
@@ -13,6 +13,7 @@ import Layout from "../../components/layout"
 import Seo from "../../components/seo"
 import Breadcrumbs from "../../components/breadcrumbs"
 import PageNotFound from "../../components/page-not-found"
+import Warning from "../../components/warning"
 import { Form, Flex, CheckCircleFlex } from "../../components/styles"
 import renderDivision from "../../functions/render-division"
 import renderCheckingIcon from "../../functions/render-checking-icon"
@@ -122,6 +123,11 @@ const ResignationPage = ({ location }) => {
         })
       }
     } catch (error) {
+      // console.log({
+      //   function: `getPerson()`,
+      //   message: error.message,
+      // })
+
       if (error.message === `Failed to fetch`) {
         dispatch({
           type: `SET_NOTIFICATION_DIALOG`,
@@ -133,6 +139,12 @@ const ResignationPage = ({ location }) => {
             confirmText: `ลองอีกครั้ง`,
             callback: () => getPerson(),
           },
+        })
+      } else {
+        setIsError({
+          status: true,
+          type: `id-notfound`,
+          text: `ไม่พบข้อมูลกำลังพลรายการนี้ หรือข้อมูลถูกลบออกจากระบบแล้ว`,
         })
       }
     }
@@ -287,6 +299,8 @@ const ResignationPage = ({ location }) => {
 
           check.pass1 = true
         } catch (error) {
+          console.log(error.message)
+
           dispatch({
             type: `SET_NOTIFICATION_DIALOG`,
             notificationDialog: {
@@ -298,8 +312,6 @@ const ResignationPage = ({ location }) => {
               callback: () => goSaveResignation(),
             },
           })
-
-          console.log(error)
         }
       }
 
@@ -490,27 +502,23 @@ const ResignationPage = ({ location }) => {
           )}
 
           {isError.type === `id-notfound` && (
-            <Form>
-              <Alert
-                sx={{ marginTop: `1rem`, animation: `fadein 0.3s` }}
-                severity="error"
-              >
-                {isError.text}
-              </Alert>
-
-              <Button
-                sx={{ marginTop: `3rem` }}
-                color="primary"
-                variant="outlined"
-                onClick={() => navigate(`/people/list/`)}
-              >
-                <FontAwesomeIcon
-                  icon={faChevronLeft}
-                  style={{ marginRight: 5 }}
-                />
-                กลับไปหน้าค้นหากำลังพล
-              </Button>
-            </Form>
+            <Warning
+              text={isError.text}
+              variant="notfound"
+              button={
+                <Button
+                  color="primary"
+                  variant="outlined"
+                  onClick={() => navigate(`/people/list/`)}
+                >
+                  <FontAwesomeIcon
+                    icon={faChevronLeft}
+                    style={{ marginRight: 5 }}
+                  />
+                  <span>กลับไปหน้าค้นหากำลังพล</span>
+                </Button>
+              }
+            />
           )}
         </>
       ) : (
