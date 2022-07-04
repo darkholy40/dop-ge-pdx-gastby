@@ -17,7 +17,7 @@ import {
 } from "../functions/object-in-array"
 import renderTableDate from "../functions/render-table-date"
 
-import roleNames from "../static/roles"
+import roleLevel from "../functions/roleLevel"
 
 const Container = styled.div`
   box-shadow: rgb(0 0 0 / 24%) 0px 1px 2px;
@@ -949,7 +949,7 @@ const SystemData = ({ showContent, confirmButtonContent, confirmCallback }) => {
   }, [token, dispatch])
 
   const installAll = () => {
-    if (userInfo.role._id !== `` && roleNames[userInfo.role.name].level >= 2) {
+    if (roleLevel(userInfo.role) >= 2) {
       units.length === 0 && getUnits()
       roles.length === 0 && getRoles()
     }
@@ -984,7 +984,7 @@ const SystemData = ({ showContent, confirmButtonContent, confirmCallback }) => {
   }
 
   const updateAll = () => {
-    if (userInfo.role._id !== `` && roleNames[userInfo.role.name].level >= 2) {
+    if (roleLevel(userInfo.role) >= 2) {
       getUnits()
       getRoles()
     }
@@ -1065,7 +1065,7 @@ const SystemData = ({ showContent, confirmButtonContent, confirmCallback }) => {
     }
     let count = 0
 
-    if (userInfo.role._id !== `` && roleNames[userInfo.role.name].level >= 2) {
+    if (roleLevel(userInfo.role) >= 2) {
       units.length === 0 && count++
       roles.length === 0 && count++
 
@@ -1140,7 +1140,7 @@ const SystemData = ({ showContent, confirmButtonContent, confirmCallback }) => {
   useEffect(() => {
     let count = 0
 
-    if (userInfo.role._id !== `` && roleNames[userInfo.role.name].level >= 2) {
+    if (roleLevel(userInfo.role) >= 2) {
       units.length === 0 && count++
       roles.length === 0 && count++
     }
@@ -1205,62 +1205,56 @@ const SystemData = ({ showContent, confirmButtonContent, confirmCallback }) => {
             {renderFetchAllDataButton()}
           </DownloadButtonSection>
           <Content>
-            {userInfo.role._id !== `` &&
-              roleNames[userInfo.role.name].level >= 2 && (
-                <>
-                  <Block>
-                    <div>
-                      <p>ข้อมูลหน่วย</p>
-                      {units.length > 0 && (
-                        <p className="detail">{units.length} รายการ</p>
-                      )}
-                    </div>
-                    <div>
-                      {units.length > 0 ? (
-                        <>{renderCheckedSign()}</>
-                      ) : (
-                        <>{renderFetchDataButton(getUnits, `units`)}</>
-                      )}
-                    </div>
-                  </Block>
-                  {units.length > 0 && (
-                    <UpdatedDate>
-                      {renderTableDate(installationDate.units, `datetime`)}
-                    </UpdatedDate>
-                  )}
-                  <Divider
-                    style={{ marginTop: `1rem`, marginBottom: `1rem` }}
-                  />
-                </>
-              )}
-            {userInfo.role._id !== `` &&
-              roleNames[userInfo.role.name].level >= 2 && (
-                <>
-                  <Block>
-                    <div>
-                      <p>ข้อมูลประเภทผู้ใช้งาน</p>
-                      {roles.length > 0 && (
-                        <p className="detail">{roles.length} รายการ</p>
-                      )}
-                    </div>
-                    <div>
-                      {roles.length > 0 ? (
-                        <>{renderCheckedSign()}</>
-                      ) : (
-                        <>{renderFetchDataButton(getRoles, `roles`)}</>
-                      )}
-                    </div>
-                  </Block>
-                  {roles.length > 0 && (
-                    <UpdatedDate>
-                      {renderTableDate(installationDate.roles, `datetime`)}
-                    </UpdatedDate>
-                  )}
-                  <Divider
-                    style={{ marginTop: `1rem`, marginBottom: `1rem` }}
-                  />
-                </>
-              )}
+            {roleLevel(userInfo.role) >= 2 && (
+              <>
+                <Block>
+                  <div>
+                    <p>ข้อมูลหน่วย</p>
+                    {units.length > 0 && (
+                      <p className="detail">{units.length} รายการ</p>
+                    )}
+                  </div>
+                  <div>
+                    {units.length > 0 ? (
+                      <>{renderCheckedSign()}</>
+                    ) : (
+                      <>{renderFetchDataButton(getUnits, `units`)}</>
+                    )}
+                  </div>
+                </Block>
+                {units.length > 0 && (
+                  <UpdatedDate>
+                    {renderTableDate(installationDate.units, `datetime`)}
+                  </UpdatedDate>
+                )}
+                <Divider style={{ marginTop: `1rem`, marginBottom: `1rem` }} />
+              </>
+            )}
+            {roleLevel(userInfo.role) >= 2 && (
+              <>
+                <Block>
+                  <div>
+                    <p>ข้อมูลประเภทผู้ใช้งาน</p>
+                    {roles.length > 0 && (
+                      <p className="detail">{roles.length} รายการ</p>
+                    )}
+                  </div>
+                  <div>
+                    {roles.length > 0 ? (
+                      <>{renderCheckedSign()}</>
+                    ) : (
+                      <>{renderFetchDataButton(getRoles, `roles`)}</>
+                    )}
+                  </div>
+                </Block>
+                {roles.length > 0 && (
+                  <UpdatedDate>
+                    {renderTableDate(installationDate.roles, `datetime`)}
+                  </UpdatedDate>
+                )}
+                <Divider style={{ marginTop: `1rem`, marginBottom: `1rem` }} />
+              </>
+            )}
             <Block>
               <div>
                 <p>ข้อมูลชื่อประเภทกลุ่มงานและชื่อตำแหน่ง</p>

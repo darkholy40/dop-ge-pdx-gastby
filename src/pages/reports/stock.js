@@ -26,7 +26,7 @@ import {
   updateAnObjectInArray,
   removeObjectInArray,
 } from "../../functions/object-in-array"
-import roles from "../../static/roles"
+import roleLevel from "../../functions/roleLevel"
 
 const Container = styled.div`
   width: 100%;
@@ -50,11 +50,7 @@ const StockPage = () => {
 
   const savePageView = useCallback(() => {
     // Prevent saving a log when switch user to super admin
-    if (
-      token !== `` &&
-      userInfo._id !== `` &&
-      roles[userInfo.role.name].level < 3
-    ) {
+    if (token !== `` && userInfo._id !== `` && roleLevel(userInfo.role) < 3) {
       client(token).mutate({
         mutation: gql`
           mutation CreateLog {
@@ -382,7 +378,7 @@ const StockPage = () => {
 
   return (
     <Layout>
-      {token !== `` && roles[userInfo.role.name].level >= 2 ? (
+      {token !== `` && roleLevel(userInfo.role) >= 2 ? (
         <>
           <Seo title="รายชื่อพนักงานราชการและตำแหน่งว่าง" />
           <Breadcrumbs

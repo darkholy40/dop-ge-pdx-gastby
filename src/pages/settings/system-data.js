@@ -16,7 +16,7 @@ import { Form } from "../../components/styles"
 import SystemData from "../../components/system-data"
 import ConfirmationDialog from "../../components/confirmation-dialog"
 
-import roles from "../../static/roles"
+import roleLevel from "../../functions/roleLevel"
 
 const ButtonBlock = styled.div`
   display: inline-flex;
@@ -47,11 +47,7 @@ const SettingsSystemData = () => {
     useState(false)
 
   const savePageView = useCallback(() => {
-    if (
-      token !== `` &&
-      userInfo._id !== `` &&
-      roles[userInfo.role.name].level < 3
-    ) {
+    if (token !== `` && userInfo._id !== `` && roleLevel(userInfo.role) < 3) {
       client(token).mutate({
         mutation: gql`
           mutation CreateLog {
@@ -85,7 +81,7 @@ const SettingsSystemData = () => {
 
   return (
     <Layout>
-      {token !== `` && roles[userInfo.role.name].level >= 1 ? (
+      {token !== `` && roleLevel(userInfo.role) >= 1 ? (
         <>
           <Seo title="การตั้งค่า" />
           <Breadcrumbs

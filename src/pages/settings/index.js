@@ -12,7 +12,7 @@ import Seo from "../../components/seo"
 import Breadcrumbs from "../../components/breadcrumbs"
 import PageNotFound from "../../components/page-not-found"
 import { ColorButton } from "../../components/styles"
-import roles from "../../static/roles"
+import roleLevel from "../../functions/roleLevel"
 
 const Container = styled.div`
   width: 100%;
@@ -29,11 +29,7 @@ const SettingsIndex = () => {
 
   const savePageView = useCallback(() => {
     // Prevent saving a log when switch user to super admin
-    if (
-      token !== `` &&
-      userInfo._id !== `` &&
-      roles[userInfo.role.name].level < 3
-    ) {
+    if (token !== `` && userInfo._id !== `` && roleLevel(userInfo.role) < 3) {
       client(token).mutate({
         mutation: gql`
           mutation CreateLog {
@@ -67,7 +63,7 @@ const SettingsIndex = () => {
 
   return (
     <Layout>
-      {token !== `` && roles[userInfo.role.name].level >= 1 ? (
+      {token !== `` && roleLevel(userInfo.role) >= 1 ? (
         <>
           <Seo title="การตั้งค่า" />
           <Breadcrumbs current="การตั้งค่า" />

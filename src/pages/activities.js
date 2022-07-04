@@ -31,7 +31,7 @@ import PageNotFound from "../components/page-not-found"
 import Warning from "../components/warning"
 import renderTableDate from "../functions/render-table-date"
 import renderFullname from "../functions/render-fullname"
-import roles from "../static/roles"
+import roleLevel from "../functions/roleLevel"
 
 const Oparator = styled.div`
   display: flex;
@@ -245,7 +245,7 @@ const ActivitiesPage = () => {
 
   return (
     <Layout>
-      {token !== `` && roles[userInfo.role.name].level >= 3 ? (
+      {token !== `` && roleLevel(userInfo.role) >= 3 ? (
         <>
           <Seo title="ประวัติการใช้งานระบบ" />
           <Breadcrumbs current="ประวัติการใช้งานระบบ" />

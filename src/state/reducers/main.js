@@ -24,18 +24,8 @@ const initialState = {
     email: ``,
     createdAt: ``,
     updatedAt: ``,
-    division: {
-      _id: ``,
-      division1: ``,
-      division2: ``,
-      division3: ``,
-    },
-    role: {
-      _id: ``,
-      name: ``,
-      type: ``,
-      description: ``,
-    },
+    division: null,
+    role: null,
   },
   tutorialCount: 0,
   searchPositionFilter: {

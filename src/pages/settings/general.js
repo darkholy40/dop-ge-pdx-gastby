@@ -12,7 +12,7 @@ import PageNotFound from "../../components/page-not-found"
 import renderFullname from "../../functions/render-fullname"
 import renderDivision from "../../functions/render-division"
 import renderUserRole from "../../functions/render-user-role"
-import roles from "../../static/roles"
+import roleLevel from "../../functions/roleLevel"
 
 const Container = styled.div`
   box-shadow: rgb(0 0 0 / 24%) 0px 1px 2px;
@@ -57,11 +57,7 @@ const SettingsGeneral = () => {
   const [rows, setRows] = useState([])
 
   const savePageView = useCallback(() => {
-    if (
-      token !== `` &&
-      userInfo._id !== `` &&
-      roles[userInfo.role.name].level < 3
-    ) {
+    if (token !== `` && userInfo._id !== `` && roleLevel(userInfo.role) < 3) {
       client(token).mutate({
         mutation: gql`
           mutation CreateLog {
@@ -141,7 +137,7 @@ const SettingsGeneral = () => {
 
   return (
     <Layout>
-      {token !== `` && roles[userInfo.role.name].level >= 1 ? (
+      {token !== `` && roleLevel(userInfo.role) >= 1 ? (
         <>
           <Seo title="การตั้งค่า" />
           <Breadcrumbs

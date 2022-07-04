@@ -8,7 +8,7 @@ import Seo from "../../components/seo"
 import Breadcrumbs from "../../components/breadcrumbs"
 import PageNotFound from "../../components/page-not-found"
 import UserForm from "../../components/users/form"
-import roles from "../../static/roles"
+import roleLevel from "../../functions/roleLevel"
 
 const AddUserPage = () => {
   const { token, userInfo } = useSelector(({ mainReducer }) => mainReducer)
@@ -16,11 +16,7 @@ const AddUserPage = () => {
 
   const savePageView = useCallback(() => {
     // Prevent saving a log when switch user to super admin
-    if (
-      token !== `` &&
-      userInfo._id !== `` &&
-      roles[userInfo.role.name].level < 3
-    ) {
+    if (token !== `` && userInfo._id !== `` && roleLevel(userInfo.role) < 3) {
       client(token).mutate({
         mutation: gql`
           mutation CreateLog {
@@ -54,7 +50,7 @@ const AddUserPage = () => {
 
   return (
     <Layout>
-      {token !== `` && roles[userInfo.role.name].level >= 3 ? (
+      {token !== `` && roleLevel(userInfo.role) >= 3 ? (
         <>
           <Seo title="เพิ่มผู้ใช้งาน" />
           <Breadcrumbs

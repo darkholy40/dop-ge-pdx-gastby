@@ -17,7 +17,7 @@ import Warning from "../../components/warning"
 import { Form, Flex, CheckCircleFlex } from "../../components/styles"
 import renderDivision from "../../functions/render-division"
 import renderCheckingIcon from "../../functions/render-checking-icon"
-import roles from "../../static/roles"
+import roleLevel from "../../functions/roleLevel"
 
 const Line = styled.div`
   margin-bottom: 1rem;
@@ -49,11 +49,7 @@ const ResignationPage = ({ location }) => {
 
   const savePageView = useCallback(() => {
     // Prevent saving a log when switch user to super admin
-    if (
-      token !== `` &&
-      userInfo._id !== `` &&
-      roles[userInfo.role.name].level < 3
-    ) {
+    if (token !== `` && userInfo._id !== `` && roleLevel(userInfo.role) < 3) {
       client(token).mutate({
         mutation: gql`
           mutation CreateLog {
@@ -376,14 +372,14 @@ const ResignationPage = ({ location }) => {
 
   return (
     <Layout>
-      {token !== `` && roles[userInfo.role.name].level >= 1 ? (
+      {token !== `` && roleLevel(userInfo.role) >= 1 ? (
         <>
           <Seo title="จำหน่ายสูญเสีย" />
           <Breadcrumbs
             previous={[
               {
                 name:
-                  roles[userInfo.role.name].level <= 1
+                  roleLevel(userInfo.role) <= 1
                     ? `ประวัติกำลังพล (${
                         userInfo.division !== null
                           ? renderDivision(userInfo.division)

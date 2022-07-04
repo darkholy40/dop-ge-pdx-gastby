@@ -39,7 +39,7 @@ import Warning from "../../components/warning"
 import renderTableDate from "../../functions/render-table-date"
 import renderUserRole from "../../functions/render-user-role"
 import renderFullname from "../../functions/render-fullname"
-import roles from "../../static/roles"
+import roleLevel from "../../functions/roleLevel"
 
 const Oparator = styled.div`
   display: flex;
@@ -297,7 +297,7 @@ const UserManagementPage = () => {
 
   return (
     <Layout>
-      {token !== `` && roles[userInfo.role.name].level >= 3 ? (
+      {token !== `` && roleLevel(userInfo.role) >= 3 ? (
         <>
           <Seo title="ผู้ใช้งานระบบ" />
           <Breadcrumbs current="ผู้ใช้งานระบบ" />

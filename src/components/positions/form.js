@@ -18,7 +18,7 @@ import Warning from "../warning"
 import { Form, Flex, CheckCircleFlex } from "../../components/styles"
 import renderCheckingIcon from "../../functions/render-checking-icon"
 import renderDivision from "../../functions/render-division"
-import roles from "../../static/roles"
+import roleLevel from "../../functions/roleLevel"
 
 const PositionForm = ({ modification, id }) => {
   const { token, userInfo } = useSelector(({ mainReducer }) => mainReducer)
@@ -214,7 +214,7 @@ const PositionForm = ({ modification, id }) => {
                   staff_updated: "",
                   person: null,
                   division: "${
-                    roles[userInfo.role.name].level > 1
+                    roleLevel(userInfo.role) > 1
                       ? `${addPositionFilter.unit._id}`
                       : `${userInfo.division._id}`
                   }"
@@ -389,7 +389,7 @@ const PositionForm = ({ modification, id }) => {
                   have_a_budget: ${addPositionFilter.haveABudget},
                   staff_updated: "${userInfo._id}",
                   ${
-                    roles[userInfo.role.name].level > 1
+                    roleLevel(userInfo.role) > 1
                       ? `division: "${addPositionFilter.unit._id}"`
                       : ``
                   }
@@ -605,7 +605,7 @@ const PositionForm = ({ modification, id }) => {
               </CheckCircleFlex>
             </Flex>
 
-            {roles[userInfo.role.name].level > 1 && (
+            {roleLevel(userInfo.role) > 1 && (
               <Flex style={{ marginBottom: `1rem` }}>
                 <Autocomplete
                   sx={{ width: `100%` }}
@@ -760,7 +760,7 @@ const PositionForm = ({ modification, id }) => {
                 variant="contained"
                 type="submit"
                 disabled={
-                  roles[userInfo.role.name].level > 1
+                  roleLevel(userInfo.role) > 1
                     ? addPositionFilter.posName === `` ||
                       addPositionFilter.posType === `` ||
                       addPositionFilter.posNumber === `` ||
@@ -779,7 +779,7 @@ const PositionForm = ({ modification, id }) => {
                 variant="contained"
                 type="submit"
                 disabled={
-                  roles[userInfo.role.name].level > 1
+                  roleLevel(userInfo.role) > 1
                     ? addPositionFilter.posName === `` ||
                       addPositionFilter.posType === `` ||
                       addPositionFilter.posNumber === `` ||

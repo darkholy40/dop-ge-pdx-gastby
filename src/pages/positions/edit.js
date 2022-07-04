@@ -9,7 +9,7 @@ import Breadcrumbs from "../../components/breadcrumbs"
 import PageNotFound from "../../components/page-not-found"
 import PositionForm from "../../components/positions/form"
 import renderDivision from "../../functions/render-division"
-import roles from "../../static/roles"
+import roleLevel from "../../functions/roleLevel"
 
 const EditPositionsPage = ({ location }) => {
   const { token, userInfo } = useSelector(({ mainReducer }) => mainReducer)
@@ -29,11 +29,7 @@ const EditPositionsPage = ({ location }) => {
 
   const savePageView = useCallback(() => {
     // Prevent saving a log when switch user to super admin
-    if (
-      token !== `` &&
-      userInfo._id !== `` &&
-      roles[userInfo.role.name].level < 3
-    ) {
+    if (token !== `` && userInfo._id !== `` && roleLevel(userInfo.role) < 3) {
       client(token).mutate({
         mutation: gql`
           mutation CreateLog {
@@ -67,14 +63,14 @@ const EditPositionsPage = ({ location }) => {
 
   return (
     <Layout>
-      {token !== `` && roles[userInfo.role.name].level >= 1 ? (
+      {token !== `` && roleLevel(userInfo.role) >= 1 ? (
         <>
           <Seo title="แก้ไขคลังตำแหน่ง" />
           <Breadcrumbs
             previous={[
               {
                 name:
-                  roles[userInfo.role.name].level <= 1
+                  roleLevel(userInfo.role) <= 1
                     ? `คลังตำแหน่ง (${
                         userInfo.division !== null
                           ? renderDivision(userInfo.division)

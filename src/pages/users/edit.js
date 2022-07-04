@@ -8,7 +8,7 @@ import Seo from "../../components/seo"
 import Breadcrumbs from "../../components/breadcrumbs"
 import PageNotFound from "../../components/page-not-found"
 import UserForm from "../../components/users/form"
-import roles from "../../static/roles"
+import roleLevel from "../../functions/roleLevel"
 
 const EditUserPage = ({ location }) => {
   const { token, userInfo } = useSelector(({ mainReducer }) => mainReducer)
@@ -18,11 +18,7 @@ const EditUserPage = ({ location }) => {
 
   const savePageView = useCallback(() => {
     // Prevent saving a log when switch user to super admin
-    if (
-      token !== `` &&
-      userInfo._id !== `` &&
-      roles[userInfo.role.name].level < 3
-    ) {
+    if (token !== `` && userInfo._id !== `` && roleLevel(userInfo.role) < 3) {
       client(token).mutate({
         mutation: gql`
           mutation CreateLog {
@@ -56,7 +52,7 @@ const EditUserPage = ({ location }) => {
 
   return (
     <Layout>
-      {token !== `` && roles[userInfo.role.name].level >= 3 ? (
+      {token !== `` && roleLevel(userInfo.role) >= 3 ? (
         <>
           <Seo title="แก้ไขผู้ใช้งาน" />
           <Breadcrumbs

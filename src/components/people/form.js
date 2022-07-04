@@ -45,7 +45,7 @@ import {
   updateAnObjectInArray,
   removeObjectInArray,
 } from "../../functions/object-in-array"
-import roles from "../../static/roles"
+import roleLevel from "../../functions/roleLevel"
 
 const Form = styled(StyledForm)`
   max-width: 100%;
@@ -251,11 +251,11 @@ const PersonForm = ({ modification, id }) => {
       },
     ])
 
-    if (roles[userInfo.role.name].level <= 1) {
+    if (roleLevel(userInfo.role) <= 1) {
       role = `division: "${userInfo.division._id}"`
     }
 
-    if (roles[userInfo.role.name].level >= 2) {
+    if (roleLevel(userInfo.role) >= 2) {
       if (addPersonFilter.unit !== null) {
         role = `division: "${addPersonFilter.unit._id}"`
       }
@@ -585,11 +585,11 @@ const PersonForm = ({ modification, id }) => {
       return 0
     }
 
-    if (roles[userInfo.role.name].level <= 1) {
+    if (roleLevel(userInfo.role) <= 1) {
       role = `division: "${userInfo.division._id}"`
     }
 
-    if (roles[userInfo.role.name].level >= 2) {
+    if (roleLevel(userInfo.role) >= 2) {
       try {
         const res = await client(token).query({
           query: gql`
@@ -1626,7 +1626,7 @@ const PersonForm = ({ modification, id }) => {
                     getOptionLabel={option => {
                       let returnLabel = option.number
 
-                      if (roles[userInfo.role.name].level > 1) {
+                      if (roleLevel(userInfo.role) > 1) {
                         returnLabel = `${option.number} (${renderDivision(
                           option.division
                         )})`

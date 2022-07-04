@@ -28,7 +28,7 @@ import renderTableDate from "../../functions/render-table-date"
 import renderAgeFromDifferentDateRange from "../../functions/render-age-from-different-date-range"
 import renderFullname from "../../functions/render-fullname"
 import renderNumberAsText from "../../functions/render-number-as-text"
-import roles from "../../static/roles"
+import roleLevel from "../../functions/roleLevel"
 
 const Content = styled.div`
   display: flex;
@@ -69,7 +69,7 @@ const PersonInfoDialog = ({ personId, open, title, callback }) => {
       token !== `` &&
       userInfo._id !== `` &&
       personId !== `` &&
-      roles[userInfo.role.name].level < 3
+      roleLevel(userInfo.role) < 3
     ) {
       client(token).mutate({
         mutation: gql`

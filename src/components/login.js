@@ -114,6 +114,54 @@ const IndexPage = () => {
           const userData = res.data.user
           const token = res.data.jwt
 
+          if (userData.division === undefined || userData.division === null) {
+            setIsError({
+              status: true,
+              text: `บัญชีผู้ใช้งานมีปัญหา`,
+            })
+
+            dispatch({
+              type: `SET_NOTIFICATION_DIALOG`,
+              notificationDialog: {
+                open: true,
+                title: `บัญชีผู้ใช้งานมีปัญหา`,
+                description: `กรุณาติดต่อเจ้าหน้าที่ผู้ดูแลระบบ`,
+                variant: `error`,
+                confirmText: `ตกลง`,
+                callback: () => {},
+              },
+            })
+
+            await client(token).mutate({
+              mutation: gql`
+                mutation CreateLog {
+                  createLog(input: {
+                    data: {
+                      action: "auth",
+                      description: "division is null",
+                      users_permissions_user: "${userData._id}",
+                    }
+                  }) {
+                    log {
+                      _id
+                    }
+                  }
+                }
+              `,
+            })
+
+            setIsLoading(false)
+            dispatch({
+              type: `SET_BACKDROP_OPEN`,
+              backdropDialog: {
+                open: false,
+                title: ``,
+              },
+            })
+
+            return 0
+          }
+
           if (userData.confirmed) {
             setIsError({
               status: false,
@@ -147,7 +195,19 @@ const IndexPage = () => {
 
               dispatch({
                 type: `SET_USER_INFO`,
-                userInfo: userData,
+                userInfo: {
+                  _id: userData._id,
+                  confirmed: userData.confirmed,
+                  blocked: userData.blocked,
+                  name: userData.name,
+                  username: userData.username,
+                  surname: userData.surname,
+                  email: userData.email,
+                  createdAt: userData.createdAt,
+                  updatedAt: userData.updatedAt,
+                  division: userData.division || null,
+                  role: userData.role || null,
+                },
               })
             }, 0)
           } else {

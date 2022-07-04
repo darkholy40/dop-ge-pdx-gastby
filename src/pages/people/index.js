@@ -25,7 +25,7 @@ import {
 } from "../../components/styles"
 import renderDivision from "../../functions/render-division"
 import checkPid from "../../functions/check-pid"
-import roles from "../../static/roles"
+import roleLevel from "../../functions/roleLevel"
 
 const Oparator = styled.div`
   display: flex;
@@ -77,11 +77,7 @@ const PeoplePage = () => {
 
   const savePageView = useCallback(() => {
     // Prevent saving a log when switch user to super admin
-    if (
-      token !== `` &&
-      userInfo._id !== `` &&
-      roles[userInfo.role.name].level < 3
-    ) {
+    if (token !== `` && userInfo._id !== `` && roleLevel(userInfo.role) < 3) {
       client(token).mutate({
         mutation: gql`
           mutation CreateLog {
@@ -104,63 +100,12 @@ const PeoplePage = () => {
 
   const getPositions = useCallback(async () => {
     let role = ``
-    const clearSession = async () => {
-      dispatch({
-        type: `SET_TOKEN`,
-        token: ``,
-      })
 
-      dispatch({
-        type: `RESET_SESSION_TIMER`,
-      })
-    }
-
-    if (userInfo.division === null) {
-      await clearSession()
-      await navigate(`/`)
-
-      dispatch({
-        type: `SET_NOTIFICATION_DIALOG`,
-        notificationDialog: {
-          open: true,
-          title: `บัญชีผู้ใช้งานมีปัญหา`,
-          description: `กรุณาติดต่อเจ้าหน้าที่ผู้ดูแลระบบ`,
-          variant: `error`,
-          confirmText: `ตกลง`,
-          callback: () => {},
-        },
-      })
-
-      try {
-        await client(token).mutate({
-          mutation: gql`
-            mutation CreateLog {
-              createLog(input: {
-                data: {
-                  action: "auth",
-                  description: "division is null",
-                  users_permissions_user: "${userInfo._id}",
-                }
-              }) {
-                log {
-                  _id
-                }
-              }
-            }
-          `,
-        })
-      } catch (error) {
-        console.log(error.message)
-      }
-
-      return 0
-    }
-
-    if (roles[userInfo.role.name].level <= 1) {
+    if (roleLevel(userInfo.role) <= 1) {
       role = `division: "${userInfo.division._id}"`
     }
 
-    if (roles[userInfo.role.name].level >= 2) {
+    if (roleLevel(userInfo.role) >= 2) {
       if (addPersonFilter.unit !== null) {
         role = `division: "${addPersonFilter.unit._id}"`
       }
@@ -199,7 +144,7 @@ const PeoplePage = () => {
         setIsError({
           status: ``,
           text: `มีตำแหน่งว่าง${
-            roles[userInfo.role.name].level > 1
+            roleLevel(userInfo.role) > 1
               ? addPersonFilter.unit !== null
                 ? ``
                 : `ทั้ง ทบ.`
@@ -256,22 +201,20 @@ const PeoplePage = () => {
 
   return (
     <Layout>
-      {token !== `` && roles[userInfo.role.name].level >= 1 ? (
+      {token !== `` && roleLevel(userInfo.role) >= 1 ? (
         <>
           <Seo
             title={
-              roles[userInfo.role.name].level <= 1
+              roleLevel(userInfo.role) <= 1
                 ? `ประวัติกำลังพล (${
-                    userInfo.division !== null
-                      ? renderDivision(userInfo.division)
-                      : `-`
+                    userInfo.division !== null ? renderDivision(userInfo) : `-`
                   })`
                 : `ประวัติกำลังพล`
             }
           />
           <Breadcrumbs
             current={
-              roles[userInfo.role.name].level <= 1
+              roleLevel(userInfo.role) <= 1
                 ? `ประวัติกำลังพล (${
                     userInfo.division !== null
                       ? renderDivision(userInfo.division)
@@ -316,7 +259,7 @@ const PeoplePage = () => {
               />
             </div>
             <div className="division-select">
-              {roles[userInfo.role.name].level > 1 && (
+              {roleLevel(userInfo.role) > 1 && (
                 <Flex style={{ marginBottom: `1rem` }}>
                   <Autocomplete
                     sx={{ width: `100%` }}
@@ -361,7 +304,7 @@ const PeoplePage = () => {
                 disabled={
                   isError.status === `disabled` ||
                   isError.status === `notfound` ||
-                  (roles[userInfo.role.name].level > 1 &&
+                  (roleLevel(userInfo.role) > 1 &&
                     addPersonFilter.unit === null)
                 }
                 onClick={() => {
@@ -577,7 +520,7 @@ const PeoplePage = () => {
                     )}
                   />
                 </Flex>
-                {roles[userInfo.role.name].level > 1 && (
+                {roleLevel(userInfo.role) > 1 && (
                   <Flex style={{ marginBottom: `1rem` }}>
                     <Autocomplete
                       sx={{ width: `100%` }}
