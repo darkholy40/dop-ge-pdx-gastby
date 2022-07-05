@@ -39,6 +39,7 @@ import Warning from "../../components/warning"
 import renderTableDate from "../../functions/render-table-date"
 import renderUserRole from "../../functions/render-user-role"
 import renderFullname from "../../functions/render-fullname"
+import renderDivision from "../../functions/render-division"
 import roleLevel from "../../functions/roleLevel"
 
 const Oparator = styled.div`
@@ -123,6 +124,7 @@ const UserManagementPage = () => {
                 rank
                 name
                 surname
+                userPosition
                 confirmed
                 blocked
                 createdAt
@@ -212,6 +214,7 @@ const UserManagementPage = () => {
               rank: thisUser.rank,
               name: thisUser.name,
               surname: thisUser.surname,
+              userPosition: thisUser.userPosition,
               confirmed: thisUser.confirmed,
               blocked: thisUser.blocked,
               division: thisUser.division,
@@ -382,6 +385,12 @@ const UserManagementPage = () => {
                           ยศ - ชื่อ - สกุล
                         </TableCell>
                         <TableCell sx={{ backgroundColor: primaryColor[200] }}>
+                          สังกัด
+                        </TableCell>
+                        <TableCell sx={{ backgroundColor: primaryColor[200] }}>
+                          ตำแหน่ง
+                        </TableCell>
+                        <TableCell sx={{ backgroundColor: primaryColor[200] }}>
                           ระดับผู้ใช้งาน
                         </TableCell>
                         <TableCell
@@ -422,6 +431,12 @@ const UserManagementPage = () => {
                           <TableCell align="left">{row.username}</TableCell>
                           <TableCell align="left" sx={{ minWidth: 100 }}>
                             {renderFullname(row)}
+                          </TableCell>
+                          <TableCell align="left" sx={{ minWidth: 100 }}>
+                            {renderDivision(row.division)}
+                          </TableCell>
+                          <TableCell align="left" sx={{ minWidth: 100 }}>
+                            {row.userPosition || `-`}
                           </TableCell>
                           <TableCell align="left" sx={{ minWidth: 100 }}>
                             {row.role !== null

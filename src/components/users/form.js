@@ -58,6 +58,7 @@ const UserForm = ({ modification, id }) => {
     rank: null,
     name: ``,
     surname: ``,
+    userPosition: ``,
     username: ``,
     password: ``,
     email: ``,
@@ -99,6 +100,7 @@ const UserForm = ({ modification, id }) => {
               rank
               name
               surname
+              userPosition
               email
               confirmed
               blocked
@@ -126,11 +128,12 @@ const UserForm = ({ modification, id }) => {
         setInputs(prev => ({
           ...prev,
           rank: ranks.find(elem => elem.shortName === userData.rank) || null,
-          name: userData.name,
-          surname: userData.surname,
-          username: userData.username,
+          name: userData.name || ``,
+          surname: userData.surname || ``,
+          userPosition: userData.userPosition || ``,
+          username: userData.username || ``,
           password: ``,
-          email: userData.email,
+          email: userData.email || ``,
           division:
             userData.division !== null
               ? units.find(elem => elem._id === userData.division._id)
@@ -139,7 +142,7 @@ const UserForm = ({ modification, id }) => {
             userData.role !== null
               ? roles.find(elem => elem._id === userData.role._id)
               : null,
-          isConfirmed: userData.confirmed,
+          isConfirmed: userData.confirmed || false,
         }))
       }
     } catch (error) {
@@ -247,6 +250,7 @@ const UserForm = ({ modification, id }) => {
                 rank: "${inputs.rank.shortName}",
                 name: "${inputs.name}",
                 surname: "${inputs.surname}",
+                userPosition: "${inputs.userPosition}",
                 email: "${inputs.email}",
                 password: "${inputs.password}",
                 confirmed: ${inputs.isConfirmed},
@@ -347,6 +351,7 @@ const UserForm = ({ modification, id }) => {
                 rank: "${inputs.rank.shortName}",
                 name: "${inputs.name}",
                 surname: "${inputs.surname}",
+                userPosition: "${inputs.userPosition}",
                 confirmed: ${inputs.isConfirmed},
                 division: ${renderValueForRelationField(inputs.division)},
                 role: ${renderValueForRelationField(inputs.role)},
@@ -385,7 +390,7 @@ const UserForm = ({ modification, id }) => {
             createLog(input: {
               data: {
                 action: "action",
-                description: "users -> edit -> ${editedUserId}",
+                description: "users -> save -> ${editedUserId}",
                 users_permissions_user: "${userInfo._id}",
               }
             }) {
@@ -553,6 +558,21 @@ const UserForm = ({ modification, id }) => {
                 InputProps={{
                   endAdornment: renderCheckingIcon(inputs.surname),
                 }}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                sx={textfieldProps}
+                id="user-position"
+                label="ตำแหน่ง"
+                variant="outlined"
+                onChange={e => {
+                  setInputs({
+                    ...inputs,
+                    userPosition: e.target.value,
+                  })
+                }}
+                value={inputs.userPosition}
               />
             </Grid>
           </Grid>
