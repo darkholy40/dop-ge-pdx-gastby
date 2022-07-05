@@ -59,11 +59,7 @@ const AddPositionsPage = () => {
               {
                 name:
                   roleLevel(userInfo.role) <= 1
-                    ? `คลังตำแหน่ง (${
-                        userInfo.division !== null
-                          ? renderDivision(userInfo.division)
-                          : `-`
-                      })`
+                    ? `คลังตำแหน่ง (${renderDivision(userInfo.division)})`
                     : `คลังตำแหน่ง`,
                 link: `/positions/`,
               },

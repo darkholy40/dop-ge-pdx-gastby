@@ -24,6 +24,7 @@ import Breadcrumbs from "../../components/breadcrumbs"
 import PageNotFound from "../../components/page-not-found"
 import Warning from "../../components/warning"
 import renderDivision from "../../functions/render-division"
+import renderFullname from "../../functions/render-fullname"
 import roleLevel from "../../functions/roleLevel"
 
 const ResignedPeopleListPage = () => {
@@ -198,6 +199,7 @@ const ResignedPeopleListPage = () => {
               query User {
                 user(id: "${thisPerson.staff_updated}") {
                   _id
+                  rank
                   name
                   surname
                 }
@@ -218,9 +220,7 @@ const ResignedPeopleListPage = () => {
               resignationNote: thisPerson.resignationNote,
               staff_created: thisPerson.staff_created,
               staff_updated: thisPerson.staff_updated,
-              staff_updated_fullname: `${resUser.data.user.name} ${
-                resUser.data.user.surname || ``
-              }`,
+              staff_updated_userinfo: resUser.data.user,
               createdAt: thisPerson.createdAt,
               updatedAt: thisPerson.updatedAt,
               position: {
@@ -313,11 +313,7 @@ const ResignedPeopleListPage = () => {
               {
                 name:
                   roleLevel(userInfo.role) <= 1
-                    ? `ประวัติกำลังพล (${
-                        userInfo.division !== null
-                          ? renderDivision(userInfo.division)
-                          : `-`
-                      })`
+                    ? `ประวัติกำลังพล (${renderDivision(userInfo.division)})`
                     : `ประวัติกำลังพล`,
                 link: `/people/`,
               },
@@ -426,7 +422,7 @@ const ResignedPeopleListPage = () => {
                             {row.resignationNote}
                           </TableCell>
                           <TableCell align="left">
-                            {row.staff_updated_fullname}
+                            {renderFullname(row.staff_updated_userinfo)}
                           </TableCell>
                         </TableRow>
                       ))}

@@ -3000,22 +3000,26 @@ const PersonForm = ({ modification, id }) => {
           </Form>
           <PercentDialog data={percentDialog} />
 
-          <Divider style={{ marginTop: `1rem`, marginBottom: `1rem` }} />
-          <Flex
-            style={{
-              justifyContent: `end`,
-            }}
-          >
-            <Button
-              color="error"
-              variant="outlined"
-              onClick={() => {}}
-              disabled
-            >
-              <FontAwesomeIcon icon={faTrash} style={{ marginRight: 5 }} />
-              ลบ
-            </Button>
-          </Flex>
+          {modification && (
+            <>
+              <Divider style={{ marginTop: `1rem`, marginBottom: `1rem` }} />
+              <Flex
+                style={{
+                  justifyContent: `end`,
+                }}
+              >
+                <Button
+                  color="error"
+                  variant="outlined"
+                  onClick={() => {}}
+                  disabled
+                >
+                  <FontAwesomeIcon icon={faTrash} style={{ marginRight: 5 }} />
+                  ลบ
+                </Button>
+              </Flex>
+            </>
+          )}
         </>
       ) : (
         <>

@@ -62,11 +62,7 @@ const EditPersonPage = ({ location }) => {
               {
                 name:
                   roleLevel(userInfo.role) <= 1
-                    ? `ประวัติกำลังพล (${
-                        userInfo.division !== null
-                          ? renderDivision(userInfo.division)
-                          : `-`
-                      })`
+                    ? `ประวัติกำลังพล (${renderDivision(userInfo.division)})`
                     : `ประวัติกำลังพล`,
                 link: `/people/`,
               },

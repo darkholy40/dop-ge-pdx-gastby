@@ -82,22 +82,14 @@ const PositionsPage = () => {
           <Seo
             title={
               roleLevel(userInfo.role) <= 1
-                ? `คลังตำแหน่ง (${
-                    userInfo.division !== null
-                      ? renderDivision(userInfo.division)
-                      : `-`
-                  })`
+                ? `คลังตำแหน่ง (${renderDivision(userInfo.division)})`
                 : `คลังตำแหน่ง`
             }
           />
           <Breadcrumbs
             current={
               roleLevel(userInfo.role) <= 1
-                ? `คลังตำแหน่ง (${
-                    userInfo.division !== null
-                      ? renderDivision(userInfo.division)
-                      : `-`
-                  })`
+                ? `คลังตำแหน่ง (${renderDivision(userInfo.division)})`
                 : `คลังตำแหน่ง`
             }
           />

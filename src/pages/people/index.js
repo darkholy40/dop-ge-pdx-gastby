@@ -214,20 +214,14 @@ const PeoplePage = () => {
           <Seo
             title={
               roleLevel(userInfo.role) <= 1
-                ? `ประวัติกำลังพล (${
-                    userInfo.division !== null ? renderDivision(userInfo) : `-`
-                  })`
+                ? `ประวัติกำลังพล (${renderDivision(userInfo.division)})`
                 : `ประวัติกำลังพล`
             }
           />
           <Breadcrumbs
             current={
               roleLevel(userInfo.role) <= 1
-                ? `ประวัติกำลังพล (${
-                    userInfo.division !== null
-                      ? renderDivision(userInfo.division)
-                      : `-`
-                  })`
+                ? `ประวัติกำลังพล (${renderDivision(userInfo.division)})`
                 : `ประวัติกำลังพล`
             }
           />
