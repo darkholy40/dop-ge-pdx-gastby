@@ -61,56 +61,50 @@ const ResponsiveDrawer = props => {
   const [anchorElMyInfo, setAnchorElMyInfo] = React.useState(null)
 
   const pages = {
-    authenticated: {
-      level: 1,
-      data: [
-        {
-          name: `people`,
-          desc: `ประวัติกำลังพล`,
-          icon: faUsers,
-        },
-        {
-          name: `positions`,
-          desc: `คลังตำแหน่ง`,
-          icon: faPoll,
-        },
-      ],
-    },
-    report: {
-      level: 2,
-      data: [
-        {
-          name: `reports`,
-          desc: `การออกรายงาน`,
-          icon: faPrint,
-        },
-      ],
-    },
-    userManagement: {
-      level: 3,
-      data: [
-        {
-          name: `users`,
-          desc: `ผู้ใช้งานระบบ`,
-          icon: faUsersCog,
-        },
-        {
-          name: `activities`,
-          desc: `ประวัติการใช้งานระบบ`,
-          icon: faRunning,
-        },
-      ],
-    },
-    controlPanel: {
-      level: 1,
-      data: [
-        {
-          name: `settings`,
-          desc: `การตั้งค่า`,
-          icon: faCog,
-        },
-      ],
-    },
+    authenticated: [
+      {
+        name: `people`,
+        desc: `ประวัติกำลังพล`,
+        icon: faUsers,
+        level: 1,
+      },
+      {
+        name: `positions`,
+        desc: `คลังตำแหน่ง`,
+        icon: faPoll,
+        level: 1,
+      },
+    ],
+    report: [
+      {
+        name: `reports`,
+        desc: `การออกรายงาน`,
+        icon: faPrint,
+        level: 2,
+      },
+    ],
+    userManagement: [
+      {
+        name: `users`,
+        desc: `ผู้ใช้งานระบบ`,
+        icon: faUsersCog,
+        level: 2,
+      },
+      {
+        name: `activities`,
+        desc: `ประวัติการใช้งานระบบ`,
+        icon: faRunning,
+        level: 3,
+      },
+    ],
+    controlPanel: [
+      {
+        name: `settings`,
+        desc: `การตั้งค่า`,
+        icon: faCog,
+        level: 1,
+      },
+    ],
   }
 
   const handleDrawerToggle = () => {
@@ -171,12 +165,12 @@ const ResponsiveDrawer = props => {
       <Toolbar sx={{ position: `relative` }}>
         <SessionTimer />
       </Toolbar>
-      {roleLevel(userInfo.role) >= pages.authenticated.level && (
+      {pages.authenticated.filter(elem => elem.level <= roleLevel(userInfo.role)).length > 0 && (
         <>
           <Divider />
           <List>
-            {pages.authenticated.data.map((page, pageIndex) => {
-              return (
+            {pages.authenticated.map((page, pageIndex) => {
+              return page.level <= roleLevel(userInfo.role) ? (
                 <ListItem key={`menu_${pageIndex}`} disablePadding>
                   <ListItemButton
                     onClick={() => {
@@ -190,17 +184,17 @@ const ResponsiveDrawer = props => {
                     <ListItemText primary={page.desc} />
                   </ListItemButton>
                 </ListItem>
-              )
+              ) : ``
             })}
           </List>
         </>
       )}
-      {roleLevel(userInfo.role) >= pages.report.level && (
+      {pages.report.filter(elem => elem.level <= roleLevel(userInfo.role)).length > 0 && (
         <>
           <Divider />
           <List>
-            {pages.report.data.map((page, pageIndex) => {
-              return (
+            {pages.report.map((page, pageIndex) => {
+              return page.level <= roleLevel(userInfo.role) ? (
                 <ListItem key={`menu_${pageIndex}`} disablePadding>
                   <ListItemButton
                     onClick={() => {
@@ -214,17 +208,17 @@ const ResponsiveDrawer = props => {
                     <ListItemText primary={page.desc} />
                   </ListItemButton>
                 </ListItem>
-              )
+              ) : ``
             })}
           </List>
         </>
       )}
-      {roleLevel(userInfo.role) >= pages.userManagement.level && (
+      {pages.userManagement.filter(elem => elem.level <= roleLevel(userInfo.role)).length > 0 && (
         <>
           <Divider />
           <List>
-            {pages.userManagement.data.map((page, pageIndex) => {
-              return (
+            {pages.userManagement.map((page, pageIndex) => {
+              return page.level <= roleLevel(userInfo.role) ? (
                 <ListItem key={`menu_${pageIndex}`} disablePadding>
                   <ListItemButton
                     onClick={() => {
@@ -238,17 +232,17 @@ const ResponsiveDrawer = props => {
                     <ListItemText primary={page.desc} />
                   </ListItemButton>
                 </ListItem>
-              )
+              ) : ``
             })}
           </List>
         </>
       )}
-      {roleLevel(userInfo.role) >= pages.controlPanel.level && (
+      {pages.controlPanel.filter(elem => elem.level <= roleLevel(userInfo.role)).length > 0 && (
         <>
           <Divider />
           <List>
-            {pages.controlPanel.data.map((page, pageIndex) => {
-              return (
+            {pages.controlPanel.map((page, pageIndex) => {
+              return page.level <= roleLevel(userInfo.role) ? (
                 <ListItem key={`menu_${pageIndex}`} disablePadding>
                   <ListItemButton
                     onClick={() => {
@@ -266,7 +260,7 @@ const ResponsiveDrawer = props => {
                     <ListItemText primary={page.desc} />
                   </ListItemButton>
                 </ListItem>
-              )
+              ) : ``
             })}
           </List>
         </>

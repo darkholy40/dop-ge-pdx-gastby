@@ -52,7 +52,7 @@ const EditUserPage = ({ location }) => {
 
   return (
     <Layout>
-      {token !== `` && roleLevel(userInfo.role) >= 3 ? (
+      {token !== `` && roleLevel(userInfo.role) >= 2 ? (
         <>
           <Seo title="แก้ไขผู้ใช้งาน" />
           <Breadcrumbs

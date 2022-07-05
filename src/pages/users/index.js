@@ -68,6 +68,28 @@ const UserManagementPage = () => {
   const [optionAnchorEl, setOptionAnchorEl] = useState(null)
   const [currentRow, setCurrentRow] = useState(null)
 
+  const savePageView = useCallback(() => {
+    if (token !== `` && userInfo._id !== `` && roleLevel(userInfo.role) < 3) {
+      client(token).mutate({
+        mutation: gql`
+          mutation CreateLog {
+            createLog(input: {
+              data: {
+                action: "view",
+                description: "users",
+                users_permissions_user: "${userInfo._id}",
+              }
+            }) {
+              log {
+                _id
+              }
+            }
+          }
+        `,
+      })
+    }
+  }, [token, userInfo])
+
   const getUsers = useCallback(async () => {
     let returnData = []
 
@@ -298,9 +320,13 @@ const UserManagementPage = () => {
     })
   }, [dispatch])
 
+  useEffect(() => {
+    savePageView()
+  }, [savePageView])
+
   return (
     <Layout>
-      {token !== `` && roleLevel(userInfo.role) >= 3 ? (
+      {token !== `` && roleLevel(userInfo.role) >= 2 ? (
         <>
           <Seo title="ผู้ใช้งานระบบ" />
           <Breadcrumbs current="ผู้ใช้งานระบบ" />

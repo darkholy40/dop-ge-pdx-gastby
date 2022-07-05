@@ -56,6 +56,28 @@ const ActivitiesPage = () => {
     rowsPerPage: 10,
   })
 
+  const savePageView = useCallback(() => {
+    if (token !== `` && userInfo._id !== `` && roleLevel(userInfo.role) < 3) {
+      client(token).mutate({
+        mutation: gql`
+          mutation CreateLog {
+            createLog(input: {
+              data: {
+                action: "view",
+                description: "activities",
+                users_permissions_user: "${userInfo._id}",
+              }
+            }) {
+              log {
+                _id
+              }
+            }
+          }
+        `,
+      })
+    }
+  }, [token, userInfo])
+
   const getLogs = useCallback(async () => {
     let returnData = []
 
@@ -243,9 +265,13 @@ const ActivitiesPage = () => {
     })
   }, [dispatch])
 
+  useEffect(() => {
+    savePageView()
+  }, [savePageView])
+
   return (
     <Layout>
-      {token !== `` && roleLevel(userInfo.role) >= 3 ? (
+      {token !== `` && roleLevel(userInfo.role) >= 2 ? (
         <>
           <Seo title="ประวัติการใช้งานระบบ" />
           <Breadcrumbs current="ประวัติการใช้งานระบบ" />

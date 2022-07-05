@@ -50,7 +50,7 @@ const AddUserPage = () => {
 
   return (
     <Layout>
-      {token !== `` && roleLevel(userInfo.role) >= 3 ? (
+      {token !== `` && roleLevel(userInfo.role) >= 2 ? (
         <>
           <Seo title="เพิ่มผู้ใช้งาน" />
           <Breadcrumbs
