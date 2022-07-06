@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useState } from "react"
 import PropTypes from "prop-types"
 import { useSelector, useDispatch } from "react-redux"
 import styled from "styled-components"
-import { Button, Divider } from "@mui/material"
+import { Button, Divider, Collapse, Alert } from "@mui/material"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faCheckCircle } from "@fortawesome/free-solid-svg-icons"
 import { green } from "@mui/material/colors"
@@ -110,6 +110,7 @@ const SystemData = ({ showContent, confirmButtonContent, confirmCallback }) => {
   } = useSelector(({ staticReducer }) => staticReducer)
   const dispatch = useDispatch()
   const [percentDialog, setPercentDialog] = useState([])
+  const [isStaticUpdated, setIsStaticUpdated] = useState(false)
 
   const getPositionName = useCallback(async () => {
     let lap = 0
@@ -1128,6 +1129,10 @@ const SystemData = ({ showContent, confirmButtonContent, confirmCallback }) => {
               updateAll()
             }
           }}
+          sx={{
+            opacity: !isStaticUpdated ? 1 : 0,
+          }}
+          disabled={isStaticUpdated}
         >
           {props.text}
         </Button>
@@ -1196,265 +1201,298 @@ const SystemData = ({ showContent, confirmButtonContent, confirmCallback }) => {
           </Button>
         </div>
       ) : (
-        <Container>
-          <DownloadButtonSection
-            primaryColor={primaryColor}
-            role="presentation"
-          >
-            {renderFetchAllDataButton()}
-          </DownloadButtonSection>
-          <Content>
-            {roleLevel(userInfo.role) >= 2 && (
-              <>
-                <Block>
-                  <div>
-                    <p>ข้อมูลหน่วย</p>
-                    {units.length > 0 && (
-                      <p className="detail">{units.length} รายการ</p>
-                    )}
-                  </div>
-                  <div>
-                    {units.length > 0 ? (
-                      <>{renderCheckedSign()}</>
-                    ) : (
-                      <>{renderFetchDataButton(getUnits, `units`)}</>
-                    )}
-                  </div>
-                </Block>
-                {units.length > 0 && (
-                  <UpdatedDate>
-                    {renderTableDate(installationDate.units, `datetime`)}
-                  </UpdatedDate>
-                )}
-                <Divider style={{ marginTop: `1rem`, marginBottom: `1rem` }} />
-              </>
-            )}
-            {roleLevel(userInfo.role) >= 2 && (
-              <>
-                <Block>
-                  <div>
-                    <p>ข้อมูลประเภทผู้ใช้งาน</p>
-                    {roles.length > 0 && (
-                      <p className="detail">{roles.length} รายการ</p>
-                    )}
-                  </div>
-                  <div>
-                    {roles.length > 0 ? (
-                      <>{renderCheckedSign()}</>
-                    ) : (
-                      <>{renderFetchDataButton(getRoles, `roles`)}</>
-                    )}
-                  </div>
-                </Block>
-                {roles.length > 0 && (
-                  <UpdatedDate>
-                    {renderTableDate(installationDate.roles, `datetime`)}
-                  </UpdatedDate>
-                )}
-                <Divider style={{ marginTop: `1rem`, marginBottom: `1rem` }} />
-              </>
-            )}
-            <Block>
-              <div>
-                <p>ข้อมูลชื่อประเภทกลุ่มงานและชื่อตำแหน่ง</p>
-                {positionTypes.length > 0 && positionNames.length > 0 && (
-                  <>
+        <>
+          <Collapse in={isStaticUpdated}>
+            <div
+              style={{
+                width: `100%`,
+                maxWidth: `800px`,
+                marginLeft: `auto`,
+                marginRight: `auto`,
+              }}
+            >
+              <Alert
+                variant="outlined"
+                color="success"
+                sx={{ marginBottom: `1rem` }}
+              >
+                อัปเดตข้อมูลแล้ว
+              </Alert>
+            </div>
+          </Collapse>
+          <Container>
+            <DownloadButtonSection
+              primaryColor={primaryColor}
+              role="presentation"
+            >
+              {renderFetchAllDataButton()}
+            </DownloadButtonSection>
+            <Content>
+              {roleLevel(userInfo.role) >= 2 && (
+                <>
+                  <Block>
+                    <div>
+                      <p>ข้อมูลหน่วย</p>
+                      {units.length > 0 && (
+                        <p className="detail">{units.length} รายการ</p>
+                      )}
+                    </div>
+                    <div>
+                      {units.length > 0 ? (
+                        <>{renderCheckedSign()}</>
+                      ) : (
+                        <>{renderFetchDataButton(getUnits, `units`)}</>
+                      )}
+                    </div>
+                  </Block>
+                  {units.length > 0 && (
+                    <UpdatedDate>
+                      {renderTableDate(installationDate.units, `datetime`)}
+                    </UpdatedDate>
+                  )}
+                  <Divider
+                    style={{ marginTop: `1rem`, marginBottom: `1rem` }}
+                  />
+                </>
+              )}
+              {roleLevel(userInfo.role) >= 2 && (
+                <>
+                  <Block>
+                    <div>
+                      <p>ข้อมูลประเภทผู้ใช้งาน</p>
+                      {roles.length > 0 && (
+                        <p className="detail">{roles.length} รายการ</p>
+                      )}
+                    </div>
+                    <div>
+                      {roles.length > 0 ? (
+                        <>{renderCheckedSign()}</>
+                      ) : (
+                        <>{renderFetchDataButton(getRoles, `roles`)}</>
+                      )}
+                    </div>
+                  </Block>
+                  {roles.length > 0 && (
+                    <UpdatedDate>
+                      {renderTableDate(installationDate.roles, `datetime`)}
+                    </UpdatedDate>
+                  )}
+                  <Divider
+                    style={{ marginTop: `1rem`, marginBottom: `1rem` }}
+                  />
+                </>
+              )}
+              <Block>
+                <div>
+                  <p>ข้อมูลชื่อประเภทกลุ่มงานและชื่อตำแหน่ง</p>
+                  {positionTypes.length > 0 && positionNames.length > 0 && (
+                    <>
+                      <p className="detail">
+                        ชื่อประเภทกลุ่มงาน: {positionTypes.length} รายการ
+                      </p>
+                      <p className="detail">
+                        ชื่อตำแหน่งในสายงาน: {positionNames.length} รายการ
+                      </p>
+                    </>
+                  )}
+                </div>
+                <div>
+                  {positionTypes.length > 0 && positionNames.length > 0 ? (
+                    <>{renderCheckedSign()}</>
+                  ) : (
+                    <>
+                      {renderFetchDataButton(getPositionName, `position-types`)}
+                    </>
+                  )}
+                </div>
+              </Block>
+              {positionTypes.length > 0 && positionNames.length > 0 && (
+                <UpdatedDate>
+                  {renderTableDate(installationDate.positionTypes, `datetime`)}
+                </UpdatedDate>
+              )}
+              <Divider style={{ marginTop: `1rem`, marginBottom: `1rem` }} />
+              <Block>
+                <div>
+                  <p>ข้อมูลจังหวัด อำเภอ ตำบล และรหัสไปรษณีย์</p>
+                  {locations.length > 0 && (
+                    <>
+                      <p className="detail">
+                        จังหวัด:{" "}
+                        {uniqByKeepFirst(locations, it => it.province).length}{" "}
+                        รายการ
+                      </p>
+                      <p className="detail">
+                        อำเภอ:{" "}
+                        {uniqByKeepFirst(locations, it => it.district).length}{" "}
+                        รายการ
+                      </p>
+                      <p className="detail">
+                        ตำบล:{" "}
+                        {
+                          uniqByKeepFirst(locations, it => it.subdistrict)
+                            .length
+                        }{" "}
+                        รายการ
+                      </p>
+                      <p className="detail">
+                        รหัสไปรษณีย์:{" "}
+                        {uniqByKeepFirst(locations, it => it.zipcode).length}{" "}
+                        รายการ
+                      </p>
+                    </>
+                  )}
+                </div>
+                <div>
+                  {locations.length > 0 ? (
+                    <>{renderCheckedSign()}</>
+                  ) : (
+                    <>{renderFetchDataButton(getLocations, `locations`)}</>
+                  )}
+                </div>
+              </Block>
+              {locations.length > 0 && (
+                <UpdatedDate>
+                  {renderTableDate(installationDate.locations, `datetime`)}
+                </UpdatedDate>
+              )}
+              <Divider style={{ marginTop: `1rem`, marginBottom: `1rem` }} />
+              <Block>
+                <div>
+                  <p>ข้อมูลชื่อระดับการศึกษา</p>
+                  {educationLevels.length > 0 && (
+                    <p className="detail">{educationLevels.length} รายการ</p>
+                  )}
+                </div>
+                <div>
+                  {educationLevels.length > 0 ? (
+                    <>{renderCheckedSign()}</>
+                  ) : (
+                    <>
+                      {renderFetchDataButton(
+                        getEducationLevels,
+                        `education-levels`
+                      )}
+                    </>
+                  )}
+                </div>
+              </Block>
+              {educationLevels.length > 0 && (
+                <UpdatedDate>
+                  {renderTableDate(
+                    installationDate.educationLevels,
+                    `datetime`
+                  )}
+                </UpdatedDate>
+              )}
+              <Divider style={{ marginTop: `1rem`, marginBottom: `1rem` }} />
+              <Block>
+                <div>
+                  <p>ข้อมูลชื่อวุฒิการศึกษา</p>
+                  {educationNames.length > 0 && (
+                    <p className="detail">{educationNames.length} รายการ</p>
+                  )}
+                </div>
+                <div>
+                  {educationNames.length > 0 ? (
+                    <>{renderCheckedSign()}</>
+                  ) : (
+                    <>
+                      {renderFetchDataButton(
+                        getEducationNames,
+                        `education-names`
+                      )}
+                    </>
+                  )}
+                </div>
+              </Block>
+              {educationNames.length > 0 && (
+                <UpdatedDate>
+                  {renderTableDate(installationDate.educationNames, `datetime`)}
+                </UpdatedDate>
+              )}
+              <Divider style={{ marginTop: `1rem`, marginBottom: `1rem` }} />
+              <Block>
+                <div>
+                  <p>ข้อมูลสถาบันการศึกษา</p>
+                  {educationalInstitutions.length > 0 && (
                     <p className="detail">
-                      ชื่อประเภทกลุ่มงาน: {positionTypes.length} รายการ
+                      {educationalInstitutions.length} รายการ
                     </p>
-                    <p className="detail">
-                      ชื่อตำแหน่งในสายงาน: {positionNames.length} รายการ
-                    </p>
-                  </>
-                )}
-              </div>
-              <div>
-                {positionTypes.length > 0 && positionNames.length > 0 ? (
-                  <>{renderCheckedSign()}</>
-                ) : (
-                  <>
-                    {renderFetchDataButton(getPositionName, `position-types`)}
-                  </>
-                )}
-              </div>
-            </Block>
-            {positionTypes.length > 0 && positionNames.length > 0 && (
-              <UpdatedDate>
-                {renderTableDate(installationDate.positionTypes, `datetime`)}
-              </UpdatedDate>
-            )}
-            <Divider style={{ marginTop: `1rem`, marginBottom: `1rem` }} />
-            <Block>
-              <div>
-                <p>ข้อมูลจังหวัด อำเภอ ตำบล และรหัสไปรษณีย์</p>
-                {locations.length > 0 && (
-                  <>
-                    <p className="detail">
-                      จังหวัด:{" "}
-                      {uniqByKeepFirst(locations, it => it.province).length}{" "}
-                      รายการ
-                    </p>
-                    <p className="detail">
-                      อำเภอ:{" "}
-                      {uniqByKeepFirst(locations, it => it.district).length}{" "}
-                      รายการ
-                    </p>
-                    <p className="detail">
-                      ตำบล:{" "}
-                      {uniqByKeepFirst(locations, it => it.subdistrict).length}{" "}
-                      รายการ
-                    </p>
-                    <p className="detail">
-                      รหัสไปรษณีย์:{" "}
-                      {uniqByKeepFirst(locations, it => it.zipcode).length}{" "}
-                      รายการ
-                    </p>
-                  </>
-                )}
-              </div>
-              <div>
-                {locations.length > 0 ? (
-                  <>{renderCheckedSign()}</>
-                ) : (
-                  <>{renderFetchDataButton(getLocations, `locations`)}</>
-                )}
-              </div>
-            </Block>
-            {locations.length > 0 && (
-              <UpdatedDate>
-                {renderTableDate(installationDate.locations, `datetime`)}
-              </UpdatedDate>
-            )}
-            <Divider style={{ marginTop: `1rem`, marginBottom: `1rem` }} />
-            <Block>
-              <div>
-                <p>ข้อมูลชื่อระดับการศึกษา</p>
-                {educationLevels.length > 0 && (
-                  <p className="detail">{educationLevels.length} รายการ</p>
-                )}
-              </div>
-              <div>
-                {educationLevels.length > 0 ? (
-                  <>{renderCheckedSign()}</>
-                ) : (
-                  <>
-                    {renderFetchDataButton(
-                      getEducationLevels,
-                      `education-levels`
-                    )}
-                  </>
-                )}
-              </div>
-            </Block>
-            {educationLevels.length > 0 && (
-              <UpdatedDate>
-                {renderTableDate(installationDate.educationLevels, `datetime`)}
-              </UpdatedDate>
-            )}
-            <Divider style={{ marginTop: `1rem`, marginBottom: `1rem` }} />
-            <Block>
-              <div>
-                <p>ข้อมูลชื่อวุฒิการศึกษา</p>
-                {educationNames.length > 0 && (
-                  <p className="detail">{educationNames.length} รายการ</p>
-                )}
-              </div>
-              <div>
-                {educationNames.length > 0 ? (
-                  <>{renderCheckedSign()}</>
-                ) : (
-                  <>
-                    {renderFetchDataButton(
-                      getEducationNames,
-                      `education-names`
-                    )}
-                  </>
-                )}
-              </div>
-            </Block>
-            {educationNames.length > 0 && (
-              <UpdatedDate>
-                {renderTableDate(installationDate.educationNames, `datetime`)}
-              </UpdatedDate>
-            )}
-            <Divider style={{ marginTop: `1rem`, marginBottom: `1rem` }} />
-            <Block>
-              <div>
-                <p>ข้อมูลสถาบันการศึกษา</p>
-                {educationalInstitutions.length > 0 && (
-                  <p className="detail">
-                    {educationalInstitutions.length} รายการ
-                  </p>
-                )}
-              </div>
-              <div>
-                {educationalInstitutions.length > 0 ? (
-                  <>{renderCheckedSign()}</>
-                ) : (
-                  <>
-                    {renderFetchDataButton(
-                      getEducationalInstitutions,
-                      `educational-institutions`
-                    )}
-                  </>
-                )}
-              </div>
-            </Block>
-            {educationalInstitutions.length > 0 && (
-              <UpdatedDate>
-                {renderTableDate(
-                  installationDate.educationalInstitutions,
-                  `datetime`
-                )}
-              </UpdatedDate>
-            )}
-            <Divider style={{ marginTop: `1rem`, marginBottom: `1rem` }} />
-            <Block>
-              <div>
-                <p>ข้อมูลรายชื่อประเทศ</p>
-                {countries.length > 0 && (
-                  <p className="detail">{countries.length} รายการ</p>
-                )}
-              </div>
-              <div>
-                {countries.length > 0 ? (
-                  <>{renderCheckedSign()}</>
-                ) : (
-                  <>{renderFetchDataButton(getCountries, `countries`)}</>
-                )}
-              </div>
-            </Block>
-            {countries.length > 0 && (
-              <UpdatedDate>
-                {renderTableDate(installationDate.countries, `datetime`)}
-              </UpdatedDate>
-            )}
+                  )}
+                </div>
+                <div>
+                  {educationalInstitutions.length > 0 ? (
+                    <>{renderCheckedSign()}</>
+                  ) : (
+                    <>
+                      {renderFetchDataButton(
+                        getEducationalInstitutions,
+                        `educational-institutions`
+                      )}
+                    </>
+                  )}
+                </div>
+              </Block>
+              {educationalInstitutions.length > 0 && (
+                <UpdatedDate>
+                  {renderTableDate(
+                    installationDate.educationalInstitutions,
+                    `datetime`
+                  )}
+                </UpdatedDate>
+              )}
+              <Divider style={{ marginTop: `1rem`, marginBottom: `1rem` }} />
+              <Block>
+                <div>
+                  <p>ข้อมูลรายชื่อประเทศ</p>
+                  {countries.length > 0 && (
+                    <p className="detail">{countries.length} รายการ</p>
+                  )}
+                </div>
+                <div>
+                  {countries.length > 0 ? (
+                    <>{renderCheckedSign()}</>
+                  ) : (
+                    <>{renderFetchDataButton(getCountries, `countries`)}</>
+                  )}
+                </div>
+              </Block>
+              {countries.length > 0 && (
+                <UpdatedDate>
+                  {renderTableDate(installationDate.countries, `datetime`)}
+                </UpdatedDate>
+              )}
 
-            <Divider style={{ marginTop: `1rem`, marginBottom: `1rem` }} />
-            <Block>
-              <div>
-                <p>ข้อมูลเครื่องราชอิสริยาภรณ์</p>
-                {decorations.length > 0 && (
-                  <p className="detail">{decorations.length} รายการ</p>
-                )}
-              </div>
-              <div>
-                {decorations.length > 0 ? (
-                  <>{renderCheckedSign()}</>
-                ) : (
-                  <>{renderFetchDataButton(getDecorations, `decorations`)}</>
-                )}
-              </div>
-            </Block>
-            {decorations.length > 0 && (
-              <UpdatedDate>
-                {renderTableDate(installationDate.decorations, `datetime`)}
-              </UpdatedDate>
-            )}
-          </Content>
-        </Container>
+              <Divider style={{ marginTop: `1rem`, marginBottom: `1rem` }} />
+              <Block>
+                <div>
+                  <p>ข้อมูลเครื่องราชอิสริยาภรณ์</p>
+                  {decorations.length > 0 && (
+                    <p className="detail">{decorations.length} รายการ</p>
+                  )}
+                </div>
+                <div>
+                  {decorations.length > 0 ? (
+                    <>{renderCheckedSign()}</>
+                  ) : (
+                    <>{renderFetchDataButton(getDecorations, `decorations`)}</>
+                  )}
+                </div>
+              </Block>
+              {decorations.length > 0 && (
+                <UpdatedDate>
+                  {renderTableDate(installationDate.decorations, `datetime`)}
+                </UpdatedDate>
+              )}
+            </Content>
+          </Container>
+        </>
       )}
-      <PercentDialog data={percentDialog} />
+      <PercentDialog
+        data={percentDialog}
+        onFinish={() => setIsStaticUpdated(true)}
+      />
     </>
   )
 }

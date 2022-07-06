@@ -15,6 +15,7 @@ import {
   IconButton,
   Menu,
   MenuItem,
+  Chip,
 } from "@mui/material"
 import styled from "styled-components"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
@@ -465,9 +466,16 @@ const UserManagementPage = () => {
                             {row.userPosition || `-`}
                           </TableCell>
                           <TableCell align="left" sx={{ minWidth: 100 }}>
-                            {row.role !== null
-                              ? renderUserRole(row.role.name)
-                              : `-`}
+                            <Chip
+                              label={
+                                row.role !== null
+                                  ? renderUserRole(row.role.name)
+                                  : `-`
+                              }
+                              color={
+                                roleLevel(row.role) >= 2 ? `primary` : `default`
+                              }
+                            />
                           </TableCell>
                           <TableCell align="center" sx={{ minWidth: 100 }}>
                             {row.confirmed && (

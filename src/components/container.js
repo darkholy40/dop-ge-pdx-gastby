@@ -89,7 +89,7 @@ const Container = ({ children }) => {
   )
   const muiTheme = createTheme({
     palette: {
-      type: `light`,
+      mode: `light`,
       primary: {
         main: primaryColor[500],
       },
@@ -102,6 +102,21 @@ const Container = ({ children }) => {
     },
     typography: {
       fontFamily: `var(--main-font-family)`,
+    },
+    components: {
+      MuiAlert: {
+        styleOverrides: {
+          standard: {
+            borderRadius: `5px`,
+          },
+          outlined: {
+            borderRadius: `8px`,
+          },
+          filled: {
+            borderRadius: `8px`,
+          },
+        },
+      },
     },
   })
 

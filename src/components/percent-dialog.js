@@ -19,7 +19,27 @@ const Flex = styled.div`
   padding: ${dialogContentPadding};
 `
 
-const PercentDialog = ({ data }) => {
+const PercentDialog = ({ data, onFinish }) => {
+  const [count, setCount] = React.useState(0)
+
+  React.useEffect(() => {
+    if (data.length === 0 && count === 0) {
+      // console.log(`Initialize`)
+      setCount(count + 1)
+    }
+
+    if (data.length > 0 && count === 1) {
+      // console.log(`Start`)
+      setCount(count + 1)
+    }
+
+    if (data.length === 0 && count > 1) {
+      // console.log(`Finish`)
+      setCount(0)
+      onFinish()
+    }
+  }, [data.length, count, onFinish])
+
   return (
     <Dialog fullWidth maxWidth="xs" open={data.length > 0}>
       {data.length > 0 &&
@@ -29,7 +49,7 @@ const PercentDialog = ({ data }) => {
               id={`linear_progress_bar_${item.id}`}
               key={index}
               style={{
-                transition: `opacity 0.3s`,
+                transition: `opacity 0.3s ease-out`,
                 opacity: item.percent < 100 ? 1 : 0,
               }}
             >
@@ -58,7 +78,9 @@ const PercentDialog = ({ data }) => {
                   </Box>
                   <Box sx={{ minWidth: 35 }}>
                     <Typography
-                      sx={{ transform: `skewX(-10deg)` }}
+                      sx={{
+                        transform: `skewX(-10deg)`,
+                      }}
                       variant="body2"
                       color="text.secondary"
                     >{`${item.percent.toFixed(0)}%`}</Typography>
@@ -84,10 +106,12 @@ PercentDialog.propTypes = {
       percent: PropTypes.number,
     })
   ),
+  onFinish: PropTypes.func,
 }
 
 PercentDialog.defaultProps = {
   data: [],
+  onFinish: () => {},
 }
 
 export default PercentDialog
