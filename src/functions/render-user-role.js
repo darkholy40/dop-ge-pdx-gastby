@@ -1,7 +1,7 @@
 const renderUserRole = roleName => {
   switch (roleName) {
     case `SuperAdministrator`:
-      return `SuperAdministrator`
+      return `Super Administrator`
 
     case `Administrator`:
       return `ผู้ดูแลระบบ`

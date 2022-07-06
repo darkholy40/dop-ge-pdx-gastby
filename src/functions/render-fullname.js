@@ -1,17 +1,20 @@
 const renderFullname = obj => {
-  const { rank, name, surname } = obj
   let fullname = ``
 
-  if (rank !== undefined && rank !== null && rank !== ``) {
-    fullname += `${rank} `
-  }
+  if (obj !== null) {
+    const { rank, name, surname } = obj
 
-  if (name !== undefined && name !== null && name !== ``) {
-    fullname += `${name} `
-  }
+    if (rank !== undefined && rank !== null && rank !== ``) {
+      fullname += `${rank} `
+    }
 
-  if (surname !== undefined && surname !== null && surname !== ``) {
-    fullname += `${surname}`
+    if (name !== undefined && name !== null && name !== ``) {
+      fullname += `${name} `
+    }
+
+    if (surname !== undefined && surname !== null && surname !== ``) {
+      fullname += `${surname}`
+    }
   }
 
   return fullname

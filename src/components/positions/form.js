@@ -15,7 +15,8 @@ import {
 import { client, gql } from "../../functions/apollo-client"
 
 import Warning from "../warning"
-import { Form, Flex, CheckCircleFlex } from "../../components/styles"
+import { Form, Flex, CheckCircleFlex } from "../styles"
+import WhoCreated from "../who-created"
 import renderCheckingIcon from "../../functions/render-checking-icon"
 import renderDivision from "../../functions/render-division"
 import roleLevel from "../../functions/roleLevel"
@@ -28,6 +29,16 @@ const PositionForm = ({ modification, id }) => {
   const dispatch = useDispatch()
   const [firstStrike, setFirstStrike] = useState(false)
   const [currentPosNumber, setCurrentPosNumber] = useState(``)
+  const [agents, setAgents] = useState({
+    whoCreated: {
+      id: ``,
+      date: null,
+    },
+    whoUpdated: {
+      id: ``,
+      date: null,
+    },
+  })
   const [isError, setIsError] = useState({
     status: ``,
     text: ``,
@@ -104,6 +115,17 @@ const PositionForm = ({ modification, id }) => {
           haveABudget: thisPosition.have_a_budget,
         })
         setFirstStrike(true)
+
+        setAgents({
+          whoCreated: {
+            id: thisPosition.staff_created,
+            date: new Date(thisPosition.createdAt),
+          },
+          whoUpdated: {
+            id: thisPosition.staff_updated,
+            date: new Date(thisPosition.updatedAt),
+          },
+        })
       } else {
         setIsError({
           status: `notfound`,
@@ -797,6 +819,12 @@ const PositionForm = ({ modification, id }) => {
             )}
           </Form>
 
+          {modification && (
+            <>
+              <Divider style={{ margin: `2rem auto`, width: `100%` }} />
+              <WhoCreated whoUpdated={agents.whoUpdated} />
+            </>
+          )}
           {modification && (
             <>
               <Divider style={{ marginTop: `2rem`, marginBottom: `1rem` }} />

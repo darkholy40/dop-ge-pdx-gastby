@@ -165,7 +165,9 @@ const ResponsiveDrawer = props => {
       <Toolbar sx={{ position: `relative` }}>
         <SessionTimer />
       </Toolbar>
-      {pages.authenticated.filter(elem => elem.level <= roleLevel(userInfo.role)).length > 0 && (
+      {pages.authenticated.filter(
+        elem => elem.level <= roleLevel(userInfo.role)
+      ).length > 0 && (
         <>
           <Divider />
           <List>
@@ -184,12 +186,15 @@ const ResponsiveDrawer = props => {
                     <ListItemText primary={page.desc} />
                   </ListItemButton>
                 </ListItem>
-              ) : ``
+              ) : (
+                ``
+              )
             })}
           </List>
         </>
       )}
-      {pages.report.filter(elem => elem.level <= roleLevel(userInfo.role)).length > 0 && (
+      {pages.report.filter(elem => elem.level <= roleLevel(userInfo.role))
+        .length > 0 && (
         <>
           <Divider />
           <List>
@@ -208,12 +213,16 @@ const ResponsiveDrawer = props => {
                     <ListItemText primary={page.desc} />
                   </ListItemButton>
                 </ListItem>
-              ) : ``
+              ) : (
+                ``
+              )
             })}
           </List>
         </>
       )}
-      {pages.userManagement.filter(elem => elem.level <= roleLevel(userInfo.role)).length > 0 && (
+      {pages.userManagement.filter(
+        elem => elem.level <= roleLevel(userInfo.role)
+      ).length > 0 && (
         <>
           <Divider />
           <List>
@@ -232,12 +241,15 @@ const ResponsiveDrawer = props => {
                     <ListItemText primary={page.desc} />
                   </ListItemButton>
                 </ListItem>
-              ) : ``
+              ) : (
+                ``
+              )
             })}
           </List>
         </>
       )}
-      {pages.controlPanel.filter(elem => elem.level <= roleLevel(userInfo.role)).length > 0 && (
+      {pages.controlPanel.filter(elem => elem.level <= roleLevel(userInfo.role))
+        .length > 0 && (
         <>
           <Divider />
           <List>
@@ -260,7 +272,9 @@ const ResponsiveDrawer = props => {
                     <ListItemText primary={page.desc} />
                   </ListItemButton>
                 </ListItem>
-              ) : ``
+              ) : (
+                ``
+              )
             })}
           </List>
         </>
@@ -321,7 +335,6 @@ const ResponsiveDrawer = props => {
                   {renderFullname({ rank: userInfo.rank, name: userInfo.name })}
                 </span>
               </Button>
-              {/* <SessionTimer /> */}
 
               <Menu
                 sx={{

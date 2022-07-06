@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useCallback } from "react"
 import { useSelector, useDispatch } from "react-redux"
 import styled from "styled-components"
+import { Divider } from "@mui/material"
 import jwt_decode from "jwt-decode"
 
 import { client, gql } from "../../functions/apollo-client"
@@ -113,6 +114,13 @@ const SettingsGeneral = () => {
               : `-`,
         },
         {
+          title: `ตำแหน่ง`,
+          desc: userInfo.userPosition,
+        },
+        {
+          title: ``,
+        },
+        {
           title: `ระดับผู้ใช้งาน`,
           desc: renderUserRole(userInfo.role.name),
         },
@@ -151,16 +159,23 @@ const SettingsGeneral = () => {
           />
 
           <Container>
-            {rows.map(row => (
-              <Flex key={row.title}>
-                <Left>
-                  <p>{row.title}</p>
-                </Left>
-                <Right>
-                  <p>{row.desc}</p>
-                </Right>
-              </Flex>
-            ))}
+            {rows.map((row, index) => {
+              return row.title !== `` ? (
+                <Flex key={`${row.title}_${row.index}`}>
+                  <Left>
+                    <p>{row.title}</p>
+                  </Left>
+                  <Right>
+                    <p>{row.desc}</p>
+                  </Right>
+                </Flex>
+              ) : (
+                <Divider
+                  key={`${row.title}_${row.index}`}
+                  style={{ margin: `1rem auto`, width: 480, maxWidth: `100%` }}
+                />
+              )
+            })}
           </Container>
         </>
       ) : (
