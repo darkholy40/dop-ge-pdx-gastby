@@ -9,7 +9,7 @@ import Breadcrumbs from "../../components/breadcrumbs"
 import PersonForm from "../../components/people/form"
 import PageNotFound from "../../components/page-not-found"
 import renderDivision from "../../functions/render-division"
-import roleLevel from "../../functions/roleLevel"
+import roleLevel from "../../functions/role-level"
 
 const AddPersonPage = () => {
   const { token, userInfo } = useSelector(({ mainReducer }) => mainReducer)

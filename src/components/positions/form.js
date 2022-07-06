@@ -19,7 +19,7 @@ import { Form, Flex, CheckCircleFlex } from "../styles"
 import WhoCreated from "../who-created"
 import renderCheckingIcon from "../../functions/render-checking-icon"
 import renderDivision from "../../functions/render-division"
-import roleLevel from "../../functions/roleLevel"
+import roleLevel from "../../functions/role-level"
 
 const PositionForm = ({ modification, id }) => {
   const { token, userInfo } = useSelector(({ mainReducer }) => mainReducer)
@@ -819,13 +819,13 @@ const PositionForm = ({ modification, id }) => {
             )}
           </Form>
 
-          {modification && (
+          {modification && roleLevel(userInfo.role) >= 2 && (
             <>
               <Divider style={{ margin: `2rem auto`, width: `100%` }} />
               <WhoCreated whoUpdated={agents.whoUpdated} />
             </>
           )}
-          {modification && (
+          {modification && roleLevel(userInfo.role) >= 2 && (
             <>
               <Divider style={{ marginTop: `2rem`, marginBottom: `1rem` }} />
               <Flex

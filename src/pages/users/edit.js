@@ -8,7 +8,7 @@ import Seo from "../../components/seo"
 import Breadcrumbs from "../../components/breadcrumbs"
 import PageNotFound from "../../components/page-not-found"
 import UserForm from "../../components/users/form"
-import roleLevel from "../../functions/roleLevel"
+import roleLevel from "../../functions/role-level"
 
 const EditUserPage = ({ location }) => {
   const { token, userInfo } = useSelector(({ mainReducer }) => mainReducer)

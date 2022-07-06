@@ -19,7 +19,7 @@ import Breadcrumbs from "../../components/breadcrumbs"
 import PageNotFound from "../../components/page-not-found"
 import { Form, SubmitButtonFlex, Flex } from "../../components/styles"
 import renderDivision from "../../functions/render-division"
-import roleLevel from "../../functions/roleLevel"
+import roleLevel from "../../functions/role-level"
 
 const Oparator = styled.div`
   display: flex;

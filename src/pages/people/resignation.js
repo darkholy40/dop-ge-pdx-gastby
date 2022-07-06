@@ -17,7 +17,7 @@ import Warning from "../../components/warning"
 import { Form, Flex, CheckCircleFlex } from "../../components/styles"
 import renderDivision from "../../functions/render-division"
 import renderCheckingIcon from "../../functions/render-checking-icon"
-import roleLevel from "../../functions/roleLevel"
+import roleLevel from "../../functions/role-level"
 
 const Line = styled.div`
   margin-bottom: 1rem;

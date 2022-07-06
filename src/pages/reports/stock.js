@@ -26,7 +26,7 @@ import {
   updateAnObjectInArray,
   removeObjectInArray,
 } from "../../functions/object-in-array"
-import roleLevel from "../../functions/roleLevel"
+import roleLevel from "../../functions/role-level"
 
 const Container = styled.div`
   width: 100%;

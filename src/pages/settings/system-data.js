@@ -16,7 +16,7 @@ import { Form } from "../../components/styles"
 import SystemData from "../../components/system-data"
 import ConfirmationDialog from "../../components/confirmation-dialog"
 
-import roleLevel from "../../functions/roleLevel"
+import roleLevel from "../../functions/role-level"
 
 const ButtonBlock = styled.div`
   display: inline-flex;

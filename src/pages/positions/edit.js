@@ -9,7 +9,7 @@ import Breadcrumbs from "../../components/breadcrumbs"
 import PageNotFound from "../../components/page-not-found"
 import PositionForm from "../../components/positions/form"
 import renderDivision from "../../functions/render-division"
-import roleLevel from "../../functions/roleLevel"
+import roleLevel from "../../functions/role-level"
 
 const EditPositionsPage = ({ location }) => {
   const { token, userInfo } = useSelector(({ mainReducer }) => mainReducer)

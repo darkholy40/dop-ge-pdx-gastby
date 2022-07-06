@@ -40,7 +40,7 @@ import renderTableDate from "../../functions/render-table-date"
 import renderUserRole from "../../functions/render-user-role"
 import renderFullname from "../../functions/render-fullname"
 import renderDivision from "../../functions/render-division"
-import roleLevel from "../../functions/roleLevel"
+import roleLevel from "../../functions/role-level"
 
 const Oparator = styled.div`
   display: flex;

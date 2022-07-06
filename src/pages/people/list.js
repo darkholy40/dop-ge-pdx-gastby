@@ -36,7 +36,7 @@ import PersonInfoDialog from "../../components/people/person-info-dialog"
 import PageNotFound from "../../components/page-not-found"
 import Warning from "../../components/warning"
 import renderDivision from "../../functions/render-division"
-import roleLevel from "../../functions/roleLevel"
+import roleLevel from "../../functions/role-level"
 
 const PeopleListPage = () => {
   const { token, userInfo, primaryColor } = useSelector(

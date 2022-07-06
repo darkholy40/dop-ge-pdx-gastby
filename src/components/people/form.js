@@ -27,6 +27,7 @@ import {
   CheckCircleFlex,
   TextFieldWall,
 } from "../../components/styles"
+import WhoCreated from "../who-created"
 import {
   PhoneNumber,
   Currency,
@@ -45,7 +46,7 @@ import {
   updateAnObjectInArray,
   removeObjectInArray,
 } from "../../functions/object-in-array"
-import roleLevel from "../../functions/roleLevel"
+import roleLevel from "../../functions/role-level"
 
 const Form = styled(StyledForm)`
   max-width: 100%;
@@ -91,6 +92,16 @@ const PersonForm = ({ modification, id }) => {
   const dispatch = useDispatch()
   const [firstStrike, setFirstStrike] = useState(false)
   const [positions, setPositions] = useState([])
+  const [agents, setAgents] = useState({
+    whoCreated: {
+      id: ``,
+      date: null,
+    },
+    whoUpdated: {
+      id: ``,
+      date: null,
+    },
+  })
   const [isError, setIsError] = useState({
     status: ``,
     text: ``,
@@ -440,6 +451,8 @@ const PersonForm = ({ modification, id }) => {
               skills
               staff_created
               staff_updated
+              createdAt
+              updatedAt
               type
               location {
                 _id
@@ -482,6 +495,17 @@ const PersonForm = ({ modification, id }) => {
 
       if (res.data.person !== null) {
         returnData.person = res.data.person
+
+        setAgents({
+          whoCreated: {
+            id: res.data.person.staff_created,
+            date: new Date(res.data.person.createdAt),
+          },
+          whoUpdated: {
+            id: res.data.person.staff_updated,
+            date: new Date(res.data.person.updatedAt),
+          },
+        })
       } else {
         setIsError({
           status: `notfound`,
@@ -1036,8 +1060,7 @@ const PersonForm = ({ modification, id }) => {
                 ScoreCompetence: "${scoreCompetence}",
                 StatusDisability: "${statusDisability}",
                 skills: "${skills}",
-                staff_created: "${userInfo._id}",
-                staff_updated: "",
+                staff_updated: "${userInfo._id}",
                 type: "${jobType}",
                 location: ${renderValueForRelationField(
                   locationSelect.subdistrict
@@ -2791,7 +2814,7 @@ const PersonForm = ({ modification, id }) => {
               </Grid>
             </Grid>
 
-            <Grid container spacing={2} sx={{ marginBottom: `1rem` }}>
+            <Grid container spacing={2}>
               <Grid item md={6} sm={12} xs={12} />
               <Grid item md={3} sm={12} xs={12}>
                 {!modification ? (
@@ -3000,9 +3023,18 @@ const PersonForm = ({ modification, id }) => {
           </Form>
           <PercentDialog data={percentDialog} />
 
-          {modification && (
+          {modification && roleLevel(userInfo.role) >= 2 && (
             <>
-              <Divider style={{ marginTop: `1rem`, marginBottom: `1rem` }} />
+              <Divider style={{ margin: `2rem auto`, width: `100%` }} />
+              <WhoCreated
+                whoCreated={agents.whoCreated}
+                whoUpdated={agents.whoUpdated}
+              />
+            </>
+          )}
+          {modification && roleLevel(userInfo.role) >= 2 && (
+            <>
+              <Divider style={{ marginTop: `2rem`, marginBottom: `1rem` }} />
               <Flex
                 style={{
                   justifyContent: `end`,

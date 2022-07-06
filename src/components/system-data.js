@@ -16,8 +16,7 @@ import {
   removeObjectInArray,
 } from "../functions/object-in-array"
 import renderTableDate from "../functions/render-table-date"
-
-import roleLevel from "../functions/roleLevel"
+import roleLevel from "../functions/role-level"
 
 const Container = styled.div`
   box-shadow: rgb(0 0 0 / 24%) 0px 1px 2px;

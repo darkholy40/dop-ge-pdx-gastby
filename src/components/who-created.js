@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react"
 import PropTypes from "prop-types"
 import { useSelector } from "react-redux"
 import styled from "styled-components"
+import { Divider } from "@mui/material"
 
 import { client, gql } from "../functions/apollo-client"
 
@@ -124,8 +125,10 @@ const WhoCreated = ({ whoCreated, whoUpdated }) => {
         >
           {whoCreated !== undefined && (
             <Line>
-              <Label>ผู้เพิ่มข้อมูล</Label>
-              <span>{renderFullname(userWhoCreated.data) || `-`}</span>
+              <Label>เจ้าหน้าที่ผู้เพิ่มข้อมูล</Label>
+              <span>
+                {renderFullname(userWhoCreated.data) || `ผู้ดูแลระบบ`}
+              </span>
               <span
                 style={{
                   color: `rgba(0, 0, 0, 0.56)`,
@@ -137,10 +140,15 @@ const WhoCreated = ({ whoCreated, whoUpdated }) => {
               </span>
             </Line>
           )}
+          {whoCreated !== undefined && whoUpdated !== undefined && (
+            <Divider sx={{ width: `100%` }} />
+          )}
           {whoUpdated !== undefined && (
             <Line>
-              <Label>ผู้แก้ไขข้อมูลล่าสุด</Label>
-              <span>{renderFullname(userWhoUpdated.data) || `-`}</span>
+              <Label>เจ้าหน้าที่ผู้แก้ไขข้อมูลล่าสุด</Label>
+              <span>
+                {renderFullname(userWhoUpdated.data) || `ผู้ดูแลระบบ`}
+              </span>
               <span
                 style={{
                   color: `rgba(0, 0, 0, 0.56)`,

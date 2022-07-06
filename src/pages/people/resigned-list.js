@@ -25,7 +25,7 @@ import PageNotFound from "../../components/page-not-found"
 import Warning from "../../components/warning"
 import renderDivision from "../../functions/render-division"
 import renderFullname from "../../functions/render-fullname"
-import roleLevel from "../../functions/roleLevel"
+import roleLevel from "../../functions/role-level"
 
 const ResignedPeopleListPage = () => {
   const { token, userInfo, primaryColor } = useSelector(

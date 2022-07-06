@@ -33,6 +33,7 @@ import renderCheckingIcon from "../../functions/render-checking-icon"
 import renderDivision from "../../functions/render-division"
 import renderUserRole from "../../functions/render-user-role"
 import renderValueForRelationField from "../../functions/render-value-for-relation-field"
+import roleLevel from "../../functions/role-level"
 import ranks from "../../static/ranks"
 
 const textfieldProps = {
@@ -945,7 +946,7 @@ const UserForm = ({ modification, id }) => {
             </Grid>
           </Form>
 
-          {modification && (
+          {modification && roleLevel(userInfo.role) >= 2 && (
             <>
               <Divider style={{ margin: `2rem auto`, width: `100%` }} />
               <WhoCreated

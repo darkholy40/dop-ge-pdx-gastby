@@ -25,7 +25,7 @@ import {
 } from "../../components/styles"
 import renderDivision from "../../functions/render-division"
 import checkPid from "../../functions/check-pid"
-import roleLevel from "../../functions/roleLevel"
+import roleLevel from "../../functions/role-level"
 
 const Oparator = styled.div`
   display: flex;

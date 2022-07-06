@@ -37,7 +37,7 @@ import { client, gql } from "../functions/apollo-client"
 
 import SessionTimer from "./session-timer"
 import renderFullname from "../functions/render-fullname"
-import roleLevel from "../functions/roleLevel"
+import roleLevel from "../functions/role-level"
 
 const drawerWidth = 240
 

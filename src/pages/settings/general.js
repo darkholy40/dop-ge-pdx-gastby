@@ -13,7 +13,7 @@ import PageNotFound from "../../components/page-not-found"
 import renderFullname from "../../functions/render-fullname"
 import renderDivision from "../../functions/render-division"
 import renderUserRole from "../../functions/render-user-role"
-import roleLevel from "../../functions/roleLevel"
+import roleLevel from "../../functions/role-level"
 
 const Container = styled.div`
   box-shadow: rgb(0 0 0 / 24%) 0px 1px 2px;

@@ -23,12 +23,13 @@ import {
 
 import { client, gql } from "../../functions/apollo-client"
 
+import WhoCreated from "../who-created"
 import renderDivision from "../../functions/render-division"
 import renderTableDate from "../../functions/render-table-date"
 import renderAgeFromDifferentDateRange from "../../functions/render-age-from-different-date-range"
 import renderFullname from "../../functions/render-fullname"
 import renderNumberAsText from "../../functions/render-number-as-text"
-import roleLevel from "../../functions/roleLevel"
+import roleLevel from "../../functions/role-level"
 
 const Content = styled.div`
   display: flex;
@@ -61,6 +62,16 @@ const PersonInfoDialog = ({ personId, open, title, callback }) => {
   const [progressStatus, setProgressStatus] = useState({
     status: ``,
     text: ``,
+  })
+  const [agents, setAgents] = useState({
+    whoCreated: {
+      id: ``,
+      date: null,
+    },
+    whoUpdated: {
+      id: ``,
+      date: null,
+    },
   })
 
   const savePageView = useCallback(() => {
@@ -148,6 +159,8 @@ const PersonInfoDialog = ({ personId, open, title, callback }) => {
               skills
               staff_created
               staff_updated
+              createdAt
+              updatedAt
               type
               location {
                 _id
@@ -190,6 +203,17 @@ const PersonInfoDialog = ({ personId, open, title, callback }) => {
 
       if (res.data.person !== null) {
         returnData.person = res.data.person
+
+        setAgents({
+          whoCreated: {
+            id: res.data.person.staff_created,
+            date: new Date(res.data.person.createdAt),
+          },
+          whoUpdated: {
+            id: res.data.person.staff_updated,
+            date: new Date(res.data.person.updatedAt),
+          },
+        })
       } else {
         setProgressStatus({
           type: `not-found`,
@@ -655,6 +679,15 @@ const PersonInfoDialog = ({ personId, open, title, callback }) => {
                     </Line>
                   </Grid>
                 </Grid>
+                {roleLevel(userInfo.role) >= 2 && (
+                  <>
+                    <Divider style={{ margin: `2rem auto`, width: `100%` }} />
+                    <WhoCreated
+                      whoCreated={agents.whoCreated}
+                      whoUpdated={agents.whoUpdated}
+                    />
+                  </>
+                )}
               </>
             )}
             {progressStatus.status === `loading` && (

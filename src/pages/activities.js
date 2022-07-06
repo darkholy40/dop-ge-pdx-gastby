@@ -31,7 +31,7 @@ import PageNotFound from "../components/page-not-found"
 import Warning from "../components/warning"
 import renderTableDate from "../functions/render-table-date"
 import renderFullname from "../functions/render-fullname"
-import roleLevel from "../functions/roleLevel"
+import roleLevel from "../functions/role-level"
 
 const Oparator = styled.div`
   display: flex;
