@@ -14,6 +14,7 @@ import {
   Tooltip,
   Collapse,
 } from "@mui/material"
+import { grey } from "@mui/material/colors"
 import styled from "styled-components"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import {
@@ -29,7 +30,6 @@ import WhoCreated from "../who-created"
 import renderDivision from "../../functions/render-division"
 import roleLevel from "../../functions/role-level"
 import renderUserRole from "../../functions/render-user-role"
-import { grey } from "@mui/material/colors"
 
 const Content = styled.div`
   display: flex;

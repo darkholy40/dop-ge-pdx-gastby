@@ -58,7 +58,7 @@ const PeopleListPage = () => {
     page: searchPersonFilter.currentPage,
     rowsPerPage: 10,
   })
-  const [personViewOpen, setPersonViewOpen] = useState(false)
+  const [personDetailOpen, setPersonDetailOpen] = useState(false)
 
   const savePageView = useCallback(() => {
     // Prevent saving a log when switch user to super admin
@@ -412,7 +412,7 @@ const PeopleListPage = () => {
                             <Link
                               onClick={() => {
                                 setCurrentRow(row)
-                                setPersonViewOpen(true)
+                                setPersonDetailOpen(true)
                               }}
                             >
                               {`${row.Prename} ${row.Name} ${row.Surname}`}
@@ -507,7 +507,7 @@ const PeopleListPage = () => {
                   <MenuItem
                     onClick={() => {
                       setAnchorEl(null)
-                      setPersonViewOpen(true)
+                      setPersonDetailOpen(true)
                     }}
                     disableRipple
                   >
@@ -546,9 +546,9 @@ const PeopleListPage = () => {
                 </Menu>
 
                 <PersonInfoDialog
-                  open={personViewOpen}
+                  open={personDetailOpen}
                   callback={() => {
-                    setPersonViewOpen(false)
+                    setPersonDetailOpen(false)
                     setCurrentRow(null)
                   }}
                   personId={currentRow !== null ? currentRow._id : ``}

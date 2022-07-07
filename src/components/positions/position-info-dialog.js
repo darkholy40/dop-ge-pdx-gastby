@@ -14,6 +14,7 @@ import {
   Tooltip,
   Collapse,
 } from "@mui/material"
+import { grey } from "@mui/material/colors"
 import styled from "styled-components"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import {
@@ -28,7 +29,6 @@ import { client, gql } from "../../functions/apollo-client"
 import WhoCreated from "../who-created"
 import renderDivision from "../../functions/render-division"
 import roleLevel from "../../functions/role-level"
-import { grey } from "@mui/material/colors"
 
 const Content = styled.div`
   display: flex;
@@ -276,7 +276,7 @@ const PositionInfoDialog = ({
                     <Grid item sm={4} xs={12}>
                       <Line>
                         <Label>มีงบประมาณ</Label>
-                        <span>{renderCheckIcon(data.isSouth)}</span>
+                        <span>{renderCheckIcon(data.have_a_budget)}</span>
                       </Line>
                     </Grid>
                     <Grid item sm={4} xs={12}>
@@ -288,7 +288,7 @@ const PositionInfoDialog = ({
                     <Grid item sm={4} xs={12}>
                       <Line>
                         <Label>อัตรากำลังจังหวัดชายแดนภาคใต้</Label>
-                        <span>{renderCheckIcon(data.have_a_budget)}</span>
+                        <span>{renderCheckIcon(data.isSouth)}</span>
                       </Line>
                     </Grid>
                   </Grid>

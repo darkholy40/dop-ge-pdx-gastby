@@ -30,6 +30,8 @@ import { client, gql } from "../../functions/apollo-client"
 import Layout from "../../components/layout"
 import Seo from "../../components/seo"
 import Breadcrumbs from "../../components/breadcrumbs"
+import { Link } from "../../components/styles"
+import PositionInfoDialog from "../../components/positions/position-info-dialog"
 import PageNotFound from "../../components/page-not-found"
 import Warning from "../../components/warning"
 import renderDivision from "../../functions/render-division"
@@ -55,6 +57,7 @@ const PositionsListPage = () => {
     page: searchPositionFilter.currentPage,
     rowsPerPage: 10,
   })
+  const [positionDetailOpen, setPositionDetailOpen] = useState(false)
 
   const savePageView = useCallback(() => {
     // Prevent saving a log when switch user to super admin
@@ -150,6 +153,7 @@ const PositionsListPage = () => {
                 }
                 isOpen
                 isSouth
+                have_a_budget
                 staff_created
                 staff_updated
                 published_at
@@ -214,6 +218,7 @@ const PositionsListPage = () => {
               },
               isOpen: thisPos.isOpen,
               isSouth: thisPos.isSouth,
+              have_a_budget: thisPos.have_a_budget,
               staff_created: thisPos.staff_created,
               staff_updated: thisPos.staff_updated,
               published_at: thisPos.published_at,
@@ -376,13 +381,13 @@ const PositionsListPage = () => {
                           align="center"
                           sx={{ backgroundColor: primaryColor[200] }}
                         >
-                          เปิดอัตรา
+                          มีงบประมาณ
                         </TableCell>
                         <TableCell
                           align="center"
                           sx={{ backgroundColor: primaryColor[200] }}
                         >
-                          อัตรากำลังจังหวัดชายแดนภาคใต้
+                          เปิดอัตรา
                         </TableCell>
                         <TableCell
                           align="center"
@@ -407,7 +412,14 @@ const PositionsListPage = () => {
                             {row.orderNumber}
                           </TableCell>
                           <TableCell align="left">
-                            {row.position.number}
+                            <Link
+                              onClick={() => {
+                                setCurrentRow(row)
+                                setPositionDetailOpen(true)
+                              }}
+                            >
+                              {row.position.number}
+                            </Link>
                           </TableCell>
                           <TableCell align="left" sx={{ minWidth: 100 }}>
                             {row.position.name}
@@ -426,7 +438,7 @@ const PositionsListPage = () => {
                             )}
                           </TableCell>
                           <TableCell align="center">
-                            {row.isOpen && (
+                            {row.have_a_budget && (
                               <FontAwesomeIcon
                                 icon={faCheckCircle}
                                 style={{
@@ -437,7 +449,7 @@ const PositionsListPage = () => {
                             )}
                           </TableCell>
                           <TableCell align="center">
-                            {row.isSouth && (
+                            {row.isOpen && (
                               <FontAwesomeIcon
                                 icon={faCheckCircle}
                                 style={{
@@ -535,6 +547,15 @@ const PositionsListPage = () => {
                     แก้ไขคลังตำแหน่ง
                   </MenuItem>
                 </Menu>
+
+                <PositionInfoDialog
+                  open={positionDetailOpen}
+                  callback={() => {
+                    setPositionDetailOpen(false)
+                    setCurrentRow(null)
+                  }}
+                  positionId={currentRow !== null ? currentRow._id : ``}
+                />
               </>
             )
           ) : (

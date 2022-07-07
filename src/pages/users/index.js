@@ -35,6 +35,8 @@ import { client, gql } from "../../functions/apollo-client"
 import Layout from "../../components/layout"
 import Seo from "../../components/seo"
 import Breadcrumbs from "../../components/breadcrumbs"
+import { Link } from "../../components/styles"
+import UserInfoDialog from "../../components/users/user-info-dialog"
 import PageNotFound from "../../components/page-not-found"
 import Warning from "../../components/warning"
 import renderTableDate from "../../functions/render-table-date"
@@ -68,6 +70,7 @@ const UserManagementPage = () => {
   const [oparatorAnchorEl, setOparatorAnchorEl] = useState(null)
   const [optionAnchorEl, setOptionAnchorEl] = useState(null)
   const [currentRow, setCurrentRow] = useState(null)
+  const [userDetailOpen, setUserDetailOpen] = useState(false)
 
   const savePageView = useCallback(() => {
     if (token !== `` && userInfo._id !== `` && roleLevel(userInfo.role) < 3) {
@@ -455,7 +458,16 @@ const UserManagementPage = () => {
                           <TableCell component="th" scope="row" align="center">
                             {row.orderNumber}
                           </TableCell>
-                          <TableCell align="left">{row.username}</TableCell>
+                          <TableCell align="left">
+                            <Link
+                              onClick={() => {
+                                setCurrentRow(row)
+                                setUserDetailOpen(true)
+                              }}
+                            >
+                              {row.username}
+                            </Link>
+                          </TableCell>
                           <TableCell align="left" sx={{ minWidth: 100 }}>
                             {renderFullname(row)}
                           </TableCell>
@@ -621,6 +633,15 @@ const UserManagementPage = () => {
                     แก้ไขข้อมูลผู้ใช้งาน
                   </MenuItem>
                 </Menu>
+
+                <UserInfoDialog
+                  open={userDetailOpen}
+                  callback={() => {
+                    setUserDetailOpen(false)
+                    setCurrentRow(null)
+                  }}
+                  userId={currentRow !== null ? currentRow._id : ``}
+                />
               </>
             )
           ) : (

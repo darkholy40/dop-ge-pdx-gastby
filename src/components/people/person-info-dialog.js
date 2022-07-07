@@ -317,7 +317,12 @@ const PersonInfoDialog = ({ personId, open, title, callback, viewOnly }) => {
       >
         <DialogTitle>{title}</DialogTitle>
         <DialogContent dividers sx={{ padding: `24px` }}>
-          <Collapse in={data !== null && progressStatus.status === ``}>
+          <Collapse
+            in={data !== null && progressStatus.status === ``}
+            easing={{
+              enter: `ease-in`,
+            }}
+          >
             <Content>
               {data !== null && progressStatus.status === `` && (
                 <>
