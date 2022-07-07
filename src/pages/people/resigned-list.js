@@ -55,7 +55,7 @@ const ResignedPeopleListPage = () => {
             createLog(input: {
               data: {
                 action: "view",
-                description: "people -> resigned-list",
+                description: "people->resigned-list",
                 users_permissions_user: "${userInfo._id}",
               }
             }) {

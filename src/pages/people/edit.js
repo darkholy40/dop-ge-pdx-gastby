@@ -27,7 +27,7 @@ const EditPersonPage = ({ location }) => {
             createLog(input: {
               data: {
                 action: "view",
-                description: "people -> edit -> ${id}",
+                description: "people->edit => ${id}",
                 users_permissions_user: "${userInfo._id}",
               }
             }) {

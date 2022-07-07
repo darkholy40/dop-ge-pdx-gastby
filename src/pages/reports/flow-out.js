@@ -55,7 +55,7 @@ const FlowOutPage = () => {
             createLog(input: {
               data: {
                 action: "view",
-                description: "reports -> flow-out",
+                description: "reports->flow-out",
                 users_permissions_user: "${userInfo._id}",
               }
             }) {
@@ -397,7 +397,7 @@ const FlowOutPage = () => {
                         createLog(input: {
                           data: {
                             action: "action",
-                            description: "download -> flowout -> ${
+                            description: "download->flowout => ${
                               input.unit !== null
                                 ? renderDivision(input.unit)
                                 : `ทั้งหมด`

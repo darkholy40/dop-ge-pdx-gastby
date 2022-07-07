@@ -25,7 +25,7 @@ const EditUserPage = ({ location }) => {
             createLog(input: {
               data: {
                 action: "view",
-                description: "users -> edit -> ${id}",
+                description: "users->edit => ${id}",
                 users_permissions_user: "${userInfo._id}",
               }
             }) {

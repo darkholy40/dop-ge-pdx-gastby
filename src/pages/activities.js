@@ -19,6 +19,7 @@ import {
   faEye,
   faPlay,
   faRedo,
+  faChevronRight,
 } from "@fortawesome/free-solid-svg-icons"
 import { green, grey, blue, red } from "@mui/material/colors"
 
@@ -27,6 +28,10 @@ import { client, gql } from "../functions/apollo-client"
 import Layout from "../components/layout"
 import Seo from "../components/seo"
 import Breadcrumbs from "../components/breadcrumbs"
+import { Link } from "../components/styles"
+import PersonInfoDialog from "../components/people/person-info-dialog"
+import PositionInfoDialog from "../components/positions/position-info-dialog"
+import UserInfoDialog from "../components/users/user-info-dialog"
 import PageNotFound from "../components/page-not-found"
 import Warning from "../components/warning"
 import renderTableDate from "../functions/render-table-date"
@@ -54,6 +59,11 @@ const ActivitiesPage = () => {
     totalRows: 0,
     page: 0,
     rowsPerPage: 10,
+  })
+  const [detialModal, setDetialModal] = useState({
+    open: false,
+    type: ``,
+    id: ``,
   })
 
   const savePageView = useCallback(() => {
@@ -184,6 +194,12 @@ const ActivitiesPage = () => {
   }, [token, dispatch, tableOption.page, tableOption.rowsPerPage])
 
   const renderAction = (action, description) => {
+    let returnDesc = description
+    let link = false
+    let type = ``
+    const title = description.split(` => `)[0]
+    const id = description.split(` => `)[1]
+
     switch (action) {
       case `auth`:
         switch (description) {
@@ -222,24 +238,188 @@ const ActivitiesPage = () => {
         }
 
       case `view`:
+        switch (title) {
+          case `users->add`:
+            returnDesc = `users/add`
+            break
+
+          case `users->edit`:
+            returnDesc = `users/edit`
+            link = true
+            type = `users`
+            break
+
+          case `people->add`:
+            returnDesc = `people/add`
+            break
+
+          case `people->view`:
+            returnDesc = `people/view`
+            link = true
+            type = `people`
+            break
+
+          case `people->edit`:
+            returnDesc = `people/edit`
+            link = true
+            type = `people`
+            break
+
+          case `people->list`:
+            returnDesc = `people/list`
+            break
+
+          case `people->resigned-list`:
+            returnDesc = `people/resigned-list`
+            break
+
+          case `people->resignation`:
+            returnDesc = `people/resignation`
+            link = true
+            type = `people`
+            break
+
+          case `positions->add`:
+            returnDesc = `positions/add`
+            break
+
+          case `positions->edit`:
+            returnDesc = `positions/edit`
+            link = true
+            type = `positions`
+            break
+
+          case `positions->list`:
+            returnDesc = `positions/list`
+            break
+
+          default:
+            break
+        }
+
         return (
           <>
             <FontAwesomeIcon
               icon={faEye}
               style={{ color: grey[900], marginRight: 8 }}
             />
-            <span>{description}</span>
+            <span>{returnDesc}</span>
+
+            {id !== undefined && (
+              <>
+                <FontAwesomeIcon
+                  icon={faChevronRight}
+                  style={{ marginLeft: 8, marginRight: 8 }}
+                />
+                {link ? (
+                  <Link
+                    onClick={() => {
+                      setDetialModal({
+                        open: true,
+                        type: type,
+                        id: id,
+                      })
+                    }}
+                  >
+                    {id}
+                  </Link>
+                ) : (
+                  <span>{id}</span>
+                )}
+              </>
+            )}
           </>
         )
 
       case `action`:
+        switch (title) {
+          case `users->create`:
+            returnDesc = `เพิ่มข้อมูลผู้ใช้งาน`
+            link = true
+            type = `users`
+            break
+
+          case `users->save`:
+            returnDesc = `แก้ไขข้อมูลผู้ใช้งาน`
+            link = true
+            type = `users`
+            break
+
+          case `people->create`:
+            returnDesc = `เพิ่มข้อมูลกำลังพล`
+            link = true
+            type = `people`
+            break
+
+          case `people->save`:
+            returnDesc = `แก้ไขข้อมูลกำลังพล`
+            link = true
+            type = `people`
+            break
+
+          case `positions->create`:
+            returnDesc = `เพิ่มข้อมูลคลังตำแหน่ง`
+            link = true
+            type = `positions`
+            break
+
+          case `positions->save`:
+            returnDesc = `แก้ไขข้อมูลคลังตำแหน่ง`
+            link = true
+            type = `positions`
+            break
+
+          case `download->flowout`:
+            returnDesc = `ออกรายงานรายชื่อพนักงานราชการและตำแหน่งว่าง (Stock)`
+            break
+
+          case `download->stock`:
+            returnDesc = `ออกรายงานรายชื่อพนักงานราชการที่ออกในปีงบประมาณที่ผ่านมา (Flow-Out)`
+            break
+
+          case `download->static`:
+            returnDesc = `ดาวน์โหลดข้อมูลระบบ`
+            break
+
+          case `update->static`:
+            returnDesc = `อัปเดตข้อมูลระบบ`
+            break
+
+          default:
+            break
+        }
+
         return (
           <>
             <FontAwesomeIcon
               icon={faPlay}
               style={{ color: blue[700], marginRight: 8 }}
             />
-            <span>{description}</span>
+            <span>{returnDesc}</span>
+
+            {id !== undefined && (
+              <>
+                <FontAwesomeIcon
+                  icon={faChevronRight}
+                  style={{ marginLeft: 8, marginRight: 8 }}
+                />
+                {link ? (
+                  <Link
+                    onClick={() => {
+                      setDetialModal({
+                        open: true,
+                        type: type,
+                        id: id,
+                      })
+                    }}
+                  >
+                    {id}
+                  </Link>
+                ) : (
+                  <span>{id}</span>
+                )}
+              </>
+            )}
           </>
         )
 
@@ -409,6 +589,43 @@ const ActivitiesPage = () => {
                       rowsPerPage: parseInt(event.target.value, 10),
                     }))
                   }}
+                />
+
+                <PersonInfoDialog
+                  open={detialModal.open && detialModal.type === `people`}
+                  callback={() => {
+                    setDetialModal(prev => ({
+                      ...prev,
+                      open: false,
+                      id: ``,
+                    }))
+                  }}
+                  personId={detialModal.id}
+                  viewOnly
+                />
+                <PositionInfoDialog
+                  open={detialModal.open && detialModal.type === `positions`}
+                  callback={() => {
+                    setDetialModal(prev => ({
+                      ...prev,
+                      open: false,
+                      id: ``,
+                    }))
+                  }}
+                  positionId={detialModal.id}
+                  viewOnly
+                />
+                <UserInfoDialog
+                  open={detialModal.open && detialModal.type === `users`}
+                  callback={() => {
+                    setDetialModal(prev => ({
+                      ...prev,
+                      open: false,
+                      id: ``,
+                    }))
+                  }}
+                  userId={detialModal.id}
+                  viewOnly
                 />
               </>
             )

@@ -285,7 +285,7 @@ const PositionForm = ({ modification, id }) => {
               createLog(input: {
                 data: {
                   action: "action",
-                  description: "positions -> create -> ${createdPositionId}",
+                  description: "positions->create => ${createdPositionId}",
                   users_permissions_user: "${userInfo._id}",
                 }
               }) {
@@ -458,7 +458,7 @@ const PositionForm = ({ modification, id }) => {
               createLog(input: {
                 data: {
                   action: "action",
-                  description: "positions -> save -> ${id}",
+                  description: "positions->save => ${id}",
                   users_permissions_user: "${userInfo._id}",
                 }
               }) {

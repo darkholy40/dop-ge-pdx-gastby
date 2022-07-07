@@ -24,7 +24,7 @@ const AddPositionsPage = () => {
             createLog(input: {
               data: {
                 action: "view",
-                description: "positions -> add",
+                description: "positions->add",
                 users_permissions_user: "${userInfo._id}",
               }
             }) {

@@ -65,7 +65,7 @@ const PositionsListPage = () => {
             createLog(input: {
               data: {
                 action: "view",
-                description: "positions -> list",
+                description: "positions->list",
                 users_permissions_user: "${userInfo._id}",
               }
             }) {
@@ -358,13 +358,13 @@ const PositionsListPage = () => {
                           ลำดับ
                         </TableCell>
                         <TableCell sx={{ backgroundColor: primaryColor[200] }}>
+                          เลขที่ตำแหน่ง
+                        </TableCell>
+                        <TableCell sx={{ backgroundColor: primaryColor[200] }}>
                           ตำแหน่ง
                         </TableCell>
                         <TableCell sx={{ backgroundColor: primaryColor[200] }}>
                           กลุ่มงาน
-                        </TableCell>
-                        <TableCell sx={{ backgroundColor: primaryColor[200] }}>
-                          เลขที่ตำแหน่ง
                         </TableCell>
                         <TableCell sx={{ backgroundColor: primaryColor[200] }}>
                           สังกัด
@@ -406,14 +406,14 @@ const PositionsListPage = () => {
                           <TableCell component="th" scope="row" align="center">
                             {row.orderNumber}
                           </TableCell>
+                          <TableCell align="left">
+                            {row.position.number}
+                          </TableCell>
                           <TableCell align="left" sx={{ minWidth: 100 }}>
                             {row.position.name}
                           </TableCell>
                           <TableCell align="left">
                             {row.position.type}
-                          </TableCell>
-                          <TableCell align="left">
-                            {row.position.number}
                           </TableCell>
                           <TableCell align="left">
                             {renderDivision(row.division)}

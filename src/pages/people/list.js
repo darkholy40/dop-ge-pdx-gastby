@@ -69,7 +69,7 @@ const PeopleListPage = () => {
             createLog(input: {
               data: {
                 action: "view",
-                description: "people -> list",
+                description: "people->list",
                 users_permissions_user: "${userInfo._id}",
               }
             }) {

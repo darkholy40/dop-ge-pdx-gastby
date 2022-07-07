@@ -23,7 +23,7 @@ const AddUserPage = () => {
             createLog(input: {
               data: {
                 action: "view",
-                description: "users -> add",
+                description: "users->add",
                 users_permissions_user: "${userInfo._id}",
               }
             }) {

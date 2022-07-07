@@ -55,7 +55,7 @@ const ResignationPage = ({ location }) => {
             createLog(input: {
               data: {
                 action: "view",
-                description: "people -> resignation -> ${id}",
+                description: "people->resignation => ${id}",
                 users_permissions_user: "${userInfo._id}",
               }
             }) {
@@ -327,7 +327,7 @@ const ResignationPage = ({ location }) => {
               createLog(input: {
                 data: {
                   action: "action",
-                  description: "people -> resignation -> save -> ${getPersonID}",
+                  description: "people->resignation->save => ${getPersonID}",
                   users_permissions_user: "${userInfo._id}",
                 }
               }) {

@@ -57,7 +57,7 @@ const StockPage = () => {
             createLog(input: {
               data: {
                 action: "view",
-                description: "reports -> stock",
+                description: "reports->stock",
                 users_permissions_user: "${userInfo._id}",
               }
             }) {
@@ -499,7 +499,7 @@ const StockPage = () => {
                         createLog(input: {
                           data: {
                             action: "action",
-                            description: "download -> stock -> ${
+                            description: "download->stock => ${
                               input.unit !== null
                                 ? renderDivision(input.unit)
                                 : `ทั้งหมด`

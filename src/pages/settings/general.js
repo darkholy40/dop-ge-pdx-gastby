@@ -65,7 +65,7 @@ const SettingsGeneral = () => {
             createLog(input: {
               data: {
                 action: "view",
-                description: "settings -> general",
+                description: "settings->general",
                 users_permissions_user: "${userInfo._id}",
               }
             }) {

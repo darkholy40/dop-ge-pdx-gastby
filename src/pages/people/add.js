@@ -24,7 +24,7 @@ const AddPersonPage = () => {
             createLog(input: {
               data: {
                 action: "view",
-                description: "people -> add",
+                description: "people->add",
                 users_permissions_user: "${userInfo._id}",
               }
             }) {

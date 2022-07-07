@@ -970,7 +970,7 @@ const SystemData = ({ showContent, confirmButtonContent, confirmCallback }) => {
           createLog(input: {
             data: {
               action: "action",
-              description: "download static all",
+              description: "download->static => ทั้งหมด",
               users_permissions_user: "${userInfo._id}",
             }
           }) {
@@ -1003,7 +1003,7 @@ const SystemData = ({ showContent, confirmButtonContent, confirmCallback }) => {
           createLog(input: {
             data: {
               action: "action",
-              description: "update static all",
+              description: "update->static => ทั้งหมด",
               users_permissions_user: "${userInfo._id}",
             }
           }) {
@@ -1038,7 +1038,7 @@ const SystemData = ({ showContent, confirmButtonContent, confirmCallback }) => {
               createLog(input: {
                 data: {
                   action: "action",
-                  description: "download static -> ${descriptionLog}",
+                  description: "download->static => ${descriptionLog}",
                   users_permissions_user: "${userInfo._id}",
                 }
               }) {

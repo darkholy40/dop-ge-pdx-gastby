@@ -54,7 +54,7 @@ const SettingsSystemData = () => {
             createLog(input: {
               data: {
                 action: "view",
-                description: "settings -> system-data",
+                description: "settings->system-data",
                 users_permissions_user: "${userInfo._id}",
               }
             }) {

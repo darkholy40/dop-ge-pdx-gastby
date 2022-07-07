@@ -32,7 +32,7 @@ const EditPositionsPage = ({ location }) => {
             createLog(input: {
               data: {
                 action: "view",
-                description: "positions -> edit -> ${id}",
+                description: "positions->edit => ${id}",
                 users_permissions_user: "${userInfo._id}",
               }
             }) {

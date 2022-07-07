@@ -948,7 +948,7 @@ const PersonForm = ({ modification, id }) => {
               createLog(input: {
                 data: {
                   action: "action",
-                  description: "people -> create -> ${getPersonID}",
+                  description: "people->create => ${getPersonID}",
                   users_permissions_user: "${userInfo._id}",
                 }
               }) {
@@ -1253,7 +1253,7 @@ const PersonForm = ({ modification, id }) => {
               createLog(input: {
                 data: {
                   action: "action",
-                  description: "people -> save -> ${id}",
+                  description: "people->save => ${id}",
                   users_permissions_user: "${userInfo._id}",
                 }
               }) {

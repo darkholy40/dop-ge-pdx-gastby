@@ -312,7 +312,7 @@ const UserForm = ({ modification, id }) => {
             createLog(input: {
               data: {
                 action: "action",
-                description: "users -> create -> ${createdUserId}",
+                description: "users->create => ${createdUserId}",
                 users_permissions_user: "${userInfo._id}",
               }
             }) {
@@ -410,7 +410,7 @@ const UserForm = ({ modification, id }) => {
             createLog(input: {
               data: {
                 action: "action",
-                description: "users -> save -> ${editedUserId}",
+                description: "users->save => ${editedUserId}",
                 users_permissions_user: "${userInfo._id}",
               }
             }) {
