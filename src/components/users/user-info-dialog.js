@@ -198,7 +198,7 @@ const UserInfoDialog = ({ userId, open, title, callback, viewOnly }) => {
       return (
         <FontAwesomeIcon
           icon={faFilledCheckCircle}
-          style={{ fontSize: `1.5rem`, color: primaryColor[500] }}
+          style={{ fontSize: `1.25rem`, color: primaryColor[500] }}
         />
       )
     }
@@ -206,7 +206,7 @@ const UserInfoDialog = ({ userId, open, title, callback, viewOnly }) => {
     return (
       <FontAwesomeIcon
         icon={faCheckCircle}
-        style={{ fontSize: `1.5rem`, color: grey[500] }}
+        style={{ fontSize: `1.25rem`, color: grey[500] }}
       />
     )
   }
@@ -366,7 +366,7 @@ const UserInfoDialog = ({ userId, open, title, callback, viewOnly }) => {
         {!viewOnly && (
           <>
             <DialogActions sx={{ position: `absolute`, top: 0, right: 45 }}>
-              <Tooltip arrow placement="bottom" title="แก้ไขคลังตำแหน่ง">
+              <Tooltip arrow placement="bottom" title="แก้ไขข้อมูลผู้ใช้งาน">
                 <IconButton
                   style={{ width: 40, height: 40 }}
                   color="inherit"

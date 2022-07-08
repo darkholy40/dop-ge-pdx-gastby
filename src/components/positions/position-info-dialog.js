@@ -201,7 +201,7 @@ const PositionInfoDialog = ({
       return (
         <FontAwesomeIcon
           icon={faFilledCheckCircle}
-          style={{ fontSize: `1.5rem`, color: primaryColor[500] }}
+          style={{ fontSize: `1.25rem`, color: primaryColor[500] }}
         />
       )
     }
@@ -209,7 +209,7 @@ const PositionInfoDialog = ({
     return (
       <FontAwesomeIcon
         icon={faCheckCircle}
-        style={{ fontSize: `1.5rem`, color: grey[500] }}
+        style={{ fontSize: `1.25rem`, color: grey[500] }}
       />
     )
   }

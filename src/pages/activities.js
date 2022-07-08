@@ -17,7 +17,9 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import {
   faCircle,
   faEye,
-  faPlay,
+  faDatabase,
+  faSave,
+  faFileDownload,
   faRedo,
   faChevronRight,
 } from "@fortawesome/free-solid-svg-icons"
@@ -194,9 +196,13 @@ const ActivitiesPage = () => {
   }, [token, dispatch, tableOption.page, tableOption.rowsPerPage])
 
   const renderAction = (action, description) => {
-    let returnDesc = description
-    let link = false
-    let type = ``
+    let option = {
+      description: description,
+      link: false,
+      type: ``,
+      icon: faCircle,
+      color: grey[900],
+    }
     const title = description.split(` => `)[0]
     const id = description.split(` => `)[1]
 
@@ -240,57 +246,90 @@ const ActivitiesPage = () => {
       case `view`:
         switch (title) {
           case `users->add`:
-            returnDesc = `users/add`
+            option = {
+              ...option,
+              description: `users/add`,
+            }
             break
 
           case `users->edit`:
-            returnDesc = `users/edit`
-            link = true
-            type = `users`
+            option = {
+              ...option,
+              description: `users/add`,
+              link: true,
+              type: `users`,
+            }
             break
 
           case `people->add`:
-            returnDesc = `people/add`
+            option = {
+              ...option,
+              description: `people/add`,
+            }
             break
 
           case `people->view`:
-            returnDesc = `people/view`
-            link = true
-            type = `people`
+            option = {
+              ...option,
+              description: `people/view`,
+              link: true,
+              type: `people`,
+            }
             break
 
           case `people->edit`:
-            returnDesc = `people/edit`
-            link = true
-            type = `people`
+            option = {
+              ...option,
+              description: `people/edit`,
+              link: true,
+              type: `people`,
+            }
             break
 
           case `people->list`:
-            returnDesc = `people/list`
+            option = {
+              ...option,
+              description: `people/list`,
+            }
             break
 
           case `people->resigned-list`:
-            returnDesc = `people/resigned-list`
+            option = {
+              ...option,
+              description: `people/resigned-list`,
+            }
             break
 
           case `people->resignation`:
-            returnDesc = `people/resignation`
-            link = true
-            type = `people`
+            option = {
+              ...option,
+              description: `people/resignation`,
+              link: true,
+              type: `people`,
+            }
             break
 
           case `positions->add`:
-            returnDesc = `positions/add`
+            option = {
+              ...option,
+              description: `positions/add`,
+            }
             break
 
           case `positions->edit`:
-            returnDesc = `positions/edit`
-            link = true
-            type = `positions`
+            option = {
+              ...option,
+              description: `positions/edit`,
+              link: true,
+              type: `positions`,
+            }
             break
 
           case `positions->list`:
-            returnDesc = `positions/list`
+            option = {
+              ...option,
+              description: `positions/list`,
+            }
             break
 
           default:
@@ -303,7 +342,7 @@ const ActivitiesPage = () => {
               icon={faEye}
               style={{ color: grey[900], marginRight: 8 }}
             />
-            <span>{returnDesc}</span>
+            <span>{option.description}</span>
 
             {id !== undefined && (
               <>
@@ -311,12 +350,12 @@ const ActivitiesPage = () => {
                   icon={faChevronRight}
                   style={{ marginLeft: 8, marginRight: 8 }}
                 />
-                {link ? (
+                {option.link ? (
                   <Link
                     onClick={() => {
                       setDetialModal({
                         open: true,
-                        type: type,
+                        type: option.type,
                         id: id,
                       })
                     }}
@@ -334,55 +373,105 @@ const ActivitiesPage = () => {
       case `action`:
         switch (title) {
           case `users->create`:
-            returnDesc = `เพิ่มข้อมูลผู้ใช้งาน`
-            link = true
-            type = `users`
+            option = {
+              ...option,
+              description: `เพิ่มข้อมูลผู้ใช้งาน`,
+              link: true,
+              type: `users`,
+              icon: faSave,
+              color: green[700],
+            }
             break
 
           case `users->save`:
-            returnDesc = `แก้ไขข้อมูลผู้ใช้งาน`
-            link = true
-            type = `users`
+            option = {
+              ...option,
+              description: `แก้ไขข้อมูลผู้ใช้งาน`,
+              link: true,
+              type: `users`,
+              icon: faSave,
+              color: green[700],
+            }
             break
 
           case `people->create`:
-            returnDesc = `เพิ่มข้อมูลกำลังพล`
-            link = true
-            type = `people`
+            option = {
+              ...option,
+              description: `เพิ่มข้อมูลกำลังพล`,
+              link: true,
+              type: `people`,
+              icon: faSave,
+              color: green[700],
+            }
             break
 
           case `people->save`:
-            returnDesc = `แก้ไขข้อมูลกำลังพล`
-            link = true
-            type = `people`
+            option = {
+              ...option,
+              description: `แก้ไขข้อมูลกำลังพล`,
+              link: true,
+              type: `people`,
+              icon: faSave,
+              color: green[700],
+            }
             break
 
           case `positions->create`:
-            returnDesc = `เพิ่มข้อมูลคลังตำแหน่ง`
-            link = true
-            type = `positions`
+            option = {
+              ...option,
+              description: `เพิ่มข้อมูลคลังตำแหน่ง`,
+              link: true,
+              type: `positions`,
+              icon: faSave,
+              color: green[700],
+            }
             break
 
           case `positions->save`:
-            returnDesc = `แก้ไขข้อมูลคลังตำแหน่ง`
-            link = true
-            type = `positions`
+            option = {
+              ...option,
+              description: `แก้ไขข้อมูลคลังตำแหน่ง`,
+              link: true,
+              type: `positions`,
+              icon: faSave,
+              color: green[700],
+            }
             break
 
           case `download->flowout`:
-            returnDesc = `ออกรายงานรายชื่อพนักงานราชการและตำแหน่งว่าง (Stock)`
+            option = {
+              ...option,
+              description: `ออกรายงานรายชื่อพนักงานราชการและตำแหน่งว่าง (Stock)`,
+              icon: faFileDownload,
+              color: blue[700],
+            }
             break
 
           case `download->stock`:
-            returnDesc = `ออกรายงานรายชื่อพนักงานราชการที่ออกในปีงบประมาณที่ผ่านมา (Flow-Out)`
+            option = {
+              ...option,
+              description: `ออกรายงานรายชื่อพนักงานราชการที่ออกในปีงบประมาณที่ผ่านมา (Flow-Out)`,
+              icon: faFileDownload,
+              color: blue[700],
+            }
             break
 
           case `download->static`:
-            returnDesc = `ดาวน์โหลดข้อมูลระบบ`
+            option = {
+              ...option,
+              description: `ดาวน์โหลดข้อมูลระบบ`,
+              icon: faDatabase,
+              color: blue[700],
+            }
             break
 
           case `update->static`:
-            returnDesc = `อัปเดตข้อมูลระบบ`
+            option = {
+              ...option,
+              description: `อัปเดตข้อมูลระบบ`,
+              icon: faDatabase,
+              color: blue[700],
+            }
             break
 
           default:
@@ -392,10 +481,10 @@ const ActivitiesPage = () => {
         return (
           <>
             <FontAwesomeIcon
-              icon={faPlay}
-              style={{ color: blue[700], marginRight: 8 }}
+              icon={option.icon}
+              style={{ color: option.color, marginRight: 8 }}
             />
-            <span>{returnDesc}</span>
+            <span>{option.description}</span>
 
             {id !== undefined && (
               <>
@@ -403,12 +492,12 @@ const ActivitiesPage = () => {
                   icon={faChevronRight}
                   style={{ marginLeft: 8, marginRight: 8 }}
                 />
-                {link ? (
+                {option.link ? (
                   <Link
                     onClick={() => {
                       setDetialModal({
                         open: true,
-                        type: type,
+                        type: option.type,
                         id: id,
                       })
                     }}
