@@ -34,7 +34,7 @@ import {
   Percent,
   Integer,
 } from "../../components/number-format-and-mask"
-import DatePicker from "../../components/date-picker"
+import DayPicker from "../day-picker"
 import renderDateForGraphQL from "../../functions/render-date-for-graphql"
 import renderDivision from "../../functions/render-division"
 import renderCheckingIcon from "../../functions/render-checking-icon"
@@ -1728,27 +1728,23 @@ const PersonForm = ({ modification, id }) => {
             </Grid>
             <Grid container spacing={2} sx={{ marginBottom: `1rem` }}>
               <Grid item sm={11} xs={10}>
-                <DatePicker
-                  maxDate={new Date()}
-                  id="BirthDate"
-                  label="* วันเดือนปีเกิด"
+                <DayPicker
+                  selected={birthDate}
                   onChange={newValue => {
                     setBirthDate(newValue)
                   }}
-                  value={birthDate}
-                  renderInput={params => {
-                    return (
-                      <TextField
-                        {...params}
-                        sx={textfieldProps}
-                        InputProps={{
-                          startAdornment: params.InputProps.endAdornment,
-                          endAdornment: renderCheckingIcon(
-                            birthDate === null ? `` : birthDate
-                          ),
-                        }}
-                      />
-                    )
+                  pickerProps={{
+                    toYear: new Date().getFullYear(),
+                  }}
+                  inputProps={{
+                    sx: textfieldProps,
+                    id: "BirthDate",
+                    label: "* วันเดือนปีเกิด",
+                    InputProps: {
+                      endAdornment: renderCheckingIcon(
+                        birthDate === null ? `` : birthDate
+                      ),
+                    },
                   }}
                 />
               </Grid>
@@ -2085,55 +2081,22 @@ const PersonForm = ({ modification, id }) => {
             />
             <Grid container spacing={2} sx={{ marginBottom: `1rem` }}>
               <Grid item xs={12}>
-                <DatePicker
-                  id="StartDate"
-                  label="* วันเริ่มทำสัญญา"
+                <DayPicker
+                  selected={startDate}
                   onChange={newValue => {
                     setStartDate(newValue)
                   }}
-                  value={startDate}
-                  renderInput={params => {
-                    return (
-                      <TextField
-                        {...params}
-                        sx={textfieldProps}
-                        InputProps={{
-                          startAdornment: params.InputProps.endAdornment,
-                          endAdornment: renderCheckingIcon(
-                            startDate === null ? `` : startDate
-                          ),
-                        }}
-                      />
-                    )
+                  inputProps={{
+                    sx: textfieldProps,
+                    id: "StartDate",
+                    label: "* วันเริ่มทำสัญญา",
+                    InputProps: {
+                      endAdornment: renderCheckingIcon(
+                        startDate === null ? `` : startDate
+                      ),
+                    },
                   }}
                 />
-
-                {/* <MobileDatePicker
-                  {...datePickerProps}
-                  id="StartDate"
-                  label="* วันเริ่มทำสัญญา"
-                  onChange={newValue => {
-                    setStartDate(newValue)
-                  }}
-                  // onOpen={() => {
-                  //   if (startDate === null) {
-                  //     setStartDate(new Date())
-                  //   }
-                  // }}
-                  value={startDate}
-                  renderInput={params => (
-                    <TextField
-                      {...params}
-                      sx={textfieldProps}
-                      InputProps={{
-                        startAdornment: params.InputProps.endAdornment,
-                        endAdornment: renderCheckingIcon(
-                          startDate === null ? `` : startDate
-                        ),
-                      }}
-                    />
-                  )}
-                /> */}
               </Grid>
             </Grid>
             <Grid container spacing={2} sx={{ marginBottom: `1rem` }}>
@@ -2488,122 +2451,48 @@ const PersonForm = ({ modification, id }) => {
                 <DisabledBlock
                   className={jobType === `ลูกจ้างประจำ` ? `disabled` : ``}
                 >
-                  <DatePicker
-                    id="CurrentContactStart"
-                    label="* วันที่เริ่มสัญญาปัจจุบัน"
+                  <DayPicker
+                    selected={currentContactStart}
                     onChange={newValue => {
                       setCurrentContactStart(newValue)
                     }}
-                    value={currentContactStart}
-                    renderInput={params => {
-                      return (
-                        <TextField
-                          {...params}
-                          sx={textfieldProps}
-                          InputProps={{
-                            startAdornment: params.InputProps.endAdornment,
-                            endAdornment: renderCheckingIcon(
-                              currentContactStart === null
-                                ? ``
-                                : currentContactStart
-                            ),
-                          }}
-                        />
-                      )
+                    inputProps={{
+                      sx: textfieldProps,
+                      id: "CurrentContactStart",
+                      label: "* วันที่เริ่มสัญญาปัจจุบัน",
+                      InputProps: {
+                        endAdornment: renderCheckingIcon(
+                          currentContactStart === null
+                            ? ``
+                            : currentContactStart
+                        ),
+                      },
                     }}
                     disabled={jobType === `ลูกจ้างประจำ`}
                   />
-
-                  {/* <MobileDatePicker
-                    {...datePickerProps}
-                    id="CurrentContactStart"
-                    label="* วันที่เริ่มสัญญาปัจจุบัน"
-                    onChange={newValue => {
-                      setCurrentContactStart(newValue)
-                    }}
-                    // onOpen={() => {
-                    //   if (currentContactStart === null) {
-                    //     setCurrentContactStart(new Date())
-                    //   }
-                    // }}
-                    value={currentContactStart}
-                    renderInput={params => (
-                      <TextField
-                        {...params}
-                        sx={textfieldProps}
-                        InputProps={{
-                          startAdornment: params.InputProps.endAdornment,
-                          endAdornment: renderCheckingIcon(
-                            currentContactStart === null
-                              ? ``
-                              : currentContactStart
-                          ),
-                        }}
-                      />
-                    )}
-                    disabled={jobType === `ลูกจ้างประจำ`}
-                  /> */}
                 </DisabledBlock>
               </Grid>
               <Grid item xs={12} sm={6}>
                 <DisabledBlock
                   className={jobType === `ลูกจ้างประจำ` ? `disabled` : ``}
                 >
-                  <DatePicker
-                    id="CurrentContactEnd"
-                    label="* วันที่สิ้นสุดสัญญาปัจจุบัน"
+                  <DayPicker
+                    selected={currentContactEnd}
                     onChange={newValue => {
                       setCurrentContactEnd(newValue)
                     }}
-                    value={currentContactEnd}
-                    renderInput={params => {
-                      return (
-                        <TextField
-                          {...params}
-                          sx={textfieldProps}
-                          InputProps={{
-                            startAdornment: params.InputProps.endAdornment,
-                            endAdornment: renderCheckingIcon(
-                              currentContactEnd === null
-                                ? ``
-                                : currentContactEnd
-                            ),
-                          }}
-                        />
-                      )
+                    inputProps={{
+                      sx: textfieldProps,
+                      id: "CurrentContactEnd",
+                      label: "* วันที่สิ้นสุดสัญญาปัจจุบัน",
+                      InputProps: {
+                        endAdornment: renderCheckingIcon(
+                          currentContactEnd === null ? `` : currentContactEnd
+                        ),
+                      },
                     }}
                     disabled={jobType === `ลูกจ้างประจำ`}
                   />
-
-                  {/* <MobileDatePicker
-                    {...datePickerProps}
-                    id="CurrentContactEnd"
-                    label="* วันที่สิ้นสุดสัญญาปัจจุบัน"
-                    onChange={newValue => {
-                      setCurrentContactEnd(newValue)
-                    }}
-                    // onOpen={() => {
-                    //   if (currentContactEnd === null) {
-                    //     setCurrentContactEnd(new Date())
-                    //   }
-                    // }}
-                    value={currentContactEnd}
-                    renderInput={params => (
-                      <TextField
-                        {...params}
-                        sx={textfieldProps}
-                        InputProps={{
-                          startAdornment: params.InputProps.endAdornment,
-                          endAdornment: renderCheckingIcon(
-                            currentContactEnd === null
-                              ? ``
-                              : currentContactEnd
-                          ),
-                        }}
-                      />
-                    )}
-                    disabled={jobType === `ลูกจ้างประจำ`}
-                  /> */}
                 </DisabledBlock>
               </Grid>
             </Grid>
