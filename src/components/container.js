@@ -18,6 +18,19 @@ import Footer from "./footer"
 import ResponsiveDrawer from "./responsive-drawer"
 
 const GlobalStyles = createGlobalStyle`
+  :root {
+    --rdp-cell-size: 45px;
+    --rdp-accent-color: ${({ color }) => color[500]};
+    --rdp-background-color: ${({ color }) => color[50]};
+    --rdp-outline: 2px solid var(--rdp-accent-color);
+    --rdp-outline-selected: 2px solid ${({ color }) => color[900]};
+  }
+
+  ::selection {
+    background-color: ${({ color }) => color[700]};
+    color: #fff;
+  }
+
   a {
     color: ${({ color }) => color[700]};
     transition: color 0.2s;
@@ -56,29 +69,6 @@ const GlobalStyles = createGlobalStyle`
         color: #fff;
         transition: color 0.15s;
       }
-    }
-  }
-
-  .react-datepicker__portal {
-    background-color: rgba(0, 0, 0, 0.5);
-
-    .react-datepicker {
-      box-shadow: 0px 11px 15px -7px rgb(0 0 0 / 20%), 0px 24px 38px 3px rgb(0 0 0 / 14%), 0px 9px 46px 8px rgb(0 0 0 / 12%);
-    }
-  }
-
-  .react-datepicker__today-button {
-    padding: 8px 0;
-    transition: 0.3s;
-
-    &:hover {
-      background-color: #ddd;
-      transition: 0.1s;
-    }
-
-    &:active {
-      background-color: #ccc;
-      transition: 0.1s;
     }
   }
 `

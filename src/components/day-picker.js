@@ -1,5 +1,4 @@
 import React from "react"
-import { useSelector } from "react-redux"
 import PropTypes from "prop-types"
 import { DayPicker } from "react-day-picker"
 import "react-day-picker/dist/style.css"
@@ -16,6 +15,7 @@ import {
   Tooltip,
 } from "@mui/material"
 import Autocomplete from "@mui/material/Autocomplete"
+import styled from "styled-components"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import {
   faTimes,
@@ -26,21 +26,19 @@ import {
 import renderTableDate from "../functions/render-table-date"
 
 const months = [
-  `มกราคม (ม.ค.)`,
-  `กุมภาพันธ์ (ก.พ.)`,
-  `มีนาคม (มี.ค.)`,
-  `เมษายน (เม.ย.)`,
-  `พฤษภาคม (พ.ค.)`,
-  `มิถุนายน (มิ.ย.)`,
-  `กรกฎาคม (ก.ค.)`,
-  `สิงหาคม (ส.ค.)`,
-  `กันยายน (ก.ย.)`,
-  `ตุลาคม (ต.ค.)`,
-  `พฤศจิกายน (พ.ย.)`,
-  `ธันวาคม (ธ.ค.)`,
+  `มกราคม`, // (ม.ค.)
+  `กุมภาพันธ์`, // (ก.พ.)
+  `มีนาคม`, // (มี.ค.)
+  `เมษายน`, // (เม.ย.)
+  `พฤษภาคม`, // (พ.ค.)
+  `มิถุนายน`, // (มิ.ย.)
+  `กรกฎาคม`, // (ก.ค.)
+  `สิงหาคม`, // (ส.ค.)
+  `กันยายน`, // (ก.ย.)
+  `ตุลาคม`, // (ต.ค.)
+  `พฤศจิกายน`, // (พ.ย.)
+  `ธันวาคม`, // (ธ.ค.)
 ]
-
-const rpdCellSize = 45
 
 const formatCaption = (month, options) => {
   return (
@@ -53,12 +51,68 @@ const formatCaption = (month, options) => {
   )
 }
 
-const MyDayPicker = props => {
-  const fromYear =
-    props.pickerProps !== undefined ? props.pickerProps.fromYear : undefined
-  const toYear =
-    props.pickerProps !== undefined ? props.pickerProps.toYear : undefined
-  const { primaryColor } = useSelector(({ mainReducer }) => mainReducer)
+const Head = styled.div`
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+
+  .lt {
+    width: 35%;
+    min-width: 90px;
+    margin-right: 8px;
+  }
+
+  .rt {
+    width: 65%;
+    min-width: 150px;
+  }
+
+  @media (max-width: 375px) {
+    flex-direction: column;
+
+    .lt {
+      margin-bottom: 1rem;
+    }
+
+    .lt,
+    .rt {
+      width: 100%;
+      min-width: auto;
+    }
+  }
+`
+
+const Content = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+
+  .top {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    margin-bottom: 0.5rem;
+  }
+
+  .btm {
+    display: flex,
+    justify-content: center,
+    width: 100%,
+  }
+`
+
+const MyDayPicker = ({
+  selected,
+  disabled,
+  pickerProps,
+  inputProps,
+  onChange,
+}) => {
+  const title = inputProps !== undefined ? inputProps.label : `เลือกวันที่`
+  const fromYear = pickerProps !== undefined ? pickerProps.fromYear : undefined
+  const toYear = pickerProps !== undefined ? pickerProps.toYear : undefined
   const [open, setOpen] = React.useState(false)
   const [years, setYears] = React.useState([])
   const [selectedDay, setSelectedDay] = React.useState(null)
@@ -98,64 +152,44 @@ const MyDayPicker = props => {
   }, [fromYear, toYear])
 
   React.useEffect(() => {
-    const getDate = props.selected
+    const getDate = selected
 
     setSelectedDay(getDate)
     if (getDate !== null) {
       setCurrentMonth(getDate)
     }
-  }, [props.selected])
-
-  const css = `
-    :root {
-      --rdp-cell-size: ${rpdCellSize}px;
-      --rdp-accent-color: ${primaryColor[700]};
-      --rdp-background-color: ${primaryColor[50]};
-      --rdp-accent-color-dark: #3003e1;
-      --rdp-background-color-dark: #180270;
-      --rdp-outline: 2px solid var(--rdp-accent-color);
-      --rdp-outline-selected: 2px solid ${primaryColor[900]};
-    }
-  `
+  }, [selected])
 
   return (
     <>
-      <style>{css}</style>
       <TextField
-        {...props.inputProps}
+        {...inputProps}
         onClick={() => {
-          if (!props.disabled) {
+          if (!disabled) {
             setOpen(true)
           }
         }}
         value={renderTableDate(selectedDay, `full-date`) || ``}
-        disabled={props.disabled}
+        disabled={disabled}
       />
 
       <Dialog
-        fullWidth
+        // fullWidth
         maxWidth="xs"
         scroll="paper"
         open={open}
         onClose={cancelCloseModal}
-        style={{ userSelect: `none` }}
       >
-        <DialogTitle>{props.inputProps.label || ``}</DialogTitle>
+        <DialogTitle>{title}</DialogTitle>
         <DialogContent
           sx={{
             display: `flex`,
             flexDirection: `column`,
+            userSelect: `none`,
           }}
         >
-          <div
-            style={{
-              display: `flex`,
-              justifyContent: `center`,
-              width: `100%`,
-              marginTop: 8,
-            }}
-          >
-            <div style={{ width: `35%`, marginRight: 8 }}>
+          <Head>
+            <div className="lt">
               <Autocomplete
                 sx={{ width: `100%` }}
                 disablePortal
@@ -193,7 +227,7 @@ const MyDayPicker = props => {
                 )}
               />
             </div>
-            <div style={{ width: `65%` }}>
+            <div className="rt">
               <Autocomplete
                 sx={{ width: `100%` }}
                 disablePortal
@@ -231,57 +265,51 @@ const MyDayPicker = props => {
                 )}
               />
             </div>
-          </div>
-          <div
-            style={{
-              display: `flex`,
-              justifyContent: `space-between`,
-              width: `100%`,
-              maxWidth: rpdCellSize * 7,
-              margin: `1rem auto 0.5rem auto`,
-            }}
-          >
-            <IconButton
-              onClick={previousMonth}
-              style={{ width: 40, height: 40 }}
-              disabled={isSameMonth(navMinYear, currentMonth)}
-            >
-              <FontAwesomeIcon icon={faChevronLeft} style={{ fontSize: 20 }} />
-            </IconButton>
-            <IconButton
-              onClick={nextMonth}
-              style={{ width: 40, height: 40 }}
-              disabled={isSameMonth(navMaxYear, currentMonth)}
-            >
-              <FontAwesomeIcon icon={faChevronRight} style={{ fontSize: 20 }} />
-            </IconButton>
-          </div>
-          <div
-            style={{
-              display: `flex`,
-              justifyContent: `center`,
-              width: `100%`,
-            }}
-          >
-            <DayPicker
-              {...props.pickerProps}
-              style={{
-                margin: `0 0 1rem`,
-              }}
-              locale={th}
-              mode="single"
-              required
-              month={currentMonth}
-              disableNavigation
-              formatters={{ formatCaption: formatCaption }}
-              selected={selectedDay}
-              onSelect={val => {
-                setOpen(false)
-                props.onChange(val)
-              }}
-              disabled={props.disabled}
-            />
-          </div>
+          </Head>
+          <Content>
+            <div className="top">
+              <IconButton
+                onClick={previousMonth}
+                style={{ width: 40, height: 40 }}
+                disabled={isSameMonth(navMinYear, currentMonth)}
+              >
+                <FontAwesomeIcon
+                  icon={faChevronLeft}
+                  style={{ fontSize: 20 }}
+                />
+              </IconButton>
+              <IconButton
+                onClick={nextMonth}
+                style={{ width: 40, height: 40 }}
+                disabled={isSameMonth(navMaxYear, currentMonth)}
+              >
+                <FontAwesomeIcon
+                  icon={faChevronRight}
+                  style={{ fontSize: 20 }}
+                />
+              </IconButton>
+            </div>
+            <div className="btm">
+              <DayPicker
+                {...pickerProps}
+                style={{
+                  margin: 0,
+                }}
+                locale={th}
+                mode="single"
+                required
+                month={currentMonth}
+                disableNavigation
+                formatters={{ formatCaption: formatCaption }}
+                selected={selectedDay}
+                onSelect={val => {
+                  setOpen(false)
+                  onChange(val)
+                }}
+                disabled={disabled}
+              />
+            </div>
+          </Content>
         </DialogContent>
         <DialogActions sx={{ position: `absolute`, top: 0, right: 0 }}>
           <Tooltip arrow placement="bottom" title="ปิดหน้าต่าง">
@@ -299,6 +327,8 @@ const MyDayPicker = props => {
 }
 
 MyDayPicker.propTypes = {
+  selected: PropTypes.object,
+  disabled: PropTypes.bool,
   pickerProps: PropTypes.objectOf(PropTypes.any),
   inputProps: PropTypes.objectOf(PropTypes.any),
   onChange: PropTypes.func,
