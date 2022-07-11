@@ -171,7 +171,7 @@ const StaticTags = () => {
 
   React.useMemo(() => {
     // console.log(`Mount StaticTags component`)
-    if(token !== ``) {
+    if (token !== ``) {
       fetchStaticTags()
     }
   }, [fetchStaticTags, token])

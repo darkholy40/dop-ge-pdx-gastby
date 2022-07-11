@@ -46,7 +46,6 @@ const Label = styled.span`
   margin-bottom: 0.5rem;
 `
 
-
 const FlowOutPage = () => {
   const { token, userInfo } = useSelector(({ mainReducer }) => mainReducer)
   const { units } = useSelector(({ staticReducer }) => staticReducer)
@@ -99,7 +98,7 @@ const FlowOutPage = () => {
       },
     ])
 
-    if(roleLevel(userInfo.role) >= 2) {
+    if (roleLevel(userInfo.role) >= 2) {
       condition =
         input.unit !== null
           ? `where: {
@@ -273,8 +272,8 @@ const FlowOutPage = () => {
   }, [token, input.unit, userInfo])
 
   useEffect(() => {
-    if(token !== ``) {
-      if(roleLevel(userInfo.role) >= 2) {
+    if (token !== ``) {
+      if (roleLevel(userInfo.role) >= 2) {
         if (input.option !== null) {
           // search all
           if (input.option.id === 1) {
@@ -411,7 +410,8 @@ const FlowOutPage = () => {
                           />
                         )}
                         disabled={
-                          statusCode === `loading` || statusCode === `connection`
+                          statusCode === `loading` ||
+                          statusCode === `connection`
                         }
                       />
                     </Flex>

@@ -100,7 +100,7 @@ const StockPage = () => {
       },
     ])
 
-    if(roleLevel(userInfo.role) >= 2) {
+    if (roleLevel(userInfo.role) >= 2) {
       condition =
         input.unit !== null
           ? `where: {
@@ -372,8 +372,8 @@ const StockPage = () => {
   }, [token, input.unit, userInfo])
 
   useEffect(() => {
-    if(token !== ``) {
-      if(roleLevel(userInfo.role) >= 2) {
+    if (token !== ``) {
+      if (roleLevel(userInfo.role) >= 2) {
         if (input.option !== null) {
           // search all
           if (input.option.id === 1) {
@@ -510,7 +510,8 @@ const StockPage = () => {
                           />
                         )}
                         disabled={
-                          statusCode === `loading` || statusCode === `connection`
+                          statusCode === `loading` ||
+                          statusCode === `connection`
                         }
                       />
                     </Flex>
