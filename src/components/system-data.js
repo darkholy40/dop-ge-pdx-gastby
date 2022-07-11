@@ -89,6 +89,9 @@ const buttons = {
   update: {
     name: `อัปเดต`,
   },
+  updateAll: {
+    name: `อัปเดตทั้งหมด`,
+  },
 }
 
 const SystemData = ({ showContent, confirmButtonContent, confirmCallback }) => {
@@ -107,6 +110,7 @@ const SystemData = ({ showContent, confirmButtonContent, confirmCallback }) => {
     decorations,
     roles,
     installationDate,
+    shouldUpdateStatic,
   } = useSelector(({ staticReducer }) => staticReducer)
   const dispatch = useDispatch()
   const [percentDialog, setPercentDialog] = useState([])
@@ -210,6 +214,17 @@ const SystemData = ({ showContent, confirmButtonContent, confirmCallback }) => {
         type: `SET_INSTALLATION_DATE`,
         key: `positionTypes`,
       })
+      if (
+        shouldUpdateStatic.find(elem => elem.name === `positionTypes`) !==
+        undefined
+      ) {
+        dispatch({
+          type: `SET_TAGS`,
+          key: `positionTypes`,
+          data: shouldUpdateStatic.find(elem => elem.name === `positionTypes`)
+            .newTags,
+        })
+      }
     }
 
     setPercentDialog(prev =>
@@ -220,7 +235,7 @@ const SystemData = ({ showContent, confirmButtonContent, confirmCallback }) => {
     setTimeout(() => {
       setPercentDialog(prev => removeObjectInArray(prev, `id`, 1))
     }, 200)
-  }, [token, dispatch])
+  }, [token, shouldUpdateStatic, dispatch])
 
   const getUnits = useCallback(async () => {
     let lap = 0
@@ -304,6 +319,15 @@ const SystemData = ({ showContent, confirmButtonContent, confirmCallback }) => {
         type: `SET_INSTALLATION_DATE`,
         key: `units`,
       })
+      if (
+        shouldUpdateStatic.find(elem => elem.name === `units`) !== undefined
+      ) {
+        dispatch({
+          type: `SET_TAGS`,
+          key: `units`,
+          data: shouldUpdateStatic.find(elem => elem.name === `units`).newTags,
+        })
+      }
     }
 
     setPercentDialog(prev =>
@@ -314,7 +338,7 @@ const SystemData = ({ showContent, confirmButtonContent, confirmCallback }) => {
     setTimeout(() => {
       setPercentDialog(prev => removeObjectInArray(prev, `id`, 2))
     }, 200)
-  }, [token, dispatch])
+  }, [token, shouldUpdateStatic, dispatch])
 
   const getLocations = useCallback(async () => {
     let lap = 0
@@ -398,6 +422,16 @@ const SystemData = ({ showContent, confirmButtonContent, confirmCallback }) => {
         type: `SET_INSTALLATION_DATE`,
         key: `locations`,
       })
+      if (
+        shouldUpdateStatic.find(elem => elem.name === `locations`) !== undefined
+      ) {
+        dispatch({
+          type: `SET_TAGS`,
+          key: `locations`,
+          data: shouldUpdateStatic.find(elem => elem.name === `locations`)
+            .newTags,
+        })
+      }
       // console.log(uniqByKeepFirst(returnData, it => it.province))
       // console.log(uniqByKeepFirst(returnData, it => it.district))
       // console.log(uniqByKeepFirst(returnData, it => it.subdistrict))
@@ -412,7 +446,7 @@ const SystemData = ({ showContent, confirmButtonContent, confirmCallback }) => {
     setTimeout(() => {
       setPercentDialog(prev => removeObjectInArray(prev, `id`, 3))
     }, 200)
-  }, [token, dispatch])
+  }, [token, shouldUpdateStatic, dispatch])
 
   const getEducationLevels = useCallback(async () => {
     let lap = 0
@@ -494,6 +528,17 @@ const SystemData = ({ showContent, confirmButtonContent, confirmCallback }) => {
         type: `SET_INSTALLATION_DATE`,
         key: `educationLevels`,
       })
+      if (
+        shouldUpdateStatic.find(elem => elem.name === `educationLevels`) !==
+        undefined
+      ) {
+        dispatch({
+          type: `SET_TAGS`,
+          key: `educationLevels`,
+          data: shouldUpdateStatic.find(elem => elem.name === `educationLevels`)
+            .newTags,
+        })
+      }
     }
 
     setPercentDialog(prev =>
@@ -504,7 +549,7 @@ const SystemData = ({ showContent, confirmButtonContent, confirmCallback }) => {
     setTimeout(() => {
       setPercentDialog(prev => removeObjectInArray(prev, `id`, 4))
     }, 200)
-  }, [token, dispatch])
+  }, [token, shouldUpdateStatic, dispatch])
 
   const getEducationNames = useCallback(async () => {
     let lap = 0
@@ -587,6 +632,17 @@ const SystemData = ({ showContent, confirmButtonContent, confirmCallback }) => {
         type: `SET_INSTALLATION_DATE`,
         key: `educationNames`,
       })
+      if (
+        shouldUpdateStatic.find(elem => elem.name === `educationNames`) !==
+        undefined
+      ) {
+        dispatch({
+          type: `SET_TAGS`,
+          key: `educationNames`,
+          data: shouldUpdateStatic.find(elem => elem.name === `educationNames`)
+            .newTags,
+        })
+      }
     }
 
     setPercentDialog(prev =>
@@ -597,7 +653,7 @@ const SystemData = ({ showContent, confirmButtonContent, confirmCallback }) => {
     setTimeout(() => {
       setPercentDialog(prev => removeObjectInArray(prev, `id`, 5))
     }, 200)
-  }, [token, dispatch])
+  }, [token, shouldUpdateStatic, dispatch])
 
   const getEducationalInstitutions = useCallback(async () => {
     let lap = 0
@@ -680,6 +736,19 @@ const SystemData = ({ showContent, confirmButtonContent, confirmCallback }) => {
         type: `SET_INSTALLATION_DATE`,
         key: `educationalInstitutions`,
       })
+      if (
+        shouldUpdateStatic.find(
+          elem => elem.name === `educationalInstitutions`
+        ) !== undefined
+      ) {
+        dispatch({
+          type: `SET_TAGS`,
+          key: `educationalInstitutions`,
+          data: shouldUpdateStatic.find(
+            elem => elem.name === `educationalInstitutions`
+          ).newTags,
+        })
+      }
     }
 
     setPercentDialog(prev =>
@@ -690,7 +759,7 @@ const SystemData = ({ showContent, confirmButtonContent, confirmCallback }) => {
     setTimeout(() => {
       setPercentDialog(prev => removeObjectInArray(prev, `id`, 6))
     }, 200)
-  }, [token, dispatch])
+  }, [token, shouldUpdateStatic, dispatch])
 
   const getCountries = useCallback(async () => {
     let lap = 0
@@ -772,6 +841,16 @@ const SystemData = ({ showContent, confirmButtonContent, confirmCallback }) => {
         type: `SET_INSTALLATION_DATE`,
         key: `countries`,
       })
+      if (
+        shouldUpdateStatic.find(elem => elem.name === `countries`) !== undefined
+      ) {
+        dispatch({
+          type: `SET_TAGS`,
+          key: `countries`,
+          data: shouldUpdateStatic.find(elem => elem.name === `countries`)
+            .newTags,
+        })
+      }
     }
 
     setPercentDialog(prev =>
@@ -782,7 +861,7 @@ const SystemData = ({ showContent, confirmButtonContent, confirmCallback }) => {
     setTimeout(() => {
       setPercentDialog(prev => removeObjectInArray(prev, `id`, 7))
     }, 200)
-  }, [token, dispatch])
+  }, [token, shouldUpdateStatic, dispatch])
 
   const getDecorations = useCallback(async () => {
     let lap = 0
@@ -865,6 +944,17 @@ const SystemData = ({ showContent, confirmButtonContent, confirmCallback }) => {
         type: `SET_INSTALLATION_DATE`,
         key: `decorations`,
       })
+      if (
+        shouldUpdateStatic.find(elem => elem.name === `decorations`) !==
+        undefined
+      ) {
+        dispatch({
+          type: `SET_TAGS`,
+          key: `decorations`,
+          data: shouldUpdateStatic.find(elem => elem.name === `decorations`)
+            .newTags,
+        })
+      }
     }
 
     setPercentDialog(prev =>
@@ -875,7 +965,7 @@ const SystemData = ({ showContent, confirmButtonContent, confirmCallback }) => {
     setTimeout(() => {
       setPercentDialog(prev => removeObjectInArray(prev, `id`, 8))
     }, 200)
-  }, [token, dispatch])
+  }, [token, shouldUpdateStatic, dispatch])
 
   const getRoles = useCallback(async () => {
     let returnData = []
@@ -937,6 +1027,13 @@ const SystemData = ({ showContent, confirmButtonContent, confirmCallback }) => {
       type: `SET_INSTALLATION_DATE`,
       key: `roles`,
     })
+    if (shouldUpdateStatic.find(elem => elem.name === `roles`) !== undefined) {
+      dispatch({
+        type: `SET_TAGS`,
+        key: `roles`,
+        data: shouldUpdateStatic.find(elem => elem.name === `roles`).newTags,
+      })
+    }
 
     setPercentDialog(prev =>
       updateAnObjectInArray(prev, `id`, 9, {
@@ -946,7 +1043,7 @@ const SystemData = ({ showContent, confirmButtonContent, confirmCallback }) => {
     setTimeout(() => {
       setPercentDialog(prev => removeObjectInArray(prev, `id`, 9))
     }, 200)
-  }, [token, dispatch])
+  }, [token, shouldUpdateStatic, dispatch])
 
   const installAll = () => {
     if (roleLevel(userInfo.role) >= 2) {
@@ -985,17 +1082,22 @@ const SystemData = ({ showContent, confirmButtonContent, confirmCallback }) => {
 
   const updateAll = () => {
     if (roleLevel(userInfo.role) >= 2) {
-      getUnits()
-      getRoles()
+      shouldUpdateStatic.find(elem => elem.name === `units`) && getUnits()
+      shouldUpdateStatic.find(elem => elem.name === `roles`) && getRoles()
     }
 
-    getPositionName()
-    getLocations()
-    getEducationLevels()
-    getEducationNames()
-    getEducationalInstitutions()
-    getCountries()
-    getDecorations()
+    shouldUpdateStatic.find(elem => elem.name === `positionTypes`) &&
+      getPositionName()
+    shouldUpdateStatic.find(elem => elem.name === `locations`) && getLocations()
+    shouldUpdateStatic.find(elem => elem.name === `educationLevels`) &&
+      getEducationLevels()
+    shouldUpdateStatic.find(elem => elem.name === `educationNames`) &&
+      getEducationNames()
+    shouldUpdateStatic.find(elem => elem.name === `educationalInstitutions`) &&
+      getEducationalInstitutions()
+    shouldUpdateStatic.find(elem => elem.name === `countries`) && getCountries()
+    shouldUpdateStatic.find(elem => elem.name === `decorations`) &&
+      getDecorations()
 
     client(token).mutate({
       mutation: gql`
@@ -1025,7 +1127,15 @@ const SystemData = ({ showContent, confirmButtonContent, confirmCallback }) => {
     )
   }
 
-  const renderFetchDataButton = (callback, descriptionLog) => {
+  const renderFetchDataButton = (callback, descriptionLog, option) => {
+    let buttonName = buttons.install.name
+    let frontDescLog = `download`
+
+    if (option === `update`) {
+      buttonName = buttons.update.name
+      frontDescLog = `update`
+    }
+
     return (
       <Button
         color="primary"
@@ -1038,7 +1148,7 @@ const SystemData = ({ showContent, confirmButtonContent, confirmCallback }) => {
               createLog(input: {
                 data: {
                   action: "action",
-                  description: "download->static => ${descriptionLog}",
+                  description: "${frontDescLog}->static => ${descriptionLog}",
                   users_permissions_user: "${userInfo._id}",
                 }
               }) {
@@ -1051,7 +1161,7 @@ const SystemData = ({ showContent, confirmButtonContent, confirmCallback }) => {
           })
         }}
       >
-        {buttons.install.name}
+        {buttonName}
       </Button>
     )
   }
@@ -1063,58 +1173,47 @@ const SystemData = ({ showContent, confirmButtonContent, confirmCallback }) => {
       variant: `contained`,
       method: `install`,
     }
-    let count = 0
 
-    if (roleLevel(userInfo.role) >= 2) {
-      units.length === 0 && count++
-      roles.length === 0 && count++
-
-      if (
-        positionTypes.length > 0 &&
-        positionNames.length > 0 &&
-        units.length > 0 &&
-        roles.length > 0 &&
-        locations.length > 0 &&
-        educationLevels.length > 0 &&
-        educationNames.length > 0 &&
-        educationalInstitutions.length > 0 &&
-        countries.length > 0 &&
-        decorations.length > 0
-      ) {
-        props = {
-          text: buttons.update.name,
-          color: `primary`,
-          variant: `contained`,
-          method: `update`,
-        }
-      }
-    } else {
-      if (
-        positionTypes.length > 0 &&
-        positionNames.length > 0 &&
-        locations.length > 0 &&
-        educationLevels.length > 0 &&
-        educationNames.length > 0 &&
-        educationalInstitutions.length > 0 &&
-        countries.length > 0 &&
-        decorations.length > 0
-      ) {
-        props = {
-          text: buttons.update.name,
-          color: `primary`,
-          variant: `contained`,
-          method: `update`,
-        }
+    if (tutorialCount === 4) {
+      props = {
+        text: buttons.updateAll.name,
+        color: `primary`,
+        variant: `contained`,
+        method: `update`,
       }
     }
 
-    positionNames.length === 0 && count++
-    locations.length === 0 && count++
-    educationLevels.length === 0 && count++
-    educationNames.length === 0 && count++
-    educationalInstitutions.length === 0 && count++
-    countries.length === 0 && count++
-    decorations.length === 0 && count++
+    let count = 0
+
+    if (props.method === `install`) {
+      if (roleLevel(userInfo.role) >= 2) {
+        units.length === 0 && count++
+        roles.length === 0 && count++
+      }
+      positionNames.length === 0 && count++
+      locations.length === 0 && count++
+      educationLevels.length === 0 && count++
+      educationNames.length === 0 && count++
+      educationalInstitutions.length === 0 && count++
+      countries.length === 0 && count++
+      decorations.length === 0 && count++
+    } else {
+      if (roleLevel(userInfo.role) >= 2) {
+        shouldUpdateStatic.find(elem => elem.name === `units`) && count++
+        shouldUpdateStatic.find(elem => elem.name === `roles`) && count++
+      }
+
+      shouldUpdateStatic.find(elem => elem.name === `positionTypes`) && count++
+      shouldUpdateStatic.find(elem => elem.name === `locations`) && count++
+      shouldUpdateStatic.find(elem => elem.name === `educationLevels`) &&
+        count++
+      shouldUpdateStatic.find(elem => elem.name === `educationNames`) && count++
+      shouldUpdateStatic.find(
+        elem => elem.name === `educationalInstitutions`
+      ) && count++
+      shouldUpdateStatic.find(elem => elem.name === `countries`) && count++
+      shouldUpdateStatic.find(elem => elem.name === `decorations`) && count++
+    }
 
     return (
       <>
@@ -1221,12 +1320,14 @@ const SystemData = ({ showContent, confirmButtonContent, confirmCallback }) => {
             </div>
           </Collapse>
           <Container>
-            <DownloadButtonSection
-              primaryColor={primaryColor}
-              role="presentation"
-            >
-              {renderFetchAllDataButton()}
-            </DownloadButtonSection>
+            <Collapse in={shouldUpdateStatic.length > 0}>
+              <DownloadButtonSection
+                primaryColor={primaryColor}
+                role="presentation"
+              >
+                {renderFetchAllDataButton()}
+              </DownloadButtonSection>
+            </Collapse>
             <Content>
               {roleLevel(userInfo.role) >= 2 && (
                 <>
@@ -1239,7 +1340,13 @@ const SystemData = ({ showContent, confirmButtonContent, confirmCallback }) => {
                     </div>
                     <div>
                       {units.length > 0 ? (
-                        <>{renderCheckedSign()}</>
+                        <>
+                          {shouldUpdateStatic.find(
+                            elem => elem.name === `units`
+                          )
+                            ? renderFetchDataButton(getUnits, `units`, `update`)
+                            : renderCheckedSign()}
+                        </>
                       ) : (
                         <>{renderFetchDataButton(getUnits, `units`)}</>
                       )}
@@ -1266,7 +1373,13 @@ const SystemData = ({ showContent, confirmButtonContent, confirmCallback }) => {
                     </div>
                     <div>
                       {roles.length > 0 ? (
-                        <>{renderCheckedSign()}</>
+                        <>
+                          {shouldUpdateStatic.find(
+                            elem => elem.name === `roles`
+                          )
+                            ? renderFetchDataButton(getRoles, `roles`, `update`)
+                            : renderCheckedSign()}
+                        </>
                       ) : (
                         <>{renderFetchDataButton(getRoles, `roles`)}</>
                       )}
@@ -1298,7 +1411,17 @@ const SystemData = ({ showContent, confirmButtonContent, confirmCallback }) => {
                 </div>
                 <div>
                   {positionTypes.length > 0 && positionNames.length > 0 ? (
-                    <>{renderCheckedSign()}</>
+                    <>
+                      {shouldUpdateStatic.find(
+                        elem => elem.name === `positionTypes`
+                      )
+                        ? renderFetchDataButton(
+                            getPositionName,
+                            `position-types`,
+                            `update`
+                          )
+                        : renderCheckedSign()}
+                    </>
                   ) : (
                     <>
                       {renderFetchDataButton(getPositionName, `position-types`)}
@@ -1345,7 +1468,17 @@ const SystemData = ({ showContent, confirmButtonContent, confirmCallback }) => {
                 </div>
                 <div>
                   {locations.length > 0 ? (
-                    <>{renderCheckedSign()}</>
+                    <>
+                      {shouldUpdateStatic.find(
+                        elem => elem.name === `locations`
+                      )
+                        ? renderFetchDataButton(
+                            getLocations,
+                            `locations`,
+                            `update`
+                          )
+                        : renderCheckedSign()}
+                    </>
                   ) : (
                     <>{renderFetchDataButton(getLocations, `locations`)}</>
                   )}
@@ -1366,7 +1499,17 @@ const SystemData = ({ showContent, confirmButtonContent, confirmCallback }) => {
                 </div>
                 <div>
                   {educationLevels.length > 0 ? (
-                    <>{renderCheckedSign()}</>
+                    <>
+                      {shouldUpdateStatic.find(
+                        elem => elem.name === `educationLevels`
+                      )
+                        ? renderFetchDataButton(
+                            getEducationLevels,
+                            `education-levels`,
+                            `update`
+                          )
+                        : renderCheckedSign()}
+                    </>
                   ) : (
                     <>
                       {renderFetchDataButton(
@@ -1395,7 +1538,17 @@ const SystemData = ({ showContent, confirmButtonContent, confirmCallback }) => {
                 </div>
                 <div>
                   {educationNames.length > 0 ? (
-                    <>{renderCheckedSign()}</>
+                    <>
+                      {shouldUpdateStatic.find(
+                        elem => elem.name === `educationNames`
+                      )
+                        ? renderFetchDataButton(
+                            getEducationNames,
+                            `education-names`,
+                            `update`
+                          )
+                        : renderCheckedSign()}
+                    </>
                   ) : (
                     <>
                       {renderFetchDataButton(
@@ -1423,7 +1576,17 @@ const SystemData = ({ showContent, confirmButtonContent, confirmCallback }) => {
                 </div>
                 <div>
                   {educationalInstitutions.length > 0 ? (
-                    <>{renderCheckedSign()}</>
+                    <>
+                      {shouldUpdateStatic.find(
+                        elem => elem.name === `educationalInstitutions`
+                      )
+                        ? renderFetchDataButton(
+                            getEducationalInstitutions,
+                            `educational-institutions`,
+                            `update`
+                          )
+                        : renderCheckedSign()}
+                    </>
                   ) : (
                     <>
                       {renderFetchDataButton(
@@ -1452,7 +1615,17 @@ const SystemData = ({ showContent, confirmButtonContent, confirmCallback }) => {
                 </div>
                 <div>
                   {countries.length > 0 ? (
-                    <>{renderCheckedSign()}</>
+                    <>
+                      {shouldUpdateStatic.find(
+                        elem => elem.name === `countries`
+                      )
+                        ? renderFetchDataButton(
+                            getCountries,
+                            `countries`,
+                            `update`
+                          )
+                        : renderCheckedSign()}
+                    </>
                   ) : (
                     <>{renderFetchDataButton(getCountries, `countries`)}</>
                   )}
@@ -1474,7 +1647,17 @@ const SystemData = ({ showContent, confirmButtonContent, confirmCallback }) => {
                 </div>
                 <div>
                   {decorations.length > 0 ? (
-                    <>{renderCheckedSign()}</>
+                    <>
+                      {shouldUpdateStatic.find(
+                        elem => elem.name === `decorations`
+                      )
+                        ? renderFetchDataButton(
+                            getDecorations,
+                            `decorations`,
+                            `update`
+                          )
+                        : renderCheckedSign()}
+                    </>
                   ) : (
                     <>{renderFetchDataButton(getDecorations, `decorations`)}</>
                   )}

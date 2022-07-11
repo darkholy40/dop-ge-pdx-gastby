@@ -22,6 +22,18 @@ const initialState = {
     decorations: null,
     roles: null,
   },
+  tags: {
+    positionTypes: ``,
+    units: ``,
+    locations: ``,
+    educationLevels: ``,
+    educationNames: ``,
+    educationalInstitutions: ``,
+    countries: ``,
+    decorations: ``,
+    roles: ``,
+  },
+  shouldUpdateStatic: [],
 }
 
 const staticReducer = (state = initialState, action) => {
@@ -95,6 +107,21 @@ const staticReducer = (state = initialState, action) => {
         },
       }
 
+    case `SET_TAGS`:
+      return {
+        ...state,
+        tags: {
+          ...state.tags,
+          [action.key]: action.data,
+        },
+      }
+
+    case `SET_SHOULD_UPDATE_STATIC`:
+      return {
+        ...state,
+        shouldUpdateStatic: action.shouldUpdateStatic,
+      }
+
     case `SET_ZERO`:
       return {
         ...state,
@@ -110,6 +137,9 @@ const staticReducer = (state = initialState, action) => {
         roles: [],
         installationDate: {
           ...initialState.installationDate,
+        },
+        tags: {
+          ...initialState.tags,
         },
       }
 
@@ -135,6 +165,7 @@ const staticPersistConfig = {
     `decorations`,
     `roles`,
     `installationDate`,
+    `tags`,
   ],
 }
 

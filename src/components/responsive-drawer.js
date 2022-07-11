@@ -19,6 +19,9 @@ import {
   Button,
   Menu,
   MenuItem,
+  Badge,
+  Tooltip,
+  Collapse,
 } from "@mui/material"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import {
@@ -31,6 +34,7 @@ import {
   faUserAlt,
   faCog,
   faSignOutAlt,
+  faSync,
 } from "@fortawesome/free-solid-svg-icons"
 
 import { client, gql } from "../functions/apollo-client"
@@ -46,6 +50,9 @@ const ResponsiveDrawer = props => {
   const dispatch = useDispatch()
   const { currentPage, token, userInfo, tutorialCount, primaryColor } =
     useSelector(({ mainReducer }) => mainReducer)
+  const { shouldUpdateStatic } = useSelector(
+    ({ staticReducer }) => staticReducer
+  )
   const { site } = useStaticQuery(
     graphql`
       query {
@@ -321,20 +328,58 @@ const ResponsiveDrawer = props => {
               >
                 {site.siteMetadata.title}
               </Typography>
-              <Button
-                color="inherit"
-                onClick={event => {
-                  setAnchorElMyInfo(event.currentTarget)
-                }}
-              >
-                <FontAwesomeIcon
-                  icon={faUserAlt}
-                  style={{ fontSize: 20, marginRight: 5 }}
-                />
-                <span>
-                  {renderFullname({ rank: userInfo.rank, name: userInfo.name })}
-                </span>
-              </Button>
+              <div style={{ display: `flex` }}>
+                {tutorialCount === 4 && (
+                  <Collapse
+                    in={shouldUpdateStatic.length > 0}
+                    orientation="horizontal"
+                  >
+                    <Tooltip
+                      arrow
+                      placement="bottom"
+                      title={`พบการอัปเดตข้อมูลระบบ ${shouldUpdateStatic.length} รายการ`}
+                    >
+                      <IconButton
+                        color="inherit"
+                        style={{
+                          width: 40,
+                          height: 40,
+                          marginRight: 5,
+                        }}
+                        onClick={() => navigate(`/settings/system-data/`)}
+                      >
+                        <Badge
+                          badgeContent={shouldUpdateStatic.length}
+                          color="error"
+                        >
+                          <FontAwesomeIcon
+                            icon={faSync}
+                            style={{ fontSize: 20 }}
+                          />
+                        </Badge>
+                      </IconButton>
+                    </Tooltip>
+                  </Collapse>
+                )}
+
+                <Button
+                  color="inherit"
+                  onClick={event => {
+                    setAnchorElMyInfo(event.currentTarget)
+                  }}
+                >
+                  <FontAwesomeIcon
+                    icon={faUserAlt}
+                    style={{ fontSize: 20, marginRight: 5 }}
+                  />
+                  <span>
+                    {renderFullname({
+                      rank: userInfo.rank,
+                      name: userInfo.name,
+                    })}
+                  </span>
+                </Button>
+              </div>
 
               <Menu
                 sx={{
