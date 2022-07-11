@@ -29,6 +29,7 @@ import {
   faUserEdit,
 } from "@fortawesome/free-solid-svg-icons"
 import { green, grey } from "@mui/material/colors"
+import jwt_decode from "jwt-decode"
 
 import { client, gql } from "../../functions/apollo-client"
 
@@ -289,15 +290,34 @@ const UserManagementPage = () => {
   }, [getUsers, token])
 
   const renderStatus = status => {
-    switch (status) {
+    const desc = status.description
+    const decodedToken = jwt_decode(token)
+    const maxTimer = (decodedToken.exp - decodedToken.iat) * 1000
+
+    const now = new Date().valueOf()
+    const expiredTime = new Date(status.createdAt).valueOf() + maxTimer
+
+    switch (desc) {
       case `login`:
+        if (now > expiredTime) {
+          return (
+            <>
+              <FontAwesomeIcon
+                icon={faCircle}
+                style={{ color: grey[500], marginRight: 8 }}
+              />
+              <span>{`session timeout`}</span>
+            </>
+          )
+        }
+
         return (
           <>
             <FontAwesomeIcon
               icon={faCircle}
               style={{ color: green[500], marginRight: 8 }}
             />
-            <span>{status}</span>
+            <span>{desc}</span>
           </>
         )
 
@@ -308,12 +328,12 @@ const UserManagementPage = () => {
               icon={faCircle}
               style={{ color: grey[500], marginRight: 8 }}
             />
-            <span>{status}</span>
+            <span>{desc}</span>
           </>
         )
 
       default:
-        return <>{status}</>
+        return <>{desc}</>
     }
   }
 
@@ -501,8 +521,7 @@ const UserManagementPage = () => {
                             )}
                           </TableCell>
                           <TableCell align="left" sx={{ minWidth: 100 }}>
-                            {row.status !== null &&
-                              renderStatus(row.status.description)}
+                            {row.status !== null && renderStatus(row.status)}
                           </TableCell>
                           <TableCell align="right">
                             {row.status !== null && (

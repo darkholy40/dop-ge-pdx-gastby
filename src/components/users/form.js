@@ -278,7 +278,7 @@ const UserForm = ({ modification, id }) => {
                 division: ${renderValueForRelationField(inputs.division)},
                 role: ${renderValueForRelationField(inputs.role)},
                 staff_created: "${userInfo._id}",
-                staff_updated: "",
+                staff_updated: "${userInfo._id}",
               }
             }) {
               user {

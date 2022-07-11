@@ -871,7 +871,7 @@ const PersonForm = ({ modification, id, divisionId }) => {
                 StatusDisability: "${statusDisability}",
                 skills: "${skills}",
                 staff_created: "${userInfo._id}",
-                staff_updated: "",
+                staff_updated: "${userInfo._id}",
                 type: "${jobType}",
                 isResigned: false,
                 resignationNote: "",
@@ -2491,11 +2491,7 @@ const PersonForm = ({ modification, id, divisionId }) => {
                       label: "* วันที่เริ่มสัญญาปัจจุบัน",
                       InputProps: {
                         ...dayPickerInputProps,
-                        endAdornment: renderCheckingIcon(
-                          currentContactStart === null
-                            ? ``
-                            : currentContactStart
-                        ),
+                        endAdornment: renderCheckingIcon(currentContactStart),
                       },
                     }}
                     disabled={jobType === `ลูกจ้างประจำ`}
@@ -2516,9 +2512,8 @@ const PersonForm = ({ modification, id, divisionId }) => {
                       id: "CurrentContactEnd",
                       label: "* วันที่สิ้นสุดสัญญาปัจจุบัน",
                       InputProps: {
-                        endAdornment: renderCheckingIcon(
-                          currentContactEnd === null ? `` : currentContactEnd
-                        ),
+                        ...dayPickerInputProps,
+                        endAdornment: renderCheckingIcon(currentContactEnd),
                       },
                     }}
                     disabled={jobType === `ลูกจ้างประจำ`}

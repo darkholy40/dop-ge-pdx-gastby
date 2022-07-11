@@ -235,7 +235,7 @@ const PositionForm = ({ modification, id }) => {
                   isSouth: ${positionInputs.posSouth},
                   have_a_budget: ${positionInputs.haveABudget},
                   staff_created: "${userInfo._id}",
-                  staff_updated: "",
+                  staff_updated: "${userInfo._id}",
                   person: null,
                   division: "${
                     roleLevel(userInfo.role) > 1
