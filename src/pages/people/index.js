@@ -70,10 +70,11 @@ const PeoplePage = () => {
     ({ mainReducer }) => mainReducer
   )
   const { units } = useSelector(({ staticReducer }) => staticReducer)
-  const { searchPersonFilter, addPersonFilter } = useSelector(
+  const { searchPersonFilter } = useSelector(
     ({ peopleReducer }) => peopleReducer
   )
   const dispatch = useDispatch()
+  const [addPersonFilter, setAddPersonFilter] = useState(null)
   const [isError, setIsError] = useState({
     status: `disabled`,
     text: `กำลังตรวจสอบคลังตำแหน่ง...`,
@@ -110,8 +111,8 @@ const PeoplePage = () => {
     }
 
     if (roleLevel(userInfo.role) >= 2) {
-      if (addPersonFilter.unit !== null) {
-        role = `division: "${addPersonFilter.unit._id}"`
+      if (addPersonFilter !== null) {
+        role = `division: "${addPersonFilter._id}"`
       }
     }
 
@@ -149,7 +150,7 @@ const PeoplePage = () => {
           status: ``,
           text: `มีตำแหน่งว่าง${
             roleLevel(userInfo.role) > 1
-              ? addPersonFilter.unit !== null
+              ? addPersonFilter !== null
                 ? ``
                 : `ทั้ง ทบ.`
               : ``
@@ -188,16 +189,12 @@ const PeoplePage = () => {
         title: ``,
       },
     })
-  }, [token, userInfo, addPersonFilter.unit, savePageView, dispatch])
+  }, [token, userInfo, addPersonFilter, savePageView, dispatch])
 
   useEffect(() => {
     dispatch({
       type: `SET_CURRENT_PAGE`,
       currentPage: `people`,
-    })
-
-    dispatch({
-      type: `CLEAR_ADD_PERSON_FILTER`,
     })
   }, [dispatch])
 
@@ -274,15 +271,9 @@ const PeoplePage = () => {
                       return option === value
                     }}
                     onChange={(_, newValue) => {
-                      dispatch({
-                        type: `SET_ADD_PERSON_FILTER`,
-                        addPersonFilter: {
-                          ...addPersonFilter,
-                          unit: newValue,
-                        },
-                      })
+                      setAddPersonFilter(newValue)
                     }}
-                    value={addPersonFilter.unit}
+                    value={addPersonFilter}
                     renderInput={params => (
                       <TextField
                         {...params}
@@ -306,11 +297,14 @@ const PeoplePage = () => {
                 disabled={
                   isError.status === `disabled` ||
                   isError.status === `notfound` ||
-                  (roleLevel(userInfo.role) > 1 &&
-                    addPersonFilter.unit === null)
+                  (roleLevel(userInfo.role) > 1 && addPersonFilter === null)
                 }
                 onClick={() => {
-                  navigate(`/people/add/`)
+                  if (roleLevel(userInfo.role) > 1) {
+                    navigate(`/people/add/?division_id=${addPersonFilter._id}`)
+                  } else {
+                    navigate(`/people/add/`)
+                  }
                 }}
               >
                 <FontAwesomeIcon

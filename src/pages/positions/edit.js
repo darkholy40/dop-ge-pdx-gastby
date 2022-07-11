@@ -15,13 +15,8 @@ const EditPositionsPage = ({ location }) => {
   const { token, userInfo } = useSelector(({ mainReducer }) => mainReducer)
   const dispatch = useDispatch()
 
-  const search = location.search.split("id=")
-  const id = search[1] || `0`
-
-  // useEffect(() => {
-  //   const search = location.search.split("id=")
-  //   console.log(search[1])
-  // }, [location])
+  const params = new URLSearchParams(location.search)
+  const id = params.get(`id`)
 
   const savePageView = useCallback(() => {
     // Prevent saving a log when switch user to super admin

@@ -69,9 +69,8 @@ const dayPickerInputProps = {
   ),
 }
 
-const PersonForm = ({ modification, id }) => {
+const PersonForm = ({ modification, id, divisionId }) => {
   const { token, userInfo } = useSelector(({ mainReducer }) => mainReducer)
-  const { addPersonFilter } = useSelector(({ peopleReducer }) => peopleReducer)
   const {
     positionTypes,
     positionNames,
@@ -260,8 +259,28 @@ const PersonForm = ({ modification, id }) => {
     }
 
     if (roleLevel(userInfo.role) >= 2) {
-      if (addPersonFilter.unit !== null) {
-        role = `division: "${addPersonFilter.unit._id}"`
+      switch (divisionId) {
+        case undefined:
+        case null:
+        case ``:
+          dispatch({
+            type: `SET_NOTIFICATION_DIALOG`,
+            notificationDialog: {
+              open: true,
+              title: `ยังไม่ได้เลือกสังกัด`,
+              description: `กรุณาเลือกสังกัดก่อนการเพื่อข้อมูลประวัติกำลังพล`,
+              variant: `error`,
+              confirmText: `ตกลง`,
+              callback: () => navigate(`/people/`),
+            },
+          })
+          setPercentDialog(prev => removeObjectInArray(prev, `id`, 1))
+
+          return 0
+
+        default:
+          role = `division: "${divisionId}"`
+          break
       }
     }
 
@@ -303,10 +322,25 @@ const PersonForm = ({ modification, id }) => {
             callback: () => getPositionsForAdding(),
           },
         })
+      } else {
+        dispatch({
+          type: `SET_NOTIFICATION_DIALOG`,
+          notificationDialog: {
+            open: true,
+            title: `ไม่พบสังกัดที่ท่านเลือกในฐานข้อมูล`,
+            description: `กรุณาลองใหม่อีกครั้ง`,
+            variant: `error`,
+            confirmText: `ตกลง`,
+            callback: () => navigate(`/people/`),
+          },
+        })
+        setPercentDialog(prev => removeObjectInArray(prev, `id`, 1))
       }
 
       return 0
     }
+
+    setFirstStrike(true)
 
     if (lap > 0) {
       let returnData = []
@@ -382,7 +416,7 @@ const PersonForm = ({ modification, id }) => {
         behavior: "smooth",
       })
     }, 200)
-  }, [token, userInfo, addPersonFilter.unit, dispatch])
+  }, [token, userInfo, divisionId, dispatch])
 
   const getPersonForEditing = useCallback(async () => {
     let returnData = {
@@ -390,7 +424,7 @@ const PersonForm = ({ modification, id }) => {
       position: null,
     }
 
-    if (id === `0`) {
+    if (id === null) {
       setIsError({
         status: `notfound`,
         text: `ไม่พบข้อมูลหน้านี้`,
@@ -599,7 +633,7 @@ const PersonForm = ({ modification, id }) => {
       },
     ])
 
-    if (id === `0`) {
+    if (id === null) {
       return 0
     }
 
@@ -1377,7 +1411,7 @@ const PersonForm = ({ modification, id }) => {
 
   return (
     <>
-      {(modification && firstStrike) || !modification ? (
+      {(modification && firstStrike) || (!modification && firstStrike) ? (
         <>
           <Form
             onSubmit={e => {
@@ -2968,6 +3002,7 @@ const PersonForm = ({ modification, id }) => {
 PersonForm.propTypes = {
   modification: PropTypes.bool,
   id: PropTypes.string,
+  divisionId: PropTypes.string,
 }
 
 PersonForm.defaultProps = {

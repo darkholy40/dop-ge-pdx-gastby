@@ -55,7 +55,7 @@ const PositionForm = ({ modification, id }) => {
   })
 
   const getPosition = useCallback(async () => {
-    if (id === `0`) {
+    if (id === null) {
       setIsError({
         status: `notfound`,
         text: `ไม่พบข้อมูลหน้านี้`,

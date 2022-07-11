@@ -80,7 +80,7 @@ const UserForm = ({ modification, id }) => {
   const [pwdVisibility, setPwdVisibility] = useState(false)
 
   const getUser = useCallback(async () => {
-    if (id === `0`) {
+    if (id === null) {
       setIsError({
         status: `notfound`,
         text: `ไม่พบข้อมูลผู้ใช้งาน`,

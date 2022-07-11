@@ -12,9 +12,6 @@ const initialState = {
     isResigned: false,
     currentPage: 0,
   },
-  addPersonFilter: {
-    unit: null,
-  },
 }
 
 const peopleReducer = (state = initialState, action) => {
@@ -23,18 +20,6 @@ const peopleReducer = (state = initialState, action) => {
       return {
         ...state,
         searchPersonFilter: action.searchPersonFilter,
-      }
-
-    case `SET_ADD_PERSON_FILTER`:
-      return {
-        ...state,
-        addPersonFilter: action.addPersonFilter,
-      }
-
-    case `CLEAR_ADD_PERSON_FILTER`:
-      return {
-        ...state,
-        addPersonFilter: initialState.addPersonFilter,
       }
 
     default:

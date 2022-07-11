@@ -11,9 +11,12 @@ import PageNotFound from "../../components/page-not-found"
 import renderDivision from "../../functions/render-division"
 import roleLevel from "../../functions/role-level"
 
-const AddPersonPage = () => {
+const AddPersonPage = ({ location }) => {
   const { token, userInfo } = useSelector(({ mainReducer }) => mainReducer)
   const dispatch = useDispatch()
+
+  const params = new URLSearchParams(location.search)
+  const divisionId = params.get(`division_id`)
 
   const savePageView = useCallback(() => {
     // Prevent saving a log when switch user to super admin
@@ -67,7 +70,7 @@ const AddPersonPage = () => {
             current="เพิ่มประวัติกำลังพล"
           />
 
-          <PersonForm />
+          <PersonForm divisionId={divisionId} />
         </>
       ) : (
         <PageNotFound />
