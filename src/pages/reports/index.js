@@ -63,7 +63,7 @@ const IndexPage = () => {
 
   return (
     <Layout>
-      {token !== `` && roleLevel(userInfo.role) >= 2 ? (
+      {token !== `` && roleLevel(userInfo.role) >= 1 ? (
         <>
           <Seo title="การออกรายงาน" />
           <Breadcrumbs current="การออกรายงาน" />

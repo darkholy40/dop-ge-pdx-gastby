@@ -87,7 +87,7 @@ const ResponsiveDrawer = props => {
         name: `reports`,
         desc: `การออกรายงาน`,
         icon: faPrint,
-        level: 2,
+        level: 1,
       },
     ],
     userManagement: [

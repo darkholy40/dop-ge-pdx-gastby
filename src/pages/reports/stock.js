@@ -35,6 +35,19 @@ const Container = styled.div`
   align-items: center;
 `
 
+const Line = styled.div`
+  display: flex;
+  flex-direction: column;
+  border: 1px solid rgba(0, 0, 0, 0.18);
+  border-radius: 12px;
+  padding: 0.5rem 1rem;
+`
+const Label = styled.span`
+  font-size: 0.75rem;
+  color: rgba(0, 0, 0, 0.5);
+  margin-bottom: 0.5rem;
+`
+
 const StockPage = () => {
   const { token, userInfo } = useSelector(({ mainReducer }) => mainReducer)
   const { units } = useSelector(({ staticReducer }) => staticReducer)
@@ -73,6 +86,7 @@ const StockPage = () => {
 
   const getData = useCallback(async () => {
     let lap = 0
+    let condition = ``
 
     setStatusCode(`loading`)
     // setPercent(0)
@@ -86,12 +100,18 @@ const StockPage = () => {
       },
     ])
 
-    const condition =
-      input.unit !== null
-        ? `where: {
-      division: "${input.unit._id}"
-    }`
-        : ``
+    if(roleLevel(userInfo.role) >= 2) {
+      condition =
+        input.unit !== null
+          ? `where: {
+        division: "${input.unit._id}"
+      }`
+          : ``
+    } else {
+      condition = `where: {
+        division: "${userInfo.division._id}"
+      }`
+    }
 
     try {
       const res = await client(token).query({
@@ -349,21 +369,27 @@ const StockPage = () => {
       // setPercent(0)
       setPercentDialog(prev => removeObjectInArray(prev, `id`, 1))
     }, 300)
-  }, [token, input.unit])
+  }, [token, input.unit, userInfo])
 
   useEffect(() => {
-    if (input.option !== null) {
-      // search all
-      if (input.option.id === 1) {
-        getData()
-      }
+    if(token !== ``) {
+      if(roleLevel(userInfo.role) >= 2) {
+        if (input.option !== null) {
+          // search all
+          if (input.option.id === 1) {
+            getData()
+          }
 
-      // search -> filter by unit
-      if (input.option.id === 2 && input.unit !== null) {
+          // search -> filter by unit
+          if (input.option.id === 2 && input.unit !== null) {
+            getData()
+          }
+        }
+      } else {
         getData()
       }
     }
-  }, [getData, input])
+  }, [getData, input, userInfo.role, token])
 
   useEffect(() => {
     dispatch({
@@ -378,7 +404,7 @@ const StockPage = () => {
 
   return (
     <Layout>
-      {token !== `` && roleLevel(userInfo.role) >= 2 ? (
+      {token !== `` && roleLevel(userInfo.role) >= 1 ? (
         <>
           <Seo title="รายชื่อพนักงานราชการและตำแหน่งว่าง" />
           <Breadcrumbs
@@ -396,97 +422,107 @@ const StockPage = () => {
               onSubmit={e => e.preventDefault()}
               style={{ width: `100%`, maxWidth: `400px` }}
             >
-              <Flex style={{ marginBottom: `1rem` }}>
-                <Autocomplete
-                  sx={{ width: `100%` }}
-                  id="exported-data"
-                  disablePortal
-                  options={exportedDataSelect}
-                  noOptionsText={`ไม่พบข้อมูล`}
-                  getOptionLabel={option => option.name}
-                  isOptionEqualToValue={(option, value) => {
-                    return option.id === value.id
-                  }}
-                  onChange={(_, newValue) => {
-                    if (newValue !== null) {
-                      setInput(prev => ({
-                        ...prev,
-                        option: newValue,
-                        unit: null,
-                      }))
-                      setStatusCode(`selecting-unit`)
-                    } else {
-                      setInput(prev => ({
-                        ...prev,
-                        option: null,
-                        unit: null,
-                      }))
-                      setStatusCode(`selecting`)
-                    }
-                  }}
-                  value={input.option}
-                  renderInput={params => (
-                    <TextField
-                      {...params}
-                      label="เลือกข้อมูลนำออก"
-                      InputProps={{
-                        ...params.InputProps,
-                      }}
-                    />
-                  )}
-                  disabled={
-                    statusCode === `loading` || statusCode === `connection`
-                  }
-                />
-              </Flex>
-              {input.option !== null && input.option.id === 2 && (
-                <Flex style={{ marginBottom: `1rem` }}>
-                  <Autocomplete
-                    sx={{ width: `100%` }}
-                    id="unit"
-                    disablePortal
-                    options={units}
-                    noOptionsText={`ไม่พบข้อมูล`}
-                    getOptionLabel={option => renderDivision(option)}
-                    isOptionEqualToValue={(option, value) => {
-                      return option === value
-                    }}
-                    onChange={(_, newValue) => {
-                      if (newValue !== null) {
-                        setInput(prev => ({
-                          ...prev,
-                          unit: newValue,
-                        }))
-                      } else {
-                        setInput(prev => ({
-                          ...prev,
-                          unit: null,
-                        }))
-                        setStatusCode(`selecting-unit`)
-                      }
-                    }}
-                    value={input.unit}
-                    renderInput={params => (
-                      <TextField
-                        {...params}
-                        label="สังกัด"
-                        InputProps={{
-                          ...params.InputProps,
-                        }}
-                      />
-                    )}
-                    disabled={
-                      statusCode === `loading` || statusCode === `connection`
-                    }
-                  />
-                </Flex>
-              )}
               <Alert
                 sx={{ marginBottom: `1rem`, animation: `fadein 0.3s` }}
                 severity={printSeverity(statusCode)}
               >
                 {displayStatus(statusCode)}
               </Alert>
+              {roleLevel(userInfo.role) >= 2 ? (
+                <>
+                  <Flex style={{ marginBottom: `1rem` }}>
+                    <Autocomplete
+                      sx={{ width: `100%` }}
+                      id="exported-data"
+                      disablePortal
+                      options={exportedDataSelect}
+                      noOptionsText={`ไม่พบข้อมูล`}
+                      getOptionLabel={option => option.name}
+                      isOptionEqualToValue={(option, value) => {
+                        return option.id === value.id
+                      }}
+                      onChange={(_, newValue) => {
+                        if (newValue !== null) {
+                          setInput(prev => ({
+                            ...prev,
+                            option: newValue,
+                            unit: null,
+                          }))
+                          setStatusCode(`selecting-unit`)
+                        } else {
+                          setInput(prev => ({
+                            ...prev,
+                            option: null,
+                            unit: null,
+                          }))
+                          setStatusCode(`selecting`)
+                        }
+                      }}
+                      value={input.option}
+                      renderInput={params => (
+                        <TextField
+                          {...params}
+                          label="เลือกข้อมูลนำออก"
+                          InputProps={{
+                            ...params.InputProps,
+                          }}
+                        />
+                      )}
+                      disabled={
+                        statusCode === `loading` || statusCode === `connection`
+                      }
+                    />
+                  </Flex>
+                  {input.option !== null && input.option.id === 2 && (
+                    <Flex style={{ marginBottom: `1rem` }}>
+                      <Autocomplete
+                        sx={{ width: `100%` }}
+                        id="unit"
+                        disablePortal
+                        options={units}
+                        noOptionsText={`ไม่พบข้อมูล`}
+                        getOptionLabel={option => renderDivision(option)}
+                        isOptionEqualToValue={(option, value) => {
+                          return option === value
+                        }}
+                        onChange={(_, newValue) => {
+                          if (newValue !== null) {
+                            setInput(prev => ({
+                              ...prev,
+                              unit: newValue,
+                            }))
+                          } else {
+                            setInput(prev => ({
+                              ...prev,
+                              unit: null,
+                            }))
+                            setStatusCode(`selecting-unit`)
+                          }
+                        }}
+                        value={input.unit}
+                        renderInput={params => (
+                          <TextField
+                            {...params}
+                            label="สังกัด"
+                            InputProps={{
+                              ...params.InputProps,
+                            }}
+                          />
+                        )}
+                        disabled={
+                          statusCode === `loading` || statusCode === `connection`
+                        }
+                      />
+                    </Flex>
+                  )}
+                </>
+              ) : (
+                <Line style={{ marginBottom: `1rem` }}>
+                  <Label>สังกัด</Label>
+                  <span>{renderDivision(userInfo.division)}</span>
+                </Line>
+              )}
+
               <ExportToExcel
                 apiData={data}
                 fileName="stock"
