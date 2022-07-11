@@ -25,6 +25,7 @@ import {
 import { client, gql } from "../../functions/apollo-client"
 
 import WhoCreated from "../who-created"
+import { Flex, TextFieldDummyOutlined } from "../styles"
 import renderDivision from "../../functions/render-division"
 import renderTableDate from "../../functions/render-table-date"
 import renderAgeFromDifferentDateRange from "../../functions/render-age-from-different-date-range"
@@ -32,29 +33,8 @@ import renderFullname from "../../functions/render-fullname"
 import renderNumberAsText from "../../functions/render-number-as-text"
 import roleLevel from "../../functions/role-level"
 
-const Content = styled.div`
-  display: flex;
+const Content = styled(Flex)`
   flex-direction: column;
-  align-items: center;
-  justify-content: flex-start;
-
-  > p {
-    font-size: 1rem;
-    margin-top: 0;
-  }
-`
-
-const Line = styled.div`
-  display: flex;
-  flex-direction: column;
-  border: 1px solid rgba(0, 0, 0, 0.18);
-  border-radius: 12px;
-  padding: 0.5rem 1rem;
-`
-const Label = styled.span`
-  font-size: 0.75rem;
-  color: rgba(0, 0, 0, 0.5);
-  margin-bottom: 0.5rem;
 `
 
 const PersonInfoDialog = ({ personId, open, title, callback, viewOnly }) => {
@@ -328,8 +308,10 @@ const PersonInfoDialog = ({ personId, open, title, callback, viewOnly }) => {
                 <>
                   <Grid container spacing={2}>
                     <Grid item xs={12}>
-                      <Line>
-                        <Label>ชื่อ</Label>
+                      <TextFieldDummyOutlined.Line>
+                        <TextFieldDummyOutlined.Label>
+                          ชื่อ
+                        </TextFieldDummyOutlined.Label>
                         <span>
                           {renderFullname({
                             rank: data.person.Prename,
@@ -337,63 +319,79 @@ const PersonInfoDialog = ({ personId, open, title, callback, viewOnly }) => {
                             surname: data.person.Surname,
                           })}
                         </span>
-                      </Line>
+                      </TextFieldDummyOutlined.Line>
                     </Grid>
                     <Grid item sm={4} xs={12}>
-                      <Line>
-                        <Label>หมายเลขประจำตัวประชาชน</Label>
+                      <TextFieldDummyOutlined.Line>
+                        <TextFieldDummyOutlined.Label>
+                          หมายเลขประจำตัวประชาชน
+                        </TextFieldDummyOutlined.Label>
                         <span>{data.person.ID_Card || `-`}</span>
-                      </Line>
+                      </TextFieldDummyOutlined.Line>
                     </Grid>
                     <Grid item sm={4} xs={12}>
-                      <Line>
-                        <Label>หมายเลขประจำตัวข้าราชการกองทัพบก</Label>
+                      <TextFieldDummyOutlined.Line>
+                        <TextFieldDummyOutlined.Label>
+                          หมายเลขประจำตัวข้าราชการกองทัพบก
+                        </TextFieldDummyOutlined.Label>
                         <span>{data.person.SID_Card || `-`}</span>
-                      </Line>
+                      </TextFieldDummyOutlined.Line>
                     </Grid>
                     <Grid item sm={4} xs={12}>
-                      <Line>
-                        <Label>ประเภท</Label>
+                      <TextFieldDummyOutlined.Line>
+                        <TextFieldDummyOutlined.Label>
+                          ประเภท
+                        </TextFieldDummyOutlined.Label>
                         <span>{data.person.type || `-`}</span>
-                      </Line>
+                      </TextFieldDummyOutlined.Line>
                     </Grid>
                     <Grid item sm={3} xs={12}>
-                      <Line>
-                        <Label>ชื่อตำแหน่งในสายงาน</Label>
+                      <TextFieldDummyOutlined.Line>
+                        <TextFieldDummyOutlined.Label>
+                          ชื่อตำแหน่งในสายงาน
+                        </TextFieldDummyOutlined.Label>
                         <span>
                           {data.position.position_type !== null
                             ? data.position.position_type.name
                             : `-`}
                         </span>
-                      </Line>
+                      </TextFieldDummyOutlined.Line>
                     </Grid>
                     <Grid item sm={3} xs={12}>
-                      <Line>
-                        <Label>ชื่อประเภทกลุ่มงาน</Label>
+                      <TextFieldDummyOutlined.Line>
+                        <TextFieldDummyOutlined.Label>
+                          ชื่อประเภทกลุ่มงาน
+                        </TextFieldDummyOutlined.Label>
                         <span>
                           {data.position.position_type !== null
                             ? data.position.position_type.type
                             : `-`}
                         </span>
-                      </Line>
+                      </TextFieldDummyOutlined.Line>
                     </Grid>
                     <Grid item sm={3} xs={12}>
-                      <Line>
-                        <Label>เลขที่ตำแหน่ง</Label>
+                      <TextFieldDummyOutlined.Line>
+                        <TextFieldDummyOutlined.Label>
+                          เลขที่ตำแหน่ง
+                        </TextFieldDummyOutlined.Label>
                         <span>{data.position.number || `-`}</span>
-                      </Line>
+                      </TextFieldDummyOutlined.Line>
                     </Grid>
                     <Grid item sm={3} xs={12}>
-                      <Line>
-                        <Label>สังกัด</Label>
+                      <TextFieldDummyOutlined.Line>
+                        <TextFieldDummyOutlined.Label>
+                          สังกัด
+                        </TextFieldDummyOutlined.Label>
                         <span>
                           {renderDivision(data.position.division) || `-`}
                         </span>
-                      </Line>
+                      </TextFieldDummyOutlined.Line>
                     </Grid>
                     <Grid item sm={3} xs={12}>
-                      <Line>
-                        <Label>วันเดือนปีเกิด</Label>
+                      <TextFieldDummyOutlined.Line>
+                        <TextFieldDummyOutlined.Label>
+                          วันเดือนปีเกิด
+                        </TextFieldDummyOutlined.Label>
                         <span>
                           {data.person.BirthDate !== null
                             ? `${renderTableDate(
@@ -404,25 +402,31 @@ const PersonInfoDialog = ({ personId, open, title, callback, viewOnly }) => {
                               )} ปี)`
                             : `-`}
                         </span>
-                      </Line>
+                      </TextFieldDummyOutlined.Line>
                     </Grid>
                     <Grid item sm={3} xs={12}>
-                      <Line>
-                        <Label>เพศ</Label>
+                      <TextFieldDummyOutlined.Line>
+                        <TextFieldDummyOutlined.Label>
+                          เพศ
+                        </TextFieldDummyOutlined.Label>
                         <span>{data.person.Gender || `-`}</span>
-                      </Line>
+                      </TextFieldDummyOutlined.Line>
                     </Grid>
                     <Grid item sm={3} xs={12}>
-                      <Line>
-                        <Label>สถานภาพสมรส</Label>
+                      <TextFieldDummyOutlined.Line>
+                        <TextFieldDummyOutlined.Label>
+                          สถานภาพสมรส
+                        </TextFieldDummyOutlined.Label>
                         <span>{data.person.MarriedStatus || `-`}</span>
-                      </Line>
+                      </TextFieldDummyOutlined.Line>
                     </Grid>
                     <Grid item sm={3} xs={12}>
-                      <Line>
-                        <Label>หมายเลขโทรศัพท์</Label>
+                      <TextFieldDummyOutlined.Line>
+                        <TextFieldDummyOutlined.Label>
+                          หมายเลขโทรศัพท์
+                        </TextFieldDummyOutlined.Label>
                         <span>{data.person.Telephone || `-`}</span>
-                      </Line>
+                      </TextFieldDummyOutlined.Line>
                     </Grid>
                   </Grid>
                   <Divider
@@ -434,50 +438,60 @@ const PersonInfoDialog = ({ personId, open, title, callback, viewOnly }) => {
                   />
                   <Grid container spacing={2}>
                     <Grid item sm={3} xs={12}>
-                      <Line>
-                        <Label>จังหวัด</Label>
+                      <TextFieldDummyOutlined.Line>
+                        <TextFieldDummyOutlined.Label>
+                          จังหวัด
+                        </TextFieldDummyOutlined.Label>
                         <span>
                           {data.person.location !== null
                             ? data.person.location.province
                             : `-`}
                         </span>
-                      </Line>
+                      </TextFieldDummyOutlined.Line>
                     </Grid>
                     <Grid item sm={3} xs={12}>
-                      <Line>
-                        <Label>อำเภอ</Label>
+                      <TextFieldDummyOutlined.Line>
+                        <TextFieldDummyOutlined.Label>
+                          อำเภอ
+                        </TextFieldDummyOutlined.Label>
                         <span>
                           {data.person.location !== null
                             ? data.person.location.district
                             : `-`}
                         </span>
-                      </Line>
+                      </TextFieldDummyOutlined.Line>
                     </Grid>
                     <Grid item sm={3} xs={12}>
-                      <Line>
-                        <Label>ตำบล</Label>
+                      <TextFieldDummyOutlined.Line>
+                        <TextFieldDummyOutlined.Label>
+                          ตำบล
+                        </TextFieldDummyOutlined.Label>
                         <span>
                           {data.person.location !== null
                             ? data.person.location.subdistrict
                             : `-`}
                         </span>
-                      </Line>
+                      </TextFieldDummyOutlined.Line>
                     </Grid>
                     <Grid item sm={3} xs={12}>
-                      <Line>
-                        <Label>รหัสไปรษณีย์</Label>
+                      <TextFieldDummyOutlined.Line>
+                        <TextFieldDummyOutlined.Label>
+                          รหัสไปรษณีย์
+                        </TextFieldDummyOutlined.Label>
                         <span>
                           {data.person.location !== null
                             ? data.person.location.zipcode
                             : `-`}
                         </span>
-                      </Line>
+                      </TextFieldDummyOutlined.Line>
                     </Grid>
                     <Grid item xs={12}>
-                      <Line>
-                        <Label>รายละเอียดที่อยู่</Label>
+                      <TextFieldDummyOutlined.Line>
+                        <TextFieldDummyOutlined.Label>
+                          รายละเอียดที่อยู่
+                        </TextFieldDummyOutlined.Label>
                         <span>{data.person.Address || `-`}</span>
-                      </Line>
+                      </TextFieldDummyOutlined.Line>
                     </Grid>
                   </Grid>
                   <Divider
@@ -489,55 +503,65 @@ const PersonInfoDialog = ({ personId, open, title, callback, viewOnly }) => {
                   />
                   <Grid container spacing={2}>
                     <Grid item xs={12}>
-                      <Line>
-                        <Label>วันเริ่มทำสัญญา</Label>
+                      <TextFieldDummyOutlined.Line>
+                        <TextFieldDummyOutlined.Label>
+                          วันเริ่มทำสัญญา
+                        </TextFieldDummyOutlined.Label>
                         <span>
                           {renderTableDate(
                             data.person.StartDate,
                             `full-date`
                           ) || `-`}
                         </span>
-                      </Line>
+                      </TextFieldDummyOutlined.Line>
                     </Grid>
                     <Grid item sm={6} xs={12}>
-                      <Line>
-                        <Label>ระดับการศึกษา</Label>
+                      <TextFieldDummyOutlined.Line>
+                        <TextFieldDummyOutlined.Label>
+                          ระดับการศึกษา
+                        </TextFieldDummyOutlined.Label>
                         <span>
                           {data.person.education_level !== null
                             ? data.person.education_level.name
                             : `-`}
                         </span>
-                      </Line>
+                      </TextFieldDummyOutlined.Line>
                     </Grid>
                     <Grid item sm={6} xs={12}>
-                      <Line>
-                        <Label>ชื่อวุฒิการศึกษา</Label>
+                      <TextFieldDummyOutlined.Line>
+                        <TextFieldDummyOutlined.Label>
+                          ชื่อวุฒิการศึกษา
+                        </TextFieldDummyOutlined.Label>
                         <span>
                           {data.person.education_name !== null
                             ? data.person.education_name.full_name
                             : `-`}
                         </span>
-                      </Line>
+                      </TextFieldDummyOutlined.Line>
                     </Grid>
                     <Grid item sm={6} xs={12}>
-                      <Line>
-                        <Label>ชื่อสถาบันที่สำเร็จการศึกษา</Label>
+                      <TextFieldDummyOutlined.Line>
+                        <TextFieldDummyOutlined.Label>
+                          ชื่อสถาบันที่สำเร็จการศึกษา
+                        </TextFieldDummyOutlined.Label>
                         <span>
                           {data.person.educational_institution !== null
                             ? data.person.educational_institution.name
                             : `-`}
                         </span>
-                      </Line>
+                      </TextFieldDummyOutlined.Line>
                     </Grid>
                     <Grid item sm={6} xs={12}>
-                      <Line>
-                        <Label>ชื่อประเทศ</Label>
+                      <TextFieldDummyOutlined.Line>
+                        <TextFieldDummyOutlined.Label>
+                          ชื่อประเทศ
+                        </TextFieldDummyOutlined.Label>
                         <span>
                           {data.person.country !== null
                             ? data.person.country.name
                             : `-`}
                         </span>
-                      </Line>
+                      </TextFieldDummyOutlined.Line>
                     </Grid>
                   </Grid>
                   <Divider
@@ -551,45 +575,57 @@ const PersonInfoDialog = ({ personId, open, title, callback, viewOnly }) => {
                     {data.person.type === `พนักงานราชการ` && (
                       <>
                         <Grid item sm={6} xs={12}>
-                          <Line>
-                            <Label>ชื่อประเภทการเคลื่อนไหวล่าสุด</Label>
+                          <TextFieldDummyOutlined.Line>
+                            <TextFieldDummyOutlined.Label>
+                              ชื่อประเภทการเคลื่อนไหวล่าสุด
+                            </TextFieldDummyOutlined.Label>
                             <span>{data.person.MovementType || `-`}</span>
-                          </Line>
+                          </TextFieldDummyOutlined.Line>
                         </Grid>
                         <Grid item sm={6} xs={12}>
-                          <Line>
-                            <Label>กรอบอัตรากำลัง</Label>
+                          <TextFieldDummyOutlined.Line>
+                            <TextFieldDummyOutlined.Label>
+                              กรอบอัตรากำลัง
+                            </TextFieldDummyOutlined.Label>
                             <span>{data.person.Outline || `-`}</span>
-                          </Line>
+                          </TextFieldDummyOutlined.Line>
                         </Grid>
                       </>
                     )}
                     <Grid item sm={4} xs={12}>
-                      <Line>
-                        <Label>ค่าตอบแทนปัจจุบัน(เงินเดือน)</Label>
+                      <TextFieldDummyOutlined.Line>
+                        <TextFieldDummyOutlined.Label>
+                          ค่าตอบแทนปัจจุบัน(เงินเดือน)
+                        </TextFieldDummyOutlined.Label>
                         <span>{data.person.RewardType1 || `-`}</span>
-                      </Line>
+                      </TextFieldDummyOutlined.Line>
                     </Grid>
                     <Grid item sm={4} xs={12}>
-                      <Line>
-                        <Label>ค่าตอบแทนสำหรับตำแหน่งที่มีเหตุพิเศษ</Label>
+                      <TextFieldDummyOutlined.Line>
+                        <TextFieldDummyOutlined.Label>
+                          ค่าตอบแทนสำหรับตำแหน่งที่มีเหตุพิเศษ
+                        </TextFieldDummyOutlined.Label>
                         <span>{data.person.RewardType2 || `-`}</span>
-                      </Line>
+                      </TextFieldDummyOutlined.Line>
                     </Grid>
                     {data.person.type === `พนักงานราชการ` && (
                       <Grid item sm={4} xs={12}>
-                        <Line>
-                          <Label>ค่าครองชีพชั่วคราว</Label>
+                        <TextFieldDummyOutlined.Line>
+                          <TextFieldDummyOutlined.Label>
+                            ค่าครองชีพชั่วคราว
+                          </TextFieldDummyOutlined.Label>
                           <span>{data.person.RewardType3 || `-`}</span>
-                        </Line>
+                        </TextFieldDummyOutlined.Line>
                       </Grid>
                     )}
                     {data.person.type === `พนักงานราชการ` && (
                       <Grid item sm={3} xs={12}>
-                        <Line>
-                          <Label>จำนวนครั้งที่ทำสัญญา</Label>
+                        <TextFieldDummyOutlined.Line>
+                          <TextFieldDummyOutlined.Label>
+                            จำนวนครั้งที่ทำสัญญา
+                          </TextFieldDummyOutlined.Label>
                           <span>{data.person.ContactCnt || `-`}</span>
-                        </Line>
+                        </TextFieldDummyOutlined.Line>
                       </Grid>
                     )}
                     <Grid
@@ -597,34 +633,40 @@ const PersonInfoDialog = ({ personId, open, title, callback, viewOnly }) => {
                       sm={data.person.type === `พนักงานราชการ` ? 3 : 4}
                       xs={12}
                     >
-                      <Line>
-                        <Label>ประเภทภารกิจ</Label>
+                      <TextFieldDummyOutlined.Line>
+                        <TextFieldDummyOutlined.Label>
+                          ประเภทภารกิจ
+                        </TextFieldDummyOutlined.Label>
                         <span>{data.person.Mission || `-`}</span>
-                      </Line>
+                      </TextFieldDummyOutlined.Line>
                     </Grid>
                     {data.person.type === `พนักงานราชการ` && (
                       <>
                         <Grid item sm={3} xs={12}>
-                          <Line>
-                            <Label>วันที่เริ่มสัญญาปัจจุบัน</Label>
+                          <TextFieldDummyOutlined.Line>
+                            <TextFieldDummyOutlined.Label>
+                              วันที่เริ่มสัญญาปัจจุบัน
+                            </TextFieldDummyOutlined.Label>
                             <span>
                               {renderTableDate(
                                 data.person.CurrentContactStart,
                                 `full-date`
                               ) || `-`}
                             </span>
-                          </Line>
+                          </TextFieldDummyOutlined.Line>
                         </Grid>
                         <Grid item sm={3} xs={12}>
-                          <Line>
-                            <Label>วันที่สิ้นสุดสัญญาปัจจุบัน</Label>
+                          <TextFieldDummyOutlined.Line>
+                            <TextFieldDummyOutlined.Label>
+                              วันที่สิ้นสุดสัญญาปัจจุบัน
+                            </TextFieldDummyOutlined.Label>
                             <span>
                               {renderTableDate(
                                 data.person.CurrentContactEnd,
                                 `full-date`
                               ) || `-`}
                             </span>
-                          </Line>
+                          </TextFieldDummyOutlined.Line>
                         </Grid>
                       </>
                     )}
@@ -638,70 +680,86 @@ const PersonInfoDialog = ({ personId, open, title, callback, viewOnly }) => {
                   />
                   <Grid container spacing={2}>
                     <Grid item sm={6} xs={12}>
-                      <Line>
-                        <Label>ความผิดทางวินัย</Label>
+                      <TextFieldDummyOutlined.Line>
+                        <TextFieldDummyOutlined.Label>
+                          ความผิดทางวินัย
+                        </TextFieldDummyOutlined.Label>
                         <span>{data.person.Guilty || `-`}</span>
-                      </Line>
+                      </TextFieldDummyOutlined.Line>
                     </Grid>
                     <Grid item sm={6} xs={12}>
-                      <Line>
-                        <Label>ประเภทโทษทางวินัย</Label>
+                      <TextFieldDummyOutlined.Line>
+                        <TextFieldDummyOutlined.Label>
+                          ประเภทโทษทางวินัย
+                        </TextFieldDummyOutlined.Label>
                         <span>{data.person.Punish || `-`}</span>
-                      </Line>
+                      </TextFieldDummyOutlined.Line>
                     </Grid>
                     {data.person.type === `ลูกจ้างประจำ` && (
                       <Grid item xs={12}>
-                        <Line>
-                          <Label>เครื่องราชอิสริยาภรณ์สูงสุดที่ได้รับ</Label>
+                        <TextFieldDummyOutlined.Line>
+                          <TextFieldDummyOutlined.Label>
+                            เครื่องราชอิสริยาภรณ์สูงสุดที่ได้รับ
+                          </TextFieldDummyOutlined.Label>
                           <span>
                             {data.person.decoration !== null
                               ? data.person.decoration.full_name
                               : `-`}
                           </span>
-                        </Line>
+                        </TextFieldDummyOutlined.Line>
                       </Grid>
                     )}
                     <Grid item sm={4} xs={12}>
-                      <Line>
-                        <Label>ร้อยละที่ได้รับการเลื่อนเงินเดือน</Label>
+                      <TextFieldDummyOutlined.Line>
+                        <TextFieldDummyOutlined.Label>
+                          ร้อยละที่ได้รับการเลื่อนเงินเดือน
+                        </TextFieldDummyOutlined.Label>
                         <span>
                           {data.person.PercentSalary
                             ? renderNumberAsText(data.person.PercentSalary, 2)
                             : `-`}
                         </span>
-                      </Line>
+                      </TextFieldDummyOutlined.Line>
                     </Grid>
                     <Grid item sm={4} xs={12}>
-                      <Line>
-                        <Label>คะแนนผลสัมฤทธิ์ของงาน</Label>
+                      <TextFieldDummyOutlined.Line>
+                        <TextFieldDummyOutlined.Label>
+                          คะแนนผลสัมฤทธิ์ของงาน
+                        </TextFieldDummyOutlined.Label>
                         <span>
                           {data.person.ScoreKPI
                             ? renderNumberAsText(data.person.ScoreKPI, 2)
                             : `-`}
                         </span>
-                      </Line>
+                      </TextFieldDummyOutlined.Line>
                     </Grid>
                     <Grid item sm={4} xs={12}>
-                      <Line>
-                        <Label>คะแนนประเมินสมรรถนะ</Label>
+                      <TextFieldDummyOutlined.Line>
+                        <TextFieldDummyOutlined.Label>
+                          คะแนนประเมินสมรรถนะ
+                        </TextFieldDummyOutlined.Label>
                         <span>
                           {data.person.ScoreCompetence
                             ? renderNumberAsText(data.person.ScoreCompetence, 2)
                             : `-`}
                         </span>
-                      </Line>
+                      </TextFieldDummyOutlined.Line>
                     </Grid>
                     <Grid item xs={12}>
-                      <Line>
-                        <Label>สภานภาพทางกาย</Label>
+                      <TextFieldDummyOutlined.Line>
+                        <TextFieldDummyOutlined.Label>
+                          สภานภาพทางกาย
+                        </TextFieldDummyOutlined.Label>
                         <span>{data.person.StatusDisability || `-`}</span>
-                      </Line>
+                      </TextFieldDummyOutlined.Line>
                     </Grid>
                     <Grid item xs={12}>
-                      <Line>
-                        <Label>ทักษะประสบการณ์</Label>
+                      <TextFieldDummyOutlined.Line>
+                        <TextFieldDummyOutlined.Label>
+                          ทักษะประสบการณ์
+                        </TextFieldDummyOutlined.Label>
                         <span>{data.person.skills || `-`}</span>
-                      </Line>
+                      </TextFieldDummyOutlined.Line>
                     </Grid>
                   </Grid>
                   {roleLevel(userInfo.role) >= 2 && (

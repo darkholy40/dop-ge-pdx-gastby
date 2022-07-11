@@ -14,20 +14,18 @@ import Seo from "../../components/seo"
 import Breadcrumbs from "../../components/breadcrumbs"
 import PageNotFound from "../../components/page-not-found"
 import Warning from "../../components/warning"
-import { Form, Flex, CheckCircleFlex } from "../../components/styles"
+import {
+  Form,
+  Flex,
+  CheckCircleFlex,
+  TextFieldDummy,
+} from "../../components/styles"
 import renderDivision from "../../functions/render-division"
 import renderCheckingIcon from "../../functions/render-checking-icon"
 import roleLevel from "../../functions/role-level"
 
-const Line = styled.div`
+const Line = styled(TextFieldDummy.Line)`
   margin-bottom: 1rem;
-  display: flex;
-  flex-direction: column;
-`
-const Label = styled.span`
-  font-size: 0.75rem;
-  color: rgba(0, 0, 0, 0.5);
-  margin-bottom: 0.5rem;
 `
 
 const Text = styled.span``
@@ -396,26 +394,30 @@ const ResignationPage = ({ location }) => {
                 style={{ maxWidth: 400 }}
               >
                 <Line>
-                  <Label>ชื่อ</Label>
+                  <TextFieldDummy.Label>ชื่อ</TextFieldDummy.Label>
                   <Text>
                     {personData.person.Prename} {personData.person.Name}{" "}
                     {personData.person.Surname}
                   </Text>
                 </Line>
                 <Line>
-                  <Label>ชื่อตำแหน่งในสายงาน</Label>
+                  <TextFieldDummy.Label>
+                    ชื่อตำแหน่งในสายงาน
+                  </TextFieldDummy.Label>
                   <Text>{personData.position_type.name}</Text>
                 </Line>
                 <Line>
-                  <Label>ชื่อประเภทกลุ่มงาน</Label>
+                  <TextFieldDummy.Label>
+                    ชื่อประเภทกลุ่มงาน
+                  </TextFieldDummy.Label>
                   <Text>{personData.position_type.type}</Text>
                 </Line>
                 <Line>
-                  <Label>เลขที่ตำแหน่ง</Label>
+                  <TextFieldDummy.Label>เลขที่ตำแหน่ง</TextFieldDummy.Label>
                   <Text>{personData.number}</Text>
                 </Line>
                 <Line>
-                  <Label>สังกัด</Label>
+                  <TextFieldDummy.Label>สังกัด</TextFieldDummy.Label>
                   <Text>{renderDivision(personData.division)}</Text>
                 </Line>
               </Form>

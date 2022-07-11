@@ -19,7 +19,7 @@ import Breadcrumbs from "../../components/breadcrumbs"
 import PageNotFound from "../../components/page-not-found"
 import {
   Form,
-  SubmitButtonFlex,
+  SearchButtonContainer,
   Flex,
   TextFieldWall,
 } from "../../components/styles"
@@ -602,7 +602,7 @@ const PeoplePage = () => {
                 </TextFieldWall>
               </Grid>
               <Grid item xs={12} sm={6}>
-                <SubmitButtonFlex>
+                <SearchButtonContainer>
                   <Button
                     style={{ marginRight: 10 }}
                     color="error"
@@ -669,7 +669,7 @@ const PeoplePage = () => {
                     />
                     ค้นหา
                   </Button>
-                </SubmitButtonFlex>
+                </SearchButtonContainer>
               </Grid>
             </Grid>
           </Form>

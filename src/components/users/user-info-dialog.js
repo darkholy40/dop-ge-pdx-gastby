@@ -27,33 +27,13 @@ import { faCheckCircle } from "@fortawesome/free-regular-svg-icons"
 import { client, gql } from "../../functions/apollo-client"
 
 import WhoCreated from "../who-created"
+import { Flex, TextFieldDummyOutlined } from "../styles"
 import renderDivision from "../../functions/render-division"
 import roleLevel from "../../functions/role-level"
 import renderUserRole from "../../functions/render-user-role"
 
-const Content = styled.div`
-  display: flex;
+const Content = styled(Flex)`
   flex-direction: column;
-  align-items: center;
-  justify-content: flex-start;
-
-  > p {
-    font-size: 1rem;
-    margin-top: 0;
-  }
-`
-
-const Line = styled.div`
-  display: flex;
-  flex-direction: column;
-  border: 1px solid rgba(0, 0, 0, 0.18);
-  border-radius: 12px;
-  padding: 0.5rem 1rem;
-`
-const Label = styled.span`
-  font-size: 0.75rem;
-  color: rgba(0, 0, 0, 0.5);
-  margin-bottom: 0.5rem;
 `
 
 const UserInfoDialog = ({ userId, open, title, callback, viewOnly }) => {
@@ -238,28 +218,36 @@ const UserInfoDialog = ({ userId, open, title, callback, viewOnly }) => {
                 <>
                   <Grid container spacing={2}>
                     <Grid item sm={4} xs={12}>
-                      <Line>
-                        <Label>ยศ</Label>
+                      <TextFieldDummyOutlined.Line>
+                        <TextFieldDummyOutlined.Label>
+                          ยศ
+                        </TextFieldDummyOutlined.Label>
                         <span>{data.rank || `-`}</span>
-                      </Line>
+                      </TextFieldDummyOutlined.Line>
                     </Grid>
                     <Grid item sm={4} xs={12}>
-                      <Line>
-                        <Label>ชื่อ</Label>
+                      <TextFieldDummyOutlined.Line>
+                        <TextFieldDummyOutlined.Label>
+                          ชื่อ
+                        </TextFieldDummyOutlined.Label>
                         <span>{data.name || `-`}</span>
-                      </Line>
+                      </TextFieldDummyOutlined.Line>
                     </Grid>
                     <Grid item sm={4} xs={12}>
-                      <Line>
-                        <Label>สกุล</Label>
+                      <TextFieldDummyOutlined.Line>
+                        <TextFieldDummyOutlined.Label>
+                          สกุล
+                        </TextFieldDummyOutlined.Label>
                         <span>{data.surname || `-`}</span>
-                      </Line>
+                      </TextFieldDummyOutlined.Line>
                     </Grid>
                     <Grid item xs={12}>
-                      <Line>
-                        <Label>ตำแหน่ง</Label>
+                      <TextFieldDummyOutlined.Line>
+                        <TextFieldDummyOutlined.Label>
+                          ตำแหน่ง
+                        </TextFieldDummyOutlined.Label>
                         <span>{data.userPosition || `-`}</span>
-                      </Line>
+                      </TextFieldDummyOutlined.Line>
                     </Grid>
                   </Grid>
                   <Divider
@@ -271,16 +259,20 @@ const UserInfoDialog = ({ userId, open, title, callback, viewOnly }) => {
                   />
                   <Grid container spacing={2}>
                     <Grid item sm={6} xs={12}>
-                      <Line>
-                        <Label>ชื่อผู้ใช้งาน</Label>
+                      <TextFieldDummyOutlined.Line>
+                        <TextFieldDummyOutlined.Label>
+                          ชื่อผู้ใช้งาน
+                        </TextFieldDummyOutlined.Label>
                         <span>{data.username || `-`}</span>
-                      </Line>
+                      </TextFieldDummyOutlined.Line>
                     </Grid>
                     <Grid item sm={6} xs={12}>
-                      <Line>
-                        <Label>อีเมล</Label>
+                      <TextFieldDummyOutlined.Line>
+                        <TextFieldDummyOutlined.Label>
+                          อีเมล
+                        </TextFieldDummyOutlined.Label>
                         <span>{data.email || `-`}</span>
-                      </Line>
+                      </TextFieldDummyOutlined.Line>
                     </Grid>
                   </Grid>
                   <Divider
@@ -292,26 +284,32 @@ const UserInfoDialog = ({ userId, open, title, callback, viewOnly }) => {
                   />
                   <Grid container spacing={2}>
                     <Grid item xs={12}>
-                      <Line>
-                        <Label>สังกัด</Label>
+                      <TextFieldDummyOutlined.Line>
+                        <TextFieldDummyOutlined.Label>
+                          สังกัด
+                        </TextFieldDummyOutlined.Label>
                         <span>{renderDivision(data.division) || `-`}</span>
-                      </Line>
+                      </TextFieldDummyOutlined.Line>
                     </Grid>
                     <Grid item sm={6} xs={12}>
-                      <Line>
-                        <Label>ระดับผู้ใช้งาน</Label>
+                      <TextFieldDummyOutlined.Line>
+                        <TextFieldDummyOutlined.Label>
+                          ระดับผู้ใช้งาน
+                        </TextFieldDummyOutlined.Label>
                         <span>
                           {data.role !== null
                             ? renderUserRole(data.role.name)
                             : `-`}
                         </span>
-                      </Line>
+                      </TextFieldDummyOutlined.Line>
                     </Grid>
                     <Grid item sm={6} xs={12}>
-                      <Line>
-                        <Label>เปิดการใช้งาน</Label>
+                      <TextFieldDummyOutlined.Line>
+                        <TextFieldDummyOutlined.Label>
+                          เปิดการใช้งาน
+                        </TextFieldDummyOutlined.Label>
                         <span>{renderCheckIcon(data.confirmed)}</span>
-                      </Line>
+                      </TextFieldDummyOutlined.Line>
                     </Grid>
                   </Grid>
                   {roleLevel(userInfo.role) >= 2 && (

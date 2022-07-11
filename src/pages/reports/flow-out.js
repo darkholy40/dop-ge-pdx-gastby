@@ -11,7 +11,7 @@ import Seo from "../../components/seo"
 import Breadcrumbs from "../../components/breadcrumbs"
 import PageNotFound from "../../components/page-not-found"
 import ExportToExcel from "../../components/export-to-excel"
-import { Form, Flex } from "../../components/styles"
+import { Form, Flex, TextFieldDummyOutlined } from "../../components/styles"
 import PercentDialog from "../../components/percent-dialog"
 import renderDivision from "../../functions/render-division"
 import renderNumberAsText from "../../functions/render-number-as-text"
@@ -26,24 +26,9 @@ import {
 } from "../../functions/object-in-array"
 import roleLevel from "../../functions/role-level"
 
-const Container = styled.div`
+const Container = styled(Flex)`
   width: 100%;
-  display: flex;
   flex-direction: column;
-  align-items: center;
-`
-
-const Line = styled.div`
-  display: flex;
-  flex-direction: column;
-  border: 1px solid rgba(0, 0, 0, 0.18);
-  border-radius: 12px;
-  padding: 0.5rem 1rem;
-`
-const Label = styled.span`
-  font-size: 0.75rem;
-  color: rgba(0, 0, 0, 0.5);
-  margin-bottom: 0.5rem;
 `
 
 const FlowOutPage = () => {
@@ -418,10 +403,12 @@ const FlowOutPage = () => {
                   )}
                 </>
               ) : (
-                <Line style={{ marginBottom: `1rem` }}>
-                  <Label>สังกัด</Label>
+                <TextFieldDummyOutlined.Line style={{ marginBottom: `1rem` }}>
+                  <TextFieldDummyOutlined.Label>
+                    สังกัด
+                  </TextFieldDummyOutlined.Label>
                   <span>{renderDivision(userInfo.division)}</span>
-                </Line>
+                </TextFieldDummyOutlined.Line>
               )}
               <ExportToExcel
                 apiData={data}

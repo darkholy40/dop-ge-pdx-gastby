@@ -28,7 +28,7 @@ const Form = styled.form`
   max-width: 800px;
 `
 
-const SubmitButtonFlex = styled.div`
+const SearchButtonContainer = styled.div`
   display: flex;
   justify-content: center;
 
@@ -127,13 +127,42 @@ const ColorButton = styled.div`
   }
 `
 
+const TextFieldDummy = {
+  Line: styled.div`
+    display: flex;
+    flex-direction: column;
+  `,
+  Label: styled.span`
+    font-size: 0.75rem;
+    color: rgba(0, 0, 0, 0.5);
+    margin-bottom: 0.5rem;
+  `,
+}
+
+const TextFieldDummyOutlined = {
+  Line: styled.div`
+    display: flex;
+    flex-direction: column;
+    border: 1px solid rgba(0, 0, 0, 0.18);
+    border-radius: 12px;
+    padding: 0.5rem 1rem;
+  `,
+  Label: styled.span`
+    font-size: 0.75rem;
+    color: rgba(0, 0, 0, 0.5);
+    margin-bottom: 0.5rem;
+  `,
+}
+
 export {
   Link,
   Form,
-  SubmitButtonFlex,
+  SearchButtonContainer,
   Flex,
   DisabledBlock,
   TextFieldWall,
   CheckCircleFlex,
   ColorButton,
+  TextFieldDummy,
+  TextFieldDummyOutlined,
 }

@@ -6,17 +6,15 @@ import { Divider } from "@mui/material"
 
 import { client, gql } from "../functions/apollo-client"
 
+import { TextFieldDummy } from "./styles"
 import renderFullname from "../functions/render-fullname"
 import renderTableDate from "../functions/render-table-date"
 
-const Line = styled.div`
+const Line = styled(TextFieldDummy.Line)`
   margin-bottom: 1rem;
-  display: flex;
-  flex-direction: column;
 `
-const Label = styled.span`
-  font-size: 0.75rem;
-  color: rgba(0, 0, 0, 0.5);
+
+const Label = styled(TextFieldDummy.Label)`
   margin-top: 0.5rem;
   margin-bottom: 0.5rem;
 `

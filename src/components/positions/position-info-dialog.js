@@ -27,32 +27,12 @@ import { faCheckCircle } from "@fortawesome/free-regular-svg-icons"
 import { client, gql } from "../../functions/apollo-client"
 
 import WhoCreated from "../who-created"
+import { Flex, TextFieldDummyOutlined } from "../styles"
 import renderDivision from "../../functions/render-division"
 import roleLevel from "../../functions/role-level"
 
-const Content = styled.div`
-  display: flex;
+const Content = styled(Flex)`
   flex-direction: column;
-  align-items: center;
-  justify-content: flex-start;
-
-  > p {
-    font-size: 1rem;
-    margin-top: 0;
-  }
-`
-
-const Line = styled.div`
-  display: flex;
-  flex-direction: column;
-  border: 1px solid rgba(0, 0, 0, 0.18);
-  border-radius: 12px;
-  padding: 0.5rem 1rem;
-`
-const Label = styled.span`
-  font-size: 0.75rem;
-  color: rgba(0, 0, 0, 0.5);
-  margin-bottom: 0.5rem;
 `
 
 const PositionInfoDialog = ({
@@ -241,28 +221,36 @@ const PositionInfoDialog = ({
                 <>
                   <Grid container spacing={2}>
                     <Grid item sm={4} xs={12}>
-                      <Line>
-                        <Label>เลขที่ตำแหน่ง</Label>
+                      <TextFieldDummyOutlined.Line>
+                        <TextFieldDummyOutlined.Label>
+                          เลขที่ตำแหน่ง
+                        </TextFieldDummyOutlined.Label>
                         <span>{data.number || `-`}</span>
-                      </Line>
+                      </TextFieldDummyOutlined.Line>
                     </Grid>
                     <Grid item sm={4} xs={12}>
-                      <Line>
-                        <Label>ชื่อประเภทกลุ่มงาน</Label>
+                      <TextFieldDummyOutlined.Line>
+                        <TextFieldDummyOutlined.Label>
+                          ชื่อประเภทกลุ่มงาน
+                        </TextFieldDummyOutlined.Label>
                         <span>{data.position_type.type || `-`}</span>
-                      </Line>
+                      </TextFieldDummyOutlined.Line>
                     </Grid>
                     <Grid item sm={4} xs={12}>
-                      <Line>
-                        <Label>ชื่อตำแหน่งในสายงาน</Label>
+                      <TextFieldDummyOutlined.Line>
+                        <TextFieldDummyOutlined.Label>
+                          ชื่อตำแหน่งในสายงาน
+                        </TextFieldDummyOutlined.Label>
                         <span>{data.position_type.name || `-`}</span>
-                      </Line>
+                      </TextFieldDummyOutlined.Line>
                     </Grid>
                     <Grid item xs={12}>
-                      <Line>
-                        <Label>สังกัด</Label>
+                      <TextFieldDummyOutlined.Line>
+                        <TextFieldDummyOutlined.Label>
+                          สังกัด
+                        </TextFieldDummyOutlined.Label>
                         <span>{renderDivision(data.division) || `-`}</span>
-                      </Line>
+                      </TextFieldDummyOutlined.Line>
                     </Grid>
                   </Grid>
                   <Divider
@@ -274,22 +262,28 @@ const PositionInfoDialog = ({
                   />
                   <Grid container spacing={2}>
                     <Grid item sm={4} xs={12}>
-                      <Line>
-                        <Label>มีงบประมาณ</Label>
+                      <TextFieldDummyOutlined.Line>
+                        <TextFieldDummyOutlined.Label>
+                          มีงบประมาณ
+                        </TextFieldDummyOutlined.Label>
                         <span>{renderCheckIcon(data.have_a_budget)}</span>
-                      </Line>
+                      </TextFieldDummyOutlined.Line>
                     </Grid>
                     <Grid item sm={4} xs={12}>
-                      <Line>
-                        <Label>เปิดอัตรา</Label>
+                      <TextFieldDummyOutlined.Line>
+                        <TextFieldDummyOutlined.Label>
+                          เปิดอัตรา
+                        </TextFieldDummyOutlined.Label>
                         <span>{renderCheckIcon(data.isOpen)}</span>
-                      </Line>
+                      </TextFieldDummyOutlined.Line>
                     </Grid>
                     <Grid item sm={4} xs={12}>
-                      <Line>
-                        <Label>อัตรากำลังจังหวัดชายแดนภาคใต้</Label>
+                      <TextFieldDummyOutlined.Line>
+                        <TextFieldDummyOutlined.Label>
+                          อัตรากำลังจังหวัดชายแดนภาคใต้
+                        </TextFieldDummyOutlined.Label>
                         <span>{renderCheckIcon(data.isSouth)}</span>
-                      </Line>
+                      </TextFieldDummyOutlined.Line>
                     </Grid>
                   </Grid>
                   {roleLevel(userInfo.role) >= 2 && (

@@ -17,7 +17,7 @@ import Layout from "../../components/layout"
 import Seo from "../../components/seo"
 import Breadcrumbs from "../../components/breadcrumbs"
 import PageNotFound from "../../components/page-not-found"
-import { Form, SubmitButtonFlex, Flex } from "../../components/styles"
+import { Form, SearchButtonContainer, Flex } from "../../components/styles"
 import renderDivision from "../../functions/render-division"
 import roleLevel from "../../functions/role-level"
 
@@ -278,7 +278,7 @@ const PositionsPage = () => {
                 )}
               </Grid>
               <Grid item xs={12} sm={6}>
-                <SubmitButtonFlex>
+                <SearchButtonContainer>
                   <Button
                     style={{ marginRight: 10 }}
                     color="error"
@@ -327,7 +327,7 @@ const PositionsPage = () => {
                     />
                     ค้นหา
                   </Button>
-                </SubmitButtonFlex>
+                </SearchButtonContainer>
               </Grid>
             </Grid>
           </Form>
