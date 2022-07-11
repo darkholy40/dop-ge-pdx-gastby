@@ -192,7 +192,6 @@ const MyDayPicker = ({
             <div className="lt">
               <Autocomplete
                 sx={{ width: `100%` }}
-                disablePortal
                 options={years}
                 noOptionsText={`ไม่พบข้อมูล`}
                 getOptionLabel={option => `${option + 543}`}
@@ -230,7 +229,6 @@ const MyDayPicker = ({
             <div className="rt">
               <Autocomplete
                 sx={{ width: `100%` }}
-                disablePortal
                 options={months}
                 noOptionsText={`ไม่พบข้อมูล`}
                 getOptionLabel={option => option}

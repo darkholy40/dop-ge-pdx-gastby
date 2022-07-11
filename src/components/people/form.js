@@ -4,7 +4,6 @@ import { navigate } from "gatsby"
 import { useSelector, useDispatch } from "react-redux"
 import styled from "styled-components"
 import { Grid, Button, TextField, Divider } from "@mui/material"
-// import { MobileDatePicker } from "@mui/x-date-pickers/MobileDatePicker"
 import Autocomplete from "@mui/material/Autocomplete"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import {
@@ -14,6 +13,7 @@ import {
   faRedoAlt,
   faTrash,
   faChevronLeft,
+  faCalendar,
 } from "@fortawesome/free-solid-svg-icons"
 
 import { client, gql } from "../../functions/apollo-client"
@@ -56,25 +56,18 @@ const textfieldProps = {
   width: `100%`,
 }
 
-// const datePickerProps = {
-//   disableMaskedInput: true,
-//   clearable: true,
-//   clearText: "ล้าง",
-//   okText: "ตกลง",
-//   cancelText: "ยกเลิก",
-//   todayText: "วันนี้",
-//   inputFormat: "d MMMM yyyy",
-//   showToolbar: false,
-//   inputProps: {
-//     readOnly: true,
-//     placeholder: "",
-//     style: {
-//       marginLeft: 15,
-//     },
-//   },
-//   views: [`year`, `month`, `day`],
-//   openTo: `year`,
-// }
+const dayPickerInputProps = {
+  startAdornment: (
+    <FontAwesomeIcon
+      icon={faCalendar}
+      style={{
+        fontSize: `1.25rem`,
+        marginRight: 8,
+        color: `rgba(0, 0, 0, 0.65)`,
+      }}
+    />
+  ),
+}
 
 const PersonForm = ({ modification, id }) => {
   const { token, userInfo } = useSelector(({ mainReducer }) => mainReducer)
@@ -1741,6 +1734,7 @@ const PersonForm = ({ modification, id }) => {
                     id: "BirthDate",
                     label: "* วันเดือนปีเกิด",
                     InputProps: {
+                      ...dayPickerInputProps,
                       endAdornment: renderCheckingIcon(
                         birthDate === null ? `` : birthDate
                       ),
@@ -2091,6 +2085,7 @@ const PersonForm = ({ modification, id }) => {
                     id: "StartDate",
                     label: "* วันเริ่มทำสัญญา",
                     InputProps: {
+                      ...dayPickerInputProps,
                       endAdornment: renderCheckingIcon(
                         startDate === null ? `` : startDate
                       ),
@@ -2461,6 +2456,7 @@ const PersonForm = ({ modification, id }) => {
                       id: "CurrentContactStart",
                       label: "* วันที่เริ่มสัญญาปัจจุบัน",
                       InputProps: {
+                        ...dayPickerInputProps,
                         endAdornment: renderCheckingIcon(
                           currentContactStart === null
                             ? ``

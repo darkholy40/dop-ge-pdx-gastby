@@ -71,6 +71,12 @@ const GlobalStyles = createGlobalStyle`
       }
     }
   }
+
+  @media (max-width: 599px) {
+    :root {
+      --rdp-cell-size: 40px;
+    }
+  }
 `
 
 const Container = ({ children }) => {
