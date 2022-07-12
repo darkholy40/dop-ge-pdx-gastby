@@ -252,6 +252,15 @@ const ActivitiesPage = () => {
             }
             break
 
+          case `users->view`:
+            option = {
+              ...option,
+              description: `users/view`,
+              link: true,
+              type: `users`,
+            }
+            break
+
           case `users->edit`:
             option = {
               ...option,
@@ -313,6 +322,15 @@ const ActivitiesPage = () => {
             option = {
               ...option,
               description: `positions/add`,
+            }
+            break
+
+          case `positions->view`:
+            option = {
+              ...option,
+              description: `positions/view`,
+              link: true,
+              type: `positions`,
             }
             break
 

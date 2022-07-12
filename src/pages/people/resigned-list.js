@@ -12,15 +12,24 @@ import {
   Button,
   TablePagination,
   Pagination,
+  IconButton,
+  Menu,
+  MenuItem,
 } from "@mui/material"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { faChevronLeft } from "@fortawesome/free-solid-svg-icons"
+import {
+  faChevronLeft,
+  faEllipsisH,
+  faSearch,
+} from "@fortawesome/free-solid-svg-icons"
 
 import { client, gql } from "../../functions/apollo-client"
 
 import Layout from "../../components/layout"
 import Seo from "../../components/seo"
 import Breadcrumbs from "../../components/breadcrumbs"
+import { Link } from "../../components/styles"
+import PersonInfoDialog from "../../components/people/person-info-dialog"
 import PageNotFound from "../../components/page-not-found"
 import Warning from "../../components/warning"
 import renderDivision from "../../functions/render-division"
@@ -40,11 +49,14 @@ const ResignedPeopleListPage = () => {
     status: false,
     text: ``,
   })
+  const [anchorEl, setAnchorEl] = useState(null)
+  const [currentRow, setCurrentRow] = useState(null)
   const [tableOption, setTableOption] = useState({
     totalRows: 0,
     page: searchPersonFilter.currentPage,
     rowsPerPage: 10,
   })
+  const [personDetailOpen, setPersonDetailOpen] = useState(false)
 
   const savePageView = useCallback(() => {
     // Prevent saving a log when switch user to super admin
@@ -78,7 +90,8 @@ const ResignedPeopleListPage = () => {
       searchPersonFilter.personName !== `` ||
       searchPersonFilter.personSurname !== `` ||
       searchPersonFilter.personId !== `` ||
-      searchPersonFilter.personSid !== ``
+      searchPersonFilter.personSid !== `` ||
+      searchPersonFilter.personType !== ``
     ) {
       filter = `${
         searchPersonFilter.personName !== ``
@@ -99,13 +112,15 @@ const ResignedPeopleListPage = () => {
         searchPersonFilter.personSid !== ``
           ? `SID_Card: "${searchPersonFilter.personSid}"`
           : ``
+      }${
+        searchPersonFilter.personType !== ``
+          ? `type: "${searchPersonFilter.personType}"`
+          : ``
       }`
     }
 
     if (roleLevel(userInfo.role) <= 1) {
-      role = `
-        division: "${userInfo.division._id}"
-      `
+      role = `division: "${userInfo.division._id}"`
     } else {
       role =
         searchPersonFilter.unit !== null
@@ -120,9 +135,7 @@ const ResignedPeopleListPage = () => {
         ${role}
         ${
           searchPersonFilter.posNumber !== ``
-            ? `
-          number_contains: "${searchPersonFilter.posNumber}"
-      `
+            ? `number_contains: "${searchPersonFilter.posNumber}"`
             : ``
         }
       }
@@ -159,9 +172,9 @@ const ResignedPeopleListPage = () => {
         const res = await client(token).query({
           query: gql`
             query Person {
-              people(where: ${whereCondition}, start: ${parseInt(
-            tableOption.rowsPerPage * tableOption.page
-          )}) {
+              people(where: ${whereCondition}, limit: ${
+            tableOption.rowsPerPage
+          }, start: ${parseInt(tableOption.rowsPerPage * tableOption.page)}) {
                 _id
                 Prename
                 Name
@@ -307,7 +320,7 @@ const ResignedPeopleListPage = () => {
     <Layout>
       {token !== `` && roleLevel(userInfo.role) >= 1 ? (
         <>
-          <Seo title="ค้นหากำลังพลที่ลาออกแล้ว" />
+          <Seo title="ค้นหากำลังพลที่จำหน่ายสูญเสีย" />
           <Breadcrumbs
             previous={[
               {
@@ -318,7 +331,7 @@ const ResignedPeopleListPage = () => {
                 link: `/people/`,
               },
             ]}
-            current="ค้นหากำลังพลที่ลาออกแล้ว"
+            current="ค้นหากำลังพลที่จำหน่ายสูญเสีย"
           />
 
           {!isError.status ? (
@@ -367,10 +380,10 @@ const ResignedPeopleListPage = () => {
                           ลำดับ
                         </TableCell>
                         <TableCell sx={{ backgroundColor: primaryColor[200] }}>
-                          เลขที่ตำแหน่ง
+                          ชื่อ สกุล
                         </TableCell>
                         <TableCell sx={{ backgroundColor: primaryColor[200] }}>
-                          ชื่อ สกุล
+                          เลขที่ตำแหน่ง
                         </TableCell>
                         <TableCell sx={{ backgroundColor: primaryColor[200] }}>
                           กลุ่มงาน
@@ -386,6 +399,12 @@ const ResignedPeopleListPage = () => {
                         </TableCell>
                         <TableCell sx={{ backgroundColor: primaryColor[200] }}>
                           เจ้าหน้าที่บันทึกข้อมูล
+                        </TableCell>
+                        <TableCell
+                          align="center"
+                          sx={{ backgroundColor: primaryColor[200] }}
+                        >
+                          ตัวเลือก
                         </TableCell>
                       </TableRow>
                     </TableHead>
@@ -403,11 +422,22 @@ const ResignedPeopleListPage = () => {
                           <TableCell component="th" scope="row" align="center">
                             {rowIndex + 1}
                           </TableCell>
+                          <TableCell align="left">
+                            <Link
+                              onClick={() => {
+                                setCurrentRow(row)
+                                setPersonDetailOpen(true)
+                              }}
+                            >
+                              {renderFullname({
+                                rank: row.Prename,
+                                name: row.Name,
+                                surname: row.Surname,
+                              })}
+                            </Link>
+                          </TableCell>
                           <TableCell align="left" sx={{ minWidth: 100 }}>
                             {row.position.posNumber}
-                          </TableCell>
-                          <TableCell align="left">
-                            {`${row.Prename} ${row.Name} ${row.Surname}`}
                           </TableCell>
                           <TableCell align="left">
                             {row.position.posType}
@@ -423,6 +453,19 @@ const ResignedPeopleListPage = () => {
                           </TableCell>
                           <TableCell align="left">
                             {renderFullname(row.staff_updated_userinfo)}
+                          </TableCell>
+                          <TableCell align="center">
+                            <IconButton
+                              onClick={event => {
+                                setAnchorEl(event.currentTarget)
+                                setCurrentRow(row)
+                              }}
+                            >
+                              <FontAwesomeIcon
+                                icon={faEllipsisH}
+                                style={{ fontSize: 16 }}
+                              />
+                            </IconButton>
                           </TableCell>
                         </TableRow>
                       ))}
@@ -462,6 +505,52 @@ const ResignedPeopleListPage = () => {
                       rowsPerPage: parseInt(event.target.value, 10),
                     }))
                   }}
+                />
+
+                <Menu
+                  sx={{
+                    ".MuiList-root.MuiList-padding.MuiMenu-list": {
+                      minWidth: 180,
+                    },
+                  }}
+                  anchorEl={anchorEl}
+                  open={Boolean(anchorEl)}
+                  onClose={() => {
+                    setAnchorEl(null)
+                  }}
+                  anchorOrigin={{
+                    vertical: "bottom",
+                    horizontal: "right",
+                  }}
+                  transformOrigin={{
+                    vertical: "top",
+                    horizontal: "right",
+                  }}
+                >
+                  <MenuItem
+                    onClick={() => {
+                      setAnchorEl(null)
+                      setPersonDetailOpen(true)
+                    }}
+                    disableRipple
+                  >
+                    <FontAwesomeIcon
+                      icon={faSearch}
+                      style={{ marginRight: 5 }}
+                    />
+                    ดูประวัติกำลังพล
+                  </MenuItem>
+                </Menu>
+
+                <PersonInfoDialog
+                  open={personDetailOpen}
+                  callback={() => {
+                    setPersonDetailOpen(false)
+                    setCurrentRow(null)
+                  }}
+                  personId={currentRow !== null ? currentRow._id : ``}
+                  viewOnly
+                  isResigned
                 />
               </>
             )

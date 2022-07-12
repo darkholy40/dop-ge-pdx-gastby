@@ -36,6 +36,7 @@ import PersonInfoDialog from "../../components/people/person-info-dialog"
 import PageNotFound from "../../components/page-not-found"
 import Warning from "../../components/warning"
 import renderDivision from "../../functions/render-division"
+import renderFullname from "../../functions/render-fullname"
 import roleLevel from "../../functions/role-level"
 
 const PeopleListPage = () => {
@@ -122,9 +123,7 @@ const PeopleListPage = () => {
     }
 
     if (roleLevel(userInfo.role) <= 1) {
-      role = `
-        division: "${userInfo.division._id}"
-      `
+      role = `division: "${userInfo.division._id}"`
     } else {
       role =
         searchPersonFilter.unit !== null
@@ -415,7 +414,11 @@ const PeopleListPage = () => {
                                 setPersonDetailOpen(true)
                               }}
                             >
-                              {`${row.Prename} ${row.Name} ${row.Surname}`}
+                              {renderFullname({
+                                rank: row.Prename,
+                                name: row.Name,
+                                surname: row.Surname,
+                              })}
                             </Link>
                           </TableCell>
                           <TableCell align="left" sx={{ minWidth: 100 }}>

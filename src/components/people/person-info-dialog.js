@@ -37,7 +37,14 @@ const Content = styled(Flex)`
   flex-direction: column;
 `
 
-const PersonInfoDialog = ({ personId, open, title, callback, viewOnly }) => {
+const PersonInfoDialog = ({
+  personId,
+  open,
+  title,
+  callback,
+  viewOnly,
+  isResigned,
+}) => {
   const { token, userInfo } = useSelector(({ mainReducer }) => mainReducer)
   const [data, setData] = useState(null)
   const [progressStatus, setProgressStatus] = useState({
@@ -268,6 +275,212 @@ const PersonInfoDialog = ({ personId, open, title, callback, viewOnly }) => {
     }
   }, [token, personId])
 
+  const getResignedPerson = useCallback(async () => {
+    let returnData = {
+      person: null,
+      position: null,
+    }
+
+    setProgressStatus({
+      status: `loading`,
+      text: `กำลังโหลดข้อมูล`,
+    })
+
+    if (personId === `0`) {
+      setProgressStatus({
+        type: `not-found`,
+        text: `ไม่พบข้อมูลหน้านี้`,
+      })
+
+      return 0
+    }
+
+    try {
+      const res = await client(token).query({
+        query: gql`
+          query Person {
+            person(id: "${personId}") {
+              _id
+              Prename
+              Name
+              Surname
+              ID_Card
+              SID_Card
+              Gender
+              BirthDate
+              MarriedStatus
+              Telephone
+              Address
+              Emergency_Name
+              Emergency_Number
+              StartDate
+              MovementType
+              Outline
+              RewardType1
+              RewardType2
+              RewardType3
+              ContactCnt
+              Mission
+              CurrentContactStart
+              CurrentContactEnd
+              Guilty
+              Punish
+              PercentSalary
+              ScoreKPI
+              ScoreCompetence
+              StatusDisability
+              skills
+              staff_created
+              staff_updated
+              createdAt
+              updatedAt
+              type
+              location {
+                _id
+                province
+                district
+                subdistrict
+                zipcode
+              }
+              education_level {
+                _id
+                code
+                name
+              }
+              education_name {
+                _id
+                code
+                short_name
+                full_name
+              }
+              educational_institution {
+                _id
+                code
+                name
+              }
+              country {
+                _id
+                code
+                name
+              }
+              decoration {
+                _id
+                short_name
+                full_name
+                eng_name
+              }
+              position {
+                _id
+                position_type {
+                  type
+                  name
+                }
+                number
+                division {
+                  _id
+                  division1
+                  division2
+                  division3
+                } 
+              }
+            }
+          }
+        `,
+      })
+
+      const thisPerson = res.data.person
+
+      if (thisPerson !== null) {
+        returnData.person = {
+          _id: thisPerson._id,
+          Prename: thisPerson.Prename,
+          Name: thisPerson.Name,
+          Surname: thisPerson.Surname,
+          ID_Card: thisPerson.ID_Card,
+          SID_Card: thisPerson.SID_Card,
+          Gender: thisPerson.Gender,
+          BirthDate: thisPerson.BirthDate,
+          MarriedStatus: thisPerson.MarriedStatus,
+          Telephone: thisPerson.Telephone,
+          Address: thisPerson.Address,
+          Emergency_Name: thisPerson.Emergency_Name,
+          Emergency_Number: thisPerson.Emergency_Number,
+          StartDate: thisPerson.StartDate,
+          MovementType: thisPerson.MovementType,
+          Outline: thisPerson.Outline,
+          RewardType1: thisPerson.RewardType1,
+          RewardType2: thisPerson.RewardType2,
+          RewardType3: thisPerson.RewardType3,
+          ContactCnt: thisPerson.ContactCnt,
+          Mission: thisPerson.Mission,
+          CurrentContactStart: thisPerson.CurrentContactStart,
+          CurrentContactEnd: thisPerson.CurrentContactEnd,
+          Guilty: thisPerson.Guilty,
+          Punish: thisPerson.Punish,
+          PercentSalary: thisPerson.PercentSalary,
+          ScoreKPI: thisPerson.ScoreKPI,
+          ScoreCompetence: thisPerson.ScoreCompetence,
+          StatusDisability: thisPerson.StatusDisability,
+          skills: thisPerson.skills,
+          staff_created: thisPerson.staff_created,
+          staff_updated: thisPerson.staff_updated,
+          createdAt: thisPerson.createdAt,
+          updatedAt: thisPerson.updatedAt,
+          type: thisPerson.type,
+          location: thisPerson.location,
+          education_level: thisPerson.education_level,
+          education_name: thisPerson.education_name,
+          educational_institution: thisPerson.educational_institution,
+          country: thisPerson.country,
+          decoration: thisPerson.decoration,
+        }
+
+        returnData.position = {
+          _id: thisPerson.position._id,
+          position_type: thisPerson.position.position_type,
+          number: thisPerson.position.number,
+          division: thisPerson.position.division,
+        }
+
+        setAgents({
+          whoCreated: {
+            id: thisPerson.staff_created,
+            date: new Date(thisPerson.createdAt),
+          },
+          whoUpdated: {
+            id: thisPerson.staff_updated,
+            date: new Date(thisPerson.updatedAt),
+          },
+        })
+      } else {
+        setProgressStatus({
+          type: `not-found`,
+          text: `ไม่พบข้อมูลหน้านี้`,
+        })
+      }
+    } catch (error) {
+      console.log(error)
+
+      setProgressStatus({
+        type: `connection`,
+        text: `ไม่สามารถเชื่อมต่อฐานข้อมูลได`,
+      })
+    }
+
+    if (returnData.person !== null && returnData.position !== null) {
+      setData(returnData)
+      setProgressStatus({
+        status: ``,
+        text: ``,
+      })
+    } else {
+      setProgressStatus({
+        status: `error`,
+        text: `ข้อมูลผิดพลาดผิดพลาด`,
+      })
+    }
+  }, [token, personId])
+
   const closeModal = () => {
     callback()
 
@@ -278,9 +491,9 @@ const PersonInfoDialog = ({ personId, open, title, callback, viewOnly }) => {
 
   useEffect(() => {
     if (open) {
-      getPerson()
+      !isResigned ? getPerson() : getResignedPerson()
     }
-  }, [open, getPerson])
+  }, [open, getPerson, getResignedPerson, isResigned])
 
   useEffect(() => {
     savePageView()
@@ -858,6 +1071,7 @@ PersonInfoDialog.propTypes = {
   title: PropTypes.string,
   callback: PropTypes.func,
   viewOnly: PropTypes.bool,
+  isResigned: PropTypes.bool,
 }
 
 PersonInfoDialog.defaultProps = {
@@ -866,6 +1080,7 @@ PersonInfoDialog.defaultProps = {
   title: `ข้อมูลประวัติกำลังพล`,
   callback: () => {},
   viewOnly: false,
+  isResigned: false,
 }
 
 export default PersonInfoDialog
