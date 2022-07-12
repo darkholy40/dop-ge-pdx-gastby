@@ -451,6 +451,7 @@ const UserForm = ({ modification, id }) => {
       rank: null,
       name: ``,
       surname: ``,
+      userPosition: ``,
       username: ``,
       password: ``,
       email: ``,
