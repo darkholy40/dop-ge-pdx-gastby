@@ -155,9 +155,7 @@ const MyDayPicker = ({
     const getDate = selected
 
     setSelectedDay(getDate)
-    if (getDate !== null) {
-      setCurrentMonth(getDate)
-    }
+    setCurrentMonth(getDate !== null ? getDate : new Date())
   }, [selected])
 
   return (
