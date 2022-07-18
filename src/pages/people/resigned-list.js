@@ -550,7 +550,6 @@ const ResignedPeopleListPage = () => {
                   }}
                   personId={currentRow !== null ? currentRow._id : ``}
                   viewOnly
-                  isResigned
                 />
               </>
             )

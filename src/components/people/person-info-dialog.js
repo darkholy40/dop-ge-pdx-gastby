@@ -37,14 +37,7 @@ const Content = styled(Flex)`
   flex-direction: column;
 `
 
-const PersonInfoDialog = ({
-  personId,
-  open,
-  title,
-  callback,
-  viewOnly,
-  isResigned,
-}) => {
+const PersonInfoDialog = ({ personId, open, title, callback, viewOnly }) => {
   const { token, userInfo } = useSelector(({ mainReducer }) => mainReducer)
   const [data, setData] = useState(null)
   const [progressStatus, setProgressStatus] = useState({
@@ -490,10 +483,35 @@ const PersonInfoDialog = ({
   }
 
   useEffect(() => {
-    if (open) {
-      !isResigned ? getPerson() : getResignedPerson()
+    const checkPersonIsResigned = async () => {
+      let isResigned = false
+
+      try {
+        const res = await client(token).query({
+          query: gql`
+            query PersonIsResigned {
+              person(id: "${personId}") {
+                _id
+                isResigned
+              }
+            }
+          `,
+        })
+
+        if (res) {
+          isResigned = res.data.person.isResigned || false
+
+          !isResigned ? getPerson() : getResignedPerson()
+        }
+      } catch (error) {
+        console.log(error)
+      }
     }
-  }, [open, getPerson, getResignedPerson, isResigned])
+
+    if (open) {
+      checkPersonIsResigned()
+    }
+  }, [token, personId, open, getPerson, getResignedPerson])
 
   useEffect(() => {
     savePageView()
@@ -1071,7 +1089,6 @@ PersonInfoDialog.propTypes = {
   title: PropTypes.string,
   callback: PropTypes.func,
   viewOnly: PropTypes.bool,
-  isResigned: PropTypes.bool,
 }
 
 PersonInfoDialog.defaultProps = {
@@ -1080,7 +1097,6 @@ PersonInfoDialog.defaultProps = {
   title: `ข้อมูลประวัติกำลังพล`,
   callback: () => {},
   viewOnly: false,
-  isResigned: false,
 }
 
 export default PersonInfoDialog

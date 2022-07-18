@@ -16,10 +16,11 @@ import styled from "styled-components"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import {
   faCircle,
+  faStopwatch,
   faEye,
   faDatabase,
   faSave,
-  faFileDownload,
+  faFileExcel,
   faRedo,
   faChevronRight,
 } from "@fortawesome/free-solid-svg-icons"
@@ -216,7 +217,7 @@ const ActivitiesPage = () => {
                   icon={faCircle}
                   style={{ color: green[500], marginRight: 8 }}
                 />
-                <span>{description}</span>
+                <span>{`ลงชื่อเข้าใช้งาน`}</span>
               </>
             )
 
@@ -227,7 +228,22 @@ const ActivitiesPage = () => {
                   icon={faCircle}
                   style={{ color: grey[500], marginRight: 8 }}
                 />
-                <span>{description}</span>
+                <span>{`ลงชื่อออก`}</span>
+              </>
+            )
+
+          case `token expired`:
+            return (
+              <>
+                <FontAwesomeIcon
+                  icon={faStopwatch}
+                  style={{
+                    color: red[500],
+                    marginRight: 8,
+                    fontSize: `1.125rem`,
+                  }}
+                />
+                <span>{`หมดเวลาในการเข้าใช้งาน`}</span>
               </>
             )
 
@@ -434,6 +450,17 @@ const ActivitiesPage = () => {
             }
             break
 
+          case `people->resignation->save`:
+            option = {
+              ...option,
+              description: `จำหน่ายสูญเสียกำลังพล`,
+              link: true,
+              type: `people`,
+              icon: faSave,
+              color: green[700],
+            }
+            break
+
           case `positions->create`:
             option = {
               ...option,
@@ -460,8 +487,8 @@ const ActivitiesPage = () => {
             option = {
               ...option,
               description: `ออกรายงานรายชื่อพนักงานราชการและตำแหน่งว่าง (Stock)`,
-              icon: faFileDownload,
-              color: blue[700],
+              icon: faFileExcel,
+              color: green[800],
             }
             break
 
@@ -469,8 +496,8 @@ const ActivitiesPage = () => {
             option = {
               ...option,
               description: `ออกรายงานรายชื่อพนักงานราชการที่ออกในปีงบประมาณที่ผ่านมา (Flow-Out)`,
-              icon: faFileDownload,
-              color: blue[700],
+              icon: faFileExcel,
+              color: green[800],
             }
             break
 
@@ -500,7 +527,11 @@ const ActivitiesPage = () => {
           <>
             <FontAwesomeIcon
               icon={option.icon}
-              style={{ color: option.color, marginRight: 8 }}
+              style={{
+                color: option.color,
+                marginRight: 8,
+                fontSize: `1.125rem`,
+              }}
             />
             <span>{option.description}</span>
 

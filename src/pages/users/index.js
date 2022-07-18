@@ -23,6 +23,7 @@ import {
   faPlusCircle,
   faEllipsisV,
   faCircle,
+  faStopwatch,
   faRedo,
   faCheckCircle,
   faEllipsisH,
@@ -303,10 +304,14 @@ const UserManagementPage = () => {
           return (
             <>
               <FontAwesomeIcon
-                icon={faCircle}
-                style={{ color: grey[500], marginRight: 8 }}
+                icon={faStopwatch}
+                style={{
+                  color: grey[500],
+                  marginRight: 8,
+                  fontSize: `1.125rem`,
+                }}
               />
-              <span>{`session timeout`}</span>
+              <span>{`เซสชันหมดอายุ`}</span>
             </>
           )
         }
@@ -317,7 +322,7 @@ const UserManagementPage = () => {
               icon={faCircle}
               style={{ color: green[500], marginRight: 8 }}
             />
-            <span>{desc}</span>
+            <span>{`กำลังเข้าใช้งาน`}</span>
           </>
         )
 
@@ -328,7 +333,7 @@ const UserManagementPage = () => {
               icon={faCircle}
               style={{ color: grey[500], marginRight: 8 }}
             />
-            <span>{desc}</span>
+            <span>{`ออกจากระบบแล้ว`}</span>
           </>
         )
 
