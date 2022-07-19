@@ -91,7 +91,7 @@ const SettingsSystemData = () => {
                 link: `/settings/`,
               },
             ]}
-            current="ข้อมูลระบบ"
+            current="อัปเดตฐานข้อมูลระบบ"
           />
 
           <SystemData showContent={true} />

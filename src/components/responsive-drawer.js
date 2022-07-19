@@ -31,6 +31,7 @@ import {
   faPrint,
   faUsersCog,
   faRunning,
+  faDatabase,
   faUserAlt,
   faCog,
   faSignOutAlt,
@@ -102,6 +103,14 @@ const ResponsiveDrawer = props => {
         desc: `ประวัติการใช้งานระบบ`,
         icon: faRunning,
         level: 3,
+      },
+    ],
+    databaseManagement: [
+      {
+        name: `databases`,
+        desc: `การจัดการฐานข้อมูล`,
+        icon: faDatabase,
+        level: 2,
       },
     ],
     controlPanel: [
@@ -234,6 +243,34 @@ const ResponsiveDrawer = props => {
           <Divider />
           <List>
             {pages.userManagement.map((page, pageIndex) => {
+              return page.level <= roleLevel(userInfo.role) ? (
+                <ListItem key={`menu_${pageIndex}`} disablePadding>
+                  <ListItemButton
+                    onClick={() => {
+                      changePage(`${page.name}`)
+                    }}
+                    selected={currentPage === `${page.name}`}
+                  >
+                    <ListItemIcon>
+                      <FontAwesomeIcon icon={page.icon} />
+                    </ListItemIcon>
+                    <ListItemText primary={page.desc} />
+                  </ListItemButton>
+                </ListItem>
+              ) : (
+                ``
+              )
+            })}
+          </List>
+        </>
+      )}
+      {pages.databaseManagement.filter(
+        elem => elem.level <= roleLevel(userInfo.role)
+      ).length > 0 && (
+        <>
+          <Divider />
+          <List>
+            {pages.databaseManagement.map((page, pageIndex) => {
               return page.level <= roleLevel(userInfo.role) ? (
                 <ListItem key={`menu_${pageIndex}`} disablePadding>
                   <ListItemButton

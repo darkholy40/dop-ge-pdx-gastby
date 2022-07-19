@@ -3,7 +3,7 @@ import { navigate } from "gatsby"
 import { useSelector, useDispatch } from "react-redux"
 import styled from "styled-components"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { faDatabase, faAddressCard } from "@fortawesome/free-solid-svg-icons"
+import { faAddressCard, faSync } from "@fortawesome/free-solid-svg-icons"
 
 import { client, gql } from "../../functions/apollo-client"
 
@@ -102,14 +102,14 @@ const SettingsIndex = () => {
                   onClick={() => navigate(`/settings/system-data/`)}
                 >
                   <FontAwesomeIcon
-                    icon={faDatabase}
+                    icon={faSync}
                     style={{
                       fontSize: `1.5rem`,
                       marginRight: 8,
                       minWidth: 35,
                     }}
                   />
-                  <span>ข้อมูลระบบ</span>
+                  <span>อัปเดตฐานข้อมูลระบบ</span>
                 </div>
               </div>
             </ColorButton>
