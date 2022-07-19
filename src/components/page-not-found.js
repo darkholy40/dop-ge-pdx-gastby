@@ -10,7 +10,6 @@ import { faFile, faChevronLeft } from "@fortawesome/free-solid-svg-icons"
 import Seo from "../components/seo"
 
 const Flex = styled.div`
-  margin-top: 50px;
   display: flex;
   flex-direction: column;
   align-items: center;
