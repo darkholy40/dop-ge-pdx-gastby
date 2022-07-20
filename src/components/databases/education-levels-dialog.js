@@ -21,9 +21,17 @@ import { client, gql } from "../../functions/apollo-client"
 
 import { Form } from "../../components/styles"
 import renderCheckingIcon from "../../functions/render-checking-icon"
+import saveServerConfigsTag from "../../functions/save-server-configs-tag"
 
-const EducationLevelsDialog = ({ dataId, open, type, onCloseCallback, onFinishCallback }) => {
+const EducationLevelsDialog = ({
+  dataId,
+  open,
+  type,
+  onCloseCallback,
+  onFinishCallback,
+}) => {
   const { token, userInfo } = useSelector(({ mainReducer }) => mainReducer)
+  const { serverConfigs } = useSelector(({ staticReducer }) => staticReducer)
   const dispatch = useDispatch()
   const [name, setName] = useState(``)
   const [errorAlert, setErrorAlert] = useState({
@@ -118,20 +126,25 @@ const EducationLevelsDialog = ({ dataId, open, type, onCloseCallback, onFinishCa
           }
         `,
       })
+
+      saveServerConfigsTag(
+        serverConfigs.find(elem => elem.name === `educationLevels`),
+        token
+      )
     } catch (error) {
-      console.log({
-        function: `add()`,
-        message: error.message,
-      })
+      // console.log({
+      //   function: `add()`,
+      //   message: error.message,
+      // })
 
       switch (error.message) {
         case `Duplicate entry`:
           setErrorAlert({
             status: true,
-            text: `มีข้อมูลรายการนี้อยู่แล้ว`
+            text: `มีข้อมูลรายการนี้อยู่แล้ว`,
           })
-          break;
-      
+          break
+
         default:
           dispatch({
             type: `SET_NOTIFICATION_DIALOG`,
@@ -144,7 +157,7 @@ const EducationLevelsDialog = ({ dataId, open, type, onCloseCallback, onFinishCa
               callback: () => {},
             },
           })
-          break;
+          break
       }
     }
   }
@@ -202,20 +215,25 @@ const EducationLevelsDialog = ({ dataId, open, type, onCloseCallback, onFinishCa
           }
         `,
       })
+
+      saveServerConfigsTag(
+        serverConfigs.find(elem => elem.name === `educationLevels`),
+        token
+      )
     } catch (error) {
-      console.log({
-        function: `edit()`,
-        message: error.message,
-      })
+      // console.log({
+      //   function: `edit()`,
+      //   message: error.message,
+      // })
 
       switch (error.message) {
         case `Duplicate entry`:
           setErrorAlert({
             status: true,
-            text: `มีข้อมูลรายการนี้อยู่แล้ว`
+            text: `มีข้อมูลรายการนี้อยู่แล้ว`,
           })
-          break;
-      
+          break
+
         default:
           dispatch({
             type: `SET_NOTIFICATION_DIALOG`,
@@ -228,7 +246,7 @@ const EducationLevelsDialog = ({ dataId, open, type, onCloseCallback, onFinishCa
               callback: () => {},
             },
           })
-          break;
+          break
       }
     }
   }
@@ -280,15 +298,14 @@ const EducationLevelsDialog = ({ dataId, open, type, onCloseCallback, onFinishCa
                   }}
                   value={name}
                   InputProps={{
-                    endAdornment: renderCheckingIcon(name),
+                    endAdornment: renderCheckingIcon(
+                      !errorAlert.status ? name : `warning`
+                    ),
                   }}
                   error={errorAlert.status}
                 />
                 <Collapse in={errorAlert.status}>
-                  <Alert
-                    sx={{ marginTop: `1rem` }}
-                    severity="error"
-                  >
+                  <Alert sx={{ marginTop: `1rem` }} severity="error">
                     {errorAlert.text}
                   </Alert>
                 </Collapse>

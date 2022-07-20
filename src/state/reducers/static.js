@@ -34,6 +34,7 @@ const initialState = {
     roles: ``,
   },
   shouldUpdateStatic: [],
+  serverConfigs: [],
 }
 
 const staticReducer = (state = initialState, action) => {
@@ -141,6 +142,12 @@ const staticReducer = (state = initialState, action) => {
         tags: {
           ...initialState.tags,
         },
+      }
+
+    case `SET_SERVER_CONFIG`:
+      return {
+        ...state,
+        serverConfigs: action.serverConfigs,
       }
 
     default:

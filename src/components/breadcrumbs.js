@@ -62,13 +62,13 @@ const Breadcrumbs = ({ previous, current }) => {
     <Flex primaryColor={primaryColor}>
       {previous.length > 0 ? (
         <IconButton
-          style={{ marginRight: 8 }}
+          style={{ width: 40, height: 40, marginRight: 8 }}
           onClick={() => navigate(`${previous[previous.length - 1].link}`)}
         >
           <FontAwesomeIcon icon={faArrowLeft} />
         </IconButton>
       ) : (
-        <IconButton style={{ marginRight: 8 }} disabled>
+        <IconButton style={{ width: 40, height: 40, marginRight: 8 }} disabled>
           <FontAwesomeIcon icon={faArrowLeft} />
         </IconButton>
       )}

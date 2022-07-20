@@ -18,7 +18,7 @@ const StaticTags = () => {
         query: gql`
           query ServerConfigs {
             serverConfigs {
-              id
+              _id
               name
               description
             }
@@ -163,6 +163,10 @@ const StaticTags = () => {
       dispatch({
         type: `SET_SHOULD_UPDATE_STATIC`,
         shouldUpdateStatic: returnArr,
+      })
+      dispatch({
+        type: `SET_SERVER_CONFIG`,
+        serverConfigs: data,
       })
     } catch (error) {
       console.log(error)
