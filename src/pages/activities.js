@@ -18,11 +18,11 @@ import {
   faCircle,
   faStopwatch,
   faEye,
-  faDatabase,
   faSave,
   faFileExcel,
   faRedo,
   faChevronRight,
+  faSync,
 } from "@fortawesome/free-solid-svg-icons"
 import { green, grey, blue, red } from "@mui/material/colors"
 
@@ -505,7 +505,7 @@ const ActivitiesPage = () => {
             option = {
               ...option,
               description: `ดาวน์โหลดข้อมูลระบบ`,
-              icon: faDatabase,
+              icon: faSync,
               color: blue[700],
             }
             break
@@ -514,8 +514,26 @@ const ActivitiesPage = () => {
             option = {
               ...option,
               description: `อัปเดตข้อมูลระบบ`,
-              icon: faDatabase,
+              icon: faSync,
               color: blue[700],
+            }
+            break
+
+          case `education-levels->create`:
+            option = {
+              ...option,
+              description: `เพิ่มข้อมูลระดับการศึกษา`,
+              icon: faSave,
+              color: green[700],
+            }
+            break
+
+          case `education-levels->update`:
+            option = {
+              ...option,
+              description: `อัปเดตข้อมูลระดับการศึกษา`,
+              icon: faSave,
+              color: green[700],
             }
             break
 

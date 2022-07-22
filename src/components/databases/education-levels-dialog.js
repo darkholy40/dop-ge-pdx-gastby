@@ -132,11 +132,6 @@ const EducationLevelsDialog = ({
         token
       )
     } catch (error) {
-      // console.log({
-      //   function: `add()`,
-      //   message: error.message,
-      // })
-
       switch (error.message) {
         case `Duplicate entry`:
           setErrorAlert({
@@ -221,11 +216,6 @@ const EducationLevelsDialog = ({
         token
       )
     } catch (error) {
-      // console.log({
-      //   function: `edit()`,
-      //   message: error.message,
-      // })
-
       switch (error.message) {
         case `Duplicate entry`:
           setErrorAlert({
@@ -277,7 +267,7 @@ const EducationLevelsDialog = ({
           <DialogTitle>
             {type === `add` ? `เพิ่มข้อมูล` : `แก้ไขข้อมูล`}
           </DialogTitle>
-          <DialogContent dividers sx={{ padding: `24px`, minHeight: `150px` }}>
+          <DialogContent dividers sx={{ padding: `2rem 1.5rem` }}>
             <Grid container spacing={2}>
               <Grid item xs={12}>
                 <TextField

@@ -14,7 +14,13 @@ import {
   IconButton,
   Menu,
   MenuItem,
+  TextField,
+  Collapse,
+  Chip,
+  Divider,
+  Popover,
 } from "@mui/material"
+import { grey } from "@mui/material/colors"
 import styled from "styled-components"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import {
@@ -23,6 +29,9 @@ import {
   faRedo,
   faEllipsisH,
   faPencilAlt,
+  faSearch,
+  faCheck,
+  faTimes,
 } from "@fortawesome/free-solid-svg-icons"
 
 import { client, gql } from "../../functions/apollo-client"
@@ -30,18 +39,92 @@ import { client, gql } from "../../functions/apollo-client"
 import Layout from "../../components/layout"
 import Seo from "../../components/seo"
 import Breadcrumbs from "../../components/breadcrumbs"
-import { Link } from "../../components/styles"
+import { Flex, Link } from "../../components/styles"
 import EducationLevelsDialog from "../../components/databases/education-levels-dialog"
 import PageNotFound from "../../components/page-not-found"
 import Warning from "../../components/warning"
 import roleLevel from "../../functions/role-level"
 import renderTableDate from "../../functions/render-table-date"
 
+const FilterContent = styled(Flex)`
+  flex-direction: column;
+  align-items: flex-start;
+
+  .title {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: 0.5rem 1rem;
+    margin: 0;
+
+    p {
+      margin: 0;
+    }
+  }
+
+  .field {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: 360px;
+    padding: 1rem;
+
+    .MuiFormControl-root.MuiTextField-root {
+      width: 100%;
+
+      &:nth-child(n + 2) {
+        margin-top: 1rem;
+      }
+    }
+  }
+
+  .buttons {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    width: 100%;
+    padding: 0.5rem 1rem;
+  }
+`
+
 const Oparator = styled.div`
   display: flex;
   flex-direction: row;
-  justify-content: flex-end;
+  justify-content: space-between;
   margin-bottom: 1rem;
+
+  .ft {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+
+    .MuiButtonBase-root.MuiChip-root {
+      margin-left: 0.5rem;
+    }
+  }
+
+  @media (max-width: 599px) {
+    flex-direction: column;
+    align-items: flex-end;
+    margin-bottom: 0;
+
+    .ft,
+    .lt {
+      margin-bottom: 1rem;
+    }
+
+    .ft {
+      flex-direction: column;
+      align-items: flex-end;
+
+      .MuiButtonBase-root.MuiChip-root {
+        margin-left: 0;
+        margin-top: 0.5rem;
+      }
+    }
+  }
 `
 
 const EducationLevels = () => {
@@ -66,6 +149,14 @@ const EducationLevels = () => {
     type: `add`,
     dataId: ``,
   })
+  const [filterOpenAnchorEl, setFilterOpenAnchorEl] = useState(null)
+  const [filterInputs, setFilterInputs] = useState({
+    name: ``,
+  })
+  const [confirmedFilterInputs, setConfirmedFilterInputs] = useState({
+    name: ``,
+  })
+  const [firstStrike, setFirstStrike] = useState(false)
 
   const savePageView = useCallback(() => {
     // Prevent saving a log when switch user to super admin
@@ -92,6 +183,12 @@ const EducationLevels = () => {
 
   const getDataFromDB = useCallback(async () => {
     let returnData = []
+    let filters = ``
+
+    setIsError({
+      status: false,
+      text: ``,
+    })
 
     dispatch({
       type: `SET_BACKDROP_OPEN`,
@@ -101,11 +198,19 @@ const EducationLevels = () => {
       },
     })
 
+    if (confirmedFilterInputs.name !== ``) {
+      filters += `
+        name_contains: "${confirmedFilterInputs.name}"
+      `
+    }
+
     try {
       const total = await client(token).query({
         query: gql`
           query EducationLevelsCount {
-            educationLevelsConnection {
+            educationLevelsConnection${
+              filters !== `` ? `(where: {${filters}})` : ``
+            } {
               aggregate {
                 count
               }
@@ -124,6 +229,7 @@ const EducationLevels = () => {
           query: gql`
             query EducationLevels {
               educationLevels(
+                ${filters !== `` ? `where: {${filters}},` : ``}
                 start: ${parseInt(tableOption.rowsPerPage * tableOption.page)},
                 limit: ${tableOption.rowsPerPage},
               ) {
@@ -152,15 +258,10 @@ const EducationLevels = () => {
           ]
         }
 
-        if (returnData.length > 0) {
-          setData(returnData)
-        } else {
-          setIsError({
-            status: true,
-            text: `ไม่พบข้อมูล`,
-          })
-        }
+        setData(returnData)
+        setFirstStrike(true)
       } else {
+        setData([])
         setIsError({
           status: true,
           text: `ไม่พบข้อมูล`,
@@ -182,7 +283,59 @@ const EducationLevels = () => {
         title: ``,
       },
     })
-  }, [token, dispatch, tableOption.page, tableOption.rowsPerPage])
+  }, [
+    token,
+    dispatch,
+    tableOption.page,
+    tableOption.rowsPerPage,
+    confirmedFilterInputs,
+  ])
+
+  const acceptFilters = () => {
+    setTableOption(prev => ({
+      ...prev,
+      page: 0,
+      rowsPerPage: 10,
+    }))
+    setFilterOpenAnchorEl(null)
+    setFilterInputs({
+      name: filterInputs.name,
+    })
+    setConfirmedFilterInputs({
+      name: filterInputs.name,
+    })
+  }
+
+  const removeOneFilter = key => {
+    setTableOption(prev => ({
+      ...prev,
+      page: 0,
+      rowsPerPage: 10,
+    }))
+    setFilterInputs(prev => ({
+      ...prev,
+      [key]: ``,
+    }))
+    setConfirmedFilterInputs(prev => ({
+      ...prev,
+      [key]: ``,
+    }))
+  }
+
+  const removeFilters = () => {
+    setTableOption(prev => ({
+      ...prev,
+      page: 0,
+      rowsPerPage: 10,
+    }))
+    setFilterOpenAnchorEl(null)
+    setFilterInputs({
+      name: ``,
+    })
+    setConfirmedFilterInputs({
+      name: ``,
+    })
+  }
 
   useEffect(() => {
     if (token !== ``) {
@@ -201,6 +354,15 @@ const EducationLevels = () => {
     savePageView()
   }, [savePageView])
 
+  useEffect(() => {
+    if (filterOpenAnchorEl !== null) {
+      setFilterInputs(prev => ({
+        ...prev,
+        ...confirmedFilterInputs,
+      }))
+    }
+  }, [filterOpenAnchorEl, confirmedFilterInputs])
+
   return (
     <Layout>
       {token !== `` && roleLevel(userInfo.role) >= 2 ? (
@@ -216,10 +378,121 @@ const EducationLevels = () => {
             current="ระดับการศึกษา"
           />
 
-          {!isError.status ? (
-            data.length > 0 && (
-              <>
-                <Oparator>
+          {firstStrike && (
+            <>
+              <Popover
+                sx={{
+                  ".MuiPaper-root.MuiPaper-elevation": {
+                    minWidth: 360,
+                  },
+                }}
+                anchorEl={filterOpenAnchorEl}
+                open={Boolean(filterOpenAnchorEl)}
+                onClose={() => {
+                  setFilterOpenAnchorEl(null)
+                }}
+                anchorOrigin={{
+                  vertical: "top",
+                  horizontal: "left",
+                }}
+                transformOrigin={{
+                  vertical: "top",
+                  horizontal: "left",
+                }}
+              >
+                <FilterContent>
+                  <div className="title">
+                    <p>ค้นหา</p>
+                    <IconButton
+                      sx={{ width: `35px`, height: `35px` }}
+                      onClick={() => setFilterOpenAnchorEl(null)}
+                    >
+                      <FontAwesomeIcon
+                        icon={faTimes}
+                        style={{ color: grey[500] }}
+                      />
+                    </IconButton>
+                  </div>
+                  <Divider sx={{ width: `100%` }} />
+                  <div className="field">
+                    <TextField
+                      label="ชื่อระดับการศึกษา"
+                      size="small"
+                      variant="outlined"
+                      onChange={e => {
+                        setFilterInputs(prev => ({
+                          ...prev,
+                          name: e.target.value,
+                        }))
+                      }}
+                      onKeyDown={e => {
+                        if (e.key === `Escape`) {
+                          setFilterOpenAnchorEl(null)
+                        }
+                      }}
+                      value={filterInputs.name}
+                    />
+                  </div>
+                  <Divider sx={{ width: `100%` }} />
+                  <div className="buttons">
+                    <Button
+                      sx={{ marginRight: `0.5rem` }}
+                      color="error"
+                      onClick={() => {
+                        removeFilters()
+                      }}
+                      disabled={confirmedFilterInputs.name === ``}
+                    >
+                      <FontAwesomeIcon
+                        icon={faTimes}
+                        style={{ marginRight: 5 }}
+                      />
+                      ล้างตัวกรอง
+                    </Button>
+                    <Button
+                      color="primary"
+                      variant="contained"
+                      onClick={() => {
+                        acceptFilters()
+                      }}
+                      disabled={filterInputs.name === ``}
+                    >
+                      <FontAwesomeIcon
+                        icon={faCheck}
+                        style={{ marginRight: 5 }}
+                      />
+                      ตกลง
+                    </Button>
+                  </div>
+                </FilterContent>
+              </Popover>
+              <Oparator>
+                <div className="ft">
+                  <Button
+                    color="primary"
+                    variant="outlined"
+                    onClick={e => {
+                      setFilterOpenAnchorEl(e.currentTarget)
+                    }}
+                  >
+                    <FontAwesomeIcon
+                      icon={faSearch}
+                      style={{ marginRight: 5 }}
+                    />
+                    ค้นหา
+                  </Button>
+                  <Collapse
+                    in={confirmedFilterInputs.name !== ``}
+                    orientation="horizontal"
+                  >
+                    <Chip
+                      label={`ชื่อระดับการศึกษา: ${confirmedFilterInputs.name}`}
+                      color="primary"
+                      onDelete={() => removeOneFilter(`name`)}
+                    />
+                  </Collapse>
+                </div>
+                <div className="lt">
                   <Button
                     style={{
                       marginRight: 8,
@@ -256,243 +529,246 @@ const EducationLevels = () => {
                       style={{ fontSize: 16, color: `rgba(0, 0, 0, 0.54)` }}
                     />
                   </IconButton>
-                </Oparator>
-                <Pagination
-                  sx={{
-                    marginBottom: `1rem`,
-                    ".MuiPagination-ul": {
-                      justifyContent: `flex-end`,
-                    },
-                  }}
-                  shape="rounded"
-                  count={Math.ceil(
-                    tableOption.totalRows / tableOption.rowsPerPage
-                  )}
-                  color="primary"
-                  onChange={(_, newPage) => {
-                    if (newPage !== null) {
-                      setTableOption(prev => ({
-                        ...prev,
-                        page: newPage - 1,
-                      }))
-                    }
-                  }}
-                  page={tableOption.page + 1}
-                />
-                <TableContainer component={Paper}>
-                  <Table
-                    sx={{ minWidth: 300 }}
-                    aria-label="pos table"
-                    size="small"
-                  >
-                    <TableHead>
-                      <TableRow>
-                        <TableCell
-                          align="center"
-                          sx={{ backgroundColor: primaryColor[200] }}
-                        >
-                          ลำดับ
-                        </TableCell>
-                        <TableCell sx={{ backgroundColor: primaryColor[200] }}>
-                          ชื่อระดับการศึกษา
-                        </TableCell>
-                        <TableCell
-                          sx={{ backgroundColor: primaryColor[200] }}
-                          align="right"
-                        >
-                          วันที่สร้าง
-                        </TableCell>
-                        <TableCell
-                          sx={{ backgroundColor: primaryColor[200] }}
-                          align="right"
-                        >
-                          วันที่อัปเดต
-                        </TableCell>
-                        <TableCell
-                          sx={{ backgroundColor: primaryColor[200] }}
-                        ></TableCell>
-                      </TableRow>
-                    </TableHead>
-                    <TableBody>
-                      {data.map((row, rowIndex) => (
-                        <TableRow
-                          key={`${rowIndex}_${row._id}`}
-                          sx={{
-                            "&:last-child td, &:last-child th": { border: 0 },
-                            "&:hover": {
-                              backgroundColor: primaryColor[50],
-                            },
-                            height: `57px`,
-                          }}
-                        >
-                          <TableCell component="th" scope="row" align="center">
-                            {row.orderNumber}
-                          </TableCell>
-                          <TableCell align="left">
-                            <Link
-                              onClick={() => {
-                                setFormDialog(prev => ({
-                                  ...prev,
-                                  open: true,
-                                  type: `edit`,
-                                  dataId: row._id,
-                                }))
-                              }}
-                            >
-                              {row.name}
-                            </Link>
-                          </TableCell>
-                          <TableCell align="right">
-                            <p style={{ margin: `0 0 0.25rem` }}>
-                              {renderTableDate(row.createdAt, `date`)}
-                            </p>
-                            <p style={{ margin: 0 }}>
-                              {renderTableDate(row.createdAt, `full-time`)}
-                            </p>
-                          </TableCell>
-                          <TableCell align="right">
-                            <p style={{ margin: `0 0 0.25rem` }}>
-                              {renderTableDate(row.updatedAt, `date`)}
-                            </p>
-                            <p style={{ margin: 0 }}>
-                              {renderTableDate(row.updatedAt, `full-time`)}
-                            </p>
-                          </TableCell>
-                          <TableCell align="center">
-                            <IconButton
-                              onClick={event => {
-                                setOptionAnchorEl(event.currentTarget)
-                                setFormDialog(prev => ({
-                                  ...prev,
-                                  dataId: row._id,
-                                }))
-                              }}
-                            >
-                              <FontAwesomeIcon
-                                icon={faEllipsisH}
-                                style={{ fontSize: 16 }}
-                              />
-                            </IconButton>
-                          </TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                </TableContainer>
-                <TablePagination
-                  rowsPerPageOptions={[10, 25, 50, 100]}
-                  component="div"
-                  count={tableOption.totalRows}
-                  rowsPerPage={tableOption.rowsPerPage}
-                  labelRowsPerPage="แสดงแถวต่อหน้า:"
-                  labelDisplayedRows={({ from, to, count }) =>
-                    `${from}-${to} จาก ${
-                      count !== -1 ? count : `มากกว่า ${to}`
-                    }`
+                </div>
+              </Oparator>
+            </>
+          )}
+          {data.length > 0 && (
+            <>
+              <Pagination
+                sx={{
+                  marginBottom: `1rem`,
+                  ".MuiPagination-ul": {
+                    justifyContent: `flex-end`,
+                  },
+                }}
+                shape="rounded"
+                count={Math.ceil(
+                  tableOption.totalRows / tableOption.rowsPerPage
+                )}
+                color="primary"
+                onChange={(_, newPage) => {
+                  if (newPage !== null) {
+                    setTableOption(prev => ({
+                      ...prev,
+                      page: newPage - 1,
+                    }))
                   }
-                  page={tableOption.page}
-                  onPageChange={(_, newPage) => {
-                    setTableOption(prev => ({
-                      ...prev,
-                      page: newPage,
-                    }))
-                  }}
-                  onRowsPerPageChange={event => {
-                    setTableOption(prev => ({
-                      ...prev,
-                      page: 0,
-                      rowsPerPage: parseInt(event.target.value, 10),
-                    }))
-                  }}
-                />
+                }}
+                page={tableOption.page + 1}
+              />
+              <TableContainer component={Paper}>
+                <Table
+                  sx={{ minWidth: 300 }}
+                  aria-label="pos table"
+                  size="small"
+                >
+                  <TableHead>
+                    <TableRow>
+                      <TableCell
+                        align="center"
+                        sx={{ backgroundColor: primaryColor[200] }}
+                      >
+                        ลำดับ
+                      </TableCell>
+                      <TableCell sx={{ backgroundColor: primaryColor[200] }}>
+                        ชื่อระดับการศึกษา
+                      </TableCell>
+                      <TableCell
+                        sx={{ backgroundColor: primaryColor[200] }}
+                        align="right"
+                      >
+                        วันที่สร้าง
+                      </TableCell>
+                      <TableCell
+                        sx={{ backgroundColor: primaryColor[200] }}
+                        align="right"
+                      >
+                        วันที่อัปเดต
+                      </TableCell>
+                      <TableCell
+                        sx={{ backgroundColor: primaryColor[200] }}
+                      ></TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {data.map((row, rowIndex) => (
+                      <TableRow
+                        key={`${rowIndex}_${row._id}`}
+                        sx={{
+                          "&:last-child td, &:last-child th": { border: 0 },
+                          "&:hover": {
+                            backgroundColor: primaryColor[50],
+                          },
+                          height: `57px`,
+                        }}
+                      >
+                        <TableCell component="th" scope="row" align="center">
+                          {row.orderNumber}
+                        </TableCell>
+                        <TableCell align="left">
+                          <Link
+                            onClick={() => {
+                              setFormDialog(prev => ({
+                                ...prev,
+                                open: true,
+                                type: `edit`,
+                                dataId: row._id,
+                              }))
+                            }}
+                          >
+                            {row.name}
+                          </Link>
+                        </TableCell>
+                        <TableCell align="right">
+                          <p style={{ margin: `0 0 0.25rem` }}>
+                            {renderTableDate(row.createdAt, `date`)}
+                          </p>
+                          <p style={{ margin: 0 }}>
+                            {renderTableDate(row.createdAt, `full-time`)}
+                          </p>
+                        </TableCell>
+                        <TableCell align="right">
+                          <p style={{ margin: `0 0 0.25rem` }}>
+                            {renderTableDate(row.updatedAt, `date`)}
+                          </p>
+                          <p style={{ margin: 0 }}>
+                            {renderTableDate(row.updatedAt, `full-time`)}
+                          </p>
+                        </TableCell>
+                        <TableCell align="center">
+                          <IconButton
+                            onClick={event => {
+                              setOptionAnchorEl(event.currentTarget)
+                              setFormDialog(prev => ({
+                                ...prev,
+                                dataId: row._id,
+                              }))
+                            }}
+                          >
+                            <FontAwesomeIcon
+                              icon={faEllipsisH}
+                              style={{ fontSize: 16 }}
+                            />
+                          </IconButton>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+              <TablePagination
+                rowsPerPageOptions={[10, 25, 50, 100]}
+                component="div"
+                count={tableOption.totalRows}
+                rowsPerPage={tableOption.rowsPerPage}
+                labelRowsPerPage="แสดงแถวต่อหน้า:"
+                labelDisplayedRows={({ from, to, count }) =>
+                  `${from}-${to} จาก ${count !== -1 ? count : `มากกว่า ${to}`}`
+                }
+                page={tableOption.page}
+                onPageChange={(_, newPage) => {
+                  setTableOption(prev => ({
+                    ...prev,
+                    page: newPage,
+                  }))
+                }}
+                onRowsPerPageChange={event => {
+                  setTableOption(prev => ({
+                    ...prev,
+                    page: 0,
+                    rowsPerPage: parseInt(event.target.value, 10),
+                  }))
+                }}
+              />
 
-                <Menu
-                  sx={{
-                    ".MuiList-root.MuiList-padding.MuiMenu-list": {
-                      minWidth: 180,
-                    },
-                  }}
-                  anchorEl={oparatorAnchorEl}
-                  open={Boolean(oparatorAnchorEl)}
-                  onClose={() => {
+              <Menu
+                sx={{
+                  ".MuiList-root.MuiList-padding.MuiMenu-list": {
+                    minWidth: 180,
+                  },
+                }}
+                anchorEl={oparatorAnchorEl}
+                open={Boolean(oparatorAnchorEl)}
+                onClose={() => {
+                  setOparatorAnchorEl(null)
+                }}
+                anchorOrigin={{
+                  vertical: "bottom",
+                  horizontal: "right",
+                }}
+                transformOrigin={{
+                  vertical: "top",
+                  horizontal: "right",
+                }}
+              >
+                <MenuItem
+                  onClick={() => {
                     setOparatorAnchorEl(null)
+                    getDataFromDB()
                   }}
-                  anchorOrigin={{
-                    vertical: "bottom",
-                    horizontal: "right",
-                  }}
-                  transformOrigin={{
-                    vertical: "top",
-                    horizontal: "right",
-                  }}
+                  disableRipple
                 >
-                  <MenuItem
-                    onClick={() => {
-                      setOparatorAnchorEl(null)
-                      getDataFromDB()
-                    }}
-                    disableRipple
-                  >
-                    <FontAwesomeIcon icon={faRedo} style={{ marginRight: 5 }} />
-                    โหลดข้อมูลใหม่
-                  </MenuItem>
-                </Menu>
+                  <FontAwesomeIcon icon={faRedo} style={{ marginRight: 5 }} />
+                  โหลดข้อมูลใหม่
+                </MenuItem>
+              </Menu>
 
-                <Menu
-                  sx={{
-                    ".MuiList-root.MuiList-padding.MuiMenu-list": {
-                      minWidth: 180,
-                    },
-                  }}
-                  anchorEl={optionAnchorEl}
-                  open={Boolean(optionAnchorEl)}
-                  onClose={() => {
+              <Menu
+                sx={{
+                  ".MuiList-root.MuiList-padding.MuiMenu-list": {
+                    minWidth: 180,
+                  },
+                }}
+                anchorEl={optionAnchorEl}
+                open={Boolean(optionAnchorEl)}
+                onClose={() => {
+                  setOptionAnchorEl(null)
+                }}
+                anchorOrigin={{
+                  vertical: "bottom",
+                  horizontal: "right",
+                }}
+                transformOrigin={{
+                  vertical: "top",
+                  horizontal: "right",
+                }}
+              >
+                <MenuItem
+                  onClick={() => {
                     setOptionAnchorEl(null)
-                  }}
-                  anchorOrigin={{
-                    vertical: "bottom",
-                    horizontal: "right",
-                  }}
-                  transformOrigin={{
-                    vertical: "top",
-                    horizontal: "right",
-                  }}
-                >
-                  <MenuItem
-                    onClick={() => {
-                      setOptionAnchorEl(null)
-                      setFormDialog(prev => ({
-                        ...prev,
-                        open: true,
-                        type: `edit`,
-                      }))
-                    }}
-                    disableRipple
-                  >
-                    <FontAwesomeIcon
-                      icon={faPencilAlt}
-                      style={{ marginRight: 5 }}
-                    />
-                    แก้ไขข้อมูล
-                  </MenuItem>
-                </Menu>
-
-                <EducationLevelsDialog
-                  open={formDialog.open}
-                  type={formDialog.type}
-                  dataId={formDialog.dataId}
-                  onCloseCallback={() => {
                     setFormDialog(prev => ({
                       ...prev,
-                      open: false,
-                      dataId: ``,
+                      open: true,
+                      type: `edit`,
                     }))
                   }}
-                  onFinishCallback={() => getDataFromDB()}
-                />
-              </>
-            )
-          ) : (
+                  disableRipple
+                >
+                  <FontAwesomeIcon
+                    icon={faPencilAlt}
+                    style={{ marginRight: 5 }}
+                  />
+                  แก้ไขข้อมูล
+                </MenuItem>
+              </Menu>
+
+              <EducationLevelsDialog
+                open={formDialog.open}
+                type={formDialog.type}
+                dataId={formDialog.dataId}
+                onCloseCallback={() => {
+                  setFormDialog(prev => ({
+                    ...prev,
+                    open: false,
+                    dataId: ``,
+                  }))
+                }}
+                onFinishCallback={() => getDataFromDB()}
+              />
+            </>
+          )}
+          {isError.status && (
             <>
               <Warning
                 text={isError.text}
