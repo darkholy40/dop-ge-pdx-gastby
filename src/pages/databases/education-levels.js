@@ -21,7 +21,6 @@ import {
   Popover,
 } from "@mui/material"
 import { grey } from "@mui/material/colors"
-import styled from "styled-components"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import {
   faPlusCircle,
@@ -39,93 +38,12 @@ import { client, gql } from "../../functions/apollo-client"
 import Layout from "../../components/layout"
 import Seo from "../../components/seo"
 import Breadcrumbs from "../../components/breadcrumbs"
-import { Flex, Link } from "../../components/styles"
+import { Link, FilterContent, OparatorFlex } from "../../components/styles"
 import EducationLevelsDialog from "../../components/databases/education-levels-dialog"
 import PageNotFound from "../../components/page-not-found"
 import Warning from "../../components/warning"
 import roleLevel from "../../functions/role-level"
 import renderTableDate from "../../functions/render-table-date"
-
-const FilterContent = styled(Flex)`
-  flex-direction: column;
-  align-items: flex-start;
-
-  .title {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    width: 100%;
-    padding: 0.5rem 1rem;
-    margin: 0;
-
-    p {
-      margin: 0;
-    }
-  }
-
-  .field {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    max-width: 360px;
-    padding: 1rem;
-
-    .MuiFormControl-root.MuiTextField-root {
-      width: 100%;
-
-      &:nth-child(n + 2) {
-        margin-top: 1rem;
-      }
-    }
-  }
-
-  .buttons {
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-    width: 100%;
-    padding: 0.5rem 1rem;
-  }
-`
-
-const Oparator = styled.div`
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  margin-bottom: 1rem;
-
-  .ft {
-    display: flex;
-    flex-direction: row;
-    justify-content: flex-start;
-    align-items: center;
-
-    .MuiButtonBase-root.MuiChip-root {
-      margin-left: 0.5rem;
-    }
-  }
-
-  @media (max-width: 599px) {
-    flex-direction: column;
-    align-items: flex-end;
-    margin-bottom: 0;
-
-    .ft,
-    .lt {
-      margin-bottom: 1rem;
-    }
-
-    .ft {
-      flex-direction: column;
-      align-items: flex-end;
-
-      .MuiButtonBase-root.MuiChip-root {
-        margin-left: 0;
-        margin-top: 0.5rem;
-      }
-    }
-  }
-`
 
 const EducationLevels = () => {
   const { token, userInfo, primaryColor } = useSelector(
@@ -338,12 +256,6 @@ const EducationLevels = () => {
   }
 
   useEffect(() => {
-    if (token !== ``) {
-      getDataFromDB()
-    }
-  }, [getDataFromDB, token])
-
-  useEffect(() => {
     dispatch({
       type: `SET_CURRENT_PAGE`,
       currentPage: `databases`,
@@ -353,6 +265,12 @@ const EducationLevels = () => {
   useEffect(() => {
     savePageView()
   }, [savePageView])
+
+  useEffect(() => {
+    if (token !== ``) {
+      getDataFromDB()
+    }
+  }, [getDataFromDB, token])
 
   useEffect(() => {
     if (filterOpenAnchorEl !== null) {
@@ -466,7 +384,7 @@ const EducationLevels = () => {
                   </div>
                 </FilterContent>
               </Popover>
-              <Oparator>
+              <OparatorFlex>
                 <div className="ft">
                   <Button
                     color="primary"
@@ -530,7 +448,7 @@ const EducationLevels = () => {
                     />
                   </IconButton>
                 </div>
-              </Oparator>
+              </OparatorFlex>
             </>
           )}
           {data.length > 0 && (

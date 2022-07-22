@@ -154,6 +154,87 @@ const TextFieldDummyOutlined = {
   `,
 }
 
+const FilterContent = styled(Flex)`
+  flex-direction: column;
+  align-items: flex-start;
+
+  .title {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: 0.5rem 1rem;
+    margin: 0;
+
+    p {
+      margin: 0;
+    }
+  }
+
+  .field {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: 360px;
+    padding: 1rem;
+
+    .MuiFormControl-root.MuiTextField-root {
+      width: 100%;
+
+      &:nth-child(n + 2) {
+        margin-top: 1rem;
+      }
+    }
+  }
+
+  .buttons {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    width: 100%;
+    padding: 0.5rem 1rem;
+  }
+`
+
+const OparatorFlex = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+
+  .ft {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+
+    .MuiButtonBase-root.MuiChip-root {
+      margin-left: 0.5rem;
+    }
+  }
+
+  @media (max-width: 599px) {
+    flex-direction: column;
+    align-items: flex-end;
+    margin-bottom: 0;
+
+    .ft,
+    .lt {
+      margin-bottom: 1rem;
+    }
+
+    .ft {
+      flex-direction: column;
+      align-items: flex-end;
+
+      .MuiButtonBase-root.MuiChip-root {
+        margin-left: 0;
+        margin-top: 0.5rem;
+      }
+    }
+  }
+`
+
 export {
   Link,
   Form,
@@ -165,4 +246,6 @@ export {
   ColorButton,
   TextFieldDummy,
   TextFieldDummyOutlined,
+  FilterContent,
+  OparatorFlex,
 }
