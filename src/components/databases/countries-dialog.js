@@ -23,7 +23,7 @@ import { Form } from "../../components/styles"
 import renderCheckingIcon from "../../functions/render-checking-icon"
 import saveServerConfigsTag from "../../functions/save-server-configs-tag"
 
-const EducationalInstitutionsDialog = ({
+const CountriesDialog = ({
   dataId,
   open,
   type,
@@ -43,8 +43,8 @@ const EducationalInstitutionsDialog = ({
     try {
       const res = await client(token).query({
         query: gql`
-          query EducationalInstitution {
-            educationalInstitution(id: "${dataId}") {
+          query Country {
+            country(id: "${dataId}") {
               _id
               name
               createdAt
@@ -54,7 +54,7 @@ const EducationalInstitutionsDialog = ({
         `,
       })
 
-      const returnData = res.data.educationalInstitution
+      const returnData = res.data.country
 
       if (returnData !== null) {
         setName(returnData.name)
@@ -80,13 +80,13 @@ const EducationalInstitutionsDialog = ({
     try {
       const res = await client(token).mutate({
         mutation: gql`
-          mutation CreateEducationalInstitution {
-            createEducationalInstitution(input: {
+          mutation CreateCountry {
+            createCountry(input: {
               data: {
                 name: "${name}"
               }
             }) {
-              educationalInstitution {
+              country {
                 _id
               }
             }
@@ -94,8 +94,7 @@ const EducationalInstitutionsDialog = ({
         `,
       })
 
-      const createdRowId =
-        res.data.createEducationalInstitution.educationalInstitution._id
+      const createdRowId = res.data.createCountry.country._id
 
       closeModal()
       dispatch({
@@ -116,7 +115,7 @@ const EducationalInstitutionsDialog = ({
             createLog(input: {
               data: {
                 action: "action",
-                description: "educational-institutions->create => ${createdRowId}",
+                description: "education-levels->create => ${createdRowId}",
                 users_permissions_user: "${userInfo._id}",
               }
             }) {
@@ -129,7 +128,7 @@ const EducationalInstitutionsDialog = ({
       })
 
       saveServerConfigsTag(
-        serverConfigs.find(elem => elem.name === `educationalInstitutions`),
+        serverConfigs.find(elem => elem.name === `educationLevels`),
         token
       )
     } catch (error) {
@@ -162,8 +161,8 @@ const EducationalInstitutionsDialog = ({
     try {
       const res = await client(token).mutate({
         mutation: gql`
-          mutation UpdateEducationalInstitution {
-            updateEducationalInstitution(input: {
+          mutation UpdateCountry {
+            updateCountry(input: {
               where: {
                 id: "${dataId}"
               }
@@ -171,7 +170,7 @@ const EducationalInstitutionsDialog = ({
                 name: "${name}"
               }
             }) {
-              educationalInstitution {
+              country {
                 _id
               }
             }
@@ -179,8 +178,7 @@ const EducationalInstitutionsDialog = ({
         `,
       })
 
-      const updatedRowId =
-        res.data.updateEducationalInstitution.educationalInstitution._id
+      const updatedRowId = res.data.updateCountry.country._id
 
       closeModal()
       dispatch({
@@ -201,7 +199,7 @@ const EducationalInstitutionsDialog = ({
             createLog(input: {
               data: {
                 action: "action",
-                description: "educational-institutions->update => ${updatedRowId}",
+                description: "education-levels->update => ${updatedRowId}",
                 users_permissions_user: "${userInfo._id}",
               }
             }) {
@@ -214,7 +212,7 @@ const EducationalInstitutionsDialog = ({
       })
 
       saveServerConfigsTag(
-        serverConfigs.find(elem => elem.name === `educationalInstitutions`),
+        serverConfigs.find(elem => elem.name === `educationLevels`),
         token
       )
     } catch (error) {
@@ -279,7 +277,7 @@ const EducationalInstitutionsDialog = ({
                     }
                   }}
                   sx={{ width: `100%` }}
-                  label="* ชื่อสถาบันการศึกษา"
+                  label="* ชื่อประเทศ"
                   variant="outlined"
                   onChange={e => {
                     setName(e.target.value)
@@ -330,7 +328,7 @@ const EducationalInstitutionsDialog = ({
   )
 }
 
-EducationalInstitutionsDialog.propTypes = {
+CountriesDialog.propTypes = {
   dataId: PropTypes.string,
   open: PropTypes.bool,
   type: PropTypes.string,
@@ -338,7 +336,7 @@ EducationalInstitutionsDialog.propTypes = {
   onFinishCallback: PropTypes.func,
 }
 
-EducationalInstitutionsDialog.defaultProps = {
+CountriesDialog.defaultProps = {
   dataId: ``,
   open: false,
   type: ``,
@@ -346,4 +344,4 @@ EducationalInstitutionsDialog.defaultProps = {
   onFinishCallback: () => {},
 }
 
-export default EducationalInstitutionsDialog
+export default CountriesDialog
