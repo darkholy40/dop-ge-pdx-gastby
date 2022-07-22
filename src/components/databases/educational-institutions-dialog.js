@@ -23,7 +23,7 @@ import { Form } from "../../components/styles"
 import renderCheckingIcon from "../../functions/render-checking-icon"
 import saveServerConfigsTag from "../../functions/save-server-configs-tag"
 
-const EducationNamesDialog = ({
+const EducationalInstitutionsDialog = ({
   dataId,
   open,
   type,
@@ -33,8 +33,7 @@ const EducationNamesDialog = ({
   const { token, userInfo } = useSelector(({ mainReducer }) => mainReducer)
   const { serverConfigs } = useSelector(({ staticReducer }) => staticReducer)
   const dispatch = useDispatch()
-  const [shortName, setShortName] = useState(``)
-  const [fullName, setFullName] = useState(``)
+  const [name, setName] = useState(``)
   const [errorAlert, setErrorAlert] = useState({
     status: false,
     text: ``,
@@ -44,23 +43,21 @@ const EducationNamesDialog = ({
     try {
       const res = await client(token).query({
         query: gql`
-          query EducationName {
-            educationName(id: "${dataId}") {
+          query EducationalInstitution {
+            educationalInstitution(id: "${dataId}") {
               _id
-              short_name
-              full_name
+              name
               createdAt
               updatedAt
             }
           }
-      `,
+        `,
       })
 
-      const returnData = res.data.educationName
+      const returnData = res.data.educationalInstitution
 
       if (returnData !== null) {
-        setShortName(returnData.short_name)
-        setFullName(returnData.full_name)
+        setName(returnData.name)
       }
     } catch (error) {
       console.log(error.message)
@@ -71,8 +68,7 @@ const EducationNamesDialog = ({
     onCloseCallback()
 
     setTimeout(() => {
-      setShortName(``)
-      setFullName(``)
+      setName(``)
       setErrorAlert({
         status: false,
         text: ``,
@@ -84,14 +80,13 @@ const EducationNamesDialog = ({
     try {
       const res = await client(token).mutate({
         mutation: gql`
-          mutation CreateEducationName {
-            createEducationName(input: {
+          mutation CreateEducationalInstitution {
+            createEducationalInstitution(input: {
               data: {
-                short_name: "${shortName}"
-                full_name: "${fullName}"
+                name: "${name}"
               }
             }) {
-              educationName {
+              educationalInstitution {
                 _id
               }
             }
@@ -99,7 +94,7 @@ const EducationNamesDialog = ({
         `,
       })
 
-      const createdRowId = res.data.createEducationName.educationName._id
+      const createdRowId = res.data.createEducationalInstitution.educationalInstitution._id
 
       closeModal()
       dispatch({
@@ -120,7 +115,7 @@ const EducationNamesDialog = ({
             createLog(input: {
               data: {
                 action: "action",
-                description: "education-names->create => ${createdRowId}",
+                description: "educational-institutions->create => ${createdRowId}",
                 users_permissions_user: "${userInfo._id}",
               }
             }) {
@@ -133,7 +128,7 @@ const EducationNamesDialog = ({
       })
 
       saveServerConfigsTag(
-        serverConfigs.find(elem => elem.name === `educationNames`),
+        serverConfigs.find(elem => elem.name === `educationalInstitutions`),
         token
       )
     } catch (error) {
@@ -166,17 +161,16 @@ const EducationNamesDialog = ({
     try {
       const res = await client(token).mutate({
         mutation: gql`
-          mutation UpdateEducationName {
-            updateEducationName(input: {
+          mutation UpdateEducationalInstitution {
+            updateEducationalInstitution(input: {
               where: {
                 id: "${dataId}"
               }
               data: {
-                short_name: "${shortName}"
-                full_name: "${fullName}"
+                name: "${name}"
               }
             }) {
-              educationName {
+              educationalInstitution {
                 _id
               }
             }
@@ -184,7 +178,7 @@ const EducationNamesDialog = ({
         `,
       })
 
-      const updatedRowId = res.data.updateEducationName.educationName._id
+      const updatedRowId = res.data.updateEducationalInstitution.educationalInstitution._id
 
       closeModal()
       dispatch({
@@ -205,7 +199,7 @@ const EducationNamesDialog = ({
             createLog(input: {
               data: {
                 action: "action",
-                description: "education-names->update => ${updatedRowId}",
+                description: "educational-institutions->update => ${updatedRowId}",
                 users_permissions_user: "${userInfo._id}",
               }
             }) {
@@ -218,7 +212,7 @@ const EducationNamesDialog = ({
       })
 
       saveServerConfigsTag(
-        serverConfigs.find(elem => elem.name === `educationNames`),
+        serverConfigs.find(elem => elem.name === `educationalInstitutions`),
         token
       )
     } catch (error) {
@@ -277,20 +271,25 @@ const EducationNamesDialog = ({
             <Grid container spacing={2}>
               <Grid item xs={12}>
                 <TextField
+                  inputRef={node => {
+                    if (node !== null) {
+                      node.focus()
+                    }
+                  }}
                   sx={{ width: `100%` }}
-                  label="* ชื่อวุฒิการศึกษา"
+                  label="* ชื่อสถาบันการศึกษา"
                   variant="outlined"
                   onChange={e => {
-                    setFullName(e.target.value)
+                    setName(e.target.value)
                     setErrorAlert(prev => ({
                       ...prev,
                       status: false,
                     }))
                   }}
-                  value={fullName}
+                  value={name}
                   InputProps={{
                     endAdornment: renderCheckingIcon(
-                      !errorAlert.status ? fullName : `warning`
+                      !errorAlert.status ? name : `warning`
                     ),
                   }}
                   error={errorAlert.status}
@@ -301,21 +300,6 @@ const EducationNamesDialog = ({
                   </Alert>
                 </Collapse>
               </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  sx={{ width: `100%` }}
-                  label="ชื่อย่อ"
-                  variant="outlined"
-                  onChange={e => {
-                    setShortName(e.target.value)
-                    setErrorAlert(prev => ({
-                      ...prev,
-                      status: false,
-                    }))
-                  }}
-                  value={shortName}
-                />
-              </Grid>
             </Grid>
           </DialogContent>
           <DialogActions>
@@ -323,7 +307,7 @@ const EducationNamesDialog = ({
               color="success"
               variant="contained"
               type="submit"
-              disabled={fullName === `` || errorAlert.status}
+              disabled={name === `` || errorAlert.status}
             >
               {type === `add` ? `เพิ่ม` : `บันทึก`}
             </Button>
@@ -344,7 +328,7 @@ const EducationNamesDialog = ({
   )
 }
 
-EducationNamesDialog.propTypes = {
+EducationalInstitutionsDialog.propTypes = {
   dataId: PropTypes.string,
   open: PropTypes.bool,
   type: PropTypes.string,
@@ -352,7 +336,7 @@ EducationNamesDialog.propTypes = {
   onFinishCallback: PropTypes.func,
 }
 
-EducationNamesDialog.defaultProps = {
+EducationalInstitutionsDialog.defaultProps = {
   dataId: ``,
   open: false,
   type: ``,
@@ -360,4 +344,4 @@ EducationNamesDialog.defaultProps = {
   onFinishCallback: () => {},
 }
 
-export default EducationNamesDialog
+export default EducationalInstitutionsDialog

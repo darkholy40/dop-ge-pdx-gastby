@@ -43,15 +43,15 @@ const EducationLevelsDialog = ({
     try {
       const res = await client(token).query({
         query: gql`
-        query EducationLevel {
-          educationLevel(id: "${dataId}") {
-            _id
-            name
-            createdAt
-            updatedAt
+          query EducationLevel {
+            educationLevel(id: "${dataId}") {
+              _id
+              name
+              createdAt
+              updatedAt
+            }
           }
-        }
-      `,
+        `,
       })
 
       const returnData = res.data.educationLevel
