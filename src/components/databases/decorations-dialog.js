@@ -19,11 +19,11 @@ import { faTimes } from "@fortawesome/free-solid-svg-icons"
 
 import { client, gql } from "../../functions/apollo-client"
 
-import { Form } from "../../components/styles"
+import { Form } from "../styles"
 import renderCheckingIcon from "../../functions/render-checking-icon"
 import saveServerConfigsTag from "../../functions/save-server-configs-tag"
 
-const CountriesDialog = ({
+const DecorationsDialog = ({
   dataId,
   open,
   type,
@@ -33,7 +33,9 @@ const CountriesDialog = ({
   const { token, userInfo } = useSelector(({ mainReducer }) => mainReducer)
   const { serverConfigs } = useSelector(({ staticReducer }) => staticReducer)
   const dispatch = useDispatch()
-  const [name, setName] = useState(``)
+  const [shortName, setShortName] = useState(``)
+  const [fullName, setFullName] = useState(``)
+  const [engName, setEngName] = useState(``)
   const [errorAlert, setErrorAlert] = useState({
     status: false,
     text: ``,
@@ -43,21 +45,25 @@ const CountriesDialog = ({
     try {
       const res = await client(token).query({
         query: gql`
-          query Country {
-            country(id: "${dataId}") {
+          query Decoration {
+            decoration(id: "${dataId}") {
               _id
-              name
+              short_name
+              full_name
+              eng_name
               createdAt
               updatedAt
             }
           }
-        `,
+      `,
       })
 
-      const returnData = res.data.country
+      const returnData = res.data.decoration
 
       if (returnData !== null) {
-        setName(returnData.name)
+        setShortName(returnData.short_name)
+        setFullName(returnData.full_name)
+        setEngName(returnData.eng_name)
       }
     } catch (error) {
       console.log(error.message)
@@ -68,7 +74,9 @@ const CountriesDialog = ({
     onCloseCallback()
 
     setTimeout(() => {
-      setName(``)
+      setShortName(``)
+      setFullName(``)
+      setEngName(``)
       setErrorAlert({
         status: false,
         text: ``,
@@ -80,13 +88,14 @@ const CountriesDialog = ({
     try {
       const res = await client(token).mutate({
         mutation: gql`
-          mutation CreateCountry {
-            createCountry(input: {
+          mutation CreateDecoration {
+            createDecoration(input: {
               data: {
-                name: "${name}"
+                short_name: "${shortName}"
+                full_name: "${fullName}"
               }
             }) {
-              country {
+              decoration {
                 _id
               }
             }
@@ -94,7 +103,7 @@ const CountriesDialog = ({
         `,
       })
 
-      const createdRowId = res.data.createCountry.country._id
+      const createdRowId = res.data.createDecoration.decoration._id
 
       closeModal()
       dispatch({
@@ -115,7 +124,7 @@ const CountriesDialog = ({
             createLog(input: {
               data: {
                 action: "action",
-                description: "countries->create => ${createdRowId}",
+                description: "decorations->create => ${createdRowId}",
                 users_permissions_user: "${userInfo._id}",
               }
             }) {
@@ -128,7 +137,7 @@ const CountriesDialog = ({
       })
 
       saveServerConfigsTag(
-        serverConfigs.find(elem => elem.name === `countries`),
+        serverConfigs.find(elem => elem.name === `decorations`),
         token
       )
     } catch (error) {
@@ -161,16 +170,17 @@ const CountriesDialog = ({
     try {
       const res = await client(token).mutate({
         mutation: gql`
-          mutation UpdateCountry {
-            updateCountry(input: {
+          mutation UpdateDecoration {
+            updateDecoration(input: {
               where: {
                 id: "${dataId}"
               }
               data: {
-                name: "${name}"
+                short_name: "${shortName}"
+                full_name: "${fullName}"
               }
             }) {
-              country {
+              decoration {
                 _id
               }
             }
@@ -178,7 +188,7 @@ const CountriesDialog = ({
         `,
       })
 
-      const updatedRowId = res.data.updateCountry.country._id
+      const updatedRowId = res.data.updateDecoration.decoration._id
 
       closeModal()
       dispatch({
@@ -199,7 +209,7 @@ const CountriesDialog = ({
             createLog(input: {
               data: {
                 action: "action",
-                description: "countries->update => ${updatedRowId}",
+                description: "decorations->update => ${updatedRowId}",
                 users_permissions_user: "${userInfo._id}",
               }
             }) {
@@ -212,7 +222,7 @@ const CountriesDialog = ({
       })
 
       saveServerConfigsTag(
-        serverConfigs.find(elem => elem.name === `countries`),
+        serverConfigs.find(elem => elem.name === `decorations`),
         token
       )
     } catch (error) {
@@ -271,25 +281,20 @@ const CountriesDialog = ({
             <Grid container spacing={2}>
               <Grid item xs={12}>
                 <TextField
-                  inputRef={node => {
-                    if (node !== null) {
-                      node.focus()
-                    }
-                  }}
                   sx={{ width: `100%` }}
-                  label="* ชื่อประเทศ"
+                  label="* ชื่อเครื่องราชอิสริยาภรณ์"
                   variant="outlined"
                   onChange={e => {
-                    setName(e.target.value)
+                    setFullName(e.target.value)
                     setErrorAlert(prev => ({
                       ...prev,
                       status: false,
                     }))
                   }}
-                  value={name}
+                  value={fullName}
                   InputProps={{
                     endAdornment: renderCheckingIcon(
-                      !errorAlert.status ? name : `warning`
+                      !errorAlert.status ? fullName : `warning`
                     ),
                   }}
                   error={errorAlert.status}
@@ -300,6 +305,36 @@ const CountriesDialog = ({
                   </Alert>
                 </Collapse>
               </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  sx={{ width: `100%` }}
+                  label="ชื่อย่อ"
+                  variant="outlined"
+                  onChange={e => {
+                    setShortName(e.target.value)
+                    setErrorAlert(prev => ({
+                      ...prev,
+                      status: false,
+                    }))
+                  }}
+                  value={shortName}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  sx={{ width: `100%` }}
+                  label="ชื่อภาษาอังกฤษ"
+                  variant="outlined"
+                  onChange={e => {
+                    setEngName(e.target.value)
+                    setErrorAlert(prev => ({
+                      ...prev,
+                      status: false,
+                    }))
+                  }}
+                  value={engName}
+                />
+              </Grid>
             </Grid>
           </DialogContent>
           <DialogActions>
@@ -307,7 +342,7 @@ const CountriesDialog = ({
               color="success"
               variant="contained"
               type="submit"
-              disabled={name === `` || errorAlert.status}
+              disabled={fullName === `` || errorAlert.status}
             >
               {type === `add` ? `เพิ่ม` : `บันทึก`}
             </Button>
@@ -328,7 +363,7 @@ const CountriesDialog = ({
   )
 }
 
-CountriesDialog.propTypes = {
+DecorationsDialog.propTypes = {
   dataId: PropTypes.string,
   open: PropTypes.bool,
   type: PropTypes.string,
@@ -336,7 +371,7 @@ CountriesDialog.propTypes = {
   onFinishCallback: PropTypes.func,
 }
 
-CountriesDialog.defaultProps = {
+DecorationsDialog.defaultProps = {
   dataId: ``,
   open: false,
   type: ``,
@@ -344,4 +379,4 @@ CountriesDialog.defaultProps = {
   onFinishCallback: () => {},
 }
 
-export default CountriesDialog
+export default DecorationsDialog
