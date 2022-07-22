@@ -207,9 +207,26 @@ const OparatorFlex = styled.div`
     flex-direction: row;
     justify-content: flex-start;
     align-items: center;
+    flex-wrap: wrap;
+
+    .MuiButton-root.MuiButton-outlined {
+      margin-right: 0.25rem;
+      margin-bottom: 0.25rem;
+    }
 
     .MuiButtonBase-root.MuiChip-root {
-      margin-left: 0.5rem;
+      margin: 0.25rem;
+    }
+  }
+
+  .lt {
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: flex-start;
+    justify-content: center;
+
+    .MuiButton-root.MuiButton-outlined {
+      white-space: nowrap;
     }
   }
 
@@ -221,16 +238,6 @@ const OparatorFlex = styled.div`
     .ft,
     .lt {
       margin-bottom: 1rem;
-    }
-
-    .ft {
-      flex-direction: column;
-      align-items: flex-end;
-
-      .MuiButtonBase-root.MuiChip-root {
-        margin-left: 0;
-        margin-top: 0.5rem;
-      }
     }
   }
 `

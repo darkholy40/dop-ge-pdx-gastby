@@ -537,6 +537,78 @@ const ActivitiesPage = () => {
             }
             break
 
+          case `education-names->create`:
+            option = {
+              ...option,
+              description: `เพิ่มข้อมูลวุฒิการศึกษา`,
+              icon: faSave,
+              color: green[700],
+            }
+            break
+
+          case `education-names->update`:
+            option = {
+              ...option,
+              description: `อัปเดตข้อมูลวุฒิการศึกษา`,
+              icon: faSave,
+              color: green[700],
+            }
+            break
+
+          case `educational-institutions->create`:
+            option = {
+              ...option,
+              description: `เพิ่มข้อมูลสถาบันการศึกษา`,
+              icon: faSave,
+              color: green[700],
+            }
+            break
+
+          case `educational-institutions->update`:
+            option = {
+              ...option,
+              description: `อัปเดตข้อมูลสถาบันการศึกษา`,
+              icon: faSave,
+              color: green[700],
+            }
+            break
+
+          case `countries->create`:
+            option = {
+              ...option,
+              description: `เพิ่มข้อมูลรายชื่อประเทศ`,
+              icon: faSave,
+              color: green[700],
+            }
+            break
+
+          case `countries->update`:
+            option = {
+              ...option,
+              description: `อัปเดตข้อมูลรายชื่อประเทศ`,
+              icon: faSave,
+              color: green[700],
+            }
+            break
+
+          case `decorations->create`:
+            option = {
+              ...option,
+              description: `เพิ่มข้อมูลเครื่องราชอิสริยาภรณ์`,
+              icon: faSave,
+              color: green[700],
+            }
+            break
+
+          case `decorations->update`:
+            option = {
+              ...option,
+              description: `อัปเดตข้อมูลเครื่องราชอิสริยาภรณ์`,
+              icon: faSave,
+              color: green[700],
+            }
+            break
+
           default:
             break
         }
