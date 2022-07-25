@@ -29,6 +29,11 @@ const initialState = {
     division: null,
     role: null,
   },
+  isRememberedPass: {
+    status: false,
+    val: ``,
+    gotIt: false,
+  },
   tutorialCount: 0,
   notificationDialog: {
     open: false,
@@ -72,6 +77,12 @@ const mainReducer = (state = initialState, action) => {
         userInfo: action.userInfo,
       }
 
+    case `SET_IS_REMEMBERED_PASS`:
+      return {
+        ...state,
+        isRememberedPass: action.isRememberedPass,
+      }
+
     case `SET_TUTORIAL_COUNT`:
       return {
         ...state,
@@ -94,7 +105,7 @@ const mainReducer = (state = initialState, action) => {
 const mainPersistConfig = {
   key: `gepdx_main`,
   storage: storage,
-  whitelist: [`lang`, `token`, `userInfo`, `tutorialCount`],
+  whitelist: [`lang`, `token`, `userInfo`, `isRememberedPass`, `tutorialCount`],
 }
 
 export { mainReducer, mainPersistConfig }

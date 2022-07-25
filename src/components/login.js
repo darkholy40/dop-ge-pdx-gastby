@@ -8,6 +8,8 @@ import {
   Alert,
   IconButton,
   Divider,
+  Checkbox,
+  Collapse,
 } from "@mui/material"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import {
@@ -16,13 +18,15 @@ import {
   faEye,
   faEyeSlash,
   faBook,
+  faCheck,
 } from "@fortawesome/free-solid-svg-icons"
 import axios from "axios"
 
 import { client, gql } from "../functions/apollo-client"
 
 import Image from "./image"
-import { ColorButton } from "./styles"
+import { ColorButton, Flex as CheckboxFlex } from "./styles"
+import { red } from "@mui/material/colors"
 
 const TitleFlex = styled.div`
   display: flex;
@@ -94,13 +98,22 @@ const LogoContainer = styled.div`
   }
 `
 
+const MyAlert = styled(Alert)`
+  color: ${red[500]};
+  margin-bottom: 1rem;
+
+  .alert-text {
+    margin: 0;
+  }
+`
+
 const IndexPage = () => {
   const dispatch = useDispatch()
-  const { userInfo, primaryColor } = useSelector(
+  const { userInfo, isRememberedPass, primaryColor } = useSelector(
     ({ mainReducer }) => mainReducer
   )
   const [usernameInput, setUsernameInput] = useState(userInfo.username)
-  const [passwordInput, setPasswordInput] = useState(``)
+  const [passwordInput, setPasswordInput] = useState(isRememberedPass.val)
   const [isLoading, setIsLoading] = useState(false)
   const [isError, setIsError] = useState({
     status: false,
@@ -232,6 +245,24 @@ const IndexPage = () => {
                   role: userData.role || null,
                 },
               })
+
+              if (isRememberedPass.status) {
+                dispatch({
+                  type: `SET_IS_REMEMBERED_PASS`,
+                  isRememberedPass: {
+                    ...isRememberedPass,
+                    val: passwordInput,
+                  },
+                })
+              } else {
+                dispatch({
+                  type: `SET_IS_REMEMBERED_PASS`,
+                  isRememberedPass: {
+                    ...isRememberedPass,
+                    val: ``,
+                  },
+                })
+              }
             }, 0)
           } else {
             setIsError({
@@ -350,7 +381,7 @@ const IndexPage = () => {
                 <TextField
                   style={{
                     width: `100%`,
-                    marginBottom: `1.5rem`,
+                    marginBottom: `1rem`,
                   }}
                   id="pwd"
                   label="รหัสผ่าน"
@@ -383,6 +414,77 @@ const IndexPage = () => {
                   onChange={e => setPasswordInput(e.target.value)}
                   disabled={isLoading || isError.text === `pass`}
                 />
+                <CheckboxFlex
+                  style={{ justifyContent: `flex-end`, marginBottom: `1rem` }}
+                >
+                  <Checkbox
+                    onChange={(_, newValue) => {
+                      dispatch({
+                        type: `SET_IS_REMEMBERED_PASS`,
+                        isRememberedPass: {
+                          ...isRememberedPass,
+                          status: newValue,
+                        },
+                      })
+                    }}
+                    checked={isRememberedPass.status}
+                  />
+                  <div
+                    role="presentation"
+                    style={{ cursor: `pointer`, userSelect: `none` }}
+                    onClick={() =>
+                      dispatch({
+                        type: `SET_IS_REMEMBERED_PASS`,
+                        isRememberedPass: {
+                          ...isRememberedPass,
+                          status: !isRememberedPass.status,
+                        },
+                      })
+                    }
+                  >
+                    จดจำรหัสผ่าน
+                  </div>
+                </CheckboxFlex>
+                <Collapse
+                  in={isRememberedPass.status && !isRememberedPass.gotIt}
+                >
+                  <MyAlert
+                    icon={false}
+                    severity="error"
+                    action={
+                      <Button
+                        sx={{
+                          whiteSpace: `nowrap`,
+                        }}
+                        color="success"
+                        variant="contained"
+                        onClick={() =>
+                          dispatch({
+                            type: `SET_IS_REMEMBERED_PASS`,
+                            isRememberedPass: {
+                              ...isRememberedPass,
+                              gotIt: true,
+                            },
+                          })
+                        }
+                      >
+                        <FontAwesomeIcon
+                          icon={faCheck}
+                          style={{ marginRight: 5 }}
+                        />
+                        รับทราบ
+                      </Button>
+                    }
+                  >
+                    <p className="alert-text">
+                      เพื่อความปลอดภัยของบัญชีผู้ใช้งานของท่าน
+                    </p>
+                    <p className="alert-text">
+                      ไม่ควรเลือก "จดจำรหัสผ่าน"
+                      หากอุปกรณ์ที่กำลังจะเข้าใช้งานไม่ใช่ของท่านเอง
+                    </p>
+                  </MyAlert>
+                </Collapse>
                 <Button
                   style={{
                     width: `100%`,
