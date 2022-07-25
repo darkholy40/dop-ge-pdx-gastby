@@ -2,8 +2,6 @@ import React from "react"
 import PropTypes from "prop-types"
 import styled from "styled-components"
 
-import StaticTags from "./static-tags"
-
 const Main = styled.div`
   width: 100%;
   max-width: 1200px;
@@ -20,12 +18,7 @@ const Main = styled.div`
 `
 
 const Layout = ({ children }) => {
-  return (
-    <Main>
-      <StaticTags />
-      {children}
-    </Main>
-  )
+  return <Main>{children}</Main>
 }
 
 Layout.propTypes = {

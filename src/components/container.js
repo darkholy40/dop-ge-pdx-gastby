@@ -13,9 +13,10 @@ import thLocale from "date-fns/locale/th"
 
 import Jwt from "./jwt"
 import FirstMeetDialog from "./first-meet-dialog"
+import StaticTags from "./static-tags"
+import ResponsiveDrawer from "./responsive-drawer"
 import NotificationDialog from "./notification-dialog"
 import Footer from "./footer"
-import ResponsiveDrawer from "./responsive-drawer"
 
 const GlobalStyles = createGlobalStyle`
   :root {
@@ -122,6 +123,7 @@ const Container = ({ children }) => {
         <GlobalStyles color={primaryColor} />
         <Jwt />
         <FirstMeetDialog />
+        <StaticTags />
         <ResponsiveDrawer>
           <div>{children}</div>
           <Backdrop

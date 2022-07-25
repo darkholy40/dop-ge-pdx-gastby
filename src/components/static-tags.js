@@ -4,6 +4,7 @@ import { useSelector, useDispatch } from "react-redux"
 import { client, gql } from "../functions/apollo-client"
 
 import roleLevel from "../functions/role-level"
+import useInterval from "../functions/use-interval"
 
 const StaticTags = () => {
   const { token, userInfo } = useSelector(({ mainReducer }) => mainReducer)
@@ -169,16 +170,27 @@ const StaticTags = () => {
         serverConfigs: data,
       })
     } catch (error) {
-      console.log(error)
+      console.log({
+        title: `fetch-static-tags`,
+        message: error.message,
+      })
     }
   }, [token, userInfo.role, tags, dispatch])
 
   React.useMemo(() => {
-    // console.log(`Mount StaticTags component`)
+    // console.log(`First Mount StaticTags component`)
     if (token !== ``) {
       fetchStaticTags()
     }
   }, [fetchStaticTags, token])
+
+  useInterval(
+    () => {
+      // console.log(`Every Minute Mount StaticTags component`)
+      fetchStaticTags()
+    },
+    token !== `` ? 1000 * 60 : null
+  )
 
   return <></>
 }
