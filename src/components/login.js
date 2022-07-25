@@ -7,6 +7,7 @@ import {
   Button,
   Alert,
   IconButton,
+  Divider,
 } from "@mui/material"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import {
@@ -14,12 +15,14 @@ import {
   faLock,
   faEye,
   faEyeSlash,
+  faBook,
 } from "@fortawesome/free-solid-svg-icons"
 import axios from "axios"
 
 import { client, gql } from "../functions/apollo-client"
 
 import Image from "./image"
+import { ColorButton } from "./styles"
 
 const TitleFlex = styled.div`
   display: flex;
@@ -29,6 +32,8 @@ const TitleFlex = styled.div`
 const Title = styled.p`
   font-size: 1.5rem;
   text-align: center;
+  margin-top: 1.5rem;
+  margin-bottom: 1.5rem;
 
   &.primary {
     font-size: 2rem;
@@ -47,14 +52,24 @@ const Title = styled.p`
 const Flex = styled.div`
   width: 100%;
   margin: auto;
+  padding-top: 2.5rem;
+  padding-bottom: 2.5rem;
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
+  border-radius: 24px;
   box-shadow: rgb(0 0 0 / 10%) 0px 2px 4px, rgb(0 0 0 / 10%) 0px 8px 16px;
 
+  .middle {
+    display: flex;
+    flex-direction: row;
+  }
+
   @media (max-width: 991px) {
-    flex-direction: column;
+    .middle {
+      flex-direction: column;
+    }
   }
 `
 
@@ -66,7 +81,8 @@ const Column = styled.div`
 const Row = styled.div`
   width: 100%;
   max-width: 600px;
-  padding: 2.5rem;
+  padding-left: 2.5rem;
+  padding-right: 2.5rem;
 `
 
 const LogoContainer = styled.div`
@@ -274,8 +290,14 @@ const IndexPage = () => {
         >
           ระบบพนักงานราชการและลูกจ้าง
         </Title>
-        <Title style={{ fontStyle: `italic`, marginTop: 0 }}>
-          ลงชื่อเข้าใช้งานระบบ
+        <Title
+          style={{
+            fontSize: `1.25rem`,
+            fontStyle: `italic`,
+            marginTop: 0,
+          }}
+        >
+          Government Employee Personal Data Exchange (GE-PDX)
         </Title>
       </TitleFlex>
       <form
@@ -289,96 +311,135 @@ const IndexPage = () => {
         }}
       >
         <Flex>
-          <Column>
-            <LogoContainer>
-              <Image src="icon.png" />
-            </LogoContainer>
-          </Column>
-          <Column>
-            <Row>
-              <TextField
-                style={{
-                  width: `100%`,
-                  marginBottom: `1rem`,
-                }}
-                id="uname"
-                label="ชื่อผู้ใช้งาน"
-                type="text"
-                variant="outlined"
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <FontAwesomeIcon icon={faUser} style={{ fontSize: 20 }} />
-                    </InputAdornment>
-                  ),
-                }}
-                value={usernameInput}
-                onChange={e => setUsernameInput(e.target.value)}
-                disabled={isLoading || isError.text === `pass`}
-              />
-              <TextField
-                style={{
-                  width: `100%`,
-                  marginBottom: `1.5rem`,
-                }}
-                id="pwd"
-                label="รหัสผ่าน"
-                type={!pwdVisibility ? `password` : `text`}
-                autoComplete="true"
-                variant="outlined"
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <FontAwesomeIcon icon={faLock} style={{ fontSize: 20 }} />
-                    </InputAdornment>
-                  ),
-                  endAdornment: (
-                    <IconButton
-                      onClick={() => setPwdVisibility(!pwdVisibility)}
-                      color="inherit"
-                      style={{ width: 35, height: 35 }}
-                    >
-                      <FontAwesomeIcon
-                        icon={!pwdVisibility ? faEye : faEyeSlash}
-                        style={{ fontSize: 16 }}
-                      />
-                    </IconButton>
-                  ),
-                }}
-                value={passwordInput}
-                onChange={e => setPasswordInput(e.target.value)}
-                disabled={isLoading || isError.text === `pass`}
-              />
-              <Button
-                style={{
-                  width: `100%`,
-                }}
-                type="submit"
-                color="primary"
-                variant="contained"
-                size="large"
-                disabled={
-                  usernameInput === `` ||
-                  passwordInput === `` ||
-                  isLoading ||
-                  isError.text === `pass`
-                }
-              >
-                {!isLoading && isError.text !== `pass` ? (
-                  <span>เข้าสู่ระบบ</span>
-                ) : (
-                  <span>กำลังเข้าสู่ระบบ...</span>
-                )}
-              </Button>
-              {isError.status && (
-                <Alert
-                  sx={{ marginTop: `1rem`, animation: `fadein 0.3s` }}
-                  severity="error"
+          <Title
+            style={{ fontStyle: `italic`, marginTop: 0, marginBottom: `2rem` }}
+          >
+            ลงชื่อเข้าใช้งานระบบ
+          </Title>
+          <div className="middle">
+            <Column>
+              <LogoContainer>
+                <Image src="icon.png" />
+              </LogoContainer>
+            </Column>
+            <Column>
+              <Row>
+                <TextField
+                  style={{
+                    width: `100%`,
+                    marginBottom: `1rem`,
+                  }}
+                  id="uname"
+                  label="ชื่อผู้ใช้งาน"
+                  type="text"
+                  variant="outlined"
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <FontAwesomeIcon
+                          icon={faUser}
+                          style={{ fontSize: 20 }}
+                        />
+                      </InputAdornment>
+                    ),
+                  }}
+                  value={usernameInput}
+                  onChange={e => setUsernameInput(e.target.value)}
+                  disabled={isLoading || isError.text === `pass`}
+                />
+                <TextField
+                  style={{
+                    width: `100%`,
+                    marginBottom: `1.5rem`,
+                  }}
+                  id="pwd"
+                  label="รหัสผ่าน"
+                  type={!pwdVisibility ? `password` : `text`}
+                  autoComplete="true"
+                  variant="outlined"
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <FontAwesomeIcon
+                          icon={faLock}
+                          style={{ fontSize: 20 }}
+                        />
+                      </InputAdornment>
+                    ),
+                    endAdornment: (
+                      <IconButton
+                        onClick={() => setPwdVisibility(!pwdVisibility)}
+                        color="inherit"
+                        style={{ width: 35, height: 35 }}
+                      >
+                        <FontAwesomeIcon
+                          icon={!pwdVisibility ? faEye : faEyeSlash}
+                          style={{ fontSize: 16 }}
+                        />
+                      </IconButton>
+                    ),
+                  }}
+                  value={passwordInput}
+                  onChange={e => setPasswordInput(e.target.value)}
+                  disabled={isLoading || isError.text === `pass`}
+                />
+                <Button
+                  style={{
+                    width: `100%`,
+                  }}
+                  type="submit"
+                  color="primary"
+                  variant="contained"
+                  size="large"
+                  disabled={
+                    usernameInput === `` ||
+                    passwordInput === `` ||
+                    isLoading ||
+                    isError.text === `pass`
+                  }
                 >
-                  {isError.text}
-                </Alert>
-              )}
-            </Row>
+                  {!isLoading && isError.text !== `pass` ? (
+                    <span>เข้าสู่ระบบ</span>
+                  ) : (
+                    <span>กำลังเข้าสู่ระบบ...</span>
+                  )}
+                </Button>
+                {isError.status && (
+                  <Alert
+                    sx={{ marginTop: `1rem`, animation: `fadein 0.3s` }}
+                    severity="error"
+                  >
+                    {isError.text}
+                  </Alert>
+                )}
+              </Row>
+            </Column>
+          </div>
+          <Divider
+            style={{ width: `calc(100% - 80px)`, margin: `2rem 1rem` }}
+          />
+          <Column>
+            <ColorButton primaryColor={primaryColor} height="100px">
+              <a
+                style={{
+                  textDecoration: `none`,
+                  color: `unset`,
+                }}
+                href="https://ge-pdx.rta.mi.th/public/user_manual_GE-PDX.pdf"
+                target="_blank"
+                rel="noreferrer"
+              >
+                <div className="row">
+                  <div role="presentation">
+                    <FontAwesomeIcon
+                      icon={faBook}
+                      style={{ fontSize: `2.5rem`, marginRight: `1rem` }}
+                    />
+                    <span>ดาวน์โหลดคู่มือการใช้งานระบบ GE-PDX</span>
+                  </div>
+                </div>
+              </a>
+            </ColorButton>
           </Column>
         </Flex>
       </form>
