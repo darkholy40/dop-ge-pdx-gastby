@@ -362,7 +362,7 @@ const Decorations = () => {
                   <Divider sx={{ width: `100%` }} />
                   <div className="field">
                     <TextField
-                      label="ชื่อวุฒิการศึกษา"
+                      label="ชื่อเครื่องราชอิสริยาภรณ์"
                       size="small"
                       variant="outlined"
                       onChange={e => {
@@ -474,7 +474,7 @@ const Decorations = () => {
                     orientation="horizontal"
                   >
                     <Chip
-                      label={`ชื่อวุฒิการศึกษา: ${confirmedFilterInputs.full_name}`}
+                      label={`ชื่อเครื่องราชอิสริยาภรณ์: ${confirmedFilterInputs.full_name}`}
                       color="primary"
                       onDelete={() => removeOneFilter(`full_name`)}
                     />
