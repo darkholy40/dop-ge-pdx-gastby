@@ -370,9 +370,15 @@ const SettingsGeneral = () => {
 
           {rows.length > 0 && (
             <Container>
-              {rows.map(row => {
+              {rows.map((row, index) => {
+                const flexProps = {
+                  style: {
+                    marginTop: index === 0 ? `1.25rem` : `0`,
+                  },
+                }
+                
                 return row.title !== `` ? (
-                  <Flex key={`${row.title}_${row.index}`}>
+                  <Flex key={`${row.title}_${row.index}`} {...flexProps}>
                     <Left>
                       <p>{row.title}</p>
                     </Left>
