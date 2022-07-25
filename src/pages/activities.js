@@ -23,6 +23,7 @@ import {
   faRedo,
   faChevronRight,
   faSync,
+  faKey,
 } from "@fortawesome/free-solid-svg-icons"
 import { green, grey, blue, red } from "@mui/material/colors"
 
@@ -606,6 +607,15 @@ const ActivitiesPage = () => {
               description: `อัปเดตข้อมูลเครื่องราชอิสริยาภรณ์`,
               icon: faSave,
               color: green[700],
+            }
+            break
+
+          case `change password`:
+            option = {
+              ...option,
+              description: `เปลี่ยนรหัสผ่าน`,
+              icon: faKey,
+              color: blue[500],
             }
             break
 
