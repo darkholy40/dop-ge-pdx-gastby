@@ -33,6 +33,128 @@ const Container = styled(Flex)`
   flex-direction: column;
 `
 
+const wsConfigs = [
+  {
+    name: `!cols`,
+    data: [
+      {
+        wch: 15,
+      },
+      {
+        wch: 15,
+      },
+      {
+        wch: 22,
+      },
+      {
+        wch: 12,
+      },
+      {
+        wch: 36,
+      },
+      {
+        wch: 22,
+      },
+      {
+        wch: 30,
+      },
+      {
+        wch: 15,
+      },
+      {
+        wch: 30,
+      },
+      {
+        wch: 15,
+      },
+      {
+        wch: 20,
+      },
+      {
+        wch: 20,
+      },
+      {
+        wch: 20,
+      },
+      {
+        wch: 10,
+      },
+      {
+        wch: 14,
+      },
+      {
+        wch: 26,
+      },
+      {
+        wch: 45,
+      },
+      {
+        wch: 18,
+      },
+      {
+        wch: 40,
+      },
+      {
+        wch: 52,
+      },
+      {
+        wch: 25,
+      },
+      {
+        wch: 27,
+      },
+      {
+        wch: 25,
+      },
+      {
+        wch: 28,
+      },
+      {
+        wch: 25,
+      },
+      {
+        wch: 34,
+      },
+      {
+        wch: 17,
+      },
+      {
+        wch: 19,
+      },
+      {
+        wch: 25,
+      },
+      {
+        wch: 22,
+      },
+      {
+        wch: 22,
+      },
+      {
+        wch: 15,
+      },
+      {
+        wch: 18,
+      },
+      {
+        wch: 30,
+      },
+      {
+        wch: 27,
+      },
+      {
+        wch: 22,
+      },
+      {
+        wch: 22,
+      },
+      {
+        wch: 16,
+      },
+    ],
+  },
+]
+
 const StockPage = () => {
   const { token, userInfo } = useSelector(({ mainReducer }) => mainReducer)
   const { units } = useSelector(({ staticReducer }) => staticReducer)
@@ -513,6 +635,7 @@ const StockPage = () => {
 
               <ExportToExcel
                 apiData={data}
+                wsConfigs={wsConfigs}
                 fileName="stock"
                 sheetName="STOCK"
                 disabled={statusCode !== ``}

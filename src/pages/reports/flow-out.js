@@ -31,6 +31,62 @@ const Container = styled(Flex)`
   flex-direction: column;
 `
 
+const wsConfigs = [
+  {
+    name: `!cols`,
+    data: [
+      {
+        wch: 15,
+      },
+      {
+        wch: 15,
+      },
+      {
+        wch: 22,
+      },
+      {
+        wch: 12,
+      },
+      {
+        wch: 36,
+      },
+      {
+        wch: 22,
+      },
+      {
+        wch: 30,
+      },
+      {
+        wch: 15,
+      },
+      {
+        wch: 15,
+      },
+      {
+        wch: 20,
+      },
+      {
+        wch: 20,
+      },
+      {
+        wch: 20,
+      },
+      {
+        wch: 10,
+      },
+      {
+        wch: 19,
+      },
+      {
+        wch: 25,
+      },
+      {
+        wch: 35,
+      },
+    ],
+  },
+]
+
 const FlowOutPage = () => {
   const { token, userInfo } = useSelector(({ mainReducer }) => mainReducer)
   const { units } = useSelector(({ staticReducer }) => staticReducer)
@@ -412,6 +468,7 @@ const FlowOutPage = () => {
               )}
               <ExportToExcel
                 apiData={data}
+                wsConfigs={wsConfigs}
                 fileName="flow-out"
                 sheetName="FLOW-OUT"
                 disabled={statusCode !== ``}
