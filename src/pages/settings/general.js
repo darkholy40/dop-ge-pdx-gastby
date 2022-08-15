@@ -376,7 +376,7 @@ const SettingsGeneral = () => {
                     marginTop: index === 0 ? `1.25rem` : `0`,
                   },
                 }
-                
+
                 return row.title !== `` ? (
                   <Flex key={`${row.title}_${row.index}`} {...flexProps}>
                     <Left>

@@ -5,7 +5,7 @@ import styled from "styled-components"
 const Main = styled.div`
   width: 100%;
   max-width: 1200px;
-  min-height: calc(100vh - 204px);
+  min-height: calc(100vh - 196px);
   margin-left: auto;
   margin-right: auto;
   margin-bottom: 2rem;
@@ -13,7 +13,7 @@ const Main = styled.div`
   border-radius: 3px;
 
   @media (max-width: 599px) {
-    min-height: calc(100vh - 188px);
+    min-height: calc(100vh - 212px);
   }
 `
 

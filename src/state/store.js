@@ -6,6 +6,7 @@ import { staticReducer, staticPersistConfig } from "./reducers/static"
 import { timerReducer, timerPersistConfig } from "./reducers/timer"
 import { positionsReducer, positionsPersistConfig } from "./reducers/positions"
 import { peopleReducer, peoplePersistConfig } from "./reducers/people"
+import { clockReducer, clockPersistConfig } from "./reducers/clock"
 
 const rootReducer = combineReducers({
   mainReducer: persistReducer(mainPersistConfig, mainReducer),
@@ -13,6 +14,7 @@ const rootReducer = combineReducers({
   timerReducer: persistReducer(timerPersistConfig, timerReducer),
   positionsReducer: persistReducer(positionsPersistConfig, positionsReducer),
   peopleReducer: persistReducer(peoplePersistConfig, peopleReducer),
+  clockReducer: persistReducer(clockPersistConfig, clockReducer),
 })
 
 const myStore = () => {
