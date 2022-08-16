@@ -307,7 +307,8 @@ const ResponsiveDrawer = props => {
                     selected={
                       currentPage === `settings` ||
                       currentPage === `settings-general` ||
-                      currentPage === `settings-system-data`
+                      currentPage === `settings-system-data` ||
+                      currentPage === `settings-unit`
                     }
                   >
                     <ListItemIcon>

@@ -232,6 +232,8 @@ const FlowOutPage = () => {
                     division1
                     division2
                     division3
+                    province
+                    organize_type
                   }
                 }
               }
@@ -277,8 +279,14 @@ const FlowOutPage = () => {
                 person.position !== null
                   ? person.position.position_type.type
                   : ``,
-              "สังกัดราชการส่วนกลาง/ส่วนภูมิภาค": "xxx",
-              ชื่อจังหวัด: "xxx",
+              "สังกัดราชการส่วนกลาง/ส่วนภูมิภาค":
+                person.position !== null
+                  ? person.position.division.organize_type || ``
+                  : ``,
+              ชื่อจังหวัด:
+                person.position !== null
+                  ? person.position.division.province || ``
+                  : ``,
               "ชื่อคำนำหน้าชื่อ ": person !== null ? person.Prename : ``,
               ชื่อผู้ครองตำแหน่ง: person !== null ? person.Name : ``,
               นามสกุลผู้ครองตำแหน่ง: person !== null ? person.Surname : ``,

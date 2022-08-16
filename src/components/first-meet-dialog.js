@@ -1,11 +1,12 @@
 import React from "react"
-import { navigate } from "gatsby"
 import { useSelector, useDispatch } from "react-redux"
 import { Dialog, Button } from "@mui/material"
 import styled from "styled-components"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faCheckCircle } from "@fortawesome/free-solid-svg-icons"
 import { green as successColor } from "@mui/material/colors"
+
+import UnitSettingForm from "./unit-setting-from"
 
 const Content = styled.div`
   display: flex;
@@ -22,7 +23,28 @@ const Content = styled.div`
 
 const FirstMeetDialog = () => {
   const dispatch = useDispatch()
-  const { tutorialCount } = useSelector(({ mainReducer }) => mainReducer)
+  const { tutorialCount, userInfo } = useSelector(
+    ({ mainReducer }) => mainReducer
+  )
+
+  const checkDivisionDetailIsComplete = () => {
+    let isPassed = false
+
+    if (userInfo.division !== null) {
+      if (
+        userInfo.division.organize_type !== null &&
+        userInfo.division.organize_type !== undefined &&
+        userInfo.division.organize_type !== `` &&
+        userInfo.division.province !== null &&
+        userInfo.division.province !== undefined &&
+        userInfo.division.province !== ``
+      ) {
+        isPassed = true
+      }
+    }
+
+    return isPassed
+  }
 
   return (
     <>
@@ -37,20 +59,29 @@ const FirstMeetDialog = () => {
               color: successColor[500],
             }}
           />
-          <p>กดปุ่ม "ตกลง" เพื่อไปยังหน้าประวัติกำลังพล</p>
+          <p>
+            {checkDivisionDetailIsComplete()
+              ? `กดปุ่ม "ตกลง" เพื่อไปยังหน้าประวัติกำลังพล`
+              : `กดปุ่ม "ตกลง" เพื่อไปยังขั้นตอนถัดไป`}
+          </p>
           <Button
             color="primary"
             variant="contained"
             onClick={() => {
               dispatch({
                 type: `SET_TUTORIAL_COUNT`,
-                tutorialCount: 4,
+                tutorialCount: checkDivisionDetailIsComplete() ? 4 : 3,
               })
-              navigate(`/people/`)
             }}
           >
             ตกลง
           </Button>
+        </Content>
+      </Dialog>
+
+      <Dialog fullWidth maxWidth="sm" open={tutorialCount === 3}>
+        <Content style={{ overflowY: `hidden` }}>
+          <UnitSettingForm fullWidth />
         </Content>
       </Dialog>
     </>

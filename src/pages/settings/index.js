@@ -3,7 +3,11 @@ import { navigate } from "gatsby"
 import { useSelector, useDispatch } from "react-redux"
 import styled from "styled-components"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { faAddressCard, faSync } from "@fortawesome/free-solid-svg-icons"
+import {
+  faAddressCard,
+  faBullseye,
+  faSync,
+} from "@fortawesome/free-solid-svg-icons"
 
 import { client, gql } from "../../functions/apollo-client"
 
@@ -88,6 +92,28 @@ const SettingsIndex = () => {
                     }}
                   />
                   <span>บัญชีผู้ใช้งาน</span>
+                </div>
+              </div>
+            </ColorButton>
+            <ColorButton
+              primaryColor={primaryColor}
+              width="800px"
+              height="75px"
+            >
+              <div className="row">
+                <div
+                  role="presentation"
+                  onClick={() => navigate(`/settings/unit/`)}
+                >
+                  <FontAwesomeIcon
+                    icon={faBullseye}
+                    style={{
+                      fontSize: `1.5rem`,
+                      marginRight: 8,
+                      minWidth: 35,
+                    }}
+                  />
+                  <span>หน่วย</span>
                 </div>
               </div>
             </ColorButton>

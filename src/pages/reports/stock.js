@@ -316,6 +316,8 @@ const StockPage = () => {
                   division1
                   division2
                   division3
+                  province
+                  organize_type
                 }
               }
             }
@@ -347,8 +349,9 @@ const StockPage = () => {
               เลขที่ตำแหน่ง: position.number,
               ชื่อตำแหน่งในสายงาน: position.position_type.name,
               ชื่อประเภทกลุ่มงาน: position.position_type.type,
-              "สังกัดราชการส่วนกลาง/ส่วนภูมิภาค": "xxx",
-              ชื่อจังหวัด: "xxx",
+              "สังกัดราชการส่วนกลาง/ส่วนภูมิภาค":
+                position.division.organize_type || ``,
+              ชื่อจังหวัด: position.division.province || ``,
               "สถานภาพของตำแหน่ง ":
                 position.person !== null
                   ? renderPositionStatus(position.person.type)
