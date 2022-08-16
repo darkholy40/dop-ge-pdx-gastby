@@ -195,6 +195,24 @@ const UnitSettingForm = ({ fullWidth }) => {
       if (res) {
         setIsDivisionDataUpdated(true)
 
+        client(token).mutate({
+          mutation: gql`
+            mutation CreateLog {
+              createLog(input: {
+                data: {
+                  action: "action",
+                  description: "division->update => ${userInfo.division._id}",
+                  users_permissions_user: "${userInfo._id}",
+                }
+              }) {
+                log {
+                  _id
+                }
+              }
+            }
+          `,
+        })
+
         if (fullWidth) {
           setIsDivisionOptionalDataIsExisted(true)
         }

@@ -24,6 +24,7 @@ import {
   faChevronRight,
   faSync,
   faKey,
+  faBullseye,
 } from "@fortawesome/free-solid-svg-icons"
 import { green, grey, blue, red } from "@mui/material/colors"
 
@@ -41,6 +42,7 @@ import Warning from "../components/warning"
 import renderTableDate from "../functions/render-table-date"
 import renderFullname from "../functions/render-fullname"
 import roleLevel from "../functions/role-level"
+import renderDivision from "../functions/render-division"
 
 const Oparator = styled.div`
   display: flex;
@@ -206,7 +208,7 @@ const ActivitiesPage = () => {
       color: grey[900],
     }
     const title = description.split(` => `)[0]
-    const id = description.split(` => `)[1]
+    let id = description.split(` => `)[1]
 
     switch (action) {
       case `auth`:
@@ -608,6 +610,16 @@ const ActivitiesPage = () => {
               icon: faSave,
               color: green[700],
             }
+            break
+
+          case `division->update`:
+            option = {
+              ...option,
+              description: `อัปเดตข้อมูลจังหวัดและสังกัดราชการของหน่วย`,
+              icon: faBullseye,
+              color: green[700],
+            }
+            id = renderDivision(userInfo.division)
             break
 
           case `change password`:
