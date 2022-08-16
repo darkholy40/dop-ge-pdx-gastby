@@ -17,7 +17,7 @@ import {
   Toolbar,
   Typography,
   Button,
-  Menu,
+  Popover,
   MenuItem,
   Badge,
   Tooltip,
@@ -419,10 +419,11 @@ const ResponsiveDrawer = props => {
                 </Button>
               </div>
 
-              <Menu
+              <Popover
                 sx={{
-                  ".MuiList-root.MuiList-padding.MuiMenu-list": {
-                    minWidth: 200,
+                  ".MuiPaper-root.MuiPaper-elevation": {
+                    minWidth: `240px`,
+                    padding: `4px 0`,
                   },
                 }}
                 anchorEl={anchorElMyInfo}
@@ -439,6 +440,38 @@ const ResponsiveDrawer = props => {
                   horizontal: "right",
                 }}
               >
+                {tutorialCount === 4 && (
+                  <>
+                    <MenuItem
+                      onClick={() => {
+                        setAnchorElMyInfo(null)
+                        navigate(`/settings/general/`)
+                      }}
+                      disableRipple
+                    >
+                      <div
+                        style={{
+                          display: `flex`,
+                          flexDirection: `column`,
+                        }}
+                      >
+                        <span style={{ margin: `0.25rem 0` }}>
+                          {renderFullname(userInfo)}
+                        </span>
+                        <span
+                          style={{ margin: `0.25rem 0`, fontSize: `0.75rem` }}
+                        >
+                          <FontAwesomeIcon
+                            icon={faUserAlt}
+                            style={{ fontSize: 14, marginRight: 5 }}
+                          />
+                          {userInfo.username}
+                        </span>
+                      </div>
+                    </MenuItem>
+                    <Divider style={{ margin: `6px 18px` }} />
+                  </>
+                )}
                 {tutorialCount === 4 && (
                   <MenuItem
                     onClick={() => {
@@ -467,7 +500,7 @@ const ResponsiveDrawer = props => {
                   />
                   ออกจากระบบ
                 </MenuItem>
-              </Menu>
+              </Popover>
             </>
           )}
         </Toolbar>

@@ -110,6 +110,7 @@ const DatabasesIndex = () => {
                   primaryColor={primaryColor}
                   width="800px"
                   height="75px"
+                  style={{ marginBottom: `1rem` }}
                 >
                   <div className="row">
                     <div role="presentation" onClick={() => navigate(d.link)}>

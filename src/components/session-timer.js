@@ -20,8 +20,6 @@ const Timer = styled.div`
   padding: 5px 10px;
   display: flex;
   flex-direction: column;
-  user-select: none;
-  cursor: pointer;
 
   > span {
     &.l {

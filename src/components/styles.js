@@ -92,7 +92,6 @@ const ColorButton = styled.div`
 
     > div {
       height: ${({ height }) => (height !== undefined ? height : `50px`)};
-      margin-bottom: 16px;
       padding: 8px 24px;
       border: 1px solid rgba(0, 0, 0, 0.24);
       border-radius: 8px;
