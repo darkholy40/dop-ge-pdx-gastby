@@ -1277,6 +1277,14 @@ const SystemData = ({ showContent, confirmButtonContent, confirmCallback }) => {
     dispatch,
   ])
 
+  useEffect(() => {
+    if (shouldUpdateStatic.length > 0) {
+      setIsStaticUpdated(false)
+    } else {
+      setIsStaticUpdated(true)
+    }
+  }, [shouldUpdateStatic])
+
   return (
     <>
       {!showContent ? (
@@ -1315,7 +1323,7 @@ const SystemData = ({ showContent, confirmButtonContent, confirmCallback }) => {
                 color="success"
                 sx={{ marginBottom: `1rem` }}
               >
-                อัปเดตข้อมูลแล้ว
+                อัปเดตข้อมูลเป็นปัจจุบันแล้ว
               </Alert>
             </div>
           </Collapse>
@@ -1672,10 +1680,7 @@ const SystemData = ({ showContent, confirmButtonContent, confirmCallback }) => {
           </Container>
         </>
       )}
-      <PercentDialog
-        data={percentDialog}
-        onFinish={() => setIsStaticUpdated(true)}
-      />
+      <PercentDialog data={percentDialog} />
     </>
   )
 }
