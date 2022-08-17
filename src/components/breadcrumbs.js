@@ -16,7 +16,7 @@ const Flex = styled.div`
   margin-bottom: 2rem;
 
   width: 100%;
-  padding: 12px 16px;
+  padding: 4px 16px;
   background-color: ${({ primaryColor }) => primaryColor[50]};
   border: 1px solid ${({ primaryColor }) => primaryColor[200]};
   border-radius: 8px;

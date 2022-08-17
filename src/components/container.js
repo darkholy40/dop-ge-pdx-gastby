@@ -114,6 +114,13 @@ const Container = ({ children }) => {
           },
         },
       },
+      MuiListItemIcon: {
+        styleOverrides: {
+          root: {
+            minWidth: `42px`,
+          },
+        },
+      },
     },
   })
 
