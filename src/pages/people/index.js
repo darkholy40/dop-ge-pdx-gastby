@@ -569,7 +569,7 @@ const PeoplePage = () => {
                 />
                 <TextFieldWall
                   style={{
-                    padding: `6px 12px`,
+                    padding: `6px 6px 6px 15px`,
                     marginBottom: `1rem`,
                     cursor: `pointer`,
                     userSelect: `none`,
@@ -594,7 +594,7 @@ const PeoplePage = () => {
                   <Flex
                     style={{ width: `100%`, justifyContent: `space-between` }}
                   >
-                    <div style={{ color: `rgba(0, 0, 0, 0.6)` }}>
+                    <div style={{ color: `rgba(0, 0, 0, 0.85)` }}>
                       ที่จำหน่ายสูญเสีย
                     </div>
                     <Switch checked={searchPersonFilter.isResigned} />

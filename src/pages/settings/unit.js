@@ -59,7 +59,7 @@ const SettingsUnit = () => {
                 link: `/settings/`,
               },
             ]}
-            current="หน่วย"
+            current="สังกัด"
           />
 
           <UnitSettingForm />

@@ -829,7 +829,7 @@ const UserForm = ({ modification, id }) => {
             />
             <TextFieldWall
               style={{
-                padding: `6px 12px`,
+                padding: `6px 9px 6px 15px`,
                 cursor: `pointer`,
                 userSelect: `none`,
                 backgroundColor: inputs.isConfirmed
@@ -848,7 +848,9 @@ const UserForm = ({ modification, id }) => {
               }
             >
               <Flex style={{ width: `100%`, justifyContent: `space-between` }}>
-                <div style={{ color: `rgba(0, 0, 0, 0.6)` }}>เปิดการใช้งาน</div>
+                <div style={{ color: `rgba(0, 0, 0, 0.85)` }}>
+                  เปิดการใช้งาน
+                </div>
                 <Switch checked={inputs.isConfirmed} />
               </Flex>
             </TextFieldWall>

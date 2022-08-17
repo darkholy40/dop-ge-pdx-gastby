@@ -12,6 +12,7 @@ import {
   Divider,
   CircularProgress,
 } from "@mui/material"
+import { green } from "@mui/material/colors"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import {
   faRedoAlt,
@@ -21,11 +22,11 @@ import {
 
 import { client, gql } from "../functions/apollo-client"
 
-import { CheckCircleFlex } from "./styles"
+import { CheckCircleFlex, TextFieldDummy } from "./styles"
 import Warning from "./warning"
 import renderCheckingIcon from "../functions/render-checking-icon"
 import uniqByKeepFirst from "../functions/uniq-by-keep-first"
-import { green } from "@mui/material/colors"
+import renderDivision from "../functions/render-division"
 
 const Container = styled.div`
   box-shadow: rgb(0 0 0 / 24%) 0px 1px 2px;
@@ -74,6 +75,7 @@ const UnitSettingForm = ({ fullWidth }) => {
   const [isDivisionDataUpdated, setIsDivisionDataUpdated] = useState(false)
   const [isDivisionOptionalDataIsExisted, setIsDivisionOptionalDataIsExisted] =
     useState(false)
+  const [isSaving, setIsSaving] = useState(false)
   const provinces = uniqByKeepFirst(locations, it => it.province)
 
   const getUserUnitData = useCallback(async () => {
@@ -163,13 +165,8 @@ const UnitSettingForm = ({ fullWidth }) => {
   }, [token, userInfo._id, dispatch, locations, fullWidth])
 
   const goSave = async () => {
-    dispatch({
-      type: `SET_BACKDROP_OPEN`,
-      backdropDialog: {
-        open: true,
-        title: ``,
-      },
-    })
+    setIsSaving(true)
+    await new Promise(resolve => setTimeout(resolve, 1000))
 
     try {
       const res = await client(token).mutate({
@@ -228,21 +225,15 @@ const UnitSettingForm = ({ fullWidth }) => {
         notificationDialog: {
           open: true,
           title: `การบันทึกข้อมูลไม่สำเร็จ`,
-          description: `[Error001] - ไม่สามารถบันทึกข้อมูลได้`,
+          description: `ไม่สามารถบันทึกข้อมูลได้`,
           variant: `error`,
           confirmText: `ลองอีกครั้ง`,
-          callback: () => goSave(),
+          callback: () => {},
         },
       })
     }
 
-    dispatch({
-      type: `SET_BACKDROP_OPEN`,
-      backdropDialog: {
-        open: false,
-        title: ``,
-      },
-    })
+    setIsSaving(false)
   }
 
   useEffect(() => {
@@ -254,107 +245,135 @@ const UnitSettingForm = ({ fullWidth }) => {
   }, [inputs])
 
   const myForm = () => (
-    <form
-      onSubmit={e => {
-        e.preventDefault()
+    <>
+      <form
+        onSubmit={e => {
+          e.preventDefault()
 
-        goSave()
-      }}
-    >
-      <Flex
-        style={{
-          flexDirection: `column`,
-          alignItems: `center`,
-          width: `100%`,
-          maxWidth: 480,
-          margin: `0 auto`,
+          goSave()
         }}
       >
-        <Flex>
-          <Autocomplete
-            sx={{ width: `100%` }}
-            id="province"
-            options={provinces}
-            noOptionsText={`ไม่พบข้อมูล`}
-            getOptionLabel={option => option.province}
-            isOptionEqualToValue={(option, value) => {
-              return option === value
-            }}
-            onChange={(_, newValue) => {
-              setInputs({
-                ...inputs,
-                province: newValue !== null ? newValue : ``,
-              })
-            }}
-            value={inputs.province !== `` ? inputs.province : null}
-            renderInput={params => (
-              <TextField
-                {...params}
-                label="* จังหวัด"
-                InputProps={{
-                  ...params.InputProps,
-                  sx: {
-                    borderRadius: `5px 0 0 5px`,
-                  },
-                }}
-              />
-            )}
-          />
-          <CheckCircleFlex>
-            {renderCheckingIcon(inputs.province)}
-          </CheckCircleFlex>
-        </Flex>
-
-        <Flex>
-          <Autocomplete
-            sx={{ width: `100%` }}
-            id="organize-type"
-            options={[`ส่วนกลาง`, `ส่วนภูมิภาค`]}
-            noOptionsText={`ไม่พบข้อมูล`}
-            getOptionLabel={option => option}
-            isOptionEqualToValue={(option, value) => {
-              return option === value
-            }}
-            onChange={(_, newValue) => {
-              setInputs({
-                ...inputs,
-                organizeType: newValue !== null ? newValue : ``,
-              })
-            }}
-            value={inputs.organizeType !== `` ? inputs.organizeType : null}
-            renderInput={params => (
-              <TextField
-                {...params}
-                label="* สังกัดราชการส่วนกลาง/ส่วนภูมิภาค"
-                InputProps={{
-                  ...params.InputProps,
-                  sx: {
-                    borderRadius: `5px 0 0 5px`,
-                  },
-                }}
-              />
-            )}
-          />
-          <CheckCircleFlex>
-            {renderCheckingIcon(inputs.organizeType)}
-          </CheckCircleFlex>
-        </Flex>
-        <Button
-          fullWidth
-          color="success"
-          variant="contained"
-          type="submit"
-          disabled={
-            inputs.province === `` ||
-            inputs.organizeType === `` ||
-            isDivisionDataUpdated
-          }
+        <Flex
+          style={{
+            flexDirection: `column`,
+            alignItems: `center`,
+            width: `100%`,
+            maxWidth: 480,
+            margin: `0 auto`,
+          }}
         >
-          <FontAwesomeIcon icon={faSave} style={{ marginRight: 5 }} />
-          {!isDivisionDataUpdated ? `บันทึก` : `บันทึกแล้ว`}
-        </Button>
-      </Flex>
-    </form>
+          {/* <p style={{ width: `100%` }}>{renderDivision(userInfo.division)}</p> */}
+          <TextFieldDummy.Line style={{ width: `100%`, marginBottom: `1rem` }}>
+            <TextFieldDummy.Label>สังกัด</TextFieldDummy.Label>
+            <span>{renderDivision(userInfo.division)}</span>
+          </TextFieldDummy.Line>
+          <Flex>
+            <Autocomplete
+              sx={{ width: `100%` }}
+              id="province"
+              options={provinces}
+              noOptionsText={`ไม่พบข้อมูล`}
+              getOptionLabel={option => option.province}
+              isOptionEqualToValue={(option, value) => {
+                return option === value
+              }}
+              onChange={(_, newValue) => {
+                setInputs({
+                  ...inputs,
+                  province: newValue !== null ? newValue : ``,
+                })
+              }}
+              value={inputs.province !== `` ? inputs.province : null}
+              renderInput={params => (
+                <TextField
+                  {...params}
+                  label="* จังหวัด"
+                  InputProps={{
+                    ...params.InputProps,
+                    sx: {
+                      borderRadius: `5px 0 0 5px`,
+                    },
+                  }}
+                />
+              )}
+              disabled={isSaving}
+            />
+            <CheckCircleFlex>
+              {renderCheckingIcon(inputs.province)}
+            </CheckCircleFlex>
+          </Flex>
+
+          <Flex>
+            <Autocomplete
+              sx={{ width: `100%` }}
+              id="organize-type"
+              options={[`ส่วนกลาง`, `ส่วนภูมิภาค`]}
+              noOptionsText={`ไม่พบข้อมูล`}
+              getOptionLabel={option => option}
+              isOptionEqualToValue={(option, value) => {
+                return option === value
+              }}
+              onChange={(_, newValue) => {
+                setInputs({
+                  ...inputs,
+                  organizeType: newValue !== null ? newValue : ``,
+                })
+              }}
+              value={inputs.organizeType !== `` ? inputs.organizeType : null}
+              renderInput={params => (
+                <TextField
+                  {...params}
+                  label="* สังกัดราชการส่วนกลาง/ส่วนภูมิภาค"
+                  InputProps={{
+                    ...params.InputProps,
+                    sx: {
+                      borderRadius: `5px 0 0 5px`,
+                    },
+                  }}
+                />
+              )}
+              disabled={isSaving}
+            />
+            <CheckCircleFlex>
+              {renderCheckingIcon(inputs.organizeType)}
+            </CheckCircleFlex>
+          </Flex>
+          <Button
+            fullWidth
+            color="success"
+            variant="contained"
+            type="submit"
+            disabled={
+              inputs.province === `` ||
+              inputs.organizeType === `` ||
+              isDivisionDataUpdated ||
+              isSaving
+            }
+          >
+            <FontAwesomeIcon icon={faSave} style={{ marginRight: 5 }} />
+            {!isDivisionDataUpdated ? `บันทึก` : `บันทึกแล้ว`}
+          </Button>
+          <Collapse in={isSaving}>
+            <div
+              style={{
+                display: `flex`,
+                justifyContent: `center`,
+                alignItems: `center`,
+                marginTop: `1rem`,
+              }}
+            >
+              <CircularProgress
+                color="primary"
+                size="3rem"
+                thickness={5}
+                style={{ marginRight: 8 }}
+              />
+              <span>กำลังบันทึก...</span>
+            </div>
+          </Collapse>
+        </Flex>
+      </form>
+    </>
   )
 
   return !fullWidth ? (
@@ -420,13 +439,13 @@ const UnitSettingForm = ({ fullWidth }) => {
                   marginRight: `auto`,
                 }}
               >
-                กรุณาระบุข้อมูลหน่วย
+                กรุณาระบุข้อมูลสังกัด
               </Divider>
               {myForm()}
             </>
           ) : (
             <Next>
-              <p style={{ fontSize: `1.25rem` }}>บันทึกข้อมูลหน่วยสำเร็จ</p>
+              <p style={{ fontSize: `1.25rem` }}>บันทึกข้อมูลสังกัดสำเร็จ</p>
               <FontAwesomeIcon
                 icon={faCheckCircle}
                 style={{
@@ -454,7 +473,7 @@ const UnitSettingForm = ({ fullWidth }) => {
         </div>
       ) : (
         <>
-          <p style={{ fontSize: `1.25rem` }}>กำลังตรวจสอบข้อมูลหน่วย</p>
+          <p style={{ fontSize: `1.25rem` }}>กำลังตรวจสอบข้อมูลสังกัด</p>
           <CircularProgress color="primary" size="5rem" thickness={5} />
         </>
       )}

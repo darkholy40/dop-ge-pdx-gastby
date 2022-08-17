@@ -615,7 +615,7 @@ const ActivitiesPage = () => {
           case `division->update`:
             option = {
               ...option,
-              description: `อัปเดตข้อมูลจังหวัดและสังกัดราชการของหน่วย`,
+              description: `อัปเดตข้อมูลจังหวัดและสังกัดราชการของสังกัด`,
               icon: faBullseye,
               color: green[700],
             }

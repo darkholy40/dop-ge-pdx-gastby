@@ -4,7 +4,7 @@ import { useSelector, useDispatch } from "react-redux"
 import styled from "styled-components"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import {
-  faAddressCard,
+  faUserAlt,
   faBook,
   faBullseye,
   faSync,
@@ -87,7 +87,7 @@ const SettingsIndex = () => {
                   onClick={() => navigate(`/settings/general/`)}
                 >
                   <FontAwesomeIcon
-                    icon={faAddressCard}
+                    icon={faUserAlt}
                     style={{
                       fontSize: `1.5rem`,
                       marginRight: 8,
@@ -117,7 +117,7 @@ const SettingsIndex = () => {
                       minWidth: 35,
                     }}
                   />
-                  <span>หน่วย</span>
+                  <span>สังกัด</span>
                 </div>
               </div>
             </ColorButton>
