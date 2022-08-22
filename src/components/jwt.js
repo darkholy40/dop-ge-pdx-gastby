@@ -21,11 +21,11 @@ const Jwt = () => {
       const minutes = Math.floor((difference / 1000 / 60) % 60)
       const seconds = Math.floor((difference / 1000) % 60)
 
-      // console.log({
-      //   hr: `${hours}`,
-      //   min: minutes < 10 ? `0${minutes}` : `${minutes}`,
-      //   sec: seconds < 10 ? `0${seconds}` : `${seconds}`,
-      // })
+      console.log({
+        hr: `${hours}`,
+        min: minutes < 10 ? `0${minutes}` : `${minutes}`,
+        sec: seconds < 10 ? `0${seconds}` : `${seconds}`,
+      })
 
       dispatch({
         type: `SET_SESSION_TIMER`,
