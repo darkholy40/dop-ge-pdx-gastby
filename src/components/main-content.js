@@ -46,7 +46,7 @@ import roleLevel from "../functions/role-level"
 
 const drawerWidth = 240
 
-const ResponsiveDrawer = props => {
+const MainContent = props => {
   const { window, children } = props
   const dispatch = useDispatch()
   const { currentPage, token, userInfo, tutorialCount, primaryColor } =
@@ -566,7 +566,7 @@ const ResponsiveDrawer = props => {
   )
 }
 
-ResponsiveDrawer.propTypes = {
+MainContent.propTypes = {
   /**
    * Injected by the documentation to work in an iframe.
    * You won't need it on your project.
@@ -575,4 +575,4 @@ ResponsiveDrawer.propTypes = {
   children: PropTypes.node.isRequired,
 }
 
-export default ResponsiveDrawer
+export default MainContent

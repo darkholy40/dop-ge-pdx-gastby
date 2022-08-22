@@ -93,7 +93,7 @@ const ExportToExcel = ({
         icon={faFileExcel}
         style={{ marginRight: 8, fontSize: 22 }}
       />
-      <span>นำออกไฟล์ .xlsx</span>
+      <span>ดาวน์โหลดไฟล์ .xlsx</span>
     </Button>
   ) : (
     <Button color="primary" variant="contained" disabled>
@@ -101,7 +101,7 @@ const ExportToExcel = ({
         icon={faFileExcel}
         style={{ marginRight: 8, fontSize: 22 }}
       />
-      <span>นำออกไฟล์ .xlsx</span>
+      <span>ดาวน์โหลดไฟล์ .xlsx</span>
     </Button>
   )
 }

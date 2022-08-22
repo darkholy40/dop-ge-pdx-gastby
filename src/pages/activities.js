@@ -283,7 +283,7 @@ const ActivitiesPage = () => {
           case `users->edit`:
             option = {
               ...option,
-              description: `users/add`,
+              description: `users/edit`,
               link: true,
               type: `users`,
             }

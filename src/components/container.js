@@ -14,7 +14,7 @@ import thLocale from "date-fns/locale/th"
 import Jwt from "./jwt"
 import FirstMeetDialog from "./first-meet-dialog"
 import StaticTags from "./static-tags"
-import ResponsiveDrawer from "./responsive-drawer"
+import MainContent from "./main-content"
 import NotificationDialog from "./notification-dialog"
 import Footer from "./footer"
 
@@ -131,44 +131,42 @@ const Container = ({ children }) => {
         <Jwt />
         <FirstMeetDialog />
         <StaticTags />
-        <ResponsiveDrawer>
-          <div>{children}</div>
-          <Backdrop
-            sx={{
-              color: primaryColor[500],
-              zIndex: theme => theme.zIndex.drawer + 1,
+        <MainContent>{children}</MainContent>
+        <Backdrop
+          sx={{
+            color: primaryColor[500],
+            zIndex: theme => theme.zIndex.drawer + 1,
+          }}
+          open={backdropDialog.open}
+        >
+          <div
+            style={{
+              display: `flex`,
+              alignItems: `center`,
+              justifyContent: `center`,
+              flexDirection: `column`,
+              backgroundColor: `rgba(255, 255, 255, 0.95)`,
+              padding: `2rem`,
+              borderRadius: `1.5rem`,
+              maxWidth: 360,
             }}
-            open={backdropDialog.open}
           >
-            <div
-              style={{
-                display: `flex`,
-                alignItems: `center`,
-                justifyContent: `center`,
-                flexDirection: `column`,
-                backgroundColor: `rgba(255, 255, 255, 0.8)`,
-                padding: `2rem`,
-                borderRadius: `1.5rem`,
-                maxWidth: 360,
-              }}
-            >
-              <CircularProgress color="inherit" size="5rem" thickness={5} />
-              {backdropDialog.title !== `` && (
-                <p
-                  style={{
-                    color: `#000`,
-                    fontSize: `1.25rem`,
-                    marginBottom: 0,
-                    width: `100%`,
-                    overflowX: `auto`,
-                  }}
-                >
-                  {backdropDialog.title}
-                </p>
-              )}
-            </div>
-          </Backdrop>
-        </ResponsiveDrawer>
+            <CircularProgress color="inherit" size="5rem" thickness={6} />
+            {backdropDialog.title !== `` && (
+              <p
+                style={{
+                  color: `#000`,
+                  fontSize: `1.25rem`,
+                  marginBottom: 0,
+                  width: `100%`,
+                  overflowX: `auto`,
+                }}
+              >
+                {backdropDialog.title}
+              </p>
+            )}
+          </div>
+        </Backdrop>
         <NotificationDialog />
         <Footer />
       </LocalizationProvider>
