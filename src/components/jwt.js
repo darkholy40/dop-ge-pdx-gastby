@@ -12,35 +12,43 @@ const Jwt = () => {
   const { token, userInfo } = useSelector(({ mainReducer }) => mainReducer)
   const [isExpired, setIsExpired] = React.useState(false)
 
-  const fetchSessionTimer = React.useCallback(() => {
-    if (token !== ``) {
-      const decoded = jwt_decode(token)
-      const difference = decoded.exp * 1000 - Date.now()
+  const fetchSessionTimer = React.useCallback(
+    opt => {
+      if (token !== ``) {
+        const decoded = jwt_decode(token)
+        const difference = decoded.exp * 1000 - Date.now()
 
-      const hours = Math.floor(difference / 1000 / 60 / 60)
-      const minutes = Math.floor((difference / 1000 / 60) % 60)
-      const seconds = Math.floor((difference / 1000) % 60)
+        const hours = Math.floor(difference / 1000 / 60 / 60)
+        const minutes = Math.floor((difference / 1000 / 60) % 60)
+        const seconds = Math.floor((difference / 1000) % 60)
 
-      console.log({
-        hr: `${hours}`,
-        min: minutes < 10 ? `0${minutes}` : `${minutes}`,
-        sec: seconds < 10 ? `0${seconds}` : `${seconds}`,
-      })
+        const checkedHours = opt === `begin` ? hours < 0 : hours <= 0
+        const checkedMinutes = opt === `begin` ? minutes < 0 : minutes <= 0
+        const checkedSeconds = opt === `begin` ? seconds < 0 : seconds <= 0
 
-      dispatch({
-        type: `SET_SESSION_TIMER`,
-        sessionTimer: {
+        console.log({
+          token: token,
           hr: `${hours}`,
           min: minutes < 10 ? `0${minutes}` : `${minutes}`,
           sec: seconds < 10 ? `0${seconds}` : `${seconds}`,
-        },
-      })
+        })
 
-      if (hours <= 0 && minutes <= 0 && seconds <= 0) {
-        setIsExpired(true)
+        dispatch({
+          type: `SET_SESSION_TIMER`,
+          sessionTimer: {
+            hr: `${hours}`,
+            min: minutes < 10 ? `0${minutes}` : `${minutes}`,
+            sec: seconds < 10 ? `0${seconds}` : `${seconds}`,
+          },
+        })
+
+        if (checkedHours && checkedMinutes && checkedSeconds) {
+          setIsExpired(true)
+        }
       }
-    }
-  }, [token, dispatch])
+    },
+    [token, dispatch]
+  )
 
   React.useEffect(() => {
     if (token !== ``) {
@@ -103,7 +111,7 @@ const Jwt = () => {
   }, [token, userInfo._id, isExpired, dispatch])
 
   React.useEffect(() => {
-    fetchSessionTimer()
+    fetchSessionTimer(`begin`)
   }, [fetchSessionTimer])
 
   useInterval(
