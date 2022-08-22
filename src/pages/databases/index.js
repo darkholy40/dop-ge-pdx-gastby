@@ -30,35 +30,34 @@ const Container = styled.div`
 const data = [
   {
     link: `/databases/education-levels/`,
-    name: `ระดับการศึกษา`,
+    title: `ระดับการศึกษา`,
     icon: faUserGraduate,
   },
   {
     link: `/databases/education-names/`,
-    name: `วุฒิการศึกษา`,
+    title: `วุฒิการศึกษา`,
     icon: faGraduationCap,
   },
   {
     link: `/databases/educational-institutions/`,
-    name: `สถาบันการศึกษา`,
+    title: `สถาบันการศึกษา`,
     icon: faSchool,
   },
   {
     link: `/databases/countries/`,
-    name: `รายชื่อประเทศ`,
+    title: `รายชื่อประเทศ`,
+    description: `ประเทศที่จบการศึกษา`,
     icon: faFlag,
   },
   {
     link: `/databases/decorations/`,
-    name: `เครื่องราชอิสริยาภรณ์`,
+    title: `เครื่องราชอิสริยาภรณ์`,
     icon: faMedal,
   },
 ]
 
 const DatabasesIndex = () => {
-  const { token, primaryColor, userInfo } = useSelector(
-    ({ mainReducer }) => mainReducer
-  )
+  const { token, userInfo } = useSelector(({ mainReducer }) => mainReducer)
   const dispatch = useDispatch()
 
   const savePageView = useCallback(() => {
@@ -104,28 +103,21 @@ const DatabasesIndex = () => {
 
           <Container>
             {data.map((d, i) => {
+              const description = d.description !== undefined && {
+                description: d.description,
+              }
+
               return (
                 <ColorButton
                   key={`button_${i}`}
-                  primaryColor={primaryColor}
                   width="800px"
                   height="75px"
                   style={{ marginBottom: `1rem` }}
-                >
-                  <div className="row">
-                    <div role="presentation" onClick={() => navigate(d.link)}>
-                      <FontAwesomeIcon
-                        icon={d.icon}
-                        style={{
-                          fontSize: `1.5rem`,
-                          marginRight: 8,
-                          minWidth: 35,
-                        }}
-                      />
-                      <span>{d.name}</span>
-                    </div>
-                  </div>
-                </ColorButton>
+                  onClick={() => navigate(d.link)}
+                  icon={<FontAwesomeIcon icon={d.icon} />}
+                  title={d.title}
+                  {...description}
+                />
               )
             })}
           </Container>

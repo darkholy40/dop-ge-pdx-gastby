@@ -1,7 +1,10 @@
+import React from "react"
+import { useSelector } from "react-redux"
+import PropTypes from "prop-types"
 import styled from "styled-components"
 import { blue } from "@mui/material/colors"
 
-const Link = styled.a`
+export const Link = styled.a`
   text-decoration: none;
   color: ${({ primaryColor }) =>
     primaryColor !== undefined ? primaryColor[500] : blue[500]};
@@ -21,14 +24,14 @@ const Link = styled.a`
   }
 `
 
-const Form = styled.form`
+export const Form = styled.form`
   display: flex;
   flex-direction: column;
   margin: auto;
   max-width: 800px;
 `
 
-const SearchButtonContainer = styled.div`
+export const SearchButtonContainer = styled.div`
   display: flex;
   justify-content: center;
 
@@ -39,14 +42,14 @@ const SearchButtonContainer = styled.div`
   }
 `
 
-const Flex = styled.div`
+export const Flex = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: flex-start;
   align-items: center;
 `
 
-const DisabledBlock = styled.div`
+export const DisabledBlock = styled.div`
   border-radius: 5px;
   transition: background-color 0.3s;
 
@@ -56,7 +59,7 @@ const DisabledBlock = styled.div`
   }
 `
 
-const TextFieldWall = styled.div`
+export const TextFieldWall = styled.div`
   border-radius: 5px;
   border: 1px solid rgba(0, 0, 0, 0.24);
   padding: 10px;
@@ -65,7 +68,7 @@ const TextFieldWall = styled.div`
   justify-content: center;
 `
 
-const CheckCircleFlex = styled.div`
+export const CheckCircleFlex = styled.div`
   border-radius: 0 5px 5px 0;
   border-top: 1px solid rgba(0, 0, 0, 0.24);
   border-right: 1px solid rgba(0, 0, 0, 0.24);
@@ -78,7 +81,7 @@ const CheckCircleFlex = styled.div`
   justify-content: center;
 `
 
-const ColorButton = styled.div`
+const ColorButtonStyled = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -87,11 +90,11 @@ const ColorButton = styled.div`
 
   .row {
     width: 100%;
-    max-width: ${({ width }) => (width !== undefined ? width : `300px`)};
+    max-width: ${({ width }) => width};
     user-select: none;
 
-    > div {
-      height: ${({ height }) => (height !== undefined ? height : `50px`)};
+    > .button {
+      height: ${({ height }) => height};
       padding: 8px 24px;
       border: 1px solid rgba(0, 0, 0, 0.24);
       border-radius: 8px;
@@ -102,31 +105,131 @@ const ColorButton = styled.div`
       justify-content: flex-start;
       transition: background-color 0.2s, color 0.2s;
 
+      > {
+        svg {
+          font-size: 1.5rem;
+          margin-right: 8px;
+          min-width: 35px;
+        }
+
+        div {
+          display: flex;
+          flex-direction: column;
+
+          .desc {
+            color: rgba(0, 0, 0, 0.75);
+            font-size: 0.75rem;
+            transition: color 0.2s;
+          }
+        }
+      }
+
       @media (hover: hover) {
         &:hover {
-          background-color: ${({ primaryColor }) =>
-            primaryColor !== undefined ? primaryColor[700] : blue[700]};
+          background-color: ${({ primaryColor }) => primaryColor[700]};
           color: #fff;
           transition: background-color 0.1s, color 0.1s;
+
+          > div .desc {
+            color: rgba(255, 255, 255, 0.75);
+            transition: color 0.1s;
+          }
         }
       }
 
       &:active {
-        background-color: ${({ primaryColor }) =>
-          primaryColor !== undefined ? primaryColor[900] : blue[900]};
+        background-color: ${({ primaryColor }) => primaryColor[900]};
         color: #fff;
+
+        > div .desc {
+          color: rgba(255, 255, 255, 0.75);
+        }
       }
 
       &.active {
-        background-color: ${({ primaryColor }) =>
-          primaryColor !== undefined ? primaryColor[700] : blue[700]};
+        background-color: ${({ primaryColor }) => primaryColor[700]};
         color: #fff;
+
+        > div .desc {
+          color: rgba(255, 255, 255, 0.75);
+        }
       }
     }
   }
 `
 
-const TextFieldDummy = {
+export const ColorButton = ({
+  style,
+  width,
+  height,
+  onClick,
+  icon,
+  title,
+  description,
+  href,
+}) => {
+  const { primaryColor } = useSelector(({ mainReducer }) => mainReducer)
+
+  const Content = () => (
+    <div className="row">
+      <div className="button" role="presentation" onClick={onClick}>
+        {icon !== undefined && icon}
+        <div>
+          <span>{title}</span>
+          {description !== undefined && (
+            <span className="desc">{description}</span>
+          )}
+        </div>
+      </div>
+    </div>
+  )
+
+  return (
+    <ColorButtonStyled
+      primaryColor={primaryColor}
+      width={width}
+      height={height}
+      style={style}
+    >
+      {href !== undefined ? (
+        <a
+          style={{
+            textDecoration: `none`,
+            color: `unset`,
+            width: `100%`,
+            maxWidth: 800,
+          }}
+          href={href}
+          target="_blank"
+          rel="noreferrer"
+        >
+          <Content />
+        </a>
+      ) : (
+        <Content />
+      )}
+    </ColorButtonStyled>
+  )
+}
+
+ColorButton.propTypes = {
+  style: PropTypes.object,
+  width: PropTypes.string,
+  height: PropTypes.string,
+  onClick: PropTypes.func,
+  icon: PropTypes.node,
+  title: PropTypes.string,
+  description: PropTypes.string,
+  href: PropTypes.string,
+}
+
+ColorButton.defaultProps = {
+  width: `300px`,
+  height: `50px`,
+  onClick: () => {},
+}
+
+export const TextFieldDummy = {
   Line: styled.div`
     display: flex;
     flex-direction: column;
@@ -138,7 +241,7 @@ const TextFieldDummy = {
   `,
 }
 
-const TextFieldDummyOutlined = {
+export const TextFieldDummyOutlined = {
   Line: styled.div`
     display: flex;
     flex-direction: column;
@@ -153,7 +256,7 @@ const TextFieldDummyOutlined = {
   `,
 }
 
-const FilterContent = styled(Flex)`
+export const FilterContent = styled(Flex)`
   flex-direction: column;
   align-items: flex-start;
 
@@ -195,7 +298,7 @@ const FilterContent = styled(Flex)`
   }
 `
 
-const OparatorFlex = styled.div`
+export const OparatorFlex = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -240,18 +343,3 @@ const OparatorFlex = styled.div`
     }
   }
 `
-
-export {
-  Link,
-  Form,
-  SearchButtonContainer,
-  Flex,
-  DisabledBlock,
-  TextFieldWall,
-  CheckCircleFlex,
-  ColorButton,
-  TextFieldDummy,
-  TextFieldDummyOutlined,
-  FilterContent,
-  OparatorFlex,
-}

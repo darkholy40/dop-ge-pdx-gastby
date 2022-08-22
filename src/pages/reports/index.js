@@ -22,9 +22,7 @@ const Container = styled.div`
 `
 
 const IndexPage = () => {
-  const { token, primaryColor, userInfo } = useSelector(
-    ({ mainReducer }) => mainReducer
-  )
+  const { token, userInfo } = useSelector(({ mainReducer }) => mainReducer)
   const dispatch = useDispatch()
 
   const savePageView = useCallback(() => {
@@ -70,53 +68,21 @@ const IndexPage = () => {
 
           <Container>
             <ColorButton
-              primaryColor={primaryColor}
               width="800px"
               height="75px"
               style={{ marginBottom: `1rem` }}
-            >
-              <div className="row">
-                <div
-                  role="presentation"
-                  onClick={() => navigate(`/reports/stock/`)}
-                >
-                  <FontAwesomeIcon
-                    icon={faPrint}
-                    style={{
-                      fontSize: `1.5rem`,
-                      marginRight: 8,
-                      minWidth: 35,
-                    }}
-                  />
-                  <span>รายชื่อพนักงานราชการและตำแหน่งว่าง (Stock)</span>
-                </div>
-              </div>
-            </ColorButton>
+              onClick={() => navigate(`/reports/stock/`)}
+              icon={<FontAwesomeIcon icon={faPrint} />}
+              title="รายชื่อพนักงานราชการและตำแหน่งว่าง (Stock)"
+            />
             <ColorButton
-              primaryColor={primaryColor}
               width="800px"
               height="75px"
               style={{ marginBottom: `1rem` }}
-            >
-              <div className="row">
-                <div
-                  role="presentation"
-                  onClick={() => navigate(`/reports/flow-out/`)}
-                >
-                  <FontAwesomeIcon
-                    icon={faPrint}
-                    style={{
-                      fontSize: `1.5rem`,
-                      marginRight: 8,
-                      minWidth: 35,
-                    }}
-                  />
-                  <span>
-                    รายชื่อพนักงานราชการที่ออกในปีงบประมาณที่ผ่านมา (Flow-Out)
-                  </span>
-                </div>
-              </div>
-            </ColorButton>
+              onClick={() => navigate(`/reports/flow-out/`)}
+              icon={<FontAwesomeIcon icon={faPrint} />}
+              title="รายชื่อพนักงานราชการที่ออกในปีงบประมาณที่ผ่านมา (Flow-Out)"
+            />
           </Container>
         </>
       ) : (

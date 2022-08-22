@@ -520,27 +520,17 @@ const IndexPage = () => {
             style={{ width: `calc(100% - 80px)`, margin: `2rem 1rem` }}
           />
           <Column>
-            <ColorButton primaryColor={primaryColor} height="100px">
-              <a
-                style={{
-                  textDecoration: `none`,
-                  color: `unset`,
-                }}
-                href="https://ge-pdx.rta.mi.th/public/user_manual_GE-PDX.pdf"
-                target="_blank"
-                rel="noreferrer"
-              >
-                <div className="row">
-                  <div role="presentation">
-                    <FontAwesomeIcon
-                      icon={faBook}
-                      style={{ fontSize: `2.5rem`, marginRight: `1rem` }}
-                    />
-                    <span>ดาวน์โหลดคู่มือการใช้งานระบบ GE-PDX</span>
-                  </div>
-                </div>
-              </a>
-            </ColorButton>
+            <ColorButton
+              height="100px"
+              icon={
+                <FontAwesomeIcon
+                  icon={faBook}
+                  style={{ fontSize: `2.5rem`, marginRight: `1rem` }}
+                />
+              }
+              title="ดาวน์โหลดคู่มือการใช้งานระบบ GE-PDX"
+              href="https://ge-pdx.rta.mi.th/public/user_manual_GE-PDX.pdf"
+            />
           </Column>
         </Flex>
       </form>

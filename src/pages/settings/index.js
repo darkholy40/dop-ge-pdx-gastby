@@ -28,9 +28,7 @@ const Container = styled.div`
 `
 
 const SettingsIndex = () => {
-  const { token, primaryColor, userInfo } = useSelector(
-    ({ mainReducer }) => mainReducer
-  )
+  const { token, userInfo } = useSelector(({ mainReducer }) => mainReducer)
   const dispatch = useDispatch()
 
   const savePageView = useCallback(() => {
@@ -76,107 +74,41 @@ const SettingsIndex = () => {
 
           <Container>
             <ColorButton
-              primaryColor={primaryColor}
               width="800px"
               height="75px"
               style={{ marginBottom: `1rem` }}
-            >
-              <div className="row">
-                <div
-                  role="presentation"
-                  onClick={() => navigate(`/settings/general/`)}
-                >
-                  <FontAwesomeIcon
-                    icon={faUserAlt}
-                    style={{
-                      fontSize: `1.5rem`,
-                      marginRight: 8,
-                      minWidth: 35,
-                    }}
-                  />
-                  <span>บัญชีผู้ใช้งาน</span>
-                </div>
-              </div>
-            </ColorButton>
+              onClick={() => navigate(`/settings/general/`)}
+              icon={<FontAwesomeIcon icon={faUserAlt} />}
+              title="บัญชีผู้ใช้งาน"
+              description="ชื่อ - สกุล / สังกัด / ตำแหน่ง / เปลี่ยนรหัสผ่าน"
+            />
             <ColorButton
-              primaryColor={primaryColor}
               width="800px"
               height="75px"
               style={{ marginBottom: `1rem` }}
-            >
-              <div className="row">
-                <div
-                  role="presentation"
-                  onClick={() => navigate(`/settings/unit/`)}
-                >
-                  <FontAwesomeIcon
-                    icon={faBullseye}
-                    style={{
-                      fontSize: `1.5rem`,
-                      marginRight: 8,
-                      minWidth: 35,
-                    }}
-                  />
-                  <span>สังกัด</span>
-                </div>
-              </div>
-            </ColorButton>
+              onClick={() => navigate(`/settings/unit/`)}
+              icon={<FontAwesomeIcon icon={faBullseye} />}
+              title="สังกัด"
+              description="ตั้งค่าข้อมูลสังกัดสำหรับการออกรายงาน"
+            />
             <ColorButton
-              primaryColor={primaryColor}
               width="800px"
               height="75px"
-            >
-              <div className="row">
-                <div
-                  role="presentation"
-                  onClick={() => navigate(`/settings/system-data/`)}
-                >
-                  <FontAwesomeIcon
-                    icon={faSync}
-                    style={{
-                      fontSize: `1.5rem`,
-                      marginRight: 8,
-                      minWidth: 35,
-                    }}
-                  />
-                  <span>อัปเดตฐานข้อมูลระบบ</span>
-                </div>
-              </div>
-            </ColorButton>
+              onClick={() => navigate(`/settings/system-data/`)}
+              icon={<FontAwesomeIcon icon={faSync} />}
+              title="อัปเดตฐานข้อมูลระบบ"
+              description="ฐานข้อมูลสำหรับ Autocomplete ของแบบฟอร์ม"
+            />
             <Divider style={{ width: `100%`, margin: `1rem 0` }} />
 
             <ColorButton
-              primaryColor={primaryColor}
               width="800px"
               height="75px"
               style={{ marginBottom: `1rem` }}
-            >
-              <a
-                style={{
-                  textDecoration: `none`,
-                  color: `unset`,
-                  width: `100%`,
-                  maxWidth: 800,
-                }}
-                href="https://ge-pdx.rta.mi.th/public/user_manual_GE-PDX.pdf"
-                target="_blank"
-                rel="noreferrer"
-              >
-                <div className="row">
-                  <div role="presentation" onClick={() => {}}>
-                    <FontAwesomeIcon
-                      icon={faBook}
-                      style={{
-                        fontSize: `1.5rem`,
-                        marginRight: 8,
-                        minWidth: 35,
-                      }}
-                    />
-                    <span>ดาวน์โหลดคู่มือการใช้งานระบบ GE-PDX</span>
-                  </div>
-                </div>
-              </a>
-            </ColorButton>
+              icon={<FontAwesomeIcon icon={faBook} />}
+              title="ดาวน์โหลดคู่มือการใช้งานระบบ GE-PDX"
+              href="https://ge-pdx.rta.mi.th/public/user_manual_GE-PDX.pdf"
+            />
           </Container>
         </>
       ) : (
