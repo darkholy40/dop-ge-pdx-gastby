@@ -14,8 +14,14 @@ const Jwt = () => {
 
   const fetchSessionTimer = React.useCallback(() => {
     if (token !== ``) {
+      // date now
+      const rightNowTime = new Date().valueOf()
+
+      // expired time
       const decoded = jwt_decode(token)
-      const difference = decoded.exp * 1000 - Date.now()
+      const expiredTime = new Date(decoded.exp * 1000).valueOf() // must be multiple by 1000
+
+      const difference = expiredTime - rightNowTime
 
       const hours = Math.floor(difference / 1000 / 60 / 60)
       const minutes = Math.floor((difference / 1000 / 60) % 60)
