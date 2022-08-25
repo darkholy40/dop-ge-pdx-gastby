@@ -5,11 +5,6 @@ import { createGlobalStyle } from "styled-components"
 import { Backdrop, CircularProgress } from "@mui/material"
 import { ThemeProvider, createTheme } from "@mui/material/styles"
 import { green } from "@mui/material/colors"
-// import AdapterDateFns from "@mui/lab/AdapterDateFns"
-// import LocalizationProvider from "@mui/lab/LocalizationProvider"
-import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns"
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider"
-import thLocale from "date-fns/locale/th"
 
 import Jwt from "./jwt"
 import FirstMeetDialog from "./first-meet-dialog"
@@ -126,50 +121,48 @@ const Container = ({ children }) => {
 
   return (
     <ThemeProvider theme={muiTheme}>
-      <LocalizationProvider dateAdapter={AdapterDateFns} locale={thLocale}>
-        <GlobalStyles color={primaryColor} />
-        <Jwt />
-        <FirstMeetDialog />
-        <StaticTags />
-        <MainContent>{children}</MainContent>
-        <Backdrop
-          sx={{
-            color: primaryColor[500],
-            zIndex: theme => theme.zIndex.drawer + 1,
+      <GlobalStyles color={primaryColor} />
+      <Jwt />
+      <FirstMeetDialog />
+      <StaticTags />
+      <MainContent>{children}</MainContent>
+      <Backdrop
+        sx={{
+          color: primaryColor[500],
+          zIndex: theme => theme.zIndex.drawer + 1,
+        }}
+        open={backdropDialog.open}
+      >
+        <div
+          style={{
+            display: `flex`,
+            alignItems: `center`,
+            justifyContent: `center`,
+            flexDirection: `column`,
+            backgroundColor: `rgba(255, 255, 255, 0.95)`,
+            padding: `2rem`,
+            borderRadius: `1.5rem`,
+            maxWidth: 360,
           }}
-          open={backdropDialog.open}
         >
-          <div
-            style={{
-              display: `flex`,
-              alignItems: `center`,
-              justifyContent: `center`,
-              flexDirection: `column`,
-              backgroundColor: `rgba(255, 255, 255, 0.95)`,
-              padding: `2rem`,
-              borderRadius: `1.5rem`,
-              maxWidth: 360,
-            }}
-          >
-            <CircularProgress color="inherit" size="5rem" thickness={6} />
-            {backdropDialog.title !== `` && (
-              <p
-                style={{
-                  color: `#000`,
-                  fontSize: `1.25rem`,
-                  marginBottom: 0,
-                  width: `100%`,
-                  overflowX: `auto`,
-                }}
-              >
-                {backdropDialog.title}
-              </p>
-            )}
-          </div>
-        </Backdrop>
-        <NotificationDialog />
-        <Footer />
-      </LocalizationProvider>
+          <CircularProgress color="inherit" size="5rem" thickness={6} />
+          {backdropDialog.title !== `` && (
+            <p
+              style={{
+                color: `#000`,
+                fontSize: `1.25rem`,
+                marginBottom: 0,
+                width: `100%`,
+                overflowX: `auto`,
+              }}
+            >
+              {backdropDialog.title}
+            </p>
+          )}
+        </div>
+      </Backdrop>
+      <NotificationDialog />
+      <Footer />
     </ThemeProvider>
   )
 }
