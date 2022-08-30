@@ -44,6 +44,19 @@ const Title = styled.p`
     font-weight: bold;
   }
 
+  &.login-text {
+    font-style: italic;
+    margin-top: 0;
+    margin-bottom: 2rem;
+  }
+
+  @media (max-width: 991px) {
+    &.login-text {
+      margin-top: 0;
+      margin-bottom: 0;
+    }
+  }
+
   @media (max-width: 599px) {
     font-size: 1.25rem;
 
@@ -95,6 +108,7 @@ const LogoContainer = styled.div`
 
   @media (max-width: 991px) {
     margin-top: 1.5rem;
+    margin-bottom: 1.5rem;
   }
 `
 
@@ -313,22 +327,26 @@ const IndexPage = () => {
   return (
     <>
       <TitleFlex>
-        <Title
-          style={{
-            color: primaryColor[700],
-          }}
-          className="primary"
-        >
+        <Title className="primary">
           โปรแกรมพนักงานราชการในระบบฐานข้อมูลกำลังพลอิเล็กทรอนิกส์
         </Title>
         <Title
           style={{
-            fontSize: `1.25rem`,
+            color: primaryColor[700],
             fontStyle: `italic`,
             marginTop: 0,
           }}
+          className="primary"
         >
-          Government Employee Personal Data Exchange (GE-PDX)
+          <span>GE-PDX</span>
+          <span
+            style={{
+              fontSize: `1.25rem`,
+              marginLeft: 10,
+            }}
+          >
+            (Government Employee Personal Data Exchange)
+          </span>
         </Title>
       </TitleFlex>
       <form
@@ -342,11 +360,7 @@ const IndexPage = () => {
         }}
       >
         <Flex>
-          <Title
-            style={{ fontStyle: `italic`, marginTop: 0, marginBottom: `2rem` }}
-          >
-            ลงชื่อเข้าใช้งานระบบ
-          </Title>
+          <Title className="login-text">ลงชื่อเข้าใช้งานระบบ</Title>
           <div className="middle">
             <Column>
               <LogoContainer>
