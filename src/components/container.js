@@ -14,14 +14,6 @@ import NotificationDialog from "./notification-dialog"
 import Footer from "./footer"
 
 const GlobalStyles = createGlobalStyle`
-  :root {
-    --rdp-cell-size: 45px;
-    --rdp-accent-color: ${({ color }) => color[500]};
-    --rdp-background-color: ${({ color }) => color[50]};
-    --rdp-outline: 2px solid var(--rdp-accent-color);
-    --rdp-outline-selected: 2px solid ${({ color }) => color[900]};
-  }
-
   ::selection {
     background-color: ${({ color }) => color[700]};
     color: #fff;
@@ -41,35 +33,40 @@ const GlobalStyles = createGlobalStyle`
     }
   }
 
-  .MuiList-root {
-    padding-top: 4px;
-    padding-bottom: 4px;
+  .rdp {
+    --rdp-cell-size: 45px;
+    --rdp-accent-color: ${({ color }) => color[500]};
+    --rdp-background-color: ${({ color }) => color[50]};
+    --rdp-outline: 2px solid var(--rdp-accent-color);
+    --rdp-outline-selected: 2px solid ${({ color }) => color[900]};
   }
 
-  .MuiMenuItem-root,
-  .MuiListItemButton-root {
-    padding: 6px 12px;
-    margin: 3px 6px;
-    border-radius: 4px;
-
-    &.Mui-selected {
-      background-color: ${({ color }) => color[700]};
-      color: #fff;
-      transition: background-color 0.15s, color 0.15s;
-
-      &:hover {
-        background-color: ${({ color }) => color[800]};
-      }
-
-      svg {
+  .MuiButtonBase-root {
+    &.MuiMenuItem-root,
+    &.MuiListItemButton-root {
+      padding: 6px 12px;
+      margin: 3px 6px;
+      border-radius: 4px;
+  
+      &.Mui-selected {
+        background-color: ${({ color }) => color[700]};
         color: #fff;
-        transition: color 0.15s;
+        transition: background-color 0.15s, color 0.15s;
+  
+        &:hover {
+          background-color: ${({ color }) => color[800]};
+        }
+  
+        svg {
+          color: #fff;
+          transition: color 0.15s;
+        }
       }
     }
   }
 
   @media (max-width: 599px) {
-    :root {
+    .rdp {
       --rdp-cell-size: 40px;
     }
   }
@@ -106,6 +103,14 @@ const Container = ({ children }) => {
           },
           filled: {
             borderRadius: `8px`,
+          },
+        },
+      },
+      MuiList: {
+        styleOverrides: {
+          root: {
+            paddingTop: `4px`,
+            paddingBottom: `4px`,
           },
         },
       },
