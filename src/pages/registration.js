@@ -78,7 +78,10 @@ const RegistrationPage = () => {
     email: false,
   })
   const [inputs, setInputs] = useState(initialStates)
-  const [pwdVisibility, setPwdVisibility] = useState(false)
+  const [pwdVisibility, setPwdVisibility] = useState({
+    pwd1: false,
+    pwd2: false,
+  })
 
   const checkUsernameIsExists = useCallback(async () => {
     if (inputs.username !== ``) {
@@ -310,8 +313,10 @@ const RegistrationPage = () => {
                 rank: "${inputs.rank.shortName}",
                 name: "${inputs.name}",
                 surname: "${inputs.surname}",
+                position: "${inputs.position}",
                 division: ${renderValueForRelationField(inputs.division)},
                 is_approved: false,
+                is_completed: false,
               }
             }) {
               registration {
@@ -442,6 +447,10 @@ const RegistrationPage = () => {
 
   const clearInputs = () => {
     setInputs(initialStates)
+    setPwdVisibility({
+      pwd1: false,
+      pwd2: false,
+    })
   }
 
   const renderCheckingIconForUsernameAndEmail = (value, error) => {
@@ -606,6 +615,55 @@ const RegistrationPage = () => {
                                 }}
                               />
                             </Grid>
+
+                            <Divider
+                              style={{
+                                margin: `2rem auto`,
+                                width: `100%`,
+                                maxWidth: 360,
+                              }}
+                            />
+                          </Grid>
+                          <Grid container spacing={2}>
+                            <Grid item xs={12}>
+                              <Flex>
+                                <Autocomplete
+                                  sx={{ width: `100%` }}
+                                  id="division"
+                                  disablePortal
+                                  options={divisions}
+                                  noOptionsText={`ไม่พบข้อมูล`}
+                                  getOptionLabel={option =>
+                                    renderDivision(option)
+                                  }
+                                  isOptionEqualToValue={(option, value) => {
+                                    return option === value
+                                  }}
+                                  onChange={(_, newValue) => {
+                                    setInputs(prev => ({
+                                      ...prev,
+                                      division: newValue,
+                                    }))
+                                  }}
+                                  value={inputs.division}
+                                  renderInput={params => (
+                                    <TextField
+                                      {...params}
+                                      label="* สังกัด"
+                                      InputProps={{
+                                        ...params.InputProps,
+                                        sx: {
+                                          borderRadius: `5px 0 0 5px`,
+                                        },
+                                      }}
+                                    />
+                                  )}
+                                />
+                                <CheckCircleFlex>
+                                  {renderCheckingIcon(inputs.division)}
+                                </CheckCircleFlex>
+                              </Flex>
+                            </Grid>
                             <Grid item xs={12}>
                               <TextField
                                 sx={textfieldProps}
@@ -710,7 +768,7 @@ const RegistrationPage = () => {
                             <Grid item xs={12} sm={6}>
                               <TextField
                                 sx={textfieldProps}
-                                type={!pwdVisibility ? `password` : `text`}
+                                type={!pwdVisibility.pwd1 ? `password` : `text`}
                                 id="password"
                                 label="* รหัสผ่าน"
                                 variant="outlined"
@@ -726,14 +784,19 @@ const RegistrationPage = () => {
                                     <>
                                       <IconButton
                                         onClick={() =>
-                                          setPwdVisibility(!pwdVisibility)
+                                          setPwdVisibility(prev => ({
+                                            ...prev,
+                                            pwd1: !pwdVisibility.pwd1,
+                                          }))
                                         }
                                         color="inherit"
                                         style={{ width: 35, height: 35 }}
                                       >
                                         <FontAwesomeIcon
                                           icon={
-                                            !pwdVisibility ? faEye : faEyeSlash
+                                            !pwdVisibility.pwd1
+                                              ? faEye
+                                              : faEyeSlash
                                           }
                                           style={{ fontSize: 16 }}
                                         />
@@ -756,7 +819,7 @@ const RegistrationPage = () => {
                             <Grid item xs={12} sm={6}>
                               <TextField
                                 sx={textfieldProps}
-                                type={!pwdVisibility ? `password` : `text`}
+                                type={!pwdVisibility.pwd2 ? `password` : `text`}
                                 id="confirmed-password"
                                 label="* ยืนยันรหัสผ่าน"
                                 variant="outlined"
@@ -772,14 +835,19 @@ const RegistrationPage = () => {
                                     <>
                                       <IconButton
                                         onClick={() =>
-                                          setPwdVisibility(!pwdVisibility)
+                                          setPwdVisibility(prev => ({
+                                            ...prev,
+                                            pwd2: !pwdVisibility.pwd2,
+                                          }))
                                         }
                                         color="inherit"
                                         style={{ width: 35, height: 35 }}
                                       >
                                         <FontAwesomeIcon
                                           icon={
-                                            !pwdVisibility ? faEye : faEyeSlash
+                                            !pwdVisibility.pwd2
+                                              ? faEye
+                                              : faEyeSlash
                                           }
                                           style={{ fontSize: 16 }}
                                         />
@@ -805,6 +873,15 @@ const RegistrationPage = () => {
                                 autoComplete="true"
                               />
                             </Grid>
+                          </Grid>
+                          <Divider
+                            style={{
+                              margin: `2rem auto`,
+                              width: `100%`,
+                              maxWidth: 360,
+                            }}
+                          />
+                          <Grid container spacing={2}>
                             <Grid item xs={12}>
                               <TextField
                                 sx={textfieldProps}
@@ -846,54 +923,6 @@ const RegistrationPage = () => {
                                     : ``
                                 }
                               />
-                            </Grid>
-                          </Grid>
-                          <Divider
-                            style={{
-                              margin: `2rem auto`,
-                              width: `100%`,
-                              maxWidth: 360,
-                            }}
-                          />
-                          <Grid container spacing={2}>
-                            <Grid item xs={12}>
-                              <Flex>
-                                <Autocomplete
-                                  sx={{ width: `100%` }}
-                                  id="division"
-                                  disablePortal
-                                  options={divisions}
-                                  noOptionsText={`ไม่พบข้อมูล`}
-                                  getOptionLabel={option =>
-                                    renderDivision(option)
-                                  }
-                                  isOptionEqualToValue={(option, value) => {
-                                    return option === value
-                                  }}
-                                  onChange={(_, newValue) => {
-                                    setInputs(prev => ({
-                                      ...prev,
-                                      division: newValue,
-                                    }))
-                                  }}
-                                  value={inputs.division}
-                                  renderInput={params => (
-                                    <TextField
-                                      {...params}
-                                      label="* สังกัด"
-                                      InputProps={{
-                                        ...params.InputProps,
-                                        sx: {
-                                          borderRadius: `5px 0 0 5px`,
-                                        },
-                                      }}
-                                    />
-                                  )}
-                                />
-                                <CheckCircleFlex>
-                                  {renderCheckingIcon(inputs.division)}
-                                </CheckCircleFlex>
-                              </Flex>
                             </Grid>
                           </Grid>
 
@@ -946,7 +975,8 @@ const RegistrationPage = () => {
                                   inputs.username === `` &&
                                   inputs.password === `` &&
                                   inputs.email === `` &&
-                                  inputs.division === null
+                                  inputs.division === null &&
+                                  inputs.position === ``
                                 }
                               >
                                 <FontAwesomeIcon

@@ -30,6 +30,7 @@ import {
   faPoll,
   faPrint,
   faUsersCog,
+  faUserCheck,
   faRunning,
   faDatabase,
   faUserAlt,
@@ -97,6 +98,12 @@ const MainContent = props => {
         name: `users`,
         desc: `ผู้ใช้งาน`,
         icon: faUsersCog,
+        level: 2,
+      },
+      {
+        name: `user-approvals`,
+        desc: `การอนุมัติผู้ใช้งาน`,
+        icon: faUserCheck,
         level: 2,
       },
       {
