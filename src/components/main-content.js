@@ -36,6 +36,7 @@ import {
   faCog,
   faSignOutAlt,
   faSync,
+  faServer,
 } from "@fortawesome/free-solid-svg-icons"
 
 import { client, gql } from "../functions/apollo-client"
@@ -111,6 +112,14 @@ const MainContent = props => {
         desc: `การจัดการฐานข้อมูล`,
         icon: faDatabase,
         level: 2,
+      },
+    ],
+    serverConfigs: [
+      {
+        name: `server-configs`,
+        desc: `การตั้งค่า Server`,
+        icon: faServer,
+        level: 3,
       },
     ],
     controlPanel: [
@@ -271,6 +280,34 @@ const MainContent = props => {
           <Divider />
           <List>
             {pages.databaseManagement.map((page, pageIndex) => {
+              return page.level <= roleLevel(userInfo.role) ? (
+                <ListItem key={`menu_${pageIndex}`} disablePadding>
+                  <ListItemButton
+                    onClick={() => {
+                      changePage(`${page.name}`)
+                    }}
+                    selected={currentPage === `${page.name}`}
+                  >
+                    <ListItemIcon>
+                      <FontAwesomeIcon icon={page.icon} />
+                    </ListItemIcon>
+                    <ListItemText primary={page.desc} />
+                  </ListItemButton>
+                </ListItem>
+              ) : (
+                ``
+              )
+            })}
+          </List>
+        </>
+      )}
+      {pages.serverConfigs.filter(
+        elem => elem.level <= roleLevel(userInfo.role)
+      ).length > 0 && (
+        <>
+          <Divider />
+          <List>
+            {pages.serverConfigs.map((page, pageIndex) => {
               return page.level <= roleLevel(userInfo.role) ? (
                 <ListItem key={`menu_${pageIndex}`} disablePadding>
                   <ListItemButton
