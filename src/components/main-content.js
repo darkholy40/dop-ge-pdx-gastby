@@ -95,7 +95,7 @@ const MainContent = props => {
     userManagement: [
       {
         name: `users`,
-        desc: `ผู้ใช้งานระบบ`,
+        desc: `ผู้ใช้งาน`,
         icon: faUsersCog,
         level: 2,
       },

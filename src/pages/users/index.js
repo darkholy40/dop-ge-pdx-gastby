@@ -494,8 +494,8 @@ const UserManagementPage = () => {
     <Layout>
       {token !== `` && roleLevel(userInfo.role) >= 2 ? (
         <>
-          <Seo title="ผู้ใช้งานระบบ" />
-          <Breadcrumbs current="ผู้ใช้งานระบบ" />
+          <Seo title="ผู้ใช้งาน" />
+          <Breadcrumbs current="ผู้ใช้งาน" />
 
           {firstStrike && (
             <>

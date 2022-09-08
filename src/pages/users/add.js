@@ -56,7 +56,7 @@ const AddUserPage = () => {
           <Breadcrumbs
             previous={[
               {
-                name: `ผู้ใช้งานระบบ`,
+                name: `ผู้ใช้งาน`,
                 link: `/users/`,
               },
             ]}

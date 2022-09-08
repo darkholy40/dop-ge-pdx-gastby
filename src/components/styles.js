@@ -92,6 +92,7 @@ const ColorButtonStyled = styled.div`
     width: 100%;
     max-width: ${({ width }) => width};
     user-select: none;
+    border-radius: 8px;
 
     > .button {
       height: ${({ height }) => height};
@@ -198,6 +199,7 @@ export const ColorButton = ({
             color: `unset`,
             width: `100%`,
             maxWidth: 800,
+            borderRadius: `8px`,
           }}
           href={href}
           target="_blank"
