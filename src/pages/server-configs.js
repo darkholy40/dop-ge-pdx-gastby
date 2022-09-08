@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useState } from "react"
 import { useSelector, useDispatch } from "react-redux"
 import { Switch, Button } from "@mui/material"
+import styled from "styled-components"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faRedoAlt } from "@fortawesome/free-solid-svg-icons"
 
@@ -13,6 +14,14 @@ import PageNotFound from "../components/page-not-found"
 import { Form, Flex, TextFieldWall } from "../components/styles"
 import roleLevel from "../functions/role-level"
 import Warning from "../components/warning"
+
+const Container = styled.div`
+  box-shadow: rgb(0 0 0 / 24%) 0px 1px 2px;
+  border-radius: 8px;
+  padding: 32px 24px;
+  max-width: 800px;
+  margin: auto;
+`
 
 const ServerConfigsPage = () => {
   const { token, userInfo, primaryColor } = useSelector(
@@ -260,59 +269,66 @@ const ServerConfigsPage = () => {
           <Breadcrumbs current="การตั้งค่า Server" />
 
           {firstStrike && (
-            <Form onSubmit={e => e.preventDefault()} style={{ maxWidth: 400 }}>
-              <TextFieldWall
-                style={{
-                  padding: `6px 6px 6px 15px`,
-                  marginBottom: `1rem`,
-                  backgroundColor: serverStatus.status
-                    ? primaryColor[50]
-                    : `rgba(0, 0, 0, 0)`,
-                  border: serverStatus.status
-                    ? `1px solid ${primaryColor[500]}`
-                    : `1px solid rgba(0, 0, 0, 0.24)`,
-                }}
-                role="presentation"
+            <Container>
+              <Form
+                onSubmit={e => e.preventDefault()}
+                style={{ maxWidth: 400 }}
               >
-                <Flex
-                  style={{ width: `100%`, justifyContent: `space-between` }}
+                <p>อนุญาตให้ลงชื่อเข้าใช้งาน</p>
+                <TextFieldWall
+                  style={{
+                    padding: `6px 6px 6px 15px`,
+                    marginBottom: `1rem`,
+                    backgroundColor: serverStatus.status
+                      ? primaryColor[50]
+                      : `rgba(0, 0, 0, 0)`,
+                    border: serverStatus.status
+                      ? `1px solid ${primaryColor[500]}`
+                      : `1px solid rgba(0, 0, 0, 0.24)`,
+                  }}
+                  role="presentation"
                 >
-                  <div style={{ color: `rgba(0, 0, 0, 0.85)` }}>
-                    เปิดให้เข้าใช้งาน
-                  </div>
-                  <Switch
-                    checked={serverStatus.status}
-                    onChange={(_, newVal) => updateOnlineStatus(newVal)}
-                  />
-                </Flex>
-              </TextFieldWall>
+                  <Flex
+                    style={{ width: `100%`, justifyContent: `space-between` }}
+                  >
+                    <div style={{ color: `rgba(0, 0, 0, 0.85)` }}>
+                      เปิดให้ลงชื่อเข้าใช้งาน
+                    </div>
+                    <Switch
+                      checked={serverStatus.status}
+                      onChange={(_, newVal) => updateOnlineStatus(newVal)}
+                    />
+                  </Flex>
+                </TextFieldWall>
 
-              <TextFieldWall
-                style={{
-                  padding: `6px 6px 6px 15px`,
-                  marginBottom: `1rem`,
-                  backgroundColor: registrationStatus.status
-                    ? primaryColor[50]
-                    : `rgba(0, 0, 0, 0)`,
-                  border: registrationStatus.status
-                    ? `1px solid ${primaryColor[500]}`
-                    : `1px solid rgba(0, 0, 0, 0.24)`,
-                }}
-                role="presentation"
-              >
-                <Flex
-                  style={{ width: `100%`, justifyContent: `space-between` }}
+                <p>อนุญาตให้ลงทะเบียนผู้ใช้งาน</p>
+                <TextFieldWall
+                  style={{
+                    padding: `6px 6px 6px 15px`,
+                    marginBottom: `1rem`,
+                    backgroundColor: registrationStatus.status
+                      ? primaryColor[50]
+                      : `rgba(0, 0, 0, 0)`,
+                    border: registrationStatus.status
+                      ? `1px solid ${primaryColor[500]}`
+                      : `1px solid rgba(0, 0, 0, 0.24)`,
+                  }}
+                  role="presentation"
                 >
-                  <div style={{ color: `rgba(0, 0, 0, 0.85)` }}>
-                    เปิดให้ลงทะเบียน
-                  </div>
-                  <Switch
-                    checked={registrationStatus.status}
-                    onChange={(_, newVal) => updateRegistrationStatus(newVal)}
-                  />
-                </Flex>
-              </TextFieldWall>
-            </Form>
+                  <Flex
+                    style={{ width: `100%`, justifyContent: `space-between` }}
+                  >
+                    <div style={{ color: `rgba(0, 0, 0, 0.85)` }}>
+                      เปิดให้ลงทะเบียน
+                    </div>
+                    <Switch
+                      checked={registrationStatus.status}
+                      onChange={(_, newVal) => updateRegistrationStatus(newVal)}
+                    />
+                  </Flex>
+                </TextFieldWall>
+              </Form>
+            </Container>
           )}
 
           {error !== `` && (

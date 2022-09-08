@@ -13,6 +13,9 @@ const Flex = styled.div`
   flex-direction: column;
   justify-content: flex-start;
   align-items: center;
+  padding: 1.5rem 0;
+  border-radius: 24px;
+  box-shadow: rgb(0 0 0 / 10%) 0px 2px 4px, rgb(0 0 0 / 10%) 0px 8px 16px;
 `
 
 const Warning = ({ text, button, variant }) => {

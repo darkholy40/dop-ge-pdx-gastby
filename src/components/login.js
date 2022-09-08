@@ -1,4 +1,5 @@
-import React, { useCallback, useEffect, useState } from "react"
+import React, { useState } from "react"
+import { navigate } from "gatsby"
 import styled from "styled-components"
 import { useSelector, useDispatch } from "react-redux"
 import {
@@ -22,12 +23,13 @@ import {
   faCheck,
 } from "@fortawesome/free-solid-svg-icons"
 import axios from "axios"
+import { red } from "@mui/material/colors"
 
 import { client, gql } from "../functions/apollo-client"
 
 import Image from "./image"
 import { ColorButton, Flex as CheckboxFlex } from "./styles"
-import { red } from "@mui/material/colors"
+import Registration from "./registration"
 
 const TitleFlex = styled.div`
   display: flex;
@@ -142,10 +144,13 @@ const MyAlert = styled(Alert)`
 `
 
 const IndexPage = () => {
-  const dispatch = useDispatch()
   const { userInfo, isRememberedPass, primaryColor } = useSelector(
     ({ mainReducer }) => mainReducer
   )
+  const { serverStates } = useSelector(
+    ({ registrationReducer }) => registrationReducer
+  )
+  const dispatch = useDispatch()
   const [usernameInput, setUsernameInput] = useState(userInfo.username)
   const [passwordInput, setPasswordInput] = useState(isRememberedPass.val)
   const [isLoading, setIsLoading] = useState(false)
@@ -154,60 +159,6 @@ const IndexPage = () => {
     text: ``,
   })
   const [pwdVisibility, setPwdVisibility] = useState(false)
-  const [serverStates, setServerStates] = useState({
-    isOnline: false,
-    isOpenToRegistration: false,
-  })
-
-  const getServerConfigs = useCallback(async () => {
-    try {
-      const res = await client().query({
-        query: gql`
-          query ServerConfigs {
-            serverConfigs(
-              where: {
-                _or: [
-                  { name: "online-status" }
-                  { name: "open-to-registration" }
-                ]
-              }
-            ) {
-              _id
-              name
-              description
-            }
-          }
-        `,
-      })
-
-      const data = res.data.serverConfigs
-      const onlineStatusObj = data.find(elem => elem.name === `online-status`)
-      const registrationStatusObj = data.find(
-        elem => elem.name === `open-to-registration`
-      )
-      let serverStates = {
-        isOnline: false,
-        isOpenToRegistration: false,
-      }
-
-      if (onlineStatusObj !== undefined) {
-        serverStates.isOnline =
-          onlineStatusObj.description === `yes` ? true : false
-      }
-
-      if (registrationStatusObj !== undefined) {
-        serverStates.isOpenToRegistration =
-          registrationStatusObj.description === `yes` ? true : false
-      }
-
-      setServerStates({
-        isOnline: serverStates.isOnline,
-        isOpenToRegistration: serverStates.isOpenToRegistration,
-      })
-    } catch (error) {
-      // console.log(error.message)
-    }
-  }, [])
 
   const goLogin = async () => {
     setIsError({
@@ -222,6 +173,58 @@ const IndexPage = () => {
         title: ``,
       },
     })
+
+    // check if user was registered
+
+    try {
+      const res = await client().query({
+        query: gql`
+          query Registrations {
+            registrations(where: {
+              username: "${usernameInput}"
+              is_approved: false
+            }) {
+              _id
+              username
+            }
+          }
+        `,
+      })
+
+      const { data } = res
+
+      if (data.registrations.length > 0) {
+        setIsError({
+          status: true,
+          text: `บัญชีของคุณ ยังไม่ได้รับการอนุมัติให้ใช้งาน`,
+        })
+        setIsLoading(false)
+        dispatch({
+          type: `SET_BACKDROP_OPEN`,
+          backdropDialog: {
+            open: false,
+            title: ``,
+          },
+        })
+
+        return 0
+      }
+    } catch {
+      setIsError({
+        status: true,
+        text: `ไม่สามารถเชื่อมต่อฐานข้อมูลได้`,
+      })
+      setIsLoading(false)
+      dispatch({
+        type: `SET_BACKDROP_OPEN`,
+        backdropDialog: {
+          open: false,
+          title: ``,
+        },
+      })
+
+      return 0
+    }
 
     try {
       const res = await axios.post(`${process.env.GEPDX_API_URL}/auth/local`, {
@@ -398,12 +401,9 @@ const IndexPage = () => {
     })
   }
 
-  useEffect(() => {
-    getServerConfigs()
-  }, [getServerConfigs])
-
   return (
     <>
+      <Registration />
       <TitleFlex>
         <Title className="primary">
           โปรแกรมพนักงานราชการในระบบฐานข้อมูลกำลังพลอิเล็กทรอนิกส์
@@ -438,7 +438,9 @@ const IndexPage = () => {
         }}
       >
         <Flex>
-          <Title className="login-text">ลงชื่อเข้าใช้งานระบบ</Title>
+          {serverStates.isOnline && (
+            <Title className="login-text">ลงชื่อเข้าใช้งานระบบ</Title>
+          )}
           <div className="middle">
             <Column>
               <LogoContainer>
@@ -618,7 +620,7 @@ const IndexPage = () => {
               sx={{ marginTop: `1rem`, animation: `fadein 0.3s` }}
               severity="error"
             >
-              ขณะนี้เซิร์ฟเวอร์ยังไม่เปิดให้บริการ
+              ปิดปรับปรุงเซิร์ฟเวอร์ - ระบบยังไม่เปิดให้บริการในขณะนี้
             </Alert>
           )}
           <Divider
@@ -626,19 +628,22 @@ const IndexPage = () => {
           />
           <ButtonColumn>
             {serverStates.isOnline && serverStates.isOpenToRegistration && (
-              <div className="col">
-                <ColorButton
-                  height="75px"
-                  width="400px"
-                  icon={
-                    <FontAwesomeIcon
-                      icon={faRegistered}
-                      style={{ fontSize: `2.5rem`, marginRight: `1rem` }}
-                    />
-                  }
-                  title="ลงทะเบียน"
-                />
-              </div>
+              <>
+                <div className="col">
+                  <ColorButton
+                    height="75px"
+                    width="400px"
+                    icon={
+                      <FontAwesomeIcon
+                        icon={faRegistered}
+                        style={{ fontSize: `2.5rem`, marginRight: `1rem` }}
+                      />
+                    }
+                    title="ลงทะเบียนผู้ใช้งาน"
+                    onClick={() => navigate(`/registration/`)}
+                  />
+                </div>
+              </>
             )}
             <div className="col">
               <ColorButton
