@@ -59,6 +59,7 @@ const initialStates = {
   position: ``,
   username: ``,
   password: ``,
+  confirmedPassword: ``,
   email: ``,
   division: null,
 }
@@ -629,7 +630,7 @@ const RegistrationPage = () => {
                             }}
                           />
                           <Grid container spacing={2}>
-                            <Grid item xs={12} sm={6}>
+                            <Grid item xs={12}>
                               <TextField
                                 sx={textfieldProps}
                                 id="username"
@@ -711,7 +712,7 @@ const RegistrationPage = () => {
                                 sx={textfieldProps}
                                 type={!pwdVisibility ? `password` : `text`}
                                 id="password"
-                                label="รหัสผ่าน"
+                                label="* รหัสผ่าน"
                                 variant="outlined"
                                 onChange={e => {
                                   setInputs(prev => ({
@@ -738,8 +739,7 @@ const RegistrationPage = () => {
                                         />
                                       </IconButton>
                                       {renderCheckingIcon(
-                                        inputs.password !== `` &&
-                                          inputs.password.length >= 8
+                                        inputs.password.length >= 8
                                       )}
                                     </>
                                   ),
@@ -748,6 +748,58 @@ const RegistrationPage = () => {
                                   inputs.password !== `` &&
                                   inputs.password.length < 8
                                     ? `ต้องมีจำนวน 8 อักขระขึ้นไป`
+                                    : ``
+                                }
+                                autoComplete="true"
+                              />
+                            </Grid>
+                            <Grid item xs={12} sm={6}>
+                              <TextField
+                                sx={textfieldProps}
+                                type={!pwdVisibility ? `password` : `text`}
+                                id="confirmed-password"
+                                label="* ยืนยันรหัสผ่าน"
+                                variant="outlined"
+                                onChange={e => {
+                                  setInputs(prev => ({
+                                    ...prev,
+                                    confirmedPassword: e.target.value,
+                                  }))
+                                }}
+                                value={inputs.confirmedPassword}
+                                InputProps={{
+                                  endAdornment: (
+                                    <>
+                                      <IconButton
+                                        onClick={() =>
+                                          setPwdVisibility(!pwdVisibility)
+                                        }
+                                        color="inherit"
+                                        style={{ width: 35, height: 35 }}
+                                      >
+                                        <FontAwesomeIcon
+                                          icon={
+                                            !pwdVisibility ? faEye : faEyeSlash
+                                          }
+                                          style={{ fontSize: 16 }}
+                                        />
+                                      </IconButton>
+                                      {renderCheckingIcon(
+                                        inputs.confirmedPassword.length >= 8 &&
+                                          inputs.confirmedPassword ===
+                                            inputs.password
+                                      )}
+                                    </>
+                                  ),
+                                }}
+                                error={
+                                  inputs.confirmedPassword.length >= 8 &&
+                                  inputs.confirmedPassword !== inputs.password
+                                }
+                                helperText={
+                                  inputs.confirmedPassword.length >= 8 &&
+                                  inputs.confirmedPassword !== inputs.password
+                                    ? `การยืนยันรหัสผ่านไม่ตรงกัน`
                                     : ``
                                 }
                                 autoComplete="true"
@@ -862,6 +914,9 @@ const RegistrationPage = () => {
                                   !checkPid(inputs.username) ||
                                   (inputs.password === `` &&
                                     inputs.password.length < 8) ||
+                                  inputs.confirmedPassword.length < 8 ||
+                                  inputs.confirmedPassword !==
+                                    inputs.password ||
                                   renderCheckingIconForUsernameAndEmail(
                                     inputs.email,
                                     inputsError.email
