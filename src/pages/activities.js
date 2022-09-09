@@ -25,6 +25,8 @@ import {
   faSync,
   faKey,
   faBullseye,
+  faCheck,
+  faTimes,
 } from "@fortawesome/free-solid-svg-icons"
 import { green, grey, blue, red } from "@mui/material/colors"
 
@@ -37,6 +39,7 @@ import { Link } from "../components/styles"
 import PersonInfoDialog from "../components/people/person-info-dialog"
 import PositionInfoDialog from "../components/positions/position-info-dialog"
 import UserInfoDialog from "../components/users/user-info-dialog"
+import RegisteredUserInfoDialog from "../components/registrations/registered-user-info-dialog"
 import PageNotFound from "../components/page-not-found"
 import Warning from "../components/warning"
 import renderTableDate from "../functions/render-table-date"
@@ -409,6 +412,28 @@ const ActivitiesPage = () => {
 
       case `action`:
         switch (title) {
+          case `registrations->approve`:
+            option = {
+              ...option,
+              description: `อนุมัติผู้ใช้งาน`,
+              link: true,
+              type: `registrations`,
+              icon: faCheck,
+              color: green[700],
+            }
+            break
+
+          case `registrations->disapprove`:
+            option = {
+              ...option,
+              description: `ไม่อนุมัติผู้ใช้งาน`,
+              link: true,
+              type: `registrations`,
+              icon: faTimes,
+              color: red[700],
+            }
+            break
+
           case `users->create`:
             option = {
               ...option,
@@ -876,6 +901,19 @@ const ActivitiesPage = () => {
                   }}
                   userId={detialModal.id}
                   viewOnly
+                />
+                <RegisteredUserInfoDialog
+                  open={
+                    detialModal.open && detialModal.type === `registrations`
+                  }
+                  callback={() => {
+                    setDetialModal(prev => ({
+                      ...prev,
+                      open: false,
+                      id: ``,
+                    }))
+                  }}
+                  userId={detialModal.id}
                 />
               </>
             )

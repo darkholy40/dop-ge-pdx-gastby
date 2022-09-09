@@ -113,7 +113,7 @@ const RegistrationPage = () => {
             title: `การเชื่อมต่อไม่เสถียร`,
             description: `การส่งข้อมูลไปยังเซิร์ฟเวอร์ไม่สำเร็จ`,
             variant: `error`,
-            confirmText: `เชื่อมจ่ออีกครั้ง`,
+            confirmText: `เชื่อมต่ออีกครั้ง`,
             callback: () => checkUsernameIsExists(),
           },
         })
@@ -125,7 +125,9 @@ const RegistrationPage = () => {
           query: gql`
             query Registrations {
               registrations(where: {
-                username: "${inputs.username}"
+                username: "${inputs.username}",
+                is_approved: true,
+                is_completed: true,
               }) {
                 _id
               }
@@ -148,7 +150,7 @@ const RegistrationPage = () => {
             title: `การเชื่อมต่อไม่เสถียร`,
             description: `การส่งข้อมูลไปยังเซิร์ฟเวอร์ไม่สำเร็จ`,
             variant: `error`,
-            confirmText: `เชื่อมจ่ออีกครั้ง`,
+            confirmText: `เชื่อมต่ออีกครั้ง`,
             callback: () => checkUsernameIsExists(),
           },
         })
@@ -193,7 +195,7 @@ const RegistrationPage = () => {
             title: `การเชื่อมต่อไม่เสถียร`,
             description: `การส่งข้อมูลไปยังเซิร์ฟเวอร์ไม่สำเร็จ`,
             variant: `error`,
-            confirmText: `เชื่อมจ่ออีกครั้ง`,
+            confirmText: `เชื่อมต่ออีกครั้ง`,
             callback: () => checkEmailIsExists(),
           },
         })
@@ -205,7 +207,9 @@ const RegistrationPage = () => {
           query: gql`
             query Registrations {
               registrations(where: {
-                email: "${inputs.email}"
+                email: "${inputs.email}",
+                is_approved: true,
+                is_completed: true,
               }) {
                 _id
               }
@@ -228,7 +232,7 @@ const RegistrationPage = () => {
             title: `การเชื่อมต่อไม่เสถียร`,
             description: `การส่งข้อมูลไปยังเซิร์ฟเวอร์ไม่สำเร็จ`,
             variant: `error`,
-            confirmText: `เชื่อมจ่ออีกครั้ง`,
+            confirmText: `เชื่อมต่ออีกครั้ง`,
             callback: () => checkEmailIsExists(),
           },
         })
@@ -257,7 +261,9 @@ const RegistrationPage = () => {
         query: gql`
           query Registrations {
             registrations(where: {
-              username: "${inputs.username}"
+              username: "${inputs.username}",
+              is_approved: true,
+              is_completed: true,
             }) {
               _id
               username

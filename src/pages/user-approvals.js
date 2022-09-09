@@ -19,6 +19,7 @@ import {
   Collapse,
   TextField,
   Divider,
+  Tooltip,
 } from "@mui/material"
 import Autocomplete from "@mui/material/Autocomplete"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
@@ -45,6 +46,7 @@ import renderTableDate from "../functions/render-table-date"
 import renderFullname from "../functions/render-fullname"
 import renderDivision from "../functions/render-division"
 import roleLevel from "../functions/role-level"
+import renderValueForRelationField from "../functions/render-value-for-relation-field"
 
 const initialStates = {
   filterInputs: {
@@ -59,8 +61,9 @@ const UserApprovalsPage = () => {
   const { token, userInfo, primaryColor } = useSelector(
     ({ mainReducer }) => mainReducer
   )
-  const { units } = useSelector(({ staticReducer }) => staticReducer)
+  const { units, roles } = useSelector(({ staticReducer }) => staticReducer)
   const dispatch = useDispatch()
+  const [firstStrike, setFirstStrike] = useState(false)
   const [usersData, setUsersData] = useState([])
   const [isError, setIsError] = useState({
     status: false,
@@ -80,7 +83,6 @@ const UserApprovalsPage = () => {
   const [confirmedFilterInputs, setConfirmedFilterInputs] = useState(
     initialStates.filterInputs
   )
-  const [firstStrike, setFirstStrike] = useState(false)
 
   const savePageView = useCallback(() => {
     if (token !== `` && userInfo._id !== `` && roleLevel(userInfo.role) < 3) {
@@ -106,7 +108,7 @@ const UserApprovalsPage = () => {
 
   const getUsers = useCallback(async () => {
     let returnData = []
-    let filters = `is_approved: false`
+    let filters = ``
 
     setIsError({
       status: false,
@@ -214,6 +216,8 @@ const UserApprovalsPage = () => {
               surname: thisUser.surname,
               email: thisUser.email,
               position: thisUser.position,
+              is_approved: thisUser.is_approved,
+              is_completed: thisUser.is_completed,
               division: thisUser.division,
               created_date: thisUser.createdAt,
             },
@@ -301,6 +305,238 @@ const UserApprovalsPage = () => {
     setFilterOpenAnchorEl(null)
     setFilterInputs(initialStates.filterInputs)
     setConfirmedFilterInputs(initialStates.filterInputs)
+  }
+
+  const goApprove = async (id = ``, approvedStatus = false) => {
+    const authenticatedRole = roles.find(elem => elem.name === `Authenticated`)
+    let verifications = {
+      pass1: false,
+      pass2: approvedStatus ? false : true,
+      pass3: false,
+    }
+    let approvedUser = null
+    let userIdCreated = ``
+
+    dispatch({
+      type: `SET_BACKDROP_OPEN`,
+      backdropDialog: {
+        open: true,
+        title: ``,
+      },
+    })
+
+    console.log(`function1`)
+    try {
+      const res = await client(token).query({
+        query: gql`
+          query Registration {
+            registration(id: "${id}") {
+              _id
+              username
+              password
+              rank
+              name
+              surname
+              email
+              position
+              createdAt
+              division {
+                _id
+              }
+            }
+          }
+        `,
+      })
+
+      if (res) {
+        verifications.pass1 = true
+        approvedUser = res.data.registration
+      }
+    } catch (error) {
+      const { message } = error
+      console.log(message)
+    }
+
+    if (approvedStatus && verifications.pass1) {
+      console.log(`function2`)
+      try {
+        const res = await client(token).mutate({
+          mutation: gql`
+            mutation CreateUser {
+              createUser(input: {
+                data: {
+                  username: "${approvedUser.username}",
+                  rank: "${approvedUser.rank}",
+                  name: "${approvedUser.name}",
+                  surname: "${approvedUser.surname}",
+                  userPosition: "${approvedUser.position || ``}",
+                  email: "${approvedUser.email}",
+                  password: "${approvedUser.password}",
+                  confirmed: true,
+                  blocked: false,
+                  division: ${renderValueForRelationField(
+                    approvedUser.division
+                  )},
+                  role: ${renderValueForRelationField(authenticatedRole)},
+                  staff_created: "${userInfo._id}",
+                  staff_updated: "${userInfo._id}",
+                }
+              }) {
+                user {
+                  _id
+                }
+              }
+            }
+          `,
+        })
+
+        const createdUserId = res.data.createUser.user._id
+
+        userIdCreated = createdUserId
+        verifications.pass2 = true
+      } catch (error) {
+        console.log(error)
+      }
+    }
+
+    if (verifications.pass2) {
+      console.log(`function3`)
+      try {
+        const res = await client(token).mutate({
+          mutation: gql`
+            mutation UpdateRegistration {
+              updateRegistration(input: {
+                data: {
+                  password: "",
+                  is_approved: ${approvedStatus},
+                  is_completed: true,
+                },
+                where: {
+                  id: "${id}"
+                }
+              }) {
+                registration {
+                  _id
+                }
+              }
+            }
+          `,
+        })
+
+        if (res) {
+          verifications.pass3 = true
+        }
+      } catch (error) {
+        console.log(error)
+      }
+    }
+
+    if (!verifications.pass1 || !verifications.pass2 || !verifications.pass3) {
+      console.log(`failed`)
+
+      if (approvedStatus) {
+        client(token).mutate({
+          mutation: gql`
+            mutation DeleteUser {
+              deleteUser(input: {
+                where: {
+                  id: "${userIdCreated}"
+                }
+              }) {
+                user {
+                  _id
+                }
+              }
+            }           
+          `,
+        })
+      }
+
+      client(token).mutate({
+        mutation: gql`
+          mutation UpdateRegistration {
+            updateRegistration(input: {
+              data: {
+                password: "${approvedUser.password}",
+                is_approved: false,
+                is_completed: false,
+              },
+              where: {
+                id: "${id}"
+              }
+            }) {
+              registration {
+                _id
+              }
+            }
+          }
+        `,
+      })
+
+      dispatch({
+        type: `SET_NOTIFICATION_DIALOG`,
+        notificationDialog: {
+          open: true,
+          title: `การอนุมัติผู้ใช้งาน`,
+          description: `ส่งข้อมูลไม่สำเร็จ`,
+          variant: `error`,
+          confirmText: `ตกลง`,
+          callback: () => {},
+        },
+      })
+    }
+
+    if (verifications.pass1 && verifications.pass2 && verifications.pass3) {
+      await client(token).mutate({
+        mutation: gql`
+          mutation CreateLog {
+            createLog(input: {
+              data: {
+                action: "action",
+                description: "registrations->${
+                  approvedStatus ? `approve` : `disapprove`
+                } => ${id}",
+                users_permissions_user: "${userInfo._id}",
+              }
+            }) {
+              log {
+                _id
+              }
+            }
+          }
+        `,
+      })
+
+      if (approvedStatus) {
+        await client(token).mutate({
+          mutation: gql`
+            mutation CreateLog {
+              createLog(input: {
+                data: {
+                  action: "action",
+                  description: "users->create => ${userIdCreated}",
+                  users_permissions_user: "${userInfo._id}",
+                }
+              }) {
+                log {
+                  _id
+                }
+              }
+            }
+          `,
+        })
+      }
+
+      getUsers()
+    }
+
+    dispatch({
+      type: `SET_BACKDROP_OPEN`,
+      backdropDialog: {
+        open: false,
+        title: ``,
+      },
+    })
   }
 
   useEffect(() => {
@@ -702,37 +938,58 @@ const UserApprovalsPage = () => {
                               alignItems: `center`,
                             }}
                           >
-                            <Button
-                              style={{
-                                minWidth: 35,
-                                width: 35,
-                                height: 35,
-                                borderRadius: `100%`,
-                                marginRight: 5,
-                              }}
-                              color="success"
-                              variant="contained"
-                            >
-                              <FontAwesomeIcon
-                                icon={faCheck}
-                                style={{ fontSize: 16 }}
-                              />
-                            </Button>
-                            <Button
-                              style={{
-                                minWidth: 35,
-                                width: 35,
-                                height: 35,
-                                borderRadius: `100%`,
-                              }}
-                              color="error"
-                              variant="outlined"
-                            >
-                              <FontAwesomeIcon
-                                icon={faTimes}
-                                style={{ fontSize: 16 }}
-                              />
-                            </Button>
+                            {!row.is_completed ? (
+                              <>
+                                <Tooltip title="อนุมัติ" arrow>
+                                  <Button
+                                    style={{
+                                      minWidth: 35,
+                                      width: 35,
+                                      height: 35,
+                                      borderRadius: `100%`,
+                                      marginRight: 5,
+                                    }}
+                                    color="success"
+                                    variant="contained"
+                                    onClick={() => goApprove(row._id, true)}
+                                  >
+                                    <FontAwesomeIcon
+                                      icon={faCheck}
+                                      style={{ fontSize: 16 }}
+                                    />
+                                  </Button>
+                                </Tooltip>
+                                <Tooltip title="ไม่อนุมัติ" arrow>
+                                  <Button
+                                    style={{
+                                      minWidth: 35,
+                                      width: 35,
+                                      height: 35,
+                                      borderRadius: `100%`,
+                                    }}
+                                    color="error"
+                                    variant="outlined"
+                                    onClick={() => goApprove(row._id, false)}
+                                  >
+                                    <FontAwesomeIcon
+                                      icon={faTimes}
+                                      style={{ fontSize: 16 }}
+                                    />
+                                  </Button>
+                                </Tooltip>
+                              </>
+                            ) : (
+                              <>
+                                {row.is_approved ? (
+                                  <Chip label="อนุมัติแล้ว" color="success" />
+                                ) : (
+                                  <Chip
+                                    label="ไม่ผ่านการอนุมัติ"
+                                    color="error"
+                                  />
+                                )}
+                              </>
+                            )}
                           </div>
                         </TableCell>
                         <TableCell align="center">
