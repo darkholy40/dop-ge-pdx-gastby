@@ -160,7 +160,9 @@ const ColorButtonStyled = styled.div`
 `
 
 export const ColorButton = ({
+  isActive,
   style,
+  muiColor,
   width,
   height,
   onClick,
@@ -173,7 +175,11 @@ export const ColorButton = ({
 
   const Content = () => (
     <div className="row">
-      <div className="button" role="presentation" onClick={onClick}>
+      <div
+        className={`button ${isActive ? `active` : ``}`}
+        role="presentation"
+        onClick={onClick}
+      >
         {icon !== undefined && icon}
         <div>
           <span>{title}</span>
@@ -187,7 +193,7 @@ export const ColorButton = ({
 
   return (
     <ColorButtonStyled
-      primaryColor={primaryColor}
+      primaryColor={muiColor !== undefined ? muiColor : primaryColor}
       width={width}
       height={height}
       style={style}
@@ -205,17 +211,19 @@ export const ColorButton = ({
           target="_blank"
           rel="noreferrer"
         >
-          <Content />
+          <Content isActive={isActive} />
         </a>
       ) : (
-        <Content />
+        <Content isActive={isActive} />
       )}
     </ColorButtonStyled>
   )
 }
 
 ColorButton.propTypes = {
+  isActive: PropTypes.bool,
   style: PropTypes.object,
+  muiColor: PropTypes.objectOf(PropTypes.string),
   width: PropTypes.string,
   height: PropTypes.string,
   onClick: PropTypes.func,

@@ -28,17 +28,25 @@ import {
   faRedo,
   faEllipsisH,
   faSearch,
+  faInfo,
   faCheck,
   faTimes,
 } from "@fortawesome/free-solid-svg-icons"
-import { grey } from "@mui/material/colors"
+import { grey, green, red } from "@mui/material/colors"
+import styled from "styled-components"
 
 import { client, gql } from "../functions/apollo-client"
 
 import Layout from "../components/layout"
 import Seo from "../components/seo"
 import Breadcrumbs from "../components/breadcrumbs"
-import { Link, FilterContent, OparatorFlex, Flex } from "../components/styles"
+import {
+  Link,
+  FilterContent,
+  OparatorFlex,
+  Flex,
+  ColorButton,
+} from "../components/styles"
 import RegisteredUserInfoDialog from "../components/registrations/registered-user-info-dialog"
 import PageNotFound from "../components/page-not-found"
 import Warning from "../components/warning"
@@ -47,6 +55,28 @@ import renderFullname from "../functions/render-fullname"
 import renderDivision from "../functions/render-division"
 import roleLevel from "../functions/role-level"
 import renderValueForRelationField from "../functions/render-value-for-relation-field"
+
+const ButtonColumn = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  flex-wrap: nowrap;
+  margin-bottom: 1rem;
+
+  .col {
+    margin-left: 0.5rem;
+    margin-right: 0.5rem;
+  }
+
+  @media (max-width: 599px) {
+    flex-wrap: wrap;
+
+    .col {
+      margin-top: 0.5rem;
+      margin-bottom: 0.5rem;
+    }
+  }
+`
 
 const initialStates = {
   filterInputs: {
@@ -64,6 +94,7 @@ const UserApprovalsPage = () => {
   const { units, roles } = useSelector(({ staticReducer }) => staticReducer)
   const dispatch = useDispatch()
   const [firstStrike, setFirstStrike] = useState(false)
+  const [queryStatus, setQueryStatus] = useState(`waiting`)
   const [usersData, setUsersData] = useState([])
   const [isError, setIsError] = useState({
     status: false,
@@ -108,7 +139,29 @@ const UserApprovalsPage = () => {
 
   const getUsers = useCallback(async () => {
     let returnData = []
-    let filters = ``
+    let filters = `
+      ${(() => {
+        switch (queryStatus) {
+          case `is-approved`:
+            return `
+              is_completed: true,
+              is_approved: true,
+            `
+
+          case `is-disapproved`:
+            return `
+              is_completed: true,
+              is_approved: false,
+            `
+
+          default:
+            return `
+              is_completed: false,
+              is_approved: false,
+            `
+        }
+      })()}
+    `
 
     setIsError({
       status: false,
@@ -255,6 +308,7 @@ const UserApprovalsPage = () => {
     tableOption.page,
     tableOption.rowsPerPage,
     confirmedFilterInputs,
+    queryStatus,
   ])
 
   const acceptFilters = () => {
@@ -478,7 +532,7 @@ const UserApprovalsPage = () => {
         notificationDialog: {
           open: true,
           title: `การอนุมัติผู้ใช้งาน`,
-          description: `ส่งข้อมูลไม่สำเร็จ`,
+          description: `บันทึกข้อมูลไม่สำเร็จ`,
           variant: `error`,
           confirmText: `ตกลง`,
           callback: () => {},
@@ -527,6 +581,17 @@ const UserApprovalsPage = () => {
         })
       }
 
+      dispatch({
+        type: `SET_NOTIFICATION_DIALOG`,
+        notificationDialog: {
+          open: true,
+          title: `การอนุมัติผู้ใช้งาน`,
+          description: `บันทึกข้อมูลสำเร็จ`,
+          variant: `success`,
+          confirmText: `ตกลง`,
+          callback: () => {},
+        },
+      })
       getUsers()
     }
 
@@ -565,6 +630,11 @@ const UserApprovalsPage = () => {
     }
   }, [filterOpenAnchorEl, confirmedFilterInputs])
 
+  useEffect(() => {
+    setFirstStrike(false)
+    setUsersData([])
+  }, [queryStatus])
+
   return (
     <Layout>
       {token !== `` && roleLevel(userInfo.role) >= 2 ? (
@@ -572,6 +642,55 @@ const UserApprovalsPage = () => {
           <Seo title="การอนุมัติผู้ใช้งาน" />
           <Breadcrumbs current="การอนุมัติผู้ใช้งาน" />
 
+          <ButtonColumn>
+            <div className="col">
+              <ColorButton
+                isActive={queryStatus === `waiting`}
+                height="75px"
+                width="400px"
+                icon={
+                  <FontAwesomeIcon
+                    icon={faInfo}
+                    style={{ fontSize: `2.5rem`, marginRight: `1rem` }}
+                  />
+                }
+                title="ที่รอการอนุมัติ"
+                onClick={() => setQueryStatus(`waiting`)}
+              />
+            </div>
+            <div className="col">
+              <ColorButton
+                muiColor={green}
+                isActive={queryStatus === `is-approved`}
+                height="75px"
+                width="400px"
+                icon={
+                  <FontAwesomeIcon
+                    icon={faCheck}
+                    style={{ fontSize: `2.5rem`, marginRight: `1rem` }}
+                  />
+                }
+                title="ที่อนุมัติแล้ว"
+                onClick={() => setQueryStatus(`is-approved`)}
+              />
+            </div>
+            <div className="col">
+              <ColorButton
+                muiColor={red}
+                isActive={queryStatus === `is-disapproved`}
+                height="75px"
+                width="400px"
+                icon={
+                  <FontAwesomeIcon
+                    icon={faTimes}
+                    style={{ fontSize: `2.5rem`, marginRight: `1rem` }}
+                  />
+                }
+                title="ที่ไม่ผ่านการอนุมัติ"
+                onClick={() => setQueryStatus(`is-disapproved`)}
+              />
+            </div>
+          </ButtonColumn>
           {firstStrike && (
             <>
               <Popover
@@ -809,6 +928,37 @@ const UserApprovalsPage = () => {
                   </IconButton>
                 </div>
               </OparatorFlex>
+              <Menu
+                sx={{
+                  ".MuiList-root.MuiList-padding.MuiMenu-list": {
+                    minWidth: 180,
+                  },
+                }}
+                anchorEl={oparatorAnchorEl}
+                open={Boolean(oparatorAnchorEl)}
+                onClose={() => {
+                  setOparatorAnchorEl(null)
+                }}
+                anchorOrigin={{
+                  vertical: "bottom",
+                  horizontal: "right",
+                }}
+                transformOrigin={{
+                  vertical: "top",
+                  horizontal: "right",
+                }}
+              >
+                <MenuItem
+                  onClick={() => {
+                    setOparatorAnchorEl(null)
+                    getUsers()
+                  }}
+                  disableRipple
+                >
+                  <FontAwesomeIcon icon={faRedo} style={{ marginRight: 5 }} />
+                  โหลดข้อมูลใหม่
+                </MenuItem>
+              </Menu>
             </>
           )}
           {usersData.length > 0 && (
@@ -1034,38 +1184,6 @@ const UserApprovalsPage = () => {
                   }))
                 }}
               />
-
-              <Menu
-                sx={{
-                  ".MuiList-root.MuiList-padding.MuiMenu-list": {
-                    minWidth: 180,
-                  },
-                }}
-                anchorEl={oparatorAnchorEl}
-                open={Boolean(oparatorAnchorEl)}
-                onClose={() => {
-                  setOparatorAnchorEl(null)
-                }}
-                anchorOrigin={{
-                  vertical: "bottom",
-                  horizontal: "right",
-                }}
-                transformOrigin={{
-                  vertical: "top",
-                  horizontal: "right",
-                }}
-              >
-                <MenuItem
-                  onClick={() => {
-                    setOparatorAnchorEl(null)
-                    getUsers()
-                  }}
-                  disableRipple
-                >
-                  <FontAwesomeIcon icon={faRedo} style={{ marginRight: 5 }} />
-                  โหลดข้อมูลใหม่
-                </MenuItem>
-              </Menu>
 
               <Menu
                 sx={{
