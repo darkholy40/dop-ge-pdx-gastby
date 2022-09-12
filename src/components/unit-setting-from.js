@@ -63,6 +63,7 @@ const UnitSettingForm = ({ fullWidth }) => {
   const { token, userInfo } = useSelector(({ mainReducer }) => mainReducer)
   const { locations } = useSelector(({ staticReducer }) => staticReducer)
   const dispatch = useDispatch()
+  const [isInputSelected, setIsInputSelected] = useState(false)
   const [data, setData] = useState(null)
   const [isError, setIsError] = useState({
     status: false,
@@ -278,6 +279,7 @@ const UnitSettingForm = ({ fullWidth }) => {
                 return option === value
               }}
               onChange={(_, newValue) => {
+                setIsInputSelected(true)
                 setInputs({
                   ...inputs,
                   province: newValue !== null ? newValue : ``,
@@ -314,6 +316,7 @@ const UnitSettingForm = ({ fullWidth }) => {
                 return option === value
               }}
               onChange={(_, newValue) => {
+                setIsInputSelected(true)
                 setInputs({
                   ...inputs,
                   organizeType: newValue !== null ? newValue : ``,
@@ -347,7 +350,8 @@ const UnitSettingForm = ({ fullWidth }) => {
               inputs.province === `` ||
               inputs.organizeType === `` ||
               isDivisionDataUpdated ||
-              isSaving
+              isSaving ||
+              !isInputSelected
             }
           >
             <FontAwesomeIcon icon={faSave} style={{ marginRight: 5 }} />
