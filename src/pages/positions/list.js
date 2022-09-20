@@ -23,6 +23,7 @@ import {
   faEllipsisH,
   faPencilAlt,
   faChevronLeft,
+  faSearch,
 } from "@fortawesome/free-solid-svg-icons"
 
 import { client, gql } from "../../functions/apollo-client"
@@ -392,9 +393,7 @@ const PositionsListPage = () => {
                         <TableCell
                           align="center"
                           sx={{ backgroundColor: primaryColor[200] }}
-                        >
-                          ตัวเลือก
-                        </TableCell>
+                        ></TableCell>
                       </TableRow>
                     </TableHead>
                     <TableBody>
@@ -532,6 +531,19 @@ const PositionsListPage = () => {
                     horizontal: "right",
                   }}
                 >
+                  <MenuItem
+                    onClick={() => {
+                      setAnchorEl(null)
+                      setPositionDetailOpen(true)
+                    }}
+                    disableRipple
+                  >
+                    <FontAwesomeIcon
+                      icon={faSearch}
+                      style={{ marginRight: 5 }}
+                    />
+                    ดูคลังตำแหน่ง
+                  </MenuItem>
                   <MenuItem
                     onClick={() => {
                       setAnchorEl(null)

@@ -1042,6 +1042,16 @@ const UserManagementPage = () => {
                 <MenuItem
                   onClick={() => {
                     setOptionAnchorEl(null)
+                    setUserDetailOpen(true)
+                  }}
+                  disableRipple
+                >
+                  <FontAwesomeIcon icon={faSearch} style={{ marginRight: 5 }} />
+                  ดูข้อมูลผู้ใช้งาน
+                </MenuItem>
+                <MenuItem
+                  onClick={() => {
+                    setOptionAnchorEl(null)
                     navigate(`/users/edit/?id=${currentRow._id}`)
                   }}
                   disableRipple

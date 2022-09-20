@@ -388,9 +388,7 @@ const PeopleListPage = () => {
                         <TableCell
                           align="center"
                           sx={{ backgroundColor: primaryColor[200] }}
-                        >
-                          ตัวเลือก
-                        </TableCell>
+                        ></TableCell>
                       </TableRow>
                     </TableHead>
                     <TableBody>
