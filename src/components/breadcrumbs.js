@@ -18,7 +18,6 @@ const Flex = styled.div`
   width: 100%;
   padding: 4px 16px;
   background-color: ${({ primaryColor }) => primaryColor[50]};
-  border: 1px solid ${({ primaryColor }) => primaryColor[200]};
   border-radius: 8px;
 `
 

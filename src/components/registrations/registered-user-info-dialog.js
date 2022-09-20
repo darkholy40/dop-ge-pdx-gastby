@@ -28,6 +28,8 @@ import { client, gql } from "../../functions/apollo-client"
 import { Flex, TextFieldDummyOutlined } from "../styles"
 import renderDivision from "../../functions/render-division"
 import roleLevel from "../../functions/role-level"
+import renderFullname from "../../functions/render-fullname"
+import renderTableDate from "../../functions/render-table-date"
 
 const Content = styled(Flex)`
   flex-direction: column;
@@ -106,6 +108,9 @@ const RegisteredUserInfoDialog = ({ userId, open, title, callback }) => {
               }
               users_permissions_user {
                 _id
+                rank
+                name
+                surname
               }
               createdAt
               updatedAt
@@ -291,7 +296,7 @@ const RegisteredUserInfoDialog = ({ userId, open, title, callback }) => {
                     }}
                   />
                   <Grid container spacing={2}>
-                    <Grid item xs={12}>
+                    <Grid item sm={6} xs={12}>
                       <TextFieldDummyOutlined.Line>
                         <TextFieldDummyOutlined.Label>
                           สังกัด
@@ -299,6 +304,28 @@ const RegisteredUserInfoDialog = ({ userId, open, title, callback }) => {
                         <span>{renderDivision(data.division) || `-`}</span>
                       </TextFieldDummyOutlined.Line>
                     </Grid>
+                    <Grid item sm={6} xs={12}>
+                      <TextFieldDummyOutlined.Line>
+                        <TextFieldDummyOutlined.Label>
+                          วันที่ลงทะเบียน
+                        </TextFieldDummyOutlined.Label>
+                        <span>
+                          <span>
+                            {renderTableDate(data.createdAt, `datetime`)}
+                          </span>
+                        </span>
+                      </TextFieldDummyOutlined.Line>
+                    </Grid>
+                  </Grid>
+
+                  <Divider
+                    style={{
+                      margin: `2rem auto`,
+                      width: 360,
+                      maxWidth: `100%`,
+                    }}
+                  />
+                  <Grid container spacing={2}>
                     <Grid item xs={12}>
                       <TextFieldDummyOutlined.Line>
                         <TextFieldDummyOutlined.Label>
@@ -309,6 +336,30 @@ const RegisteredUserInfoDialog = ({ userId, open, title, callback }) => {
                         </span>
                       </TextFieldDummyOutlined.Line>
                     </Grid>
+                    {data.users_permissions_user !== null && (
+                      <>
+                        <Grid item sm={6} xs={12}>
+                          <TextFieldDummyOutlined.Line>
+                            <TextFieldDummyOutlined.Label>
+                              เจ้าหน้าที่ผู้อนุมัติ
+                            </TextFieldDummyOutlined.Label>
+                            <span>
+                              {renderFullname(data.users_permissions_user)}
+                            </span>
+                          </TextFieldDummyOutlined.Line>
+                        </Grid>
+                        <Grid item sm={6} xs={12}>
+                          <TextFieldDummyOutlined.Line>
+                            <TextFieldDummyOutlined.Label>
+                              วันที่อนุมัติ
+                            </TextFieldDummyOutlined.Label>
+                            <span>
+                              {renderTableDate(data.updatedAt, `datetime`)}
+                            </span>
+                          </TextFieldDummyOutlined.Line>
+                        </Grid>
+                      </>
+                    )}
                   </Grid>
                 </>
               )}

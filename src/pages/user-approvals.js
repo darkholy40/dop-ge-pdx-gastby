@@ -464,6 +464,7 @@ const UserApprovalsPage = () => {
                   password: "",
                   is_approved: ${approvedStatus},
                   is_completed: true,
+                  users_permissions_user: "${userInfo._id}",
                 },
                 where: {
                   id: "${id}"

@@ -486,12 +486,11 @@ const MainContent = props => {
               >
                 {tutorialCount === 4 && (
                   <>
-                    <MenuItem
-                      onClick={() => {
-                        setAnchorElMyInfo(null)
-                        navigate(`/settings/general/`)
+                    <div
+                      style={{
+                        padding: `9px 18px`,
+                        borderRadius: `4px`,
                       }}
-                      disableRipple
                     >
                       <div
                         style={{
@@ -512,7 +511,7 @@ const MainContent = props => {
                           {userInfo.username}
                         </span>
                       </div>
-                    </MenuItem>
+                    </div>
                     <Divider style={{ margin: `6px 18px` }} />
                   </>
                 )}
