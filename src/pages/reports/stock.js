@@ -27,6 +27,7 @@ import {
   removeObjectInArray,
 } from "../../functions/object-in-array"
 import roleLevel from "../../functions/role-level"
+import renderTableDate from "../../functions/render-table-date"
 
 const Container = styled(Flex)`
   width: 100%;
@@ -639,8 +640,12 @@ const StockPage = () => {
               <ExportToExcel
                 apiData={data}
                 wsConfigs={wsConfigs}
-                fileName="stock"
-                sheetName="STOCK"
+                fileName={`stock (${
+                  input.unit !== null ? renderDivision(input.unit) : `ทั้งหมด`
+                }) - ${renderTableDate(new Date().valueOf(), `file-datetime`)}`}
+                sheetName={`STOCK (${
+                  input.unit !== null ? renderDivision(input.unit) : `ทั้งหมด`
+                })`}
                 disabled={statusCode !== ``}
                 callback={() =>
                   client(token).mutate({

@@ -67,6 +67,9 @@ const renderTableDate = (getDateFromDB, opt) => {
       case `full-datetime`:
         return `${date} ${monthText.long[month]} ${year} ${hr}:${min}:${sec}`
 
+      case `file-datetime`:
+        return `วันที่ ${date} ${monthText.long[month]} ${year} เวลา ${hr}.${min}`
+
       default:
         return `${date} ${monthText.short[month]} ${year}`
     }

@@ -25,6 +25,7 @@ import {
   removeObjectInArray,
 } from "../../functions/object-in-array"
 import roleLevel from "../../functions/role-level"
+import renderTableDate from "../../functions/render-table-date"
 
 const Container = styled(Flex)`
   width: 100%;
@@ -477,8 +478,12 @@ const FlowOutPage = () => {
               <ExportToExcel
                 apiData={data}
                 wsConfigs={wsConfigs}
-                fileName="flow-out"
-                sheetName="FLOW-OUT"
+                fileName={`flow-out (${
+                  input.unit !== null ? renderDivision(input.unit) : `ทั้งหมด`
+                }) - ${renderTableDate(new Date().valueOf(), `file-datetime`)}`}
+                sheetName={`FLOW-OUT (${
+                  input.unit !== null ? renderDivision(input.unit) : `ทั้งหมด`
+                })`}
                 disabled={statusCode !== ``}
                 callback={() =>
                   client(token).mutate({
