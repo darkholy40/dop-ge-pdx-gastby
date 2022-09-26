@@ -634,6 +634,11 @@ const UserApprovalsPage = () => {
   useEffect(() => {
     setFirstStrike(false)
     setUsersData([])
+    setTableOption(prev => ({
+      ...prev,
+      page: 0,
+      rowsPerPage: 10,
+    }))
   }, [queryStatus])
 
   return (

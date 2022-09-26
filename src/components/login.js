@@ -181,8 +181,9 @@ const IndexPage = () => {
         query: gql`
           query Registrations {
             registrations(where: {
-              username: "${usernameInput}"
-              is_approved: false
+              username: "${usernameInput}",
+              is_approved: false,
+              is_completed: false,
             }) {
               _id
               username
