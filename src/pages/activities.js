@@ -58,6 +58,7 @@ const ActivitiesPage = () => {
   const { token, userInfo, primaryColor } = useSelector(
     ({ mainReducer }) => mainReducer
   )
+  const { units } = useSelector(({ staticReducer }) => staticReducer)
   const dispatch = useDispatch()
   const [logsData, setLogsData] = useState([])
   const [isError, setIsError] = useState({
@@ -644,7 +645,7 @@ const ActivitiesPage = () => {
               icon: faBullseye,
               color: green[700],
             }
-            id = renderDivision(userInfo.division)
+            id = renderDivision(units.find(elem => elem._id === id))
             break
 
           case `change password`:
