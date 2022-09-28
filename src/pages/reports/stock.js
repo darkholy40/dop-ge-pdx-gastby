@@ -482,6 +482,14 @@ const StockPage = () => {
     }, 300)
   }, [token, input.unit, userInfo])
 
+  const renderConditionText = () => {
+    if (roleLevel(userInfo.role) >= 2) {
+      return input.unit !== null ? renderDivision(input.unit) : `ทั้งหมด`
+    } else {
+      return renderDivision(userInfo.division)
+    }
+  }
+
   useEffect(() => {
     if (token !== ``) {
       if (roleLevel(userInfo.role) >= 2) {
@@ -640,12 +648,11 @@ const StockPage = () => {
               <ExportToExcel
                 apiData={data}
                 wsConfigs={wsConfigs}
-                fileName={`stock (${
-                  input.unit !== null ? renderDivision(input.unit) : `ทั้งหมด`
-                }) - ${renderTableDate(new Date().valueOf(), `file-datetime`)}`}
-                sheetName={`STOCK (${
-                  input.unit !== null ? renderDivision(input.unit) : `ทั้งหมด`
-                })`}
+                fileName={`stock (${renderConditionText()}) - ${renderTableDate(
+                  new Date().valueOf(),
+                  `file-datetime`
+                )}`}
+                sheetName={`STOCK (${renderConditionText()})`}
                 disabled={statusCode !== ``}
                 callback={() =>
                   client(token).mutate({
@@ -654,11 +661,7 @@ const StockPage = () => {
                         createLog(input: {
                           data: {
                             action: "action",
-                            description: "download->stock => ${
-                              input.unit !== null
-                                ? renderDivision(input.unit)
-                                : `ทั้งหมด`
-                            }",
+                            description: "download->stock => ${renderConditionText()}",
                             users_permissions_user: "${userInfo._id}",
                           }
                         }) {

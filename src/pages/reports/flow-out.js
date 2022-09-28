@@ -321,6 +321,14 @@ const FlowOutPage = () => {
     }, 300)
   }, [token, input.unit, userInfo])
 
+  const renderConditionText = () => {
+    if (roleLevel(userInfo.role) >= 2) {
+      return input.unit !== null ? renderDivision(input.unit) : `ทั้งหมด`
+    } else {
+      return renderDivision(userInfo.division)
+    }
+  }
+
   useEffect(() => {
     if (token !== ``) {
       if (roleLevel(userInfo.role) >= 2) {
@@ -478,12 +486,11 @@ const FlowOutPage = () => {
               <ExportToExcel
                 apiData={data}
                 wsConfigs={wsConfigs}
-                fileName={`flow-out (${
-                  input.unit !== null ? renderDivision(input.unit) : `ทั้งหมด`
-                }) - ${renderTableDate(new Date().valueOf(), `file-datetime`)}`}
-                sheetName={`FLOW-OUT (${
-                  input.unit !== null ? renderDivision(input.unit) : `ทั้งหมด`
-                })`}
+                fileName={`flow-out (${renderConditionText()}) - ${renderTableDate(
+                  new Date().valueOf(),
+                  `file-datetime`
+                )}`}
+                sheetName={`FLOW-OUT (${renderConditionText()})`}
                 disabled={statusCode !== ``}
                 callback={() =>
                   client(token).mutate({
@@ -492,11 +499,7 @@ const FlowOutPage = () => {
                         createLog(input: {
                           data: {
                             action: "action",
-                            description: "download->flowout => ${
-                              input.unit !== null
-                                ? renderDivision(input.unit)
-                                : `ทั้งหมด`
-                            }",
+                            description: "download->flowout => ${renderConditionText()}",
                             users_permissions_user: "${userInfo._id}",
                           }
                         }) {
