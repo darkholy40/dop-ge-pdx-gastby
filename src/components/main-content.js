@@ -43,6 +43,7 @@ import {
 import { client, gql } from "../functions/apollo-client"
 
 import SessionTimer from "./session-timer"
+import SystemData from "./system-data"
 import renderFullname from "../functions/render-fullname"
 import roleLevel from "../functions/role-level"
 
@@ -69,6 +70,8 @@ const MainContent = props => {
   )
   const [mobileOpen, setMobileOpen] = React.useState(false)
   const [anchorElMyInfo, setAnchorElMyInfo] = React.useState(null)
+  const [anchorElSystemDataUpdate, setAnchorElSystemDataUpdate] =
+    React.useState(null)
 
   const pages = {
     authenticated: [
@@ -428,7 +431,9 @@ const MainContent = props => {
                           height: 40,
                           marginRight: 5,
                         }}
-                        onClick={() => navigate(`/settings/system-data/`)}
+                        onClick={event => {
+                          setAnchorElSystemDataUpdate(event.currentTarget)
+                        }}
                       >
                         <Badge
                           badgeContent={shouldUpdateStatic.length}
@@ -544,6 +549,50 @@ const MainContent = props => {
                   ออกจากระบบ
                 </MenuItem>
               </Popover>
+
+              {tutorialCount === 4 && (
+                <Popover
+                  sx={{
+                    ".MuiPaper-root.MuiPaper-elevation": {
+                      minWidth: `240px`,
+                      width: `480px`,
+                      padding: `4px 0`,
+                    },
+                  }}
+                  anchorEl={anchorElSystemDataUpdate}
+                  open={
+                    Boolean(anchorElSystemDataUpdate) &&
+                    shouldUpdateStatic.length > 0
+                  }
+                  onClose={() => {
+                    setAnchorElSystemDataUpdate(null)
+                  }}
+                  anchorOrigin={{
+                    vertical: "bottom",
+                    horizontal: "right",
+                  }}
+                  transformOrigin={{
+                    vertical: "top",
+                    horizontal: "right",
+                  }}
+                >
+                  <div
+                    style={{
+                      padding: `9px 18px`,
+                      borderRadius: `4px`,
+                    }}
+                  >
+                    <div
+                      style={{
+                        display: `flex`,
+                        flexDirection: `column`,
+                      }}
+                    >
+                      <SystemData showContent={true} />
+                    </div>
+                  </div>
+                </Popover>
+              )}
             </>
           )}
         </Toolbar>

@@ -64,6 +64,7 @@ const initialStates = {
     rank: ``,
     firstName: ``,
     lastName: ``,
+    username: ``,
     unit: null,
     role: null,
   },
@@ -150,6 +151,12 @@ const UserManagementPage = () => {
     if (confirmedFilterInputs.lastName !== ``) {
       filters += `
         surname_contains: "${confirmedFilterInputs.lastName}"
+      `
+    }
+
+    if (confirmedFilterInputs.username !== ``) {
+      filters += `
+        username_contains: "${confirmedFilterInputs.username}"
       `
     }
 
@@ -424,6 +431,7 @@ const UserManagementPage = () => {
       rank: filterInputs.rank,
       firstName: filterInputs.firstName,
       lastName: filterInputs.lastName,
+      username: filterInputs.username,
       unit: filterInputs.unit,
       role: filterInputs.role,
     })
@@ -432,6 +440,7 @@ const UserManagementPage = () => {
       rank: filterInputs.rank,
       firstName: filterInputs.firstName,
       lastName: filterInputs.lastName,
+      username: filterInputs.username,
       unit: filterInputs.unit,
       role: filterInputs.role,
     })
@@ -585,6 +594,23 @@ const UserManagementPage = () => {
                       }}
                       value={filterInputs.lastName}
                     />
+                    <TextField
+                      label="ชื่อผู้ใช้งาน"
+                      size="small"
+                      variant="outlined"
+                      onChange={e => {
+                        setFilterInputs(prev => ({
+                          ...prev,
+                          username: e.target.value,
+                        }))
+                      }}
+                      onKeyDown={e => {
+                        if (e.key === `Escape`) {
+                          setFilterOpenAnchorEl(null)
+                        }
+                      }}
+                      value={filterInputs.username}
+                    />
                     <Flex style={{ marginTop: `1rem` }}>
                       <Autocomplete
                         sx={{ width: `100%` }}
@@ -654,6 +680,7 @@ const UserManagementPage = () => {
                         confirmedFilterInputs.rank === `` &&
                         confirmedFilterInputs.firstName === `` &&
                         confirmedFilterInputs.lastName === `` &&
+                        confirmedFilterInputs.username === `` &&
                         confirmedFilterInputs.unit === null &&
                         confirmedFilterInputs.role === null
                       }
@@ -674,6 +701,7 @@ const UserManagementPage = () => {
                         filterInputs.rank === `` &&
                         filterInputs.firstName === `` &&
                         filterInputs.lastName === `` &&
+                        filterInputs.username === `` &&
                         filterInputs.unit === null &&
                         filterInputs.role === null
                       }
@@ -730,6 +758,16 @@ const UserManagementPage = () => {
                       label={`สกุล: ${confirmedFilterInputs.lastName}`}
                       color="primary"
                       onDelete={() => removeOneFilter(`lastName`)}
+                    />
+                  </Collapse>
+                  <Collapse
+                    in={confirmedFilterInputs.username !== ``}
+                    orientation="horizontal"
+                  >
+                    <Chip
+                      label={`ชื่อผู้ใช้งาน: ${confirmedFilterInputs.username}`}
+                      color="primary"
+                      onDelete={() => removeOneFilter(`username`)}
                     />
                   </Collapse>
                   <Collapse
