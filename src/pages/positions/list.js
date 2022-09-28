@@ -93,6 +93,13 @@ const PositionsListPage = () => {
         type_contains: "${searchPositionFilter.posType}"
         name_contains: "${searchPositionFilter.posName}"
       }
+      ${
+        searchPositionFilter.posNumber !== ``
+          ? `
+        number_contains: "${searchPositionFilter.posNumber}"
+      `
+          : ``
+      }
     `
 
     if (roleLevel(userInfo.role) > 1) {

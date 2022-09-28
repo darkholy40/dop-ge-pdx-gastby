@@ -232,6 +232,39 @@ const PositionsPage = () => {
                   />
                 </Flex>
 
+                <TextField
+                  sx={{ marginBottom: `1rem` }}
+                  id="pos-number"
+                  label="เลขที่ตำแหน่ง"
+                  variant="outlined"
+                  onChange={e => {
+                    const newValue = e.target.value
+                    const pattern = /[0-9]/g
+                    const result = newValue.match(pattern)
+
+                    if (result !== null) {
+                      const newPosNumber = result.toString().replaceAll(`,`, ``)
+
+                      dispatch({
+                        type: `SET_SEARCH_POSITION_FILTER`,
+                        searchPositionFilter: {
+                          ...searchPositionFilter,
+                          posNumber: newPosNumber,
+                        },
+                      })
+                    } else {
+                      dispatch({
+                        type: `SET_SEARCH_POSITION_FILTER`,
+                        searchPositionFilter: {
+                          ...searchPositionFilter,
+                          posNumber: ``,
+                        },
+                      })
+                    }
+                  }}
+                  value={searchPositionFilter.posNumber}
+                />
+
                 {roleLevel(userInfo.role) > 1 && (
                   <Flex style={{ marginBottom: `1rem` }}>
                     <Autocomplete
@@ -291,6 +324,7 @@ const PositionsPage = () => {
                           ...searchPositionFilter,
                           posName: ``,
                           posType: ``,
+                          posNumber: ``,
                           unit: null,
                         },
                       })
@@ -298,6 +332,7 @@ const PositionsPage = () => {
                     disabled={
                       searchPositionFilter.posName === `` &&
                       searchPositionFilter.posType === `` &&
+                      searchPositionFilter.posNumber === `` &&
                       searchPositionFilter.unit === null
                     }
                   >

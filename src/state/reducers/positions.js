@@ -4,6 +4,7 @@ const initialState = {
   searchPositionFilter: {
     posName: ``,
     posType: ``,
+    posNumber: ``,
     unit: null,
     currentPage: 0,
   },
