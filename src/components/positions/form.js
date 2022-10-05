@@ -20,6 +20,7 @@ import WhoCreated from "../who-created"
 import renderCheckingIcon from "../../functions/render-checking-icon"
 import renderDivision from "../../functions/render-division"
 import roleLevel from "../../functions/role-level"
+import ConfirmationDialog from "../confirmation-dialog"
 
 const PositionForm = ({ modification, id }) => {
   const { token, userInfo } = useSelector(({ mainReducer }) => mainReducer)
@@ -53,6 +54,11 @@ const PositionForm = ({ modification, id }) => {
     posSouth: false,
     haveABudget: true,
   })
+  const [
+    openDeletePositionConfirmationDialog,
+    setOpenDeletePositionConfirmationDialog,
+  ] = useState(false)
+  const [thisPosHasPerson, setThisPosHasPerson] = useState(false)
 
   const getPosition = useCallback(async () => {
     if (id === null) {
@@ -95,6 +101,9 @@ const PositionForm = ({ modification, id }) => {
               division {
                 _id
               }
+              person {
+                _id
+              }
             }
           }
         `,
@@ -126,6 +135,10 @@ const PositionForm = ({ modification, id }) => {
             date: new Date(thisPosition.updatedAt),
           },
         })
+
+        if (thisPosition.person !== null) {
+          setThisPosHasPerson(true)
+        }
       } else {
         setIsError({
           status: `notfound`,
@@ -495,6 +508,93 @@ const PositionForm = ({ modification, id }) => {
     })
   }
 
+  const goDelete = async () => {
+    dispatch({
+      type: `SET_BACKDROP_OPEN`,
+      backdropDialog: {
+        open: true,
+        title: ``,
+      },
+    })
+
+    try {
+      let positionNumber = ``
+      const res = await client(token).mutate({
+        mutation: gql`
+          mutation DeletePosition {
+            deletePosition(input: {
+              where: {
+                id: "${id}"
+              }
+            }) {
+              position {
+                _id
+                number
+              }
+            }
+          }
+        `,
+      })
+
+      // console.log(res.data)
+      positionNumber = res.data.deletePosition.position.number
+
+      dispatch({
+        type: `SET_NOTIFICATION_DIALOG`,
+        notificationDialog: {
+          open: true,
+          title: `การลบข้อมูล`,
+          description: `ลบข้อมูลคลังตำแหน่งสำเร็จ`,
+          variant: `success`,
+          confirmText: `ตกลง`,
+          callback: () => {
+            navigate(`/positions/list/`)
+          },
+        },
+      })
+
+      client(token).mutate({
+        mutation: gql`
+          mutation CreateLog {
+            createLog(input: {
+              data: {
+                action: "action",
+                description: "positions->delete => ${positionNumber}",
+                users_permissions_user: "${userInfo._id}",
+              }
+            }) {
+              log {
+                _id
+              }
+            }
+          }
+        `,
+      })
+    } catch (error) {
+      console.log(error)
+
+      dispatch({
+        type: `SET_NOTIFICATION_DIALOG`,
+        notificationDialog: {
+          open: true,
+          title: `การลบข้อมูลไม่สำเร็จ`,
+          description: `ไม่สามารถลบข้อมูลคลังตำแหน่งได้`,
+          variant: `error`,
+          confirmText: `ตกลง`,
+          callback: () => {},
+        },
+      })
+    }
+
+    dispatch({
+      type: `SET_BACKDROP_OPEN`,
+      backdropDialog: {
+        open: false,
+        title: ``,
+      },
+    })
+  }
+
   useEffect(() => {
     if (token !== ``) {
       if (modification) {
@@ -825,7 +925,7 @@ const PositionForm = ({ modification, id }) => {
               <WhoCreated whoUpdated={agents.whoUpdated} />
             </>
           )}
-          {modification && roleLevel(userInfo.role) >= 2 && (
+          {modification && roleLevel(userInfo.role) >= 1 && (
             <>
               <Divider style={{ marginTop: `2rem`, marginBottom: `1rem` }} />
               <Flex
@@ -836,13 +936,39 @@ const PositionForm = ({ modification, id }) => {
                 <Button
                   color="error"
                   variant="outlined"
-                  onClick={() => {}}
-                  disabled
+                  onClick={() =>
+                    thisPosHasPerson
+                      ? dispatch({
+                          type: `SET_NOTIFICATION_DIALOG`,
+                          notificationDialog: {
+                            open: true,
+                            title: `การลบข้อมูลคลังตำแหน่ง`,
+                            description: `ไม่สามารถลบข้อมูลคลังตำแหน่งได้ เนื่องจากมีกำลังพลครองตำแหน่งอยู่`,
+                            variant: `error`,
+                            confirmText: `ตกลง`,
+                            callback: () => {},
+                          },
+                        })
+                      : setOpenDeletePositionConfirmationDialog(true)
+                  }
                 >
                   <FontAwesomeIcon icon={faTrash} style={{ marginRight: 5 }} />
                   ลบ
                 </Button>
               </Flex>
+
+              <ConfirmationDialog
+                open={openDeletePositionConfirmationDialog}
+                title="ยืนยันการลบเลขที่ตำแหน่งนี้?"
+                description={`กดปุ่ม "ตกลง" เพื่อยืนยันการลบข้อมูล`}
+                variant="delete"
+                confirmCallback={() => {
+                  goDelete()
+                }}
+                cancelCallback={() => {
+                  setOpenDeletePositionConfirmationDialog(false)
+                }}
+              />
             </>
           )}
         </>

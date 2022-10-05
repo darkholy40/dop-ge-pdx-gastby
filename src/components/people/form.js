@@ -1932,14 +1932,18 @@ const PersonForm = ({ modification, id, divisionId }) => {
                       disabled={locationSelect.province === null}
                       options={
                         locationSelect.province !== null
-                          ? uniqByKeepFirst(
-                              locations,
-                              it => it.district
-                            ).filter(
-                              elem =>
-                                elem.province ===
-                                locationSelect.province.province
-                            )
+                          ? (() => {
+                              const provinces = locations.filter(
+                                elem =>
+                                  elem.province ===
+                                  locationSelect.province.province
+                              )
+
+                              return uniqByKeepFirst(
+                                provinces,
+                                it => it.district
+                              )
+                            })()
                           : []
                       }
                       noOptionsText={`ไม่พบข้อมูล`}

@@ -73,6 +73,15 @@ const ConfirmationDialog = ({
       </Flex>
       <DialogActions>
         <Button
+          variant="outlined"
+          color="inherit"
+          onClick={() => {
+            cancelCallback()
+          }}
+        >
+          {cancelText}
+        </Button>
+        <Button
           color="error"
           variant="contained"
           onClick={() => {
@@ -81,15 +90,6 @@ const ConfirmationDialog = ({
           }}
         >
           {confirmText}
-        </Button>
-        <Button
-          variant="outlined"
-          color="inherit"
-          onClick={() => {
-            cancelCallback()
-          }}
-        >
-          {cancelText}
         </Button>
       </DialogActions>
     </Dialog>

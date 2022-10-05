@@ -27,6 +27,7 @@ import {
   faBullseye,
   faCheck,
   faTimes,
+  faTrash,
 } from "@fortawesome/free-solid-svg-icons"
 import { green, grey, blue, red } from "@mui/material/colors"
 
@@ -509,6 +510,17 @@ const ActivitiesPage = () => {
               type: `positions`,
               icon: faSave,
               color: green[700],
+            }
+            break
+
+          case `positions->delete`:
+            option = {
+              ...option,
+              description: `ลบข้อมูลคลังตำแหน่ง`,
+              link: false,
+              type: `positions`,
+              icon: faTrash,
+              color: red[700],
             }
             break
 
