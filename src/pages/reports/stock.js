@@ -431,13 +431,9 @@ const StockPage = () => {
                   ? renderThaiDate(position.person.CurrentContactEnd) || `-`
                   : ``,
               ความผิดทางวินัย:
-                position.person !== null
-                  ? renderNumberAsText(position.person.Guilty)
-                  : ``,
+                position.person !== null ? position.person.Guilty || `-` : ``,
               ประเภทโทษทางวินัย:
-                position.person !== null
-                  ? renderNumberAsText(position.person.Punish)
-                  : ``,
+                position.person !== null ? position.person.Punish || `-` : ``,
               เครื่องราชอิสริยาภรณ์สูงสุดที่ได้รับ:
                 position.person !== null && position.person.decoration !== null
                   ? position.person.decoration.full_name

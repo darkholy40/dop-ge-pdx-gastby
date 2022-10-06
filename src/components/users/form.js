@@ -830,8 +830,6 @@ const UserForm = ({ modification, id }) => {
             <TextFieldWall
               style={{
                 padding: `6px 9px 6px 15px`,
-                cursor: `pointer`,
-                userSelect: `none`,
                 backgroundColor: inputs.isConfirmed
                   ? primaryColor[50]
                   : `rgba(0, 0, 0, 0)`,
@@ -840,18 +838,20 @@ const UserForm = ({ modification, id }) => {
                   : `1px solid rgba(0, 0, 0, 0.24)`,
               }}
               role="presentation"
-              onClick={() =>
-                setInputs({
-                  ...inputs,
-                  isConfirmed: !inputs.isConfirmed,
-                })
-              }
             >
               <Flex style={{ width: `100%`, justifyContent: `space-between` }}>
                 <div style={{ color: `rgba(0, 0, 0, 0.85)` }}>
                   เปิดการใช้งาน
                 </div>
-                <Switch checked={inputs.isConfirmed} />
+                <Switch
+                  checked={inputs.isConfirmed}
+                  onChange={(_, newVal) =>
+                    setInputs({
+                      ...inputs,
+                      isConfirmed: newVal,
+                    })
+                  }
+                />
               </Flex>
             </TextFieldWall>
 

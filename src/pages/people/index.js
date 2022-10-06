@@ -571,8 +571,6 @@ const PeoplePage = () => {
                   style={{
                     padding: `6px 6px 6px 15px`,
                     marginBottom: `1rem`,
-                    cursor: `pointer`,
-                    userSelect: `none`,
                     backgroundColor: searchPersonFilter.isResigned
                       ? primaryColor[50]
                       : `rgba(0, 0, 0, 0)`,
@@ -581,15 +579,6 @@ const PeoplePage = () => {
                       : `1px solid rgba(0, 0, 0, 0.24)`,
                   }}
                   role="presentation"
-                  onClick={() =>
-                    dispatch({
-                      type: `SET_SEARCH_PERSON_FILTER`,
-                      searchPersonFilter: {
-                        ...searchPersonFilter,
-                        isResigned: !searchPersonFilter.isResigned,
-                      },
-                    })
-                  }
                 >
                   <Flex
                     style={{ width: `100%`, justifyContent: `space-between` }}
@@ -597,7 +586,18 @@ const PeoplePage = () => {
                     <div style={{ color: `rgba(0, 0, 0, 0.85)` }}>
                       ที่จำหน่ายสูญเสีย
                     </div>
-                    <Switch checked={searchPersonFilter.isResigned} />
+                    <Switch
+                      checked={searchPersonFilter.isResigned}
+                      onChange={(_, newVal) =>
+                        dispatch({
+                          type: `SET_SEARCH_PERSON_FILTER`,
+                          searchPersonFilter: {
+                            ...searchPersonFilter,
+                            isResigned: newVal,
+                          },
+                        })
+                      }
+                    />
                   </Flex>
                 </TextFieldWall>
               </Grid>

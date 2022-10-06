@@ -206,6 +206,7 @@ const ResignedPeopleListPage = () => {
           `,
         })
 
+        let lap = 0
         for (let thisPerson of res.data.people) {
           const resUser = await client(token).query({
             query: gql`
@@ -223,6 +224,8 @@ const ResignedPeopleListPage = () => {
           returnData = [
             ...returnData,
             {
+              orderNumber:
+                lap + 1 + parseInt(tableOption.rowsPerPage * tableOption.page),
               _id: thisPerson._id,
               Prename: thisPerson.Prename,
               Name: thisPerson.Name,
@@ -258,6 +261,8 @@ const ResignedPeopleListPage = () => {
                   : null,
             },
           ]
+
+          lap++
         }
 
         if (returnData.length > 0) {
@@ -420,7 +425,7 @@ const ResignedPeopleListPage = () => {
                           }}
                         >
                           <TableCell component="th" scope="row" align="center">
-                            {rowIndex + 1}
+                            {row.orderNumber}
                           </TableCell>
                           <TableCell align="left">
                             <Link

@@ -90,8 +90,20 @@ const PositionsListPage = () => {
 
     filter = `
       position_type: {
-        type_contains: "${searchPositionFilter.posType}"
-        name_contains: "${searchPositionFilter.posName}"
+        ${
+          searchPositionFilter.posType !== ``
+            ? `
+          type_contains: "${searchPositionFilter.posType}"
+        `
+            : ``
+        }
+        ${
+          searchPositionFilter.posName !== ``
+            ? `
+          name_contains: "${searchPositionFilter.posName}"
+        `
+            : ``
+        }
       }
       ${
         searchPositionFilter.posNumber !== ``

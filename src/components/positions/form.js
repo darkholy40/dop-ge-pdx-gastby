@@ -15,7 +15,7 @@ import {
 import { client, gql } from "../../functions/apollo-client"
 
 import Warning from "../warning"
-import { Form, Flex, CheckCircleFlex } from "../styles"
+import { Form, Flex, CheckCircleFlex, TextFieldDummyOutlined } from "../styles"
 import WhoCreated from "../who-created"
 import renderCheckingIcon from "../../functions/render-checking-icon"
 import renderDivision from "../../functions/render-division"
@@ -58,7 +58,7 @@ const PositionForm = ({ modification, id }) => {
     openDeletePositionConfirmationDialog,
     setOpenDeletePositionConfirmationDialog,
   ] = useState(false)
-  const [thisPosHasPerson, setThisPosHasPerson] = useState(false)
+  const [personInThisPos, setPersonInThisPos] = useState(null)
 
   const getPosition = useCallback(async () => {
     if (id === null) {
@@ -103,6 +103,9 @@ const PositionForm = ({ modification, id }) => {
               }
               person {
                 _id
+                Prename
+                Name
+                Surname
               }
             }
           }
@@ -137,7 +140,7 @@ const PositionForm = ({ modification, id }) => {
         })
 
         if (thisPosition.person !== null) {
-          setThisPosHasPerson(true)
+          setPersonInThisPos(thisPosition.person)
         }
       } else {
         setIsError({
@@ -854,7 +857,7 @@ const PositionForm = ({ modification, id }) => {
                 เปิดอัตรา
               </div>
             </Flex>
-            <Flex style={{ marginBottom: `1rem` }}>
+            <Flex>
               <Checkbox
                 onChange={(_, newValue) => {
                   setPositionInputs({
@@ -877,6 +880,23 @@ const PositionForm = ({ modification, id }) => {
                 อัตรากำลังจังหวัดชายแดนภาคใต้
               </div>
             </Flex>
+
+            {personInThisPos !== null ? (
+              <>
+                <Divider style={{ marginTop: `1rem`, marginBottom: `2rem` }} />
+                <TextFieldDummyOutlined.Line style={{ marginBottom: `2rem` }}>
+                  <TextFieldDummyOutlined.Label>
+                    มีผู้ถือครอง
+                  </TextFieldDummyOutlined.Label>
+                  <span>
+                    {personInThisPos.Prename} {personInThisPos.Name}{" "}
+                    {personInThisPos.Surname}
+                  </span>
+                </TextFieldDummyOutlined.Line>
+              </>
+            ) : (
+              <div style={{ marginBottom: `1rem` }} />
+            )}
 
             {!modification ? (
               <Button
@@ -937,7 +957,7 @@ const PositionForm = ({ modification, id }) => {
                   color="error"
                   variant="outlined"
                   onClick={() =>
-                    thisPosHasPerson
+                    personInThisPos !== null
                       ? dispatch({
                           type: `SET_NOTIFICATION_DIALOG`,
                           notificationDialog: {
