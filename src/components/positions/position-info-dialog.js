@@ -27,6 +27,7 @@ import { faCheckCircle } from "@fortawesome/free-regular-svg-icons"
 import { client, gql } from "../../functions/apollo-client"
 
 import WhoCreated from "../who-created"
+import Warning from "../warning"
 import { Flex, TextFieldDummyOutlined } from "../styles"
 import renderDivision from "../../functions/render-division"
 import roleLevel from "../../functions/role-level"
@@ -162,7 +163,7 @@ const PositionInfoDialog = ({
       console.log(error.message)
 
       setProgressStatus({
-        status: `error`,
+        status: `not-found`,
         text: `ไม่พบข้อมูลหน้านี้`,
       })
     }
@@ -173,6 +174,10 @@ const PositionInfoDialog = ({
 
     setTimeout(() => {
       setData(null)
+      setProgressStatus({
+        status: ``,
+        text: ``,
+      })
     }, 200)
   }
 
@@ -295,6 +300,12 @@ const PositionInfoDialog = ({
                 </>
               )}
             </Content>
+          </Collapse>
+          <Collapse in={progressStatus.status === `not-found`}>
+            <Warning
+              text="ไม่พบข้อมูล หรือข้อมูลส่วนนี้ถูกลบออกจากฐานข้อมูลแล้ว"
+              variant="notfound"
+            />
           </Collapse>
           {progressStatus.status === `loading` && (
             <Content>

@@ -517,7 +517,7 @@ const ActivitiesPage = () => {
             option = {
               ...option,
               description: `ลบข้อมูลคลังตำแหน่ง`,
-              link: false,
+              link: true,
               type: `positions`,
               icon: faTrash,
               color: red[700],

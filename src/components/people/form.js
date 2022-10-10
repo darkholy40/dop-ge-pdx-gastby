@@ -2532,7 +2532,7 @@ const PersonForm = ({ modification, id, divisionId }) => {
                 maxWidth: `100%`,
               }}
             />
-            <Grid container spacing={2} sx={{ marginBottom: `1rem` }}>
+            <Grid container spacing={2}>
               <Grid item xs={12} sm={6}>
                 <Flex>
                   <Autocomplete
@@ -2556,6 +2556,7 @@ const PersonForm = ({ modification, id, divisionId }) => {
                       <TextField
                         {...params}
                         label="ความผิดทางวินัย"
+                        helperText="* หากไม่มี ให้เว้นว่างไว้"
                         InputProps={{
                           ...params.InputProps,
                           sx: {
@@ -2597,6 +2598,7 @@ const PersonForm = ({ modification, id, divisionId }) => {
                       <TextField
                         {...params}
                         label="ประเภทโทษทางวินัย"
+                        helperText="* หากไม่มี ให้เว้นว่างไว้"
                         InputProps={{
                           ...params.InputProps,
                           sx: {
@@ -2609,6 +2611,13 @@ const PersonForm = ({ modification, id, divisionId }) => {
                 </Flex>
               </Grid>
             </Grid>
+            <Divider
+              style={{
+                margin: `2rem auto`,
+                width: 360,
+                maxWidth: `100%`,
+              }}
+            />
             <Grid container spacing={2} sx={{ marginBottom: `1rem` }}>
               <Grid item xs={12}>
                 <DisabledBlock
@@ -2743,7 +2752,8 @@ const PersonForm = ({ modification, id, divisionId }) => {
                     type="submit"
                     disabled={
                       jobType !== `ลูกจ้างประจำ`
-                        ? name === `` ||
+                        ? prename === `` ||
+                          name === `` ||
                           surname === `` ||
                           !checkPid(idCard) ||
                           sidCard === `` ||
@@ -2807,7 +2817,8 @@ const PersonForm = ({ modification, id, divisionId }) => {
                     type="submit"
                     disabled={
                       jobType !== `ลูกจ้างประจำ`
-                        ? name === `` ||
+                        ? prename === `` ||
+                          name === `` ||
                           surname === `` ||
                           !checkPid(idCard) ||
                           sidCard === `` ||

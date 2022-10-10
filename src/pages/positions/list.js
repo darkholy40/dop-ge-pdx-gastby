@@ -112,6 +112,7 @@ const PositionsListPage = () => {
       `
           : ``
       }
+      is_deleted_ne: true
     `
 
     if (roleLevel(userInfo.role) > 1) {

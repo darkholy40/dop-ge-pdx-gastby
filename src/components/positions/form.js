@@ -187,6 +187,7 @@ const PositionForm = ({ modification, id }) => {
           query Positions {
             positions(where: {
               number: "${positionInputs.posNumber}"
+              is_deleted_ne: true
             }) {
               _id
               position_type {
@@ -360,6 +361,7 @@ const PositionForm = ({ modification, id }) => {
             query Positions {
               positions(where: {
                 number: "${positionInputs.posNumber}"
+                is_deleted_ne: true
               }) {
                 _id
                 position_type {
@@ -521,13 +523,16 @@ const PositionForm = ({ modification, id }) => {
     })
 
     try {
-      let positionNumber = ``
+      let positionId = ``
       const res = await client(token).mutate({
         mutation: gql`
           mutation DeletePosition {
-            deletePosition(input: {
+            updatePosition(input: {
               where: {
                 id: "${id}"
+              },
+              data: {
+                is_deleted: true
               }
             }) {
               position {
@@ -540,7 +545,7 @@ const PositionForm = ({ modification, id }) => {
       })
 
       // console.log(res.data)
-      positionNumber = res.data.deletePosition.position.number
+      positionId = res.data.updatePosition.position._id
 
       dispatch({
         type: `SET_NOTIFICATION_DIALOG`,
@@ -562,7 +567,7 @@ const PositionForm = ({ modification, id }) => {
             createLog(input: {
               data: {
                 action: "action",
-                description: "positions->delete => ${positionNumber}",
+                description: "positions->delete => ${positionId}",
                 users_permissions_user: "${userInfo._id}",
               }
             }) {
