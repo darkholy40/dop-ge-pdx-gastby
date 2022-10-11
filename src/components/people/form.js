@@ -162,10 +162,10 @@ const PersonForm = ({ modification, id, divisionId }) => {
       setTelephone(data.person.Telephone)
       if (data.person.location !== null) {
         setLocationSelect({
-          province: uniqByKeepFirst(locations, it => it.province).find(
+          province: locations.find(
             elem => elem.province === data.person.location.province
           ),
-          district: uniqByKeepFirst(locations, it => it.district).find(
+          district: locations.find(
             elem =>
               elem.province === data.person.location.province &&
               elem.district === data.person.location.district
