@@ -128,6 +128,10 @@ const ranks = [
     shortName: `อส.ทพ.(หญิง)`,
   },
   {
+    order: 33,
+    shortName: `พล.อส.`,
+  },
+  {
     order: 97,
     shortName: `นาย`,
   },

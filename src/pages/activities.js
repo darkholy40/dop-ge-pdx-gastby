@@ -145,6 +145,11 @@ const ActivitiesPage = () => {
                   rank
                   name
                   surname
+                  division {
+                    division1
+                    division2
+                    division3
+                  }
                   role {
                     name
                   }
@@ -802,6 +807,9 @@ const ActivitiesPage = () => {
                           ยศ - ชื่อ - สกุล
                         </TableCell>
                         <TableCell sx={{ backgroundColor: primaryColor[200] }}>
+                          สังกัด
+                        </TableCell>
+                        <TableCell sx={{ backgroundColor: primaryColor[200] }}>
                           การกระทำ
                         </TableCell>
                         <TableCell
@@ -834,6 +842,13 @@ const ActivitiesPage = () => {
                           <TableCell align="left">
                             {row.users_permissions_user !== null
                               ? renderFullname(row.users_permissions_user)
+                              : `-`}
+                          </TableCell>
+                          <TableCell align="left">
+                            {row.users_permissions_user !== null
+                              ? renderDivision(
+                                  row.users_permissions_user.division
+                                )
                               : `-`}
                           </TableCell>
                           <TableCell align="left" sx={{ minWidth: 100 }}>
