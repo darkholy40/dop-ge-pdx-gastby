@@ -529,7 +529,7 @@ const ActivitiesPage = () => {
             }
             break
 
-          case `download->flowout`:
+          case `download->stock`:
             option = {
               ...option,
               description: `ออกรายงานรายชื่อพนักงานราชการและตำแหน่งว่าง (Stock)`,
@@ -538,7 +538,7 @@ const ActivitiesPage = () => {
             }
             break
 
-          case `download->stock`:
+          case `download->flowout`:
             option = {
               ...option,
               description: `ออกรายงานรายชื่อพนักงานราชการที่ออกในปีงบประมาณที่ผ่านมา (Flow-Out)`,

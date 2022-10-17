@@ -113,7 +113,7 @@ const MainContent = props => {
         name: `activities`,
         desc: `ประวัติการใช้งานระบบ`,
         icon: faRunning,
-        level: 3,
+        level: 2,
       },
     ],
     databaseManagement: [
