@@ -1,10 +1,12 @@
-import React from "react"
+import React, { useEffect, useState } from "react"
 import { useSelector, useDispatch } from "react-redux"
 import { Dialog, Button } from "@mui/material"
 import styled from "styled-components"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faCheckCircle } from "@fortawesome/free-solid-svg-icons"
 import { green as successColor } from "@mui/material/colors"
+
+import { client, gql } from "../functions/apollo-client"
 
 import UnitSettingForm from "./unit-setting-from"
 
@@ -23,9 +25,10 @@ const Content = styled.div`
 
 const FirstMeetDialog = () => {
   const dispatch = useDispatch()
-  const { tutorialCount, userInfo } = useSelector(
+  const { tutorialCount, userInfo, token } = useSelector(
     ({ mainReducer }) => mainReducer
   )
+  const [unitSettingModalOpen, setnitSettingModalOpen] = useState(false)
 
   const checkDivisionDetailIsComplete = () => {
     let isPassed = false
@@ -45,6 +48,55 @@ const FirstMeetDialog = () => {
 
     return isPassed
   }
+
+  useEffect(() => {
+    const checkDivisionInfo = async () => {
+      try {
+        const res = await client(token).query({
+          query: gql`
+            query Division {
+              division(id: "${userInfo.division._id}") {
+                _id
+                province
+                organize_type
+              }
+            } 
+          `,
+        })
+
+        const { division } = res.data
+
+        if (
+          division.organize_type === null ||
+          division.organize_type === undefined ||
+          division.organize_type === `` ||
+          division.province === null ||
+          division.province === undefined ||
+          division.province === ``
+        ) {
+          setnitSettingModalOpen(true)
+        } else {
+          setnitSettingModalOpen(false)
+        }
+      } catch {
+        dispatch({
+          type: `SET_NOTIFICATION_DIALOG`,
+          notificationDialog: {
+            open: true,
+            title: `การตรวจสอบข้อมูลสังกัดไม่สำเร็จ`,
+            description: `ไม่สามารถตรวจสอบข้อมูลสังกัดได้`,
+            variant: `error`,
+            confirmText: `ลองอีกครั้ง`,
+            callback: () => checkDivisionInfo(),
+          },
+        })
+      }
+    }
+
+    if (token !== ``) {
+      checkDivisionInfo()
+    }
+  }, [userInfo, token, dispatch])
 
   return (
     <>
@@ -79,9 +131,18 @@ const FirstMeetDialog = () => {
         </Content>
       </Dialog>
 
-      <Dialog fullWidth maxWidth="sm" open={tutorialCount === 3}>
+      <Dialog
+        fullWidth
+        maxWidth="sm"
+        open={
+          tutorialCount === 3 || (tutorialCount > 3 && unitSettingModalOpen)
+        }
+      >
         <Content style={{ overflowY: `hidden` }}>
-          <UnitSettingForm fullWidth />
+          <UnitSettingForm
+            fullWidth
+            onFinish={() => setnitSettingModalOpen(false)}
+          />
         </Content>
       </Dialog>
     </>

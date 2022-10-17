@@ -54,7 +54,7 @@ const Next = styled.div`
   }
 `
 
-const UnitSettingForm = ({ fullWidth }) => {
+const UnitSettingForm = ({ fullWidth, onFinish }) => {
   const stylesPayload = {
     style: {
       width: fullWidth ? `100%` : `auto`,
@@ -115,10 +115,7 @@ const UnitSettingForm = ({ fullWidth }) => {
         }
 
         if (userData.division.province !== null) {
-          returnData.province = uniqByKeepFirst(
-            locations,
-            it => it.province
-          ).find(elem => elem.province === userData.division.province)
+          returnData.province = userData.division.province
         }
 
         if (userData.division.organize_type !== null) {
@@ -163,7 +160,7 @@ const UnitSettingForm = ({ fullWidth }) => {
         title: ``,
       },
     })
-  }, [token, userInfo._id, dispatch, locations, fullWidth])
+  }, [token, userInfo._id, dispatch, fullWidth])
 
   const goSave = async () => {
     setIsSaving(true)
@@ -178,7 +175,7 @@ const UnitSettingForm = ({ fullWidth }) => {
                 id: "${data.division._id}"
               },
               data: {
-                province: "${inputs.province.province}",
+                province: "${inputs.province}",
                 organize_type: "${inputs.organizeType}",
               },
             }) {
@@ -229,7 +226,7 @@ const UnitSettingForm = ({ fullWidth }) => {
           description: `ไม่สามารถบันทึกข้อมูลได้`,
           variant: `error`,
           confirmText: `ลองอีกครั้ง`,
-          callback: () => {},
+          onFinish: () => {},
         },
       })
     }
@@ -272,9 +269,16 @@ const UnitSettingForm = ({ fullWidth }) => {
             <Autocomplete
               sx={{ width: `100%` }}
               id="province"
-              options={provinces}
+              options={(() => {
+                let arr = []
+                for (let province of provinces) {
+                  arr = [...arr, province.province]
+                }
+
+                return arr
+              })()}
               noOptionsText={`ไม่พบข้อมูล`}
-              getOptionLabel={option => option.province}
+              getOptionLabel={option => option}
               isOptionEqualToValue={(option, value) => {
                 return option === value
               }}
@@ -468,6 +472,7 @@ const UnitSettingForm = ({ fullWidth }) => {
                     tutorialCount: 4,
                   })
                   navigate(`/people/`)
+                  onFinish()
                 }}
               >
                 ตกลง
@@ -487,10 +492,12 @@ const UnitSettingForm = ({ fullWidth }) => {
 
 UnitSettingForm.propTypes = {
   fullWidth: PropTypes.bool,
+  onFinish: PropTypes.func,
 }
 
 UnitSettingForm.defaultProps = {
   fullWidth: false,
+  onFinish: () => {},
 }
 
 export default UnitSettingForm
