@@ -168,6 +168,7 @@ const StockPage = () => {
   const [statusCode, setStatusCode] = useState(`selecting`)
   // const [percent, setPercent] = useState(0)
   const [percentDialog, setPercentDialog] = useState([])
+  const [fileIsDownloaded, setFileIsDownloaded] = useState(false)
 
   const savePageView = useCallback(() => {
     // Prevent saving a log when switch user to super admin
@@ -503,6 +504,8 @@ const StockPage = () => {
       } else {
         getData()
       }
+
+      setFileIsDownloaded(false)
     }
   }, [getData, input, userInfo.role, token])
 
@@ -650,7 +653,7 @@ const StockPage = () => {
                 )}`}
                 sheetName={`STOCK (${renderConditionText()})`}
                 disabled={statusCode !== ``}
-                callback={() =>
+                callback={() => {
                   client(token).mutate({
                     mutation: gql`
                       mutation CreateLog {
@@ -668,7 +671,9 @@ const StockPage = () => {
                       }
                     `,
                   })
-                }
+                  setFileIsDownloaded(true)
+                }}
+                fileIsDownloaded={fileIsDownloaded}
               />
             </Form>
           </Container>

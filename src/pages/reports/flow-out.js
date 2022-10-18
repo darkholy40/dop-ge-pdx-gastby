@@ -100,6 +100,7 @@ const FlowOutPage = () => {
   const [statusCode, setStatusCode] = useState(`selecting`)
   // const [percent, setPercent] = useState(0)
   const [percentDialog, setPercentDialog] = useState([])
+  const [fileIsDownloaded, setFileIsDownloaded] = useState(false)
 
   const savePageView = useCallback(() => {
     // Prevent saving a log when switch user to super admin
@@ -346,6 +347,8 @@ const FlowOutPage = () => {
       } else {
         getData()
       }
+
+      setFileIsDownloaded(false)
     }
   }, [getData, input, userInfo.role, token])
 
@@ -492,7 +495,7 @@ const FlowOutPage = () => {
                 )}`}
                 sheetName={`FLOW-OUT (${renderConditionText()})`}
                 disabled={statusCode !== ``}
-                callback={() =>
+                callback={() => {
                   client(token).mutate({
                     mutation: gql`
                       mutation CreateLog {
@@ -510,7 +513,9 @@ const FlowOutPage = () => {
                       }
                     `,
                   })
-                }
+                  setFileIsDownloaded(true)
+                }}
+                fileIsDownloaded={fileIsDownloaded}
               />
             </Form>
           </Container>
