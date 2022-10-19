@@ -1,13 +1,13 @@
 import React from "react"
 import PropTypes from "prop-types"
-import NumberFormat from "react-number-format"
+import { NumericFormat } from "react-number-format"
 // import { IMaskInput } from "react-imask"
 
 const PhoneNumber = React.forwardRef((props, ref) => {
   const { onChange, ...other } = props
 
   return (
-    <NumberFormat
+    <NumericFormat
       {...other}
       getInputRef={ref}
       onValueChange={values => {
@@ -18,7 +18,7 @@ const PhoneNumber = React.forwardRef((props, ref) => {
           },
         })
       }}
-      isNumericString
+      valueIsNumericString
       decimalScale={0}
       allowLeadingZeros
       allowNegative={false}
@@ -35,7 +35,7 @@ const Currency = React.forwardRef((props, ref) => {
   const { onChange, ...other } = props
 
   return (
-    <NumberFormat
+    <NumericFormat
       {...other}
       getInputRef={ref}
       onValueChange={values => {
@@ -47,7 +47,7 @@ const Currency = React.forwardRef((props, ref) => {
         })
       }}
       thousandSeparator
-      isNumericString
+      valueIsNumericString
       decimalScale={2}
       // prefix="$"
     />
@@ -63,7 +63,7 @@ const Percent = React.forwardRef((props, ref) => {
   const { onChange, ...other } = props
 
   return (
-    <NumberFormat
+    <NumericFormat
       {...other}
       getInputRef={ref}
       onValueChange={values => {
@@ -75,7 +75,7 @@ const Percent = React.forwardRef((props, ref) => {
         })
       }}
       // thousandSeparator
-      isNumericString
+      valueIsNumericString
       decimalScale={2}
       // prefix="$"
     />
@@ -91,7 +91,7 @@ const Integer = React.forwardRef((props, ref) => {
   const { onChange, ...other } = props
 
   return (
-    <NumberFormat
+    <NumericFormat
       {...other}
       getInputRef={ref}
       onValueChange={values => {
@@ -102,7 +102,7 @@ const Integer = React.forwardRef((props, ref) => {
           },
         })
       }}
-      isNumericString
+      valueIsNumericString
       decimalScale={0}
       allowNegative={false}
     />
