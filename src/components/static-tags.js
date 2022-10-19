@@ -170,10 +170,14 @@ const StaticTags = () => {
         serverConfigs: data,
       })
     } catch (error) {
-      console.log({
-        title: `fetch-static-tags`,
-        message: error.message,
-      })
+      const { message } = error
+
+      if (message !== `Invalid token.`) {
+        console.log({
+          title: `fetch-static-tags`,
+          message: message,
+        })
+      }
     }
   }, [token, userInfo.role, tags, dispatch])
 

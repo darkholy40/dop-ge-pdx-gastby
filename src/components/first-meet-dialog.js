@@ -78,18 +78,22 @@ const FirstMeetDialog = () => {
         } else {
           setnitSettingModalOpen(false)
         }
-      } catch {
-        dispatch({
-          type: `SET_NOTIFICATION_DIALOG`,
-          notificationDialog: {
-            open: true,
-            title: `การตรวจสอบข้อมูลสังกัดไม่สำเร็จ`,
-            description: `ไม่สามารถตรวจสอบข้อมูลสังกัดได้`,
-            variant: `error`,
-            confirmText: `ลองอีกครั้ง`,
-            callback: () => checkDivisionInfo(),
-          },
-        })
+      } catch (error) {
+        const { message } = error
+
+        if (message !== `Invalid token.`) {
+          dispatch({
+            type: `SET_NOTIFICATION_DIALOG`,
+            notificationDialog: {
+              open: true,
+              title: `การตรวจสอบข้อมูลสังกัดไม่สำเร็จ`,
+              description: `ไม่สามารถตรวจสอบข้อมูลสังกัดได้`,
+              variant: `error`,
+              confirmText: `ลองอีกครั้ง`,
+              callback: () => checkDivisionInfo(),
+            },
+          })
+        }
       }
     }
 
