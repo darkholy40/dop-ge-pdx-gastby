@@ -92,18 +92,20 @@ const ExportToExcel = ({
 
   useEffect(() => {
     const goDownloadCSV = setTimeout(() => {
-      if (fileIsDownloaded) {
+      if (fileIsDownloaded && !isFinish) {
         exportToCSV(apiData, fileName)
         setIsFinish(true)
-      } else {
-        setIsFinish(false)
       }
     }, 500)
 
     return () => {
       clearTimeout(goDownloadCSV)
     }
-  }, [exportToCSV, apiData, fileName, fileIsDownloaded])
+  }, [exportToCSV, apiData, fileName, fileIsDownloaded, isFinish])
+
+  useEffect(() => {
+    setIsFinish(false)
+  }, [apiData])
 
   return (
     <>
