@@ -195,6 +195,9 @@ const StockPage = () => {
 
   const getData = useCallback(async () => {
     let lap = 0
+    let filter = `
+      is_deleted_ne: true
+    `
     let condition = ``
 
     setStatusCode(`loading`)
@@ -210,15 +213,14 @@ const StockPage = () => {
     ])
 
     if (roleLevel(userInfo.role) >= 2) {
-      condition =
-        input.unit !== null
-          ? `where: {
-        division: "${input.unit._id}"
+      condition = `where: {
+        ${input.unit !== null ? `division: "${input.unit._id}"` : ``}
+        ${filter}
       }`
-          : ``
     } else {
       condition = `where: {
         division: "${userInfo.division._id}"
+        ${filter}
       }`
     }
 
