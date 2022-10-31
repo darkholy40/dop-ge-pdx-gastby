@@ -1,5 +1,4 @@
 import React, { useState } from "react"
-import { navigate } from "gatsby"
 import styled from "styled-components"
 import { useSelector, useDispatch } from "react-redux"
 import {
@@ -8,7 +7,6 @@ import {
   Button,
   Alert,
   IconButton,
-  Divider,
   Checkbox,
   Collapse,
 } from "@mui/material"
@@ -18,19 +16,17 @@ import {
   faLock,
   faEye,
   faEyeSlash,
-  faRegistered,
-  faBook,
   faCheck,
-  faBullhorn,
 } from "@fortawesome/free-solid-svg-icons"
 import axios from "axios"
-import { red } from "@mui/material/colors"
+import { green, red } from "@mui/material/colors"
 
 import { client, gql } from "../functions/apollo-client"
 
 import Image from "./image"
-import { ColorButton, Flex as CheckboxFlex } from "./styles"
+import { Flex as CheckboxFlex } from "./styles"
 import Registration from "./registration"
+import roleLevel from "../functions/role-level"
 
 const TitleFlex = styled.div`
   display: flex;
@@ -99,25 +95,6 @@ const Column = styled.div`
   flex-direction: row;
 `
 
-const ButtonColumn = styled.div`
-  display: flex;
-  flex-direction: row;
-  padding: 0 1rem;
-
-  .col {
-    margin-left: 0.5rem;
-    margin-right: 0.5rem;
-  }
-
-  @media (max-width: 991px) {
-    flex-direction: column;
-
-    .col {
-      margin-bottom: 1rem;
-    }
-  }
-`
-
 const Row = styled.div`
   width: 100%;
   max-width: 600px;
@@ -144,12 +121,9 @@ const MyAlert = styled(Alert)`
   }
 `
 
-const Login = () => {
+const LoginAdmin = () => {
   const { userInfo, isRememberedPass, primaryColor } = useSelector(
     ({ mainReducer }) => mainReducer
-  )
-  const { serverStates } = useSelector(
-    ({ registrationReducer }) => registrationReducer
   )
   const dispatch = useDispatch()
   const [usernameInput, setUsernameInput] = useState(userInfo.username)
@@ -240,6 +214,36 @@ const Login = () => {
         case 200:
           const userData = res.data.user
           const token = res.data.jwt
+
+          if (roleLevel(userData.role) < 2) {
+            setIsError({
+              status: true,
+              text: `ไม่มีสิทธิ์การเข้าใช้งาน`,
+            })
+
+            dispatch({
+              type: `SET_NOTIFICATION_DIALOG`,
+              notificationDialog: {
+                open: true,
+                title: `ไม่มีสิทธิ์การเข้าใช้งาน`,
+                description: `เฉพาะผู้ดูแลระบบเท่านั้น`,
+                variant: `error`,
+                confirmText: `ตกลง`,
+                callback: () => {},
+              },
+            })
+
+            setIsLoading(false)
+            dispatch({
+              type: `SET_BACKDROP_OPEN`,
+              backdropDialog: {
+                open: false,
+                title: ``,
+              },
+            })
+
+            return 0
+          }
 
           if (userData.division === undefined || userData.division === null) {
             setIsError({
@@ -439,255 +443,186 @@ const Login = () => {
           goLogin()
         }}
       >
-        {serverStates.isFetched && (
-          <Flex>
-            {serverStates.isOnline && (
-              <Title className="login-text">ลงชื่อเข้าใช้งานระบบ</Title>
-            )}
-            <div className="middle">
-              <Column>
-                <LogoContainer>
-                  <Image src="icon.png" />
-                </LogoContainer>
-              </Column>
-              {serverStates.isOnline && (
-                <Column>
-                  <Row>
-                    <TextField
-                      style={{
-                        width: `100%`,
-                        marginBottom: `1rem`,
-                      }}
-                      id="uname"
-                      label="ชื่อผู้ใช้งาน"
-                      type="text"
-                      variant="outlined"
-                      InputProps={{
-                        startAdornment: (
-                          <InputAdornment position="start">
-                            <FontAwesomeIcon
-                              icon={faUser}
-                              style={{ fontSize: 20 }}
-                            />
-                          </InputAdornment>
-                        ),
-                      }}
-                      value={usernameInput}
-                      onChange={e => setUsernameInput(e.target.value)}
-                      disabled={isLoading || isError.text === `pass`}
-                    />
-                    <TextField
-                      style={{
-                        width: `100%`,
-                        marginBottom: `1rem`,
-                      }}
-                      id="pwd"
-                      label="รหัสผ่าน"
-                      type={!pwdVisibility ? `password` : `text`}
-                      autoComplete="true"
-                      variant="outlined"
-                      InputProps={{
-                        startAdornment: (
-                          <InputAdornment position="start">
-                            <FontAwesomeIcon
-                              icon={faLock}
-                              style={{ fontSize: 20 }}
-                            />
-                          </InputAdornment>
-                        ),
-                        endAdornment: (
-                          <IconButton
-                            onClick={() => setPwdVisibility(!pwdVisibility)}
-                            color="inherit"
-                            style={{ width: 35, height: 35 }}
-                          >
-                            <FontAwesomeIcon
-                              icon={!pwdVisibility ? faEye : faEyeSlash}
-                              style={{ fontSize: 16 }}
-                            />
-                          </IconButton>
-                        ),
-                      }}
-                      value={passwordInput}
-                      onChange={e => setPasswordInput(e.target.value)}
-                      disabled={isLoading || isError.text === `pass`}
-                    />
-                    <CheckboxFlex
-                      style={{
-                        justifyContent: `flex-end`,
-                        marginBottom: `1rem`,
-                      }}
-                    >
-                      <Checkbox
-                        onChange={(_, newValue) => {
-                          dispatch({
-                            type: `SET_IS_REMEMBERED_PASS`,
-                            isRememberedPass: {
-                              ...isRememberedPass,
-                              status: newValue,
-                            },
-                          })
+        <Flex style={{ backgroundColor: green[100] }}>
+          <Title className="login-text">
+            ลงชื่อเข้าใช้งานระบบ (สำหรับผู้ดูแลระบบเท่านั้น)
+          </Title>
+          <div className="middle">
+            <Column>
+              <LogoContainer>
+                <Image src="icon.png" />
+              </LogoContainer>
+            </Column>
+            <Column>
+              <Row>
+                <TextField
+                  style={{
+                    width: `100%`,
+                    marginBottom: `1rem`,
+                  }}
+                  id="uname"
+                  label="ชื่อผู้ใช้งาน"
+                  type="text"
+                  variant="outlined"
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <FontAwesomeIcon
+                          icon={faUser}
+                          style={{ fontSize: 20 }}
+                        />
+                      </InputAdornment>
+                    ),
+                  }}
+                  value={usernameInput}
+                  onChange={e => setUsernameInput(e.target.value)}
+                  disabled={isLoading || isError.text === `pass`}
+                />
+                <TextField
+                  style={{
+                    width: `100%`,
+                    marginBottom: `1rem`,
+                  }}
+                  id="pwd"
+                  label="รหัสผ่าน"
+                  type={!pwdVisibility ? `password` : `text`}
+                  autoComplete="true"
+                  variant="outlined"
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <FontAwesomeIcon
+                          icon={faLock}
+                          style={{ fontSize: 20 }}
+                        />
+                      </InputAdornment>
+                    ),
+                    endAdornment: (
+                      <IconButton
+                        onClick={() => setPwdVisibility(!pwdVisibility)}
+                        color="inherit"
+                        style={{ width: 35, height: 35 }}
+                      >
+                        <FontAwesomeIcon
+                          icon={!pwdVisibility ? faEye : faEyeSlash}
+                          style={{ fontSize: 16 }}
+                        />
+                      </IconButton>
+                    ),
+                  }}
+                  value={passwordInput}
+                  onChange={e => setPasswordInput(e.target.value)}
+                  disabled={isLoading || isError.text === `pass`}
+                />
+                <CheckboxFlex
+                  style={{ justifyContent: `flex-end`, marginBottom: `1rem` }}
+                >
+                  <Checkbox
+                    onChange={(_, newValue) => {
+                      dispatch({
+                        type: `SET_IS_REMEMBERED_PASS`,
+                        isRememberedPass: {
+                          ...isRememberedPass,
+                          status: newValue,
+                        },
+                      })
+                    }}
+                    checked={isRememberedPass.status}
+                  />
+                  <div
+                    role="presentation"
+                    style={{
+                      cursor: `pointer`,
+                      userSelect: `none`,
+                    }}
+                    onClick={() =>
+                      dispatch({
+                        type: `SET_IS_REMEMBERED_PASS`,
+                        isRememberedPass: {
+                          ...isRememberedPass,
+                          status: !isRememberedPass.status,
+                        },
+                      })
+                    }
+                  >
+                    จดจำรหัสผ่าน
+                  </div>
+                </CheckboxFlex>
+                <Collapse
+                  in={isRememberedPass.status && !isRememberedPass.gotIt}
+                >
+                  <MyAlert
+                    icon={false}
+                    severity="error"
+                    action={
+                      <Button
+                        sx={{
+                          whiteSpace: `nowrap`,
                         }}
-                        checked={isRememberedPass.status}
-                      />
-                      <div
-                        role="presentation"
-                        style={{
-                          cursor: `pointer`,
-                          userSelect: `none`,
-                        }}
+                        color="success"
+                        variant="contained"
                         onClick={() =>
                           dispatch({
                             type: `SET_IS_REMEMBERED_PASS`,
                             isRememberedPass: {
                               ...isRememberedPass,
-                              status: !isRememberedPass.status,
+                              gotIt: true,
                             },
                           })
                         }
                       >
-                        จดจำรหัสผ่าน
-                      </div>
-                    </CheckboxFlex>
-                    <Collapse
-                      in={isRememberedPass.status && !isRememberedPass.gotIt}
-                    >
-                      <MyAlert
-                        icon={false}
-                        severity="error"
-                        action={
-                          <Button
-                            sx={{
-                              whiteSpace: `nowrap`,
-                            }}
-                            color="success"
-                            variant="contained"
-                            onClick={() =>
-                              dispatch({
-                                type: `SET_IS_REMEMBERED_PASS`,
-                                isRememberedPass: {
-                                  ...isRememberedPass,
-                                  gotIt: true,
-                                },
-                              })
-                            }
-                          >
-                            <FontAwesomeIcon
-                              icon={faCheck}
-                              style={{ marginRight: 5 }}
-                            />
-                            รับทราบ
-                          </Button>
-                        }
-                      >
-                        <p className="alert-text">
-                          ไม่ควรเลือก "จดจำรหัสผ่าน" บนอุปกรณ์สาธารณะ
-                        </p>
-                        <p className="alert-text">
-                          เพื่อความปลอดภัยของบัญชีผู้ใช้งานของท่าน
-                        </p>
-                      </MyAlert>
-                    </Collapse>
-                    <Button
-                      style={{
-                        width: `100%`,
-                      }}
-                      type="submit"
-                      color="primary"
-                      variant="contained"
-                      size="large"
-                      disabled={
-                        usernameInput === `` ||
-                        passwordInput === `` ||
-                        isLoading ||
-                        isError.text === `pass`
-                      }
-                    >
-                      {!isLoading && isError.text !== `pass` ? (
-                        <span>เข้าสู่ระบบ</span>
-                      ) : (
-                        <span>กำลังเข้าสู่ระบบ...</span>
-                      )}
-                    </Button>
-                    {isError.status && (
-                      <Alert
-                        sx={{ marginTop: `1rem`, animation: `fadein 0.3s` }}
-                        severity="error"
-                      >
-                        {isError.text}
-                      </Alert>
-                    )}
-                  </Row>
-                </Column>
-              )}
-            </div>
-            {!serverStates.isOnline && (
-              <div
-                style={{
-                  display: `flex`,
-                  flexDirection: `column`,
-                  justifyContent: `center`,
-                  alignItems: `center`,
-                  backgroundColor: red[50],
-                  borderRadius: 24,
-                  padding: `1.25rem 1rem`,
-                  marginTop: `1rem`,
-                  animation: `fadein 0.3s`,
-                }}
-              >
-                <FontAwesomeIcon
-                  icon={faBullhorn}
-                  style={{
-                    color: `rgba(0, 0, 0, 0.75)`,
-                    fontSize: `2.5rem`,
-                    marginBottom: `1rem`,
-                  }}
-                />
-                <span>{serverStates.notice}</span>
-              </div>
-            )}
-            <Divider
-              style={{ width: `calc(100% - 80px)`, margin: `2rem 1rem` }}
-            />
-            <ButtonColumn>
-              {serverStates.isOnline && serverStates.isOpenToRegistration && (
-                <>
-                  <div className="col">
-                    <ColorButton
-                      height="75px"
-                      width="400px"
-                      icon={
                         <FontAwesomeIcon
-                          icon={faRegistered}
-                          style={{ fontSize: `2.5rem`, marginRight: `1rem` }}
+                          icon={faCheck}
+                          style={{ marginRight: 5 }}
                         />
-                      }
-                      title="ลงทะเบียนผู้ใช้งาน"
-                      onClick={() => navigate(`/registration/`)}
-                    />
-                  </div>
-                </>
-              )}
-              <div className="col">
-                <ColorButton
-                  height="75px"
-                  width="400px"
-                  icon={
-                    <FontAwesomeIcon
-                      icon={faBook}
-                      style={{ fontSize: `2.5rem`, marginRight: `1rem` }}
-                    />
+                        รับทราบ
+                      </Button>
+                    }
+                  >
+                    <p className="alert-text">
+                      ไม่ควรเลือก "จดจำรหัสผ่าน" บนอุปกรณ์สาธารณะ
+                    </p>
+                    <p className="alert-text">
+                      เพื่อความปลอดภัยของบัญชีผู้ใช้งานของท่าน
+                    </p>
+                  </MyAlert>
+                </Collapse>
+                <Button
+                  style={{
+                    width: `100%`,
+                  }}
+                  type="submit"
+                  color="primary"
+                  variant="contained"
+                  size="large"
+                  disabled={
+                    usernameInput === `` ||
+                    passwordInput === `` ||
+                    isLoading ||
+                    isError.text === `pass`
                   }
-                  title="ดาวน์โหลดคู่มือการใช้งานระบบ GE-PDX"
-                  href="https://ge-pdx.rta.mi.th/public/user_manual_GE-PDX.pdf"
-                />
-              </div>
-            </ButtonColumn>
-          </Flex>
-        )}
+                >
+                  {!isLoading && isError.text !== `pass` ? (
+                    <span>เข้าสู่ระบบ</span>
+                  ) : (
+                    <span>กำลังเข้าสู่ระบบ...</span>
+                  )}
+                </Button>
+                {isError.status && (
+                  <Alert
+                    sx={{ marginTop: `1rem`, animation: `fadein 0.3s` }}
+                    severity="error"
+                  >
+                    {isError.text}
+                  </Alert>
+                )}
+              </Row>
+            </Column>
+          </div>
+        </Flex>
       </form>
     </>
   )
 }
 
-export default Login
+export default LoginAdmin

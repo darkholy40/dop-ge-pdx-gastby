@@ -4,6 +4,8 @@ const initialState = {
   serverStates: {
     isOnline: true,
     isOpenToRegistration: false,
+    notice: ``,
+    isFetched: false,
   },
 }
 

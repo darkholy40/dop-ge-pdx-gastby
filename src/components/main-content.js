@@ -129,7 +129,7 @@ const MainContent = props => {
         name: `server-configs`,
         desc: `การตั้งค่า Server`,
         icon: faServer,
-        level: 3,
+        level: 2,
       },
     ],
     controlPanel: [

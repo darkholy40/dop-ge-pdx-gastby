@@ -28,8 +28,10 @@ import {
   faCheck,
   faTimes,
   faTrash,
+  faRegistered,
+  faServer,
 } from "@fortawesome/free-solid-svg-icons"
-import { green, grey, blue, red } from "@mui/material/colors"
+import { green, grey, blue, red, deepOrange } from "@mui/material/colors"
 
 import { client, gql } from "../functions/apollo-client"
 
@@ -671,6 +673,24 @@ const ActivitiesPage = () => {
               description: `เปลี่ยนรหัสผ่าน`,
               icon: faKey,
               color: blue[500],
+            }
+            break
+
+          case `online-status->update`:
+            option = {
+              ...option,
+              description: `เซิร์ฟเวอร์`,
+              icon: faServer,
+              color: deepOrange[500],
+            }
+            break
+
+          case `open-for-registration->update`:
+            option = {
+              ...option,
+              description: `การลงทะเบียนผู้ใช้งาน`,
+              icon: faRegistered,
+              color: deepOrange[500],
             }
             break
 

@@ -175,6 +175,26 @@ const ServerConfigsPage = () => {
           ...prev,
           status: updateStatus,
         }))
+
+        client(token).mutate({
+          mutation: gql`
+            mutation CreateLog {
+              createLog(input: {
+                data: {
+                  action: "action",
+                  description: "online-status->update => ${
+                    checked ? `เปิด` : `ปิด`
+                  }",
+                  users_permissions_user: "${userInfo._id}",
+                }
+              }) {
+                log {
+                  _id
+                }
+              }
+            }
+          `,
+        })
       } catch (error) {
         console.log(error.message)
       }
@@ -187,7 +207,7 @@ const ServerConfigsPage = () => {
         },
       })
     },
-    [token, dispatch, serverStatus]
+    [token, userInfo, dispatch, serverStatus]
   )
 
   const updateRegistrationStatus = useCallback(
@@ -229,6 +249,26 @@ const ServerConfigsPage = () => {
           ...prev,
           status: updateStatus,
         }))
+
+        client(token).mutate({
+          mutation: gql`
+            mutation CreateLog {
+              createLog(input: {
+                data: {
+                  action: "action",
+                  description: "open-for-registration->update => ${
+                    checked ? `เปิด` : `ปิด`
+                  }",
+                  users_permissions_user: "${userInfo._id}",
+                }
+              }) {
+                log {
+                  _id
+                }
+              }
+            }
+          `,
+        })
       } catch (error) {
         console.log(error.message)
       }
@@ -241,7 +281,7 @@ const ServerConfigsPage = () => {
         },
       })
     },
-    [token, dispatch, registrationStatus]
+    [token, userInfo, dispatch, registrationStatus]
   )
 
   useEffect(() => {
@@ -256,14 +296,14 @@ const ServerConfigsPage = () => {
   }, [savePageView])
 
   useEffect(() => {
-    if (roleLevel(userInfo.role) >= 3 && token !== ``) {
+    if (roleLevel(userInfo.role) >= 2 && token !== ``) {
       getServerConfigs()
     }
   }, [getServerConfigs, token, userInfo.role])
 
   return (
     <Layout>
-      {token !== `` && roleLevel(userInfo.role) >= 3 ? (
+      {token !== `` && roleLevel(userInfo.role) >= 2 ? (
         <>
           <Seo title="การตั้งค่า Server" />
           <Breadcrumbs current="การตั้งค่า Server" />
@@ -274,7 +314,17 @@ const ServerConfigsPage = () => {
                 onSubmit={e => e.preventDefault()}
                 style={{ maxWidth: 400 }}
               >
-                <p>อนุญาตให้ลงชื่อเข้าใช้งาน</p>
+                <p>
+                  อนุญาตให้ลงชื่อเข้าใช้งาน
+                  <span
+                    style={{
+                      color: `rgba(0, 0, 0, 0.55)`,
+                      marginLeft: `0.5rem`,
+                    }}
+                  >
+                    (เปิด / ปิดเซิร์ฟเวอร์)
+                  </span>
+                </p>
                 <TextFieldWall
                   style={{
                     padding: `6px 6px 6px 15px`,

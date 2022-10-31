@@ -15,6 +15,7 @@ const Registration = () => {
               where: {
                 _or: [
                   { name: "online-status" }
+                  { name: "online-status-notice" }
                   { name: "open-to-registration" }
                 ]
               }
@@ -32,9 +33,13 @@ const Registration = () => {
       const registrationStatusObj = data.find(
         elem => elem.name === `open-to-registration`
       )
+      const onlineStatusTextObj = data.find(
+        elem => elem.name === `online-status-notice`
+      )
       let serverStates = {
         isOnline: false,
         isOpenToRegistration: false,
+        notice: ``,
       }
 
       if (onlineStatusObj !== undefined) {
@@ -47,14 +52,21 @@ const Registration = () => {
           registrationStatusObj.description === `yes` ? true : false
       }
 
+      if (onlineStatusTextObj !== undefined) {
+        serverStates.notice = onlineStatusTextObj.description
+      }
+
       dispatch({
         type: `SET_SERVER_STATES`,
         serverStates: {
           isOnline: serverStates.isOnline,
           isOpenToRegistration: serverStates.isOpenToRegistration,
+          notice: serverStates.notice,
+          isFetched: true,
         },
       })
     } catch (error) {
+      console.log(error)
       dispatch({
         type: `SET_NOTIFICATION_DIALOG`,
         notificationDialog: {
