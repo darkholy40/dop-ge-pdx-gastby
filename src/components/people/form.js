@@ -291,6 +291,7 @@ const PersonForm = ({ modification, id, divisionId }) => {
             positionsConnection(where: {
               isOpen: true
               person_null: true
+              is_deleted_ne: true
               ${role}
             }) {
               aggregate {
@@ -351,6 +352,7 @@ const PersonForm = ({ modification, id, divisionId }) => {
               positions(where: {
                 isOpen: true
                 person_null: true
+                is_deleted_ne: true
                 ${role}
               }, limit: 100, start: ${i * 100}) {
                 _id
@@ -699,6 +701,7 @@ const PersonForm = ({ modification, id, divisionId }) => {
                 {
                   isOpen: true
                   person_null: true
+                  is_deleted_ne: true
                   ${role}
                 },
                 {
@@ -746,6 +749,7 @@ const PersonForm = ({ modification, id, divisionId }) => {
                   {
                     isOpen: true
                     person_null: true
+                    is_deleted_ne: true
                     ${role}
                   },
                   {

@@ -133,6 +133,7 @@ const PeoplePage = () => {
             positionsConnection(where: {
               isOpen: true
               person_null: true
+              is_deleted_ne: true
               ${role}
             }) {
               aggregate {
